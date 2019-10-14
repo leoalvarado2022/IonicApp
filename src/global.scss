@@ -8,19 +8,55 @@
  * For more information on global stylesheets, visit the documentation:
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
-
 /* Core CSS required for Ionic components to work properly */
 @import "~@ionic/angular/css/core.css";
-
 /* Basic CSS for apps built with Ionic */
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
 @import '~@ionic/angular/css/display.css';
-
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
 @import "~@ionic/angular/css/float-elements.css";
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+ion-button {
+  text-transform: capitalize;
+}
+
+
+.button-primary-home {
+  --background: var(--color-home);
+  --border-radius: 5px;
+  --box-shadow: none;
+  height: 55px;
+  border: 1px solid white;
+  border-radius: 5px;
+  --background-activated:white;
+  --color-activated: var(--color-home-secondary);
+}
+
+.button-secondary-home {
+  --background: white;
+  --border-radius: 5px;
+  --box-shadow: none;
+  --color: var(--color-home-secondary);
+  height: 55px;
+  --color-activated: white;
+  --background-activated:var(--color-home);
+}
+
+
+.background-color-home {
+  --background: rgba(34,24,123,1);
+  --background: -moz-linear-gradient(left, rgba(34,24,123,1) 0%, rgba(25,18,91,1) 38%, rgba(12,9,45,1) 76%, rgba(1,0,4,1) 100%);
+  --background: -webkit-gradient(left top, right top, color-stop(0%, rgba(34,24,123,1)), color-stop(38%, rgba(25,18,91,1)), color-stop(76%, rgba(12,9,45,1)), color-stop(100%, rgba(1,0,4,1)));
+  --background: -webkit-linear-gradient(left, rgba(34,24,123,1) 0%, rgba(25,18,91,1) 38%, rgba(12,9,45,1) 76%, rgba(1,0,4,1) 100%);
+  --background: -o-linear-gradient(left, rgba(34,24,123,1) 0%, rgba(25,18,91,1) 38%, rgba(12,9,45,1) 76%, rgba(1,0,4,1) 100%);
+  --background: -ms-linear-gradient(left, rgba(34,24,123,1) 0%, rgba(25,18,91,1) 38%, rgba(12,9,45,1) 76%, rgba(1,0,4,1) 100%);
+  --background: linear-gradient(to right, rgba(34,24,123,1) 0%, rgba(25,18,91,1) 38%, rgba(12,9,45,1) 76%, rgba(1,0,4,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#22187b', endColorstr='#010004', GradientType=1 );
+}

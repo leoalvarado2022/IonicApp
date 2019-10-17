@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Cont. de Producción</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-tabs>
+    <!-- Tab bar -->
+    <ion-tab-bar slot="top">
+      <ion-tab-button tab="lista">
+        <span>Lista</span>
+      </ion-tab-button>
+      <ion-tab-button tab="mapa">
+        <span>Mapa</span>
+      </ion-tab-button>
+    </ion-tab-bar>
+      <ion-searchbar class="production" showCancelButton="never" animated></ion-searchbar>
+  </ion-tabs>
+</ion-content>

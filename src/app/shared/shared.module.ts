@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
 import {NotificationsComponent} from '../components/notifications/notifications.component'
+import {HttpClientModule} from '@angular/common/http';
 @NgModule({
   declarations: [
     NotificationsComponent
@@ -12,11 +13,13 @@ import {NotificationsComponent} from '../components/notifications/notifications.
     CommonModule,
     FormsModule,
     IonicModule,
+    HttpClientModule
   ],
   exports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    HttpClientModule,
     NotificationsComponent
   ]
 })

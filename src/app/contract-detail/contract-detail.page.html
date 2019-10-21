@@ -1,0 +1,154 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Contrato Detalles</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<!--  header-->
+  <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
+    <div class="card">
+      <div class="card-text-one">
+        <p>Productor</p>
+        <p>Responsable</p>
+        <p>Fecha Cosecha</p>
+      </div>
+      <div class="card-text-two">
+        <p class="card-contrato"># Contrato</p>
+        <p>Especie / Variedad</p>
+        <p>Cantidad (TN)</p>
+      </div>
+    </div>
+    <div class="scroll-card">
+      <div class="card-text">
+        <div class="card-text-one">
+          <p>Productor</p>
+          <p>Responsable</p>
+          <p>Fecha Cosecha</p>
+        </div>
+        <div class="card-text-two">
+          <p class="card-contrato"># Contrato</p>
+          <p>Especie / Variedad</p>
+          <p>Cantidad (TN)</p>
+        </div>
+      </div>
+      <div class="card-text">
+        <div class="card-text-one">
+          <p>Productor</p>
+          <p>Responsable</p>
+          <p>Fecha Cosecha</p>
+        </div>
+        <div class="card-text-two">
+          <p class="card-contrato"># Contrato</p>
+          <p>Especie / Variedad</p>
+          <p>Cantidad (TN)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--  estimaciones-->
+  <div class="estimates-card">
+    <div>
+      <p>KG CONTRATOS</p>
+      <p><ion-icon name="arrow-round-up" color="danger"></ion-icon>&nbsp;<span>3.200,00</span></p>
+    </div>
+    <div>
+      <p>KG RECIBIDOS</p>
+      <p><ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
+    </div>
+  </div>
+<!--  estimacion contrato-->
+  <div class="estimates-contract">
+    <div class="name" routerLink="/harvest-estimate">
+      <div class="icon">
+        <ion-icon name="cart" color="warning"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
+        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name">
+        Responsable: Fernando Bravo
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Fecha Inicio</p>
+          <p class="margin-0 bold">22/09/2019</p>
+        </div>
+        <div class="total">
+          <p class="font-10 margin-0 grey">KG Totales</p>
+          <p class="margin-0 bold"><ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--  estimaciones de calidad-->
+  <div class="estimates-calidad">
+    <div class="name" routerLink="/quality-estimate">
+      <div class="icon">
+        <ion-icon name="card" color="success"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>Estimacion de Calidad</strong></p>
+        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name">
+        Responsable: Fernando Bravo
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Calidad</p>
+          <p class="margin-0 bold">PREMIUM</p>
+        </div>
+        <div class="total">
+          <p class="font-10 margin-0 grey">% EXPORTACION</p>
+          <p class="margin-0 bold"><ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;<span>92%</span></p>
+        </div>
+      </div>
+      <p class="responsable--name"  (click)="openSelectedGraphics()">Desplegar Gráficos</p>
+    </div>
+
+  </div>
+
+<!--  graficos-->
+  <div class="graphics" [class.selected]="selectedGraphics">
+    <div id ="container">
+    </div>
+  </div>
+
+<!--  notas-->
+  <div class="estimates-notas">
+    <div class="name">
+      <div class="icon">
+        <ion-icon name="bookmark" color="danger"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>NOTAS</strong></p>
+        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name">
+        Responsable: Fernando Bravo
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Calidad</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

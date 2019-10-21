@@ -72,6 +72,17 @@ ion-button {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#277ff9', endColorstr='#1768e1', GradientType=1 );
 }
 
+.background-color--header {
+  background: rgba(39,127,249,1);
+  background: -moz-linear-gradient(left, rgba(39,127,249,1) 0%, rgba(32,120,243,1) 34%, rgba(29,111,232,1) 72%, rgba(23,104,225,1) 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, rgba(39,127,249,1)), color-stop(34%, rgba(32,120,243,1)), color-stop(72%, rgba(29,111,232,1)), color-stop(100%, rgba(23,104,225,1)));
+  background: -webkit-linear-gradient(left, rgba(39,127,249,1) 0%, rgba(32,120,243,1) 34%, rgba(29,111,232,1) 72%, rgba(23,104,225,1) 100%);
+  background: -o-linear-gradient(left, rgba(39,127,249,1) 0%, rgba(32,120,243,1) 34%, rgba(29,111,232,1) 72%, rgba(23,104,225,1) 100%);
+  background: -ms-linear-gradient(left, rgba(39,127,249,1) 0%, rgba(32,120,243,1) 34%, rgba(29,111,232,1) 72%, rgba(23,104,225,1) 100%);
+  background: linear-gradient(to right, rgba(39,127,249,1) 0%, rgba(32,120,243,1) 34%, rgba(29,111,232,1) 72%, rgba(23,104,225,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#277ff9', endColorstr='#1768e1', GradientType=1 );
+}
+
 ion-header{
   z-index: 0;
 }
@@ -108,4 +119,34 @@ ion-toolbar {
     color:white !important;
     font-weight: bold !important;
   }
+}
+
+.mayu{
+  text-transform: uppercase;
+}
+
+.margin-0{
+  margin: 0;
+}
+
+.grey {
+  color: var(--ion-color-medium-shade);
+}
+
+.bold{
+  font-weight: bold;
+}
+
+
+ion-back-button.white {
+  --color: white;
+}
+
+ion-title.white {
+  color: white;
+}
+
+ion-content.content {
+  --background: var(--color-background-tabs);
+  background: var(--color-background-tabs);
 }

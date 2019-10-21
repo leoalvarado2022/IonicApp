@@ -7,6 +7,9 @@ const routes: Routes = [
   { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule' },
   { path: 'home-page', loadChildren: './home-page/home-page.module#HomePagePageModule' },
   { path: 'production-contracts', loadChildren: './production-contracts/production-contracts.module#ProductionContractsPageModule' },
+  { path: 'contract-detail', loadChildren: './contract-detail/contract-detail.module#ContractDetailPageModule' },
+  { path: 'harvest-estimate', loadChildren: './harvest-estimate/harvest-estimate.module#HarvestEstimatePageModule' },
+  { path: 'quality-estimate', loadChildren: './quality-estimate/quality-estimate.module#QualityEstimatePageModule' },
 ];
 
 @NgModule({

@@ -1,0 +1,242 @@
+ion-back-button {
+  --color: white;
+}
+
+ion-title {
+  color: white;
+}
+
+ion-content {
+  --background: var(--color-background-tabs);
+  background: var(--color-background-tabs);
+}
+
+.card {
+  display: table;
+  width: 100%;
+  padding: 0 25px 0 25px;
+
+  .card-text-one, .card-text-two {
+    width: 50%;
+    display: table-cell;
+    color: white;
+  }
+
+  .card-text-two {
+    text-align: right;
+  }
+}
+
+.card-text {
+  display: table;
+  width: 100%;
+  padding: 0 25px 0 25px;
+
+  .card-text-one, .card-text-two {
+    width: 50%;
+    display: table-cell;
+    color: white;
+  }
+
+  .card-text-one {
+    p:nth-child(1) {
+      margin-top: 0;
+    }
+  }
+
+  .card-text-two {
+    text-align: right;
+
+    p:nth-child(1) {
+      margin-top: 0;
+    }
+  }
+}
+
+.card-contrato {
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: -1px;
+}
+
+.scroll-card {
+  max-height: 0;
+  transition: max-height 0.15s ease-out;
+  overflow: hidden;
+}
+
+.header-content.selected .scroll-card {
+  max-height: 500px;
+  transition: max-height 0.25s ease-in;
+}
+
+.estimates-card {
+  display: table;
+  width: 100%;
+  text-align: center;
+  background: white;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  div {
+    display: table-cell;
+
+    p {
+      margin: 5px 0;
+    }
+
+    &:nth-child(1) {
+      border-right: 1px solid var(--ion-color-light-shade);
+    }
+  }
+}
+
+.estimates-contract {
+  background: white;
+  display: table;
+  width: 100%;
+  padding: 2px 0 10px 0;
+  margin-bottom: 5px;
+  @media (max-width: 345px) {
+    padding-left: 10px;
+  }
+  div.name {
+    display: table-cell;
+    font-size: 14px;
+    padding-top: 12px;
+    .icon {
+      vertical-align: middle;
+      font-size: 35px;
+      padding: 7px;
+      @media (max-width: 345px) {
+        display: none;
+      }
+    }
+    &--name .date {
+      font-size: 10px;
+      padding-right: 20px;
+      color: var(--ion-color-medium-shade);
+    }
+    div {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+}
+
+.font-10 {
+  font-size: 10px;
+}
+
+.responsable{
+  display: table-cell;
+  text-align: right;
+  vertical-align: top;
+  &--name {
+    font-size: 10px;
+    color: var(--ion-color-medium-shade);
+    padding-right: 10px;
+    margin-top: 0;
+    margin-bottom: 2px;
+  }
+  div{
+    display: table-cell;
+  }
+  .costos {
+    padding: 10px 15px 10px 12px;
+    background: var(--color-light-box);
+    float: right;
+    .date {
+      padding-right: 12px;
+    }
+    .total {
+      width: 156px;
+    }
+  }
+}
+
+.estimates-calidad {
+  background: white;
+  display: table;
+  width: 100%;
+  padding: 2px 0 10px 0;
+  margin-bottom: 5px;
+  @media (max-width: 345px) {
+    padding-left: 10px;
+  }
+  div.name {
+    display: table-cell;
+    font-size: 14px;
+    padding-top: 12px;
+    .icon {
+      vertical-align: middle;
+      font-size: 35px;
+      padding: 7px;
+      @media (max-width: 345px) {
+        display: none;
+      }
+    }
+    &--name .date {
+      font-size: 10px;
+      padding-right: 20px;
+      color: var(--ion-color-medium-shade);
+    }
+    div {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+}
+
+
+.estimates-notas {
+  background: white;
+  display: table;
+  width: 100%;
+  padding: 2px 0 10px 0;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  @media (max-width: 345px) {
+    padding-left: 10px;
+  }
+  div.name {
+    display: table-cell;
+    font-size: 14px;
+    padding-top: 12px;
+    .icon {
+      vertical-align: middle;
+      font-size: 35px;
+      padding: 7px;
+      @media (max-width: 345px) {
+        display: none;
+      }
+    }
+    &--name .date {
+      font-size: 10px;
+      padding-right: 20px;
+      color: var(--ion-color-medium-shade);
+    }
+    div {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  }
+  .responsable {
+    .costos{
+      width: 209px;
+      padding: 18px;
+    }
+  }
+}
+
+#container{
+  max-height: 0;
+  transition: max-height 0.15s ease-out;
+  overflow: hidden;
+  display: block;
+}
+
+.graphics.selected #container {
+  max-height: 500px;
+  transition: max-height 0.25s ease-in;
+}

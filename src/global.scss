@@ -110,6 +110,7 @@ ion-toolbar {
 }
 
 .production {
+  background: var(--color-searchbar-menu);
   .searchbar-input {
     box-shadow: none !important;
     background: var(--color-searchbar-menu);

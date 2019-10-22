@@ -10,6 +10,7 @@ const routes: Routes = [
   { path: 'contract-detail', loadChildren: './contract-detail/contract-detail.module#ContractDetailPageModule' },
   { path: 'harvest-estimate', loadChildren: './harvest-estimate/harvest-estimate.module#HarvestEstimatePageModule' },
   { path: 'quality-estimate', loadChildren: './quality-estimate/quality-estimate.module#QualityEstimatePageModule' },
+  { path: 'notes', loadChildren: './notes/notes.module#NotesPageModule' },
 ];
 
 @NgModule({

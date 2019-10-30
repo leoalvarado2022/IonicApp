@@ -1,0 +1,20 @@
+ion-toolbar {
+  --background: var(--color-login-header);
+}
+
+ion-header {
+  --background: var(--color-login-header);
+  background: var(--color-login-header);
+  --color: white;
+  color:white;
+  .title-header {
+    background: var(--color-login-header);
+    h3 {
+      padding-left: 5%;
+      @media (min-width: 360px) {
+        padding-bottom: 10px;
+        padding-top: 20px;
+      }
+    }
+  }
+}

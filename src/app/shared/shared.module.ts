@@ -1,10 +1,11 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
 import {NotificationsComponent} from '../components/notifications/notifications.component'
 import {HttpClientModule} from '@angular/common/http';
+
 @NgModule({
   declarations: [
     NotificationsComponent
@@ -13,14 +14,16 @@ import {HttpClientModule} from '@angular/common/http';
     CommonModule,
     FormsModule,
     IonicModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule,
   ],
   exports: [
     CommonModule,
     FormsModule,
     IonicModule,
     HttpClientModule,
-    NotificationsComponent
+    NotificationsComponent,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule {

@@ -1,22 +1,43 @@
 <ion-content>
   <div class="pd-default">
-    <br>
-    <ion-item>
-      <ion-label position="floating">Rut</ion-label>
-      <ion-input></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="password"></ion-input>
-    </ion-item>
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+      <br>
+      <ion-item>
+        <ion-label position="floating">Rut</ion-label>
+        <ion-input
+            (keypress)="filterKeys($event)"
+            formControlName="username"
+            type="text">
+        </ion-input>
+      </ion-item>
+      <div *ngIf="loginForm.controls.username.dirty && loginForm.hasError('required', 'username')" style="color: red">
+        El rut es requerido.
+      </div>
+      <div *ngIf="loginForm.controls.username.dirty && loginForm.hasError('notRut', 'username')" style="color: red">
+        Rut Invalido
+      </div>
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input
+            formControlName="password"
+            type="password">
+        </ion-input>
+      </ion-item>
 
-    <br/><br/>
-    <div class="ion-text-right">
-      <ion-button routerLink="/password-recovery" routerDirection="forward" color="danger" fill="clear">Olvide mi
-        contraseña
+      <br/><br/>
+      <div class="ion-text-right">
+        <ion-button routerLink="/recovery-password" routerDirection="forward" color="danger" fill="clear">Olvide mi
+          contraseña
+        </ion-button>
+      </div>
+      <br/>
+      <ion-button
+          [disabled]="loginForm.invalid"
+          color="danger"
+          expand="block"
+          type="submit">
+        Iniciar Sesión
       </ion-button>
-    </div>
-    <br/>
-    <ion-button color="danger" expand="block" routerLink="/home-page">Iniciar sesión</ion-button>
+    </form>
   </div>
 </ion-content>

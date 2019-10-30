@@ -1,0 +1,8 @@
+<section *ngIf="isLoading" class="bg">
+  <div id="logo">
+    <img src="assets/imgs/logo.png">
+  </div>
+  <div id="message">
+    {{ loaderService.getLoaderMessage() }}
+  </div>
+</section>

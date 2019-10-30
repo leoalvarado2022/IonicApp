@@ -11,6 +11,9 @@ const routes: Routes = [
   { path: 'harvest-estimate', loadChildren: './harvest-estimate/harvest-estimate.module#HarvestEstimatePageModule' },
   { path: 'quality-estimate', loadChildren: './quality-estimate/quality-estimate.module#QualityEstimatePageModule' },
   { path: 'notes', loadChildren: './notes/notes.module#NotesPageModule' },
+  { path: 'pin', loadChildren: './auth/pin/pin.module#PinPageModule' },
+  { path: 'expired', loadChildren: './auth/expired/expired.module#ExpiredPageModule' },
+  { path: 'recovery-password', loadChildren: './auth/recovery/recovery.module#RecoveryPageModule' },
 ];
 
 @NgModule({

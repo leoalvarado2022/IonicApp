@@ -1,0 +1,27 @@
+.bg {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: rgba(0,0,0,0.56);
+}
+
+#logo {
+  position: relative;
+  top: 25vh;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+#message {
+  position: relative;
+  top: 30vh;
+  width: 75vw;
+  height: 200px;
+  margin: 0 auto;
+  text-align: center;
+  font-weight: bold;
+  font-size: 2em;
+  color: white;
+}

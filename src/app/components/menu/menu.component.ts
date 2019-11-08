@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {MenuController} from '@ionic/angular';
+import {Router} from '@angular/router';
+import {AuthService} from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -7,8 +10,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
 
-  constructor() { }
+  constructor(private menu: MenuController,
+              private router: Router,
+              private authService: AuthService) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
+  routerLink = (router: string) => {
+    this.menu.close('menu');
+    this.router.navigate([router]);
+  };
+
+
+  close = () => {
+    this.menu.close('menu');
+    this.authService.closeSesion();
+  };
 }

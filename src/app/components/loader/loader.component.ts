@@ -10,7 +10,7 @@ export class LoaderComponent{
 
   public isLoading: boolean = false;
 
-  constructor(private loaderService: LoaderService) {
+  constructor(public loaderService: LoaderService) {
     this.loaderService.status.subscribe((status: boolean) => {
       this.isLoading = status;
     });

@@ -1,0 +1,118 @@
+import {Injectable} from '@angular/core';
+import {CanActivate, Router} from '@angular/router';
+import {AuthService} from '../../services/auth/auth.service';
+import {ToastService} from '../../services/toast/toast.service';
+import {LoaderService} from '../../services/loader/loader.service';
+import {StorageService} from '../../services/storage/storage.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class InitSesionGuard implements CanActivate {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastService: ToastService,
+    private loaderService: LoaderService,
+    private storageService: StorageService,
+  ) {
+
+  }
+
+  /**
+   * canActivate
+   */
+  public canActivate = (): boolean => {
+
+    // comprobar si inicio sesión cerro la aplicacion y la volvio abrir
+    if (this.authService.getRemember() !== null && this.authService.getRemember() === '1') {
+      this.storageService.getRow('userRemember').then(async (data: any) => {
+
+        // iniciar login
+        const login = await this.login(data);
+
+
+        // si no tiene codigo
+        if (login && login.code === 1) {
+
+          this.toastService.warningToast(login.message);
+          this.storageService.removeRow('userRemember');
+          this.authService.setRemember('0');
+          this.authService.removeToken();
+          this.router.navigate(['auth/login']);
+
+        } else {
+          // si ya hizo login inicia en home
+          if (login !== null) {
+            this.authService.setToken(login.token);
+            this.router.navigate(['home-page']);
+          } else {
+
+            // si no tiene login o es error lo envia al login de nuevo
+            this.authService.setRemember('0');
+            this.storageService.removeRow('userRemember');
+            this.authService.removeToken();
+            this.router.navigate(['auth/login']);
+
+          }
+
+        }
+
+      });
+    }
+
+
+    const loadInit = localStorage.getItem('initLoad');
+
+    // si ya cargo el principal y es recordar es 0
+    if (loadInit !== null && this.authService.getRemember() === '0') {
+      return true;
+    }
+
+
+    // si es null y el recordar es null
+    if (loadInit === null || this.authService.getRemember() === null) {
+      return true;
+    }
+
+    return false;
+  };
+
+  /**
+   * inicia sesion automaticamente cuando inicia la aplicacion para compronar que esta correcto
+   * @param data LoginEndpoint
+   */
+  private login = (data: any): Promise<any> => {
+
+    this.loaderService.showLoader();
+
+    return new Promise((resolve) => {
+
+      this.authService.login(data).subscribe((success: any) => {
+
+        this.loaderService.hideLoader();
+        resolve(success);
+
+      }, error => {
+
+        this.loaderService.hideLoader();
+        const name = error.error.name;
+
+        if (name === 'ConnectionsNotFound') {
+
+          const token = error.error.data.token;
+          resolve({code: 1, token, user: data, message: error.error.message});
+
+        } else {
+
+          const msg = this.authService.errorsHandler(error);
+          this.toastService.warningToast(error.error.message);
+          resolve(null);
+
+        }
+
+      });
+    });
+  };
+
+}

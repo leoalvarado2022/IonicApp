@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,10 +8,18 @@ import {Component, OnInit} from '@angular/core';
 })
 export class HomePage implements OnInit{
 
-  constructor() {}
+  constructor(private router: Router) {
+
+    const loadInit = localStorage.getItem('initLoad');
+
+    if (loadInit === null) {
+      localStorage.setItem('initLoad','init');
+    }
+  }
 
 
   ngOnInit(): void {
+
 
   }
 

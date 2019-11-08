@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {HomeGuard} from './guards/home/home.guard';
+import {InitSesionGuard} from './guards/initSesion/init-sesion.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
-  { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule' },
+  { path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule), canActivate:[HomeGuard]},
+  { path: 'auth', loadChildren: './auth/auth.module#AuthPageModule', canActivate:[InitSesionGuard] },
   { path: 'home-page', loadChildren: './home-page/home-page.module#HomePagePageModule' },
   { path: 'production-contracts', loadChildren: './production-contracts/production-contracts.module#ProductionContractsPageModule' },
   { path: 'contract-detail', loadChildren: './contract-detail/contract-detail.module#ContractDetailPageModule' },

@@ -5,6 +5,9 @@ import {IonicModule} from '@ionic/angular';
 
 import {NotificationsComponent} from '../components/notifications/notifications.component'
 import {HttpClientModule} from '@angular/common/http';
+import {UserService} from '../services/user/user.service';
+import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
+import {StorageService} from '../services/storage/storage.service';
 
 @NgModule({
   declarations: [
@@ -16,6 +19,11 @@ import {HttpClientModule} from '@angular/common/http';
     IonicModule,
     HttpClientModule,
     ReactiveFormsModule,
+  ],
+  providers: [
+    UserService,
+    DetectPlatformService,
+    StorageService,
   ],
   exports: [
     CommonModule,

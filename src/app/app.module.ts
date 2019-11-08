@@ -11,13 +11,13 @@ import {AppRoutingModule} from './app-routing.module';
 import {MenuComponent} from './components/menu/menu.component';
 // custom0
 import {AppVersion} from '@ionic-native/app-version/ngx';
-import {StorageService} from './services/storage/storage.service';
 import {IonicStorageModule} from '@ionic/storage';
 import {LoaderComponent} from './components/loader/loader.component';
 import {LoaderService} from './services/loader/loader.service';
 import {AuthService} from './services/auth/auth.service';
 import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './services/toast/toast.service';
+import {Device} from '@ionic-native/device/ngx';
 
 @NgModule({
   declarations: [
@@ -30,17 +30,17 @@ import {ToastService} from './services/toast/toast.service';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    IonicStorageModule,
+    IonicStorageModule.forRoot(),
     HttpClientModule
   ],
   providers: [
     StatusBar,
     SplashScreen,
     AppVersion,
-    StorageService,
     LoaderService,
     AuthService,
     ToastService,
+    Device,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
   ],
   bootstrap: [AppComponent]

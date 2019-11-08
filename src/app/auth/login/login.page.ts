@@ -5,6 +5,7 @@ import {LoaderService} from '../../services/loader/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../services/toast/toast.service';
+import {StorageService} from '../../services/storage/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -19,14 +20,13 @@ export class LoginPage implements OnInit {
               private loaderService: LoaderService,
               private authService: AuthService,
               private router: Router,
+              private storage: StorageService,
               private toastService: ToastService) {
 
     this.loginForm = this.formBuilder.group({
-      username: ['', [
-        Validators.required,
-        rutValidator
-      ]],
-      password: ['', Validators.required]
+      username: ['', [Validators.required]],
+      password: ['', Validators.required],
+      remember: ['false']
     });
 
   }
@@ -47,16 +47,34 @@ export class LoginPage implements OnInit {
 
       const login = await this.login(data);
 
+      // recordar usuario
+      if (login !== null && data.remember === true) {
+        this.authService.setRemember('1');
+
+        this.storage.setRow('userRemember', data);
+      }
+
+      // no recordar usuario
+      if (login !== null && data.remember === false) {
+        this.authService.setRemember('0')
+
+        await this.storage.removeRow('userRemember');
+      }
+
+
       if (login && login.code === 1) {
 
         this.addPin(login);
 
       } else {
 
-        this.makeLogin();
+        if (login !== null) {
+
+          this.authService.setToken(login.token);
+          this.makeLogin();
+        }
 
       }
-
     } catch (e) {
 
       this.loaderService.hideLoader();
@@ -76,6 +94,7 @@ export class LoginPage implements OnInit {
     this.loginForm.reset();
 
     this.authService.setToken(login.token);
+
     this.router.navigate(['pin'])
 
   };
@@ -84,7 +103,6 @@ export class LoginPage implements OnInit {
    * @description hacer login si no tiene pin
    */
   public makeLogin = () => {
-
 
 
     this.loginForm.reset();
@@ -135,6 +153,7 @@ export class LoginPage implements OnInit {
         } else {
 
           const msg = this.authService.errorsHandler(error);
+          this.toastService.warningToast(error.error.message);
           resolve(null);
 
         }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Storage} from '@ionic/storage';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,7 @@ export class AuthService {
   private testConnectionUrl = 'auth/test-connection';
   private checkUrl = 'auth/check-token';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private storage: Storage, private router: Router) { }
 
   /**
    * buildUrl
@@ -127,4 +129,34 @@ export class AuthService {
     localStorage.setItem('token', token);
   };
 
+  /**
+   * setToken
+   * @param token
+   */
+  public removeToken = () => {
+    localStorage.removeItem('token');
+  };
+
+  /**
+   * getToken
+   */
+  public getRemember = (): string => {
+    return localStorage.getItem('remember');
+  };
+
+  /**
+   * setToken
+   * @param token
+   */
+  public setRemember = (remember: string) => {
+    localStorage.setItem('remember', `${remember}`);
+  };
+
+
+  public closeSesion = async () => {
+    this.setRemember('0');
+    await this.storage.remove('userRemember');
+    this.removeToken();
+    this.router.navigate(['auth/login']);
+  }
 }

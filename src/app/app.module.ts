@@ -18,12 +18,13 @@ import {AuthService} from './services/auth/auth.service';
 import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './services/toast/toast.service';
 import {Device} from '@ionic-native/device/ngx';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
-    LoaderComponent
+    LoaderComponent,
   ],
   entryComponents: [],
   imports: [
@@ -31,7 +32,8 @@ import {Device} from '@ionic-native/device/ngx';
     IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    SharedModule,
   ],
   providers: [
     StatusBar,

@@ -50,15 +50,19 @@ export class LoginPage implements OnInit {
       // recordar usuario
       if (login !== null && data.remember === true) {
         this.authService.setRemember('1');
-
         this.storage.setRow('userRemember', data);
       }
 
       // no recordar usuario
       if (login !== null && data.remember === false) {
         this.authService.setRemember('0')
-
         await this.storage.removeRow('userRemember');
+      }
+
+
+      if (login !== null) {
+        await this.storage.removeRow('userData');
+        this.storage.setRow('userData', login);
       }
 
 

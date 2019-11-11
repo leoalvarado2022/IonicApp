@@ -8,6 +8,7 @@ import {AuthService} from './services/auth/auth.service';
 import {LoaderService} from './services/loader/loader.service';
 import {ToastService} from './services/toast/toast.service';
 import {Router} from '@angular/router';
+import {UserService} from './services/user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent {
     private storageService: StorageService,
     private authService: AuthService,
     private router: Router,
+    private userService: UserService
   ) {
     this.initializeApp();
   }

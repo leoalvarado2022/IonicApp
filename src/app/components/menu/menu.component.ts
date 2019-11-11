@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterContentChecked, AfterViewChecked, Component, OnInit} from '@angular/core';
 import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
+import {UserService} from '../../services/user/user.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-menu',
@@ -10,9 +12,11 @@ import {AuthService} from '../../services/auth/auth.service';
 })
 export class MenuComponent implements OnInit {
 
+  name: string;
   constructor(private menu: MenuController,
               private router: Router,
-              private authService: AuthService) {
+              private authService: AuthService,
+              public userService: UserService) {
   }
 
   ngOnInit() {

@@ -37,6 +37,7 @@ export class InitSesionGuard implements CanActivate {
 
           this.toastService.warningToast(login.message);
           this.storageService.removeRow('userRemember');
+          this.storageService.removeRow('userData');
           this.authService.setRemember('0');
           this.authService.removeToken();
           this.router.navigate(['auth/login']);
@@ -45,12 +46,15 @@ export class InitSesionGuard implements CanActivate {
           // si ya hizo login inicia en home
           if (login !== null) {
             this.authService.setToken(login.token);
+            this.storageService.removeRow('userData');
+            this.storageService.setRow('userData', login);
             this.router.navigate(['home-page']);
           } else {
 
             // si no tiene login o es error lo envia al login de nuevo
             this.authService.setRemember('0');
             this.storageService.removeRow('userRemember');
+            this.storageService.removeRow('userData');
             this.authService.removeToken();
             this.router.navigate(['auth/login']);
 

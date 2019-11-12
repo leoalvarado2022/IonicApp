@@ -19,6 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {ToastService} from './services/toast/toast.service';
 import {Device} from '@ionic-native/device/ngx';
 import {SharedModule} from './shared/shared.module';
+import {Camera} from '@ionic-native/camera/ngx';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import {SharedModule} from './shared/shared.module';
     AuthService,
     ToastService,
     Device,
+    Camera,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
   ],
   bootstrap: [AppComponent]

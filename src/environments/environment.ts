@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   app_name: 'FX10',
-  // api_url: 'https://fx10-api-qa.primetec.cl'
+  // api_url: 'https://fx11apiqa.primetec.cl'
   api_url: 'http://localhost:5572'
 };
 

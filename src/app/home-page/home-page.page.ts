@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../services/user/user.service';
+import * as MenuAction from '../store/menu/menu.action';
+import {Store} from '@ngrx/store';
+import {StorageService} from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-home-page',
@@ -8,13 +10,11 @@ import {UserService} from '../services/user/user.service';
 })
 export class HomePagePage implements OnInit {
 
-  constructor(public userServices: UserService) {
+  constructor(public store: Store<any>,
+              private storage: StorageService) {
+    this.storage.getRow('userData').then(data => this.store.dispatch(new MenuAction.AddProfile(data)));
   }
 
   ngOnInit() {
-  }
-
-  photo() {
-    console.log('photo');
   }
 }

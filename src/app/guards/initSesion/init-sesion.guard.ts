@@ -4,6 +4,8 @@ import {AuthService} from '../../services/auth/auth.service';
 import {ToastService} from '../../services/toast/toast.service';
 import {LoaderService} from '../../services/loader/loader.service';
 import {StorageService} from '../../services/storage/storage.service';
+import {Store} from '@ngrx/store';
+import * as MenuAction from '../../store/menu/menu.action';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,7 @@ export class InitSesionGuard implements CanActivate {
     private router: Router,
     private toastService: ToastService,
     private loaderService: LoaderService,
-    private storageService: StorageService,
+    private storageService: StorageService
   ) {
 
   }

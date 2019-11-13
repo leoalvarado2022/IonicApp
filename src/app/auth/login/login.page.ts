@@ -6,6 +6,8 @@ import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../services/toast/toast.service';
 import {StorageService} from '../../services/storage/storage.service';
+import {Store} from '@ngrx/store';
+import * as MenuAction from '../../store/menu/menu.action';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +23,8 @@ export class LoginPage implements OnInit {
               private authService: AuthService,
               private router: Router,
               private storage: StorageService,
-              private toastService: ToastService) {
+              private toastService: ToastService,
+              public store: Store<any>) {
 
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
@@ -63,6 +66,7 @@ export class LoginPage implements OnInit {
       if (login !== null) {
         await this.storage.removeRow('userData');
         this.storage.setRow('userData', login);
+        this.store.dispatch(new MenuAction.AddProfile(login));
       }
 
 

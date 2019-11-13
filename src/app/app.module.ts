@@ -20,6 +20,22 @@ import {ToastService} from './services/toast/toast.service';
 import {Device} from '@ionic-native/device/ngx';
 import {SharedModule} from './shared/shared.module';
 import {Camera} from '@ionic-native/camera/ngx';
+import {StoreModule} from '@ngrx/store';
+import {EffectsModule} from '@ngrx/effects';
+// import {StoreRouterConnectingModule, RouterReducerState} from '@ngrx/router-store';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {metaReducers, reducers} from './reducers/reducers';
+import {environment} from '../environments/environment';
+
+const NGRX_IMPORTS = [
+  StoreModule.forRoot(reducers, {metaReducers: metaReducers}),
+  EffectsModule.forRoot([]),
+  StoreDevtoolsModule.instrument({
+    name: 'ngFX11Ngrx',
+    logOnly: environment.production,
+    maxAge: 25
+  })
+];
 
 @NgModule({
   declarations: [
@@ -35,6 +51,7 @@ import {Camera} from '@ionic-native/camera/ngx';
     IonicStorageModule.forRoot(),
     HttpClientModule,
     SharedModule,
+    ...NGRX_IMPORTS
   ],
   providers: [
     StatusBar,

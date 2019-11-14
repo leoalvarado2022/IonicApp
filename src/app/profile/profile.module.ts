@@ -7,6 +7,7 @@ import {IonicModule} from '@ionic/angular';
 
 import {ProfilePage} from './profile.page';
 import {SharedModule} from '../shared/shared.module';
+import {ChangePasswordComponent} from './change-password/change-password.component';
 
 const routes: Routes = [
   {
@@ -23,7 +24,8 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ProfilePage]
+  entryComponents: [ChangePasswordComponent],
+  declarations: [ProfilePage, ChangePasswordComponent]
 })
 export class ProfilePageModule {
 }

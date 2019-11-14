@@ -87,9 +87,7 @@ export class ProfilePage implements OnInit {
    * @param data
    */
   private async update(data): Promise<any> {
-
     console.log(data);
-
     await this.loaderService.showLoader();
     return new Promise((resolve, reject) => {
       this.userService.createUser(data).subscribe(success => {

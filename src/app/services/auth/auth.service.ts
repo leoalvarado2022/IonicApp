@@ -104,13 +104,16 @@ export class AuthService {
    * @param data
    */
   public buildBody = (data: any = null) => {
+    const connectionId = this.getConnection();
     if (data) {
       return Object.assign({}, data, {
-        app: environment.app_name
+        app: environment.app_name,
+        connectionId,
       });
     } else {
       return {
-        app: environment.app_name
+        app: environment.app_name,
+        connectionId,
       };
     }
   };

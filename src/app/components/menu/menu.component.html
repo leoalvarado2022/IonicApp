@@ -12,6 +12,7 @@
               [src]="profile?.avatar || 'assets/imgs/user.png'">
         </ion-avatar>
       </div>
+      <p class="nameProfile">{{profile?.name + ' ' + profile?.lastName}}</p>
       <div>
         <ion-button  (click)="routerLink('profile')" color="danger" fill="clear">Ver Perfil
         </ion-button>

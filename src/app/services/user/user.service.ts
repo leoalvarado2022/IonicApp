@@ -13,6 +13,7 @@ import {StorageService} from '../storage/storage.service';
 export class UserService {
   private createUrl = 'user/create';
   private updateUrl = 'user/update';
+  private updatePasswordUrl = 'user/password';
 
   constructor(
     private httpClient: HttpClient,
@@ -32,12 +33,21 @@ export class UserService {
   };
 
   /**
-   * createUser
+   * updateUser
    * @param data
    */
   public updateUser = (data: any) => {
     const url = this.authService.buildUrl(this.updateUrl);
-    return this.httpClient.post(url, data);
+    return this.httpClient.put(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
+  };
+
+  /**
+   * updatePassword
+   * @param data
+   */
+  public updatePassword = (data: any) => {
+    const url = this.authService.buildUrl(this.updatePasswordUrl);
+    return this.httpClient.put(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
   };
 
   /**

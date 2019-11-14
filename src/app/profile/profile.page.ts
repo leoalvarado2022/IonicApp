@@ -6,11 +6,11 @@ import {ToastService} from '../services/toast/toast.service';
 import {Router} from '@angular/router';
 import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
 import {AuthService} from '../services/auth/auth.service';
-import {confirmPassword} from '../validators/confirm-password.validator';
-import set = Reflect.set;
 import {ValidateRut} from '@primetec/primetec-angular';
-
-
+import {Store} from '@ngrx/store';
+import * as MenuAction from '../store/menu/menu.action';
+import { ModalController } from '@ionic/angular';
+import {ChangePasswordComponent} from './change-password/change-password.component';
 // import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 
 @Component({
@@ -21,6 +21,7 @@ import {ValidateRut} from '@primetec/primetec-angular';
 export class ProfilePage implements OnInit {
 
   public profile: any = null;
+  public data: any = null;
 
   public registerForm: FormGroup;
   public avatarPreview: any = null;
@@ -30,7 +31,9 @@ export class ProfilePage implements OnInit {
               private loaderService: LoaderService,
               private toastService: ToastService,
               private router: Router,
-              public _detectPlatform: DetectPlatformService,
+              public store: Store<any>,
+              public modalController: ModalController,
+              // public _detectPlatform: DetectPlatformService,
               private authService: AuthService,
               // private camera: Camera
   ) {
@@ -38,29 +41,24 @@ export class ProfilePage implements OnInit {
   }
 
   async ngOnInit() {
-
-    const data  = await this.userService.getUserData();
-
-    if (data.user) {
-      this.profile = data.user;
-      this.initForm(data.user);
+    this.data  = await this.userService.getUserData();
+    if (this.data.user) {
+      this.profile = this.data.user;
+      this.avatarPreview = this.data.user.avatar;
+      this.initForm(this.data.user);
     }
-
-
   }
 
   initForm = (data?) => {
-    console.log(data);
-
     this.registerForm = this.formBuilder.group({
-      names: [data && data !== null ? data.name : null, Validators.required],
-      lastName: [data && data !== null ? data.lastName : null, Validators.required],
-      surName: [data && data !== null ? data.surName : null, Validators.required],
+      nombre: [data && data !== null ? data.name : null, Validators.required],
+      apellido_paterno: [data && data !== null ? data.lastName : null, Validators.required],
+      apellido_materno: [data && data !== null ? data.surName : null, Validators.required],
       rut: [data && data !== null ? data.rut : null, [
         Validators.required,
         ValidateRut
       ]],
-      phone: [data && data !== null ? data.phone : null, [
+      telefono: [data && data !== null ? data.phone : null, [
         Validators.required,
         // Validators.pattern('^(([+569])([0-9]{11}))$')
       ]
@@ -69,8 +67,8 @@ export class ProfilePage implements OnInit {
         Validators.required,
         Validators.email
       ]],
-      avatar: [data && data !== null ? data.avatar : null],
-      access: [data && data !== null ? data.access.toString() : null, Validators.required],
+      avatar: [data && data !== null ? null : null],
+      acceso: [data && data !== null ? data.access.toString() : null, Validators.required],
     });
   }
 
@@ -78,23 +76,42 @@ export class ProfilePage implements OnInit {
    * onSubmit
    */
   public async onSubmit() {
-    const data = Object.assign({}, this.registerForm.value);
+
+    const list = {
+      password: '',
+      token: this.authService.getToken(),
+    }
+    const data = Object.assign(list, this.registerForm.value);
+
     await this.update(data);
   }
 
   /**
-   * create
+   * update
    * @param data
    */
   private async update(data): Promise<any> {
-    console.log(data);
+
     await this.loaderService.showLoader();
+
     return new Promise((resolve, reject) => {
-      this.userService.createUser(data).subscribe(success => {
-        this.toastService.successToast('Se creo el usuario correctamente, inicia sesión');
+      this.userService.updateUser(data).subscribe(success => {
+
+        if (this.data.user) {
+          this.data.user.access = data.acceso;
+          this.data.user.surName = data.apellido_materno;
+          this.data.user.lastName = data.apellido_paterno;
+          this.data.user.name = data.nombre;
+          this.data.user.phone = data.telefono;
+          this.data.user.avatar = data.avatar;
+        }
+
+        this.userService.setUserData(this.data);
+        this.store.dispatch(new MenuAction.AddProfile(this.data))
+        this.ngOnInit();
+
+        this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
         this.loaderService.hideLoader();
-        this.registerForm.reset();
-        this.router.navigate(['auth/login']);
         resolve(true);
       }, error => {
         const msg = this.authService.errorsHandler(error);
@@ -130,6 +147,14 @@ export class ProfilePage implements OnInit {
       };
     }
   }
+
+  changePassword = async () => {
+    const modal = await this.modalController.create({
+      component: ChangePasswordComponent,
+      cssClass: 'change-modal-password'
+    });
+    return await modal.present();
+  };
 
   /**
    * onFileCamera

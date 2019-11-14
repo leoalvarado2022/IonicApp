@@ -17,7 +17,7 @@
     <div>
       <ion-avatar class="ion-no-margin" style="margin: 0 auto !important;">
         <img
-            [src]="profile?.avatar || 'assets/imgs/user.png'">
+            [src]="avatarPreview || 'assets/imgs/user.png'">
       </ion-avatar>
     </div>
   </div>
@@ -89,35 +89,35 @@
       </div>
       <ion-item>
         <ion-label position="floating">Nombres</ion-label>
-        <ion-input formControlName="names" tabindex="1"></ion-input>
+        <ion-input formControlName="nombre" tabindex="1"></ion-input>
       </ion-item>
-      <div *ngIf="registerForm.controls.names.dirty && registerForm.hasError('required', 'names')"
+      <div *ngIf="registerForm.controls.nombre.dirty && registerForm.hasError('required', 'nombre')"
            style="color: red">
         Los nombres
         son requeridos.
       </div>
       <ion-item>
         <ion-label position="floating">Apellido Paterno</ion-label>
-        <ion-input formControlName="lastName"
+        <ion-input formControlName="apellido_paterno"
                    tabindex="2"></ion-input>
       </ion-item>
-      <div *ngIf="registerForm.controls.lastName.dirty && registerForm.hasError('required', 'lastName')"
+      <div *ngIf="registerForm.controls.apellido_paterno.dirty && registerForm.hasError('required', 'apellido_paterno')"
            style="color: red">
         El apellido parterno
         es requerido.
       </div>
       <ion-item>
         <ion-label position="floating">Apellido Materno</ion-label>
-        <ion-input class="input-text" formControlName="surName"
+        <ion-input class="input-text" formControlName="apellido_materno"
                    tabindex="3"></ion-input>
       </ion-item>
-      <div *ngIf="registerForm.controls.surName.dirty && registerForm.hasError('required', 'surName')"
+      <div *ngIf="registerForm.controls.apellido_materno.dirty && registerForm.hasError('required', 'apellido_materno')"
            style="color: red">
         El apellido materno es
         requerido.
       </div>
       <ion-item>
-        <ion-label position="floating">Email</ion-label>
+        <ion-label position="floating">Correo</ion-label>
         <ion-input formControlName="email" tabindex="4"
                    type="email"></ion-input>
       </ion-item>
@@ -128,44 +128,21 @@
       <div *ngIf="registerForm.controls.email.dirty && registerForm.hasError('email', 'email')"
            style="color: red">
         Ingrese un
-        email valido
+        correo valido
       </div>
       <ion-item>
         <ion-label position="floating">Telefono</ion-label>
-        <ion-input formControlName="phone" tabindex="5"
+        <ion-input formControlName="telefono" tabindex="5"
                    type="tel"></ion-input>
       </ion-item>
-      <div *ngIf="registerForm.controls.phone.dirty && registerForm.hasError('required', 'phone')"
+      <div *ngIf="registerForm.controls.telefono.dirty && registerForm.hasError('required', 'telefono')"
            style="color: red">
         El
         telefono es requerido.
       </div>
-      <!--<ion-item>
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input formControlName="password" type="password"></ion-input>
-      </ion-item>
-      <div *ngIf="registerForm.controls.password.dirty && registerForm.hasError('required', 'password')"
-           style="color: red">
-        La
-        contraseña es requerida.
-      </div>
-      <ion-item>
-        <ion-label position="floating">Confirmar Contraseña</ion-label>
-        <ion-input formControlName="confirm"
-                   tabindex="7" type="password"></ion-input>
-      </ion-item>
-      <div *ngIf="registerForm.controls.confirm.dirty && registerForm.hasError('required', 'confirm')"
-           style="color: red">
-        Debe
-        confirmar la contraseña
-      </div>
-      <div *ngIf="registerForm.controls.confirm.dirty && registerForm.hasError('notSame')"
-           style="color: red">Las
-        contraseñas no son iguales
-      </div>-->
 
       <br>
-      <ion-radio-group formControlName="access">
+      <ion-radio-group formControlName="acceso">
         <ion-list-header>
           Tipo de Acceso
         </ion-list-header>
@@ -181,9 +158,14 @@
         </ion-item>
       </ion-radio-group>
 
-      <div *ngIf="registerForm.controls.access.dirty && registerForm.hasError('required', 'access')"
+      <div *ngIf="registerForm.controls.acceso.dirty && registerForm.hasError('required', 'acceso')"
            style="color: red">
         Debe seleccionar una opción
+      </div>
+
+      <div>
+        <ion-button (click)="changePassword()" color="danger" fill="clear">Cambiar contraseña
+        </ion-button>
       </div>
 
       <br><br>

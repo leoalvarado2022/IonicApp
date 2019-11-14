@@ -79,14 +79,17 @@ export class ProfilePage implements OnInit {
    */
   public async onSubmit() {
     const data = Object.assign({}, this.registerForm.value);
-    await this.create(data);
+    await this.update(data);
   }
 
   /**
    * create
    * @param data
    */
-  private async create(data): Promise<any> {
+  private async update(data): Promise<any> {
+
+    console.log(data);
+
     await this.loaderService.showLoader();
     return new Promise((resolve, reject) => {
       this.userService.createUser(data).subscribe(success => {

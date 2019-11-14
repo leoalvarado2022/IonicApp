@@ -12,6 +12,7 @@ import {StorageService} from '../storage/storage.service';
 })
 export class UserService {
   private createUrl = 'user/create';
+  private updateUrl = 'user/update';
 
   constructor(
     private httpClient: HttpClient,
@@ -27,6 +28,15 @@ export class UserService {
    */
   public createUser = (data: any) => {
     const url = this.authService.buildUrl(this.createUrl);
+    return this.httpClient.post(url, data);
+  };
+
+  /**
+   * createUser
+   * @param data
+   */
+  public updateUser = (data: any) => {
+    const url = this.authService.buildUrl(this.updateUrl);
     return this.httpClient.post(url, data);
   };
 

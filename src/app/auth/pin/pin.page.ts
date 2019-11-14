@@ -4,6 +4,7 @@ import {LoaderService} from '../../services/loader/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../services/toast/toast.service';
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-pin',
@@ -17,6 +18,7 @@ export class PinPage implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private loaderService: LoaderService,
               private authService: AuthService,
+              private userService: UserService,
               private router: Router,
               private toastService: ToastService) {
 
@@ -46,9 +48,13 @@ export class PinPage implements OnInit {
 
         if (connectionPin.data && connectionPin.status === 201) {
 
-
           this.pinForm.reset();
-          this.router.navigate(['home-page'])
+          await this.userService.removeUserRemember();
+          await this.userService.removeUserData();
+          this.authService.setRemember('0');
+          this.authService.removeToken();
+          this.authService.removeConnection();
+          this.router.navigate(['auth/login'])
 
         }
       }
@@ -76,7 +82,7 @@ export class PinPage implements OnInit {
       this.authService.createPinConnection(pin).subscribe((success: any) => {
 
         this.loaderService.hideLoader();
-        this.toastService.successToast('Se creo la conexion correctamente');
+        this.toastService.successToast('Se creo la conexion correctamente, por favor inicie sesión');
         resolve(success);
 
       }, error => {

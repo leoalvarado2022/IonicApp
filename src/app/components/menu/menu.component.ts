@@ -13,6 +13,7 @@ import {Subscription} from 'rxjs';
 export class MenuComponent implements OnInit {
 
   name: string;
+  profile: any = null;
 
   constructor(private menu: MenuController,
               private router: Router,
@@ -21,11 +22,11 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
-
-      this.userService.getMenuProfiles().subscribe((menuProfile: any) => {
-        console.log(menuProfile, 'el menuProfile');
-      });
-
+    this.userService.getMenuProfiles().subscribe((menuProfile: any) => {
+      if (menuProfile.data && menuProfile.data.user) {
+        this.profile = menuProfile.data.user;
+      }
+    });
   }
 
   routerLink = (router: string) => {

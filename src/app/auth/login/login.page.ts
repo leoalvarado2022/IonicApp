@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {rutValidator} from '../../validators/rut.validator';
 import {LoaderService} from '../../services/loader/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
@@ -8,6 +7,7 @@ import {ToastService} from '../../services/toast/toast.service';
 import {StorageService} from '../../services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../store/menu/menu.action';
+import {UserService} from '../../services/user/user.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +24,8 @@ export class LoginPage implements OnInit {
               private router: Router,
               private storage: StorageService,
               private toastService: ToastService,
-              public store: Store<any>) {
+              public store: Store<any>,
+              private userService: UserService) {
 
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
@@ -53,19 +54,19 @@ export class LoginPage implements OnInit {
       // recordar usuario
       if (login !== null && data.remember === true) {
         this.authService.setRemember('1');
-        this.storage.setRow('userRemember', data);
+        this.userService.setUserRemember(data);
       }
 
       // no recordar usuario
       if (login !== null && data.remember === false) {
         this.authService.setRemember('0')
-        await this.storage.removeRow('userRemember');
+        await this.userService.removeUserRemember();
       }
 
 
       if (login !== null) {
-        await this.storage.removeRow('userData');
-        this.storage.setRow('userData', login);
+        await this.userService.removeUserData();
+        this.userService.setUserData(login);
         this.store.dispatch(new MenuAction.AddProfile(login));
       }
 

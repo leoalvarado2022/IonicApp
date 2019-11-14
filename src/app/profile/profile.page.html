@@ -1,4 +1,26 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start" class="white">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center white">
+      <strong>Pág. Perfil</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
+  <div class="profile ion-text-center">
+    <div>
+      <ion-avatar class="ion-no-margin" style="margin: 0 auto !important;">
+        <img
+            [src]="profile?.avatar || 'assets/imgs/user.png'">
+      </ion-avatar>
+    </div>
+  </div>
   <br>
   <div class="pd-default">
 
@@ -55,13 +77,13 @@
     <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
       <ion-item>
         <ion-label position="floating">Rut</ion-label>
-        <ion-input formControlName="rut" tabindex="0" (keyup)="formatIdentifier($event.target.value)"></ion-input>
+        <ion-input formControlName="rut" tabindex="0" disabled></ion-input>
       </ion-item>
       <div *ngIf="registerForm.controls.rut.dirty && registerForm.hasError('required', 'rut')"
            style="color: red">
         El rut es requerido.
       </div>
-      <div *ngIf="registerForm.controls.rut.dirty && registerForm.hasError('validRut', 'rut')"
+      <div *ngIf="registerForm.controls.rut.dirty && registerForm.hasError('notRut', 'rut')"
            style="color: red">
         El rut es inválido
       </div>
@@ -118,7 +140,7 @@
         El
         telefono es requerido.
       </div>
-      <ion-item>
+      <!--<ion-item>
         <ion-label position="floating">Contraseña</ion-label>
         <ion-input formControlName="password" type="password"></ion-input>
       </ion-item>
@@ -140,7 +162,7 @@
       <div *ngIf="registerForm.controls.confirm.dirty && registerForm.hasError('notSame')"
            style="color: red">Las
         contraseñas no son iguales
-      </div>
+      </div>-->
 
       <br>
       <ion-radio-group formControlName="access">
@@ -171,7 +193,7 @@
           color="danger"
           expand="block"
           type="submit">
-        Registrar
+        Actualizar
       </ion-button>
     </form>
 

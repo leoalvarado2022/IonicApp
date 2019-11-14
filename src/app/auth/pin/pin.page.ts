@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../../services/loader/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
-import {rutValidator} from '../../validators/rut.validator';
 import {ToastService} from '../../services/toast/toast.service';
 
 @Component({

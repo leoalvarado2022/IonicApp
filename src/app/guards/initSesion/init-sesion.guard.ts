@@ -6,6 +6,7 @@ import {LoaderService} from '../../services/loader/loader.service';
 import {StorageService} from '../../services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../store/menu/menu.action';
+import {UserService} from '../../services/user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class InitSesionGuard implements CanActivate {
     private router: Router,
     private toastService: ToastService,
     private loaderService: LoaderService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private userService: UserService
   ) {
 
   }
@@ -28,7 +30,7 @@ export class InitSesionGuard implements CanActivate {
 
     // comprobar si inicio sesión cerro la aplicacion y la volvio abrir
     if (this.authService.getRemember() !== null && this.authService.getRemember() === '1') {
-      this.storageService.getRow('userRemember').then(async (data: any) => {
+      this.userService.getUserRemember().then(async (data: any) => {
 
         // iniciar login
         const login = await this.login(data);
@@ -38,8 +40,8 @@ export class InitSesionGuard implements CanActivate {
         if (login && login.code === 1) {
 
           this.toastService.warningToast(login.message);
-          this.storageService.removeRow('userRemember');
-          this.storageService.removeRow('userData');
+          await this.userService.removeUserRemember();
+          await this.userService.removeUserData();
           this.authService.setRemember('0');
           this.authService.removeToken();
           this.router.navigate(['auth/login']);
@@ -48,15 +50,15 @@ export class InitSesionGuard implements CanActivate {
           // si ya hizo login inicia en home
           if (login !== null) {
             this.authService.setToken(login.token);
-            this.storageService.removeRow('userData');
-            this.storageService.setRow('userData', login);
+            await this.userService.removeUserData();
+            this.userService.setUserData(login);
             this.router.navigate(['home-page']);
           } else {
 
             // si no tiene login o es error lo envia al login de nuevo
             this.authService.setRemember('0');
-            this.storageService.removeRow('userRemember');
-            this.storageService.removeRow('userData');
+            await this.userService.removeUserRemember();
+            await this.userService.removeUserData();
             this.authService.removeToken();
             this.router.navigate(['auth/login']);
 

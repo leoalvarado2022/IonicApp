@@ -16,6 +16,7 @@ const routes: Routes = [
   { path: 'pin', loadChildren: './auth/pin/pin.module#PinPageModule' },
   { path: 'expired', loadChildren: './auth/expired/expired.module#ExpiredPageModule' },
   { path: 'recovery-password', loadChildren: './auth/recovery/recovery.module#RecoveryPageModule' },
+  { path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule' },
 ];
 
 @NgModule({

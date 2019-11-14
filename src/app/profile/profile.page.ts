@@ -1,58 +1,77 @@
 import {Component, OnInit} from '@angular/core';
+import {UserService} from '../services/user/user.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {confirmPassword} from '../../validators/confirm-password.validator';
-import {UserService} from '../../services/user/user.service';
-import {LoaderService} from '../../services/loader/loader.service';
-import {ToastService} from '../../services/toast/toast.service';
-import {AuthService} from '../../services/auth/auth.service';
+import {LoaderService} from '../services/loader/loader.service';
+import {ToastService} from '../services/toast/toast.service';
 import {Router} from '@angular/router';
-import {DetectPlatformService} from '../../services/detect-platform/detect-platform.service';
-import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
+import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
+import {AuthService} from '../services/auth/auth.service';
+import {confirmPassword} from '../validators/confirm-password.validator';
+import set = Reflect.set;
+import {ValidateRut} from '@primetec/primetec-angular';
+
 
 // import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
+  selector: 'app-profile',
+  templateUrl: './profile.page.html',
+  styleUrls: ['./profile.page.scss'],
 })
-export class RegisterPage {
+export class ProfilePage implements OnInit {
+
+  public profile: any = null;
 
   public registerForm: FormGroup;
   public avatarPreview: any = null;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private userService: UserService,
-    private loaderService: LoaderService,
-    private toastService: ToastService,
-    private router: Router,
-    public _detectPlatform: DetectPlatformService,
-    private authService: AuthService,
-    // private camera: Camera
+  constructor(private userService: UserService,
+              private formBuilder: FormBuilder,
+              private loaderService: LoaderService,
+              private toastService: ToastService,
+              private router: Router,
+              public _detectPlatform: DetectPlatformService,
+              private authService: AuthService,
+              // private camera: Camera
   ) {
+    this.initForm();
+  }
+
+  async ngOnInit() {
+
+    const data  = await this.userService.getUserData();
+
+    if (data.user) {
+      this.profile = data.user;
+      this.initForm(data.user);
+    }
+
+
+  }
+
+  initForm = (data?) => {
+    console.log(data);
+
     this.registerForm = this.formBuilder.group({
-      names: ['', Validators.required],
-      lastName: ['', Validators.required],
-      surName: ['', Validators.required],
-      rut: ['', [
+      names: [data && data !== null ? data.name : null, Validators.required],
+      lastName: [data && data !== null ? data.lastName : null, Validators.required],
+      surName: [data && data !== null ? data.surName : null, Validators.required],
+      rut: [data && data !== null ? data.rut : null, [
         Validators.required,
         ValidateRut
       ]],
-      phone: ['+569', [
+      phone: [data && data !== null ? data.phone : null, [
         Validators.required,
         // Validators.pattern('^(([+569])([0-9]{11}))$')
       ]
       ],
-      password: ['', Validators.required],
-      confirm: ['', Validators.required],
-      email: ['', [
+      email: [data && data !== null ? data.email : null, [
         Validators.required,
         Validators.email
       ]],
-      avatar: [''],
-      access: ['1', Validators.required],
-    }, {validator: confirmPassword});
+      avatar: [data && data !== null ? data.avatar : null],
+      access: [data && data !== null ? data.access.toString() : null, Validators.required],
+    });
   }
 
   /**
@@ -112,25 +131,6 @@ export class RegisterPage {
   }
 
   /**
-   * formatIdentifier
-   * @param identifier
-   */
-  public formatIdentifier = (rut: string) => {
-
-    if (rut.length > 0) {
-      this.registerForm.patchValue({
-        rut: formatRut(rut)
-      });
-    } else {
-      this.registerForm.patchValue({
-        rut: cleanRut(rut)
-      });
-    }
-
-    return rut;
-  };
-
-  /**
    * onFileCamera
    * @param event
    */
@@ -166,4 +166,5 @@ export class RegisterPage {
   // 		this.loaderService.hideLoader();
   // 	});
   // };
+
 }

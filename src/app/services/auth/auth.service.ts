@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
@@ -16,7 +16,8 @@ export class AuthService {
   private testConnectionUrl = 'auth/test-connection';
   private checkUrl = 'auth/check-token';
 
-  constructor(private httpClient: HttpClient, private storage: Storage, private router: Router) { }
+  constructor(private httpClient: HttpClient, private storage: Storage, private router: Router) {
+  }
 
   /**
    * buildUrl
@@ -26,7 +27,7 @@ export class AuthService {
   public buildUrl = (url: string, id: string = null): string => {
     this.apiUrl = `${this.baseUrl}/api/`;
     return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
-  }
+  };
 
 
   /**
@@ -38,7 +39,7 @@ export class AuthService {
   public login = (data: any) => {
     const url = this.buildUrl(this.loginUrl);
     return this.httpClient.post(url, this.buildBody(data));
-  }
+  };
 
   /**
    * createConnectionPin
@@ -49,7 +50,7 @@ export class AuthService {
     return this.httpClient.post(url, this.buildBody(pin), {
       headers: this.getHeaders()
     });
-  }
+  };
 
   /**
    * getHeaders
@@ -61,7 +62,7 @@ export class AuthService {
     return new HttpHeaders({
       'Authorization': token !== null ? 'Bearer ' + token : ''
     });
-  }
+  };
 
   /**
    * errorsHandler
@@ -115,6 +116,30 @@ export class AuthService {
   };
 
   /**
+   * setConnection
+   * @param connection
+   */
+  public setConnection = (connection: string) => {
+    localStorage.setItem('connection', connection);
+  };
+
+
+  /**
+   * getConnection
+   */
+  public getConnection = () => {
+    return localStorage.getItem('connection');
+  };
+
+  /**
+   * deleteConnection
+   */
+  public removeConnection = () => {
+    localStorage.removeItem('connection');
+  };
+
+
+  /**
    * getToken
    */
   public getToken = (): string => {
@@ -157,6 +182,7 @@ export class AuthService {
     this.setRemember('0');
     await this.storage.remove('userRemember');
     this.removeToken();
+    this.removeConnection();
     this.router.navigate(['auth/login']);
-  }
+  };
 }

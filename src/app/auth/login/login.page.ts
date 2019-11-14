@@ -78,7 +78,9 @@ export class LoginPage implements OnInit {
       } else {
 
         if (login !== null) {
-
+          if (login.connections) {
+            this.authService.setConnection(login.connections[0].token);
+          }
           this.authService.setToken(login.token);
           this.makeLogin();
         }

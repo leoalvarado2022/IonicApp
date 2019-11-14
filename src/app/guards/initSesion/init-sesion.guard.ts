@@ -35,6 +35,7 @@ export class InitSesionGuard implements CanActivate {
         // iniciar login
         const login = await this.login(data);
 
+        console.log(login);
 
         // si no tiene codigo
         if (login && login.code === 1) {
@@ -44,6 +45,7 @@ export class InitSesionGuard implements CanActivate {
           await this.userService.removeUserData();
           this.authService.setRemember('0');
           this.authService.removeToken();
+          this.authService.removeConnection();
           this.router.navigate(['auth/login']);
 
         } else {
@@ -52,6 +54,9 @@ export class InitSesionGuard implements CanActivate {
             this.authService.setToken(login.token);
             await this.userService.removeUserData();
             this.userService.setUserData(login);
+            if (login.connections) {
+              this.authService.setConnection(login.connections[0].token);
+            }
             this.router.navigate(['home-page']);
           } else {
 
@@ -60,6 +65,7 @@ export class InitSesionGuard implements CanActivate {
             await this.userService.removeUserRemember();
             await this.userService.removeUserData();
             this.authService.removeToken();
+            this.authService.removeConnection();
             this.router.navigate(['auth/login']);
 
           }

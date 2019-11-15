@@ -15,17 +15,20 @@ export class HomePagePage {
   public userData = null;
   private syncedData = null;
 
+  public menus = [];
+
   constructor(
-      public store: Store<any>,
-      private storage: StorageService,
-      private userService: UserService,
-      private syncService: SyncService
+    public store: Store<any>,
+    private storage: StorageService,
+    private userService: UserService,
+    private syncService: SyncService
   ) {
 
   }
 
   ionViewWillEnter() {
     this.getUserData();
+    this.loadMenus();
   }
 
   /**
@@ -50,6 +53,13 @@ export class HomePagePage {
     }, error => {
       console.log(error);
     });
+  }
+
+  /**
+   * loadMenus
+   */
+  private loadMenus = async () => {
+    this.menus = await this.syncService.getMenus();
   }
 
 }

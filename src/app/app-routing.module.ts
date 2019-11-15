@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: 'expired', loadChildren: './auth/expired/expired.module#ExpiredPageModule' },
   { path: 'recovery-password', loadChildren: './auth/recovery/recovery.module#RecoveryPageModule' },
   { path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule' },
+  { path: 'connections', loadChildren: './connections/connections.module#ConnectionsPageModule' },
 ];
 
 @NgModule({
@@ -25,4 +26,6 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+
+}

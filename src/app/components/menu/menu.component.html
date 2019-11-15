@@ -21,8 +21,8 @@
 
     <ion-list>
       <ion-item (click)="routerLink('home-page')" ><span>Inicio</span></ion-item>
-      <ion-item><span>Empresas</span></ion-item>
-      <ion-item><span>Conexiones</span></ion-item>
+      <ion-item (click)="routerLink('companies')"><span>Empresas</span></ion-item>
+      <ion-item (click)="routerLink('connections')"><span>Conexiones</span></ion-item>
       <ion-item><span>Agregar PIN</span></ion-item>
       <ion-item><span>Soporte</span></ion-item>
       <ion-item (click)="close()"><span>Cerrar Sesión</span></ion-item>

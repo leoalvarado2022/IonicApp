@@ -11,6 +11,7 @@ import {StorageService} from '../storage/storage.service';
   providedIn: 'root'
 })
 export class UserService {
+
   private createUrl = 'user/create';
   private updateUrl = 'user/update';
   private updatePasswordUrl = 'user/password';

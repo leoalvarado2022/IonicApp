@@ -4,13 +4,13 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../services/loader/loader.service';
 import {ToastService} from '../services/toast/toast.service';
 import {Router} from '@angular/router';
-import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
 import {AuthService} from '../services/auth/auth.service';
 import {ValidateRut} from '@primetec/primetec-angular';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../store/menu/menu.action';
-import { ModalController } from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import {ChangePasswordComponent} from './change-password/change-password.component';
+
 // import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 
 @Component({
@@ -26,22 +26,23 @@ export class ProfilePage implements OnInit {
   public registerForm: FormGroup;
   public avatarPreview: any = null;
 
-  constructor(private userService: UserService,
-              private formBuilder: FormBuilder,
-              private loaderService: LoaderService,
-              private toastService: ToastService,
-              private router: Router,
-              public store: Store<any>,
-              public modalController: ModalController,
-              // public _detectPlatform: DetectPlatformService,
-              private authService: AuthService,
-              // private camera: Camera
+  constructor(
+      private userService: UserService,
+      private formBuilder: FormBuilder,
+      private loaderService: LoaderService,
+      private toastService: ToastService,
+      private router: Router,
+      public store: Store<any>,
+      public modalController: ModalController,
+      // public _detectPlatform: DetectPlatformService,
+      private authService: AuthService,
+      // private camera: Camera
   ) {
     this.initForm();
   }
 
   async ngOnInit() {
-    this.data  = await this.userService.getUserData();
+    this.data = await this.userService.getUserData();
     if (this.data.user) {
       this.profile = this.data.user;
       this.avatarPreview = this.data.user.avatar;
@@ -67,9 +68,12 @@ export class ProfilePage implements OnInit {
         Validators.required,
         Validators.email
       ]],
-      avatar: [data && data !== null ? null : null],
       acceso: [data && data !== null ? data.access.toString() : null, Validators.required],
     });
+
+    /**
+     * avatar: [data && data !== null ? null : null],
+     */
   }
 
   /**
@@ -80,7 +84,7 @@ export class ProfilePage implements OnInit {
     const list = {
       password: '',
       token: this.authService.getToken(),
-    }
+    };
     const data = Object.assign(list, this.registerForm.value);
 
     await this.update(data);
@@ -103,7 +107,7 @@ export class ProfilePage implements OnInit {
           this.data.user.lastName = data.apellido_paterno;
           this.data.user.name = data.nombre;
           this.data.user.phone = data.telefono;
-          this.data.user.avatar = data.avatar;
+          //this.data.user.avatar = data.avatar;
         }
 
         this.userService.setUserData(this.data);
@@ -141,9 +145,11 @@ export class ProfilePage implements OnInit {
 
       reader.readAsDataURL(file);
       reader.onload = () => {
+        /*
         const result = String(reader.result).split(',')[1];
         this.avatarPreview = 'data:image/png;base64,' + result;
         this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
+        */
       };
     }
   }

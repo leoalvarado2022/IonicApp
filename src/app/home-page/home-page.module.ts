@@ -1,9 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {Routes, RouterModule} from '@angular/router';
-
-import {IonicModule} from '@ionic/angular';
+import {RouterModule, Routes} from '@angular/router';
 
 import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
@@ -17,13 +13,11 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
     SharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [HomePagePage]
 })
 export class HomePagePageModule {
+
 }

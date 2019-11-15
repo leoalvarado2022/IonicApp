@@ -1,19 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
-
-import { IonicModule } from '@ionic/angular';
-
-import { ProductionContractsPage } from './production-contracts.page';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {ProductionContractsPage} from './production-contracts.page';
 import {SharedModule} from '../shared/shared.module';
-
 
 const routes: Routes = [
   {
     path: '',
     component: ProductionContractsPage,
-    children:[
+    children: [
       {
         path: 'lista',
         children: [
@@ -34,14 +28,14 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/production-contracts/lista',
+        redirectTo: '/produccion_contratos/lista',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/production-contracts/lista',
+    redirectTo: '/produccion_contratos/lista',
     pathMatch: 'full'
   }
 ];
@@ -49,12 +43,11 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
     SharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [ProductionContractsPage]
 })
-export class ProductionContractsPageModule {}
+export class ProductionContractsPageModule {
+
+}

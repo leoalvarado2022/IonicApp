@@ -33,6 +33,7 @@
     "@ngrx/store-devtools": "^8.5.0",
     "@primetec/primetec-angular": "0.0.4",
     "cordova-android": "^8.1.0",
+    "cordova-ios": "5.0.1",
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-camera": "^4.1.0",
     "cordova-sqlite-storage": "^3.4.0",
@@ -92,7 +93,8 @@
       }
     },
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

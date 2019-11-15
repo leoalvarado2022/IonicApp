@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">
+      <strong>Compañias</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="companies">
+    <ion-list>
+      <ion-item (click)="selectCompany(company)" *ngFor="let company of companies">
+        <ion-icon slot="start" name="switch"></ion-icon>
+        <ion-label>{{ company.name }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

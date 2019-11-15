@@ -3,11 +3,12 @@ import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
-import {NotificationsComponent} from '../components/notifications/notifications.component'
+import {NotificationsComponent} from '../components/notifications/notifications.component';
 import {HttpClientModule} from '@angular/common/http';
 import {UserService} from '../services/user/user.service';
 import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
 import {StorageService} from '../services/storage/storage.service';
+import {SyncService} from './services/sync/sync.service';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import {StorageService} from '../services/storage/storage.service';
     UserService,
     DetectPlatformService,
     StorageService,
+    SyncService
   ],
   exports: [
     CommonModule,

@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'recovery-password', loadChildren: './auth/recovery/recovery.module#RecoveryPageModule' },
   { path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule' },
   { path: 'connections', loadChildren: './connections/connections.module#ConnectionsPageModule' },
+  { path: 'companies', loadChildren: './companies/companies.module#CompaniesPageModule' },
 ];
 
 @NgModule({

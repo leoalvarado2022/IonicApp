@@ -16,7 +16,12 @@ export class AuthService {
   private testConnectionUrl = 'auth/test-connection';
   private checkUrl = 'auth/check-token';
 
-  constructor(private httpClient: HttpClient, private storage: Storage, private router: Router) {
+  constructor(
+      private httpClient: HttpClient,
+      private storage: Storage,
+      private router: Router
+  ) {
+
   }
 
   /**
@@ -27,8 +32,7 @@ export class AuthService {
   public buildUrl = (url: string, id: string = null): string => {
     this.apiUrl = `${this.baseUrl}/api/`;
     return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
-  };
-
+  }
 
   /**
    * login
@@ -39,7 +43,7 @@ export class AuthService {
   public login = (data: any) => {
     const url = this.buildUrl(this.loginUrl);
     return this.httpClient.post(url, this.buildBody(data));
-  };
+  }
 
   /**
    * createConnectionPin
@@ -50,7 +54,7 @@ export class AuthService {
     return this.httpClient.post(url, this.buildBody(pin), {
       headers: this.getHeaders()
     });
-  };
+  }
 
   /**
    * getHeaders
@@ -60,9 +64,9 @@ export class AuthService {
     const token = this.getToken();
 
     return new HttpHeaders({
-      'Authorization': token !== null ? 'Bearer ' + token : ''
+      Authorization: token !== null ? 'Bearer ' + token : ''
     });
-  };
+  }
 
   /**
    * errorsHandler
@@ -97,57 +101,57 @@ export class AuthService {
     } else {
       return 'Non Http error';
     }
-  };
+  }
 
   /**
    * buildBody
    * @param data
    */
   public buildBody = (data: any = null) => {
-    const connectionId = this.getConnection();
+    const connection = this.getConnection();
+    
     if (data) {
       return Object.assign({}, data, {
         app: environment.app_name,
-        connectionId,
+        connectionId: connection ? connection.token : null
       });
     } else {
       return {
         app: environment.app_name,
-        connectionId,
+        connectionId: connection ? connection.token : null
       };
     }
-  };
+  }
 
   /**
    * setConnection
    * @param connection
    */
-  public setConnection = (connection: string) => {
-    localStorage.setItem('connection', connection);
-  };
-
+  public setConnection = (connection: any) => {
+    localStorage.setItem('connection', JSON.stringify(connection));
+  }
 
   /**
    * getConnection
    */
   public getConnection = () => {
-    return localStorage.getItem('connection');
-  };
+    const connection = localStorage.getItem('connection');
+    return connection ? JSON.parse(connection) : null;
+  }
 
   /**
    * deleteConnection
    */
   public removeConnection = () => {
     localStorage.removeItem('connection');
-  };
-
+  }
 
   /**
    * getToken
    */
   public getToken = (): string => {
     return localStorage.getItem('token');
-  };
+  }
 
   /**
    * setToken
@@ -155,7 +159,7 @@ export class AuthService {
    */
   public setToken = (token: string) => {
     localStorage.setItem('token', token);
-  };
+  }
 
   /**
    * setToken
@@ -163,14 +167,14 @@ export class AuthService {
    */
   public removeToken = () => {
     localStorage.removeItem('token');
-  };
+  }
 
   /**
    * getToken
    */
   public getRemember = (): string => {
     return localStorage.getItem('remember');
-  };
+  }
 
   /**
    * setToken
@@ -178,14 +182,18 @@ export class AuthService {
    */
   public setRemember = (remember: string) => {
     localStorage.setItem('remember', `${remember}`);
-  };
+  }
 
-
+  /**
+   * closeSesion
+   */
   public closeSesion = async () => {
     this.setRemember('0');
     await this.storage.remove('userRemember');
     this.removeToken();
     this.removeConnection();
+
     this.router.navigate(['auth/login']);
-  };
+  }
+
 }

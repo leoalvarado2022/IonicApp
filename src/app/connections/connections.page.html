@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">
+      <strong>Conexiones</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="connections">
+    <ion-list>
+      <ion-item (click)="selectConnection(connection)" *ngFor="let connection of connections"
+                [disabled]="connection.token === currentConnection.token">
+        <ion-icon slot="start" name="switch"></ion-icon>
+        <ion-label>{{ connection.name }}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

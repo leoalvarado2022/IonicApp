@@ -1,9 +1,8 @@
-import {AfterContentChecked, AfterViewChecked, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
 import {UserService} from '../../services/user/user.service';
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-menu',
@@ -15,10 +14,13 @@ export class MenuComponent implements OnInit {
   name: string;
   profile: any = null;
 
-  constructor(private menu: MenuController,
-              private router: Router,
-              private authService: AuthService,
-              public userService: UserService) {
+  constructor(
+    private menu: MenuController,
+    private router: Router,
+    private authService: AuthService,
+    public userService: UserService
+  ) {
+
   }
 
   ngOnInit() {
@@ -32,11 +34,10 @@ export class MenuComponent implements OnInit {
   routerLink = (router: string) => {
     this.menu.close('menu');
     this.router.navigate([router]);
-  };
-
+  }
 
   close = () => {
     this.menu.close('menu');
     this.authService.closeSesion();
-  };
+  }
 }

@@ -16,6 +16,20 @@
   <br>
   <ion-grid>
     <ion-row>
+      <ng-container *ngIf="menus">
+        <ion-col *ngFor="let menu of menus; let i = index" size="6" class="ion-text-center"
+                 [ngClass]="{ 'border-separator-right': i % 2 === 0, 'border-separator-left': i % 2 !== 0 }"
+                 routerLink="/{{ menu.menu_url }}">
+          <div>
+            <img src="assets/imgs/contratacion.png" alt="">
+            <p class="title-menu ion-text-capitalize">
+              {{ menu.caption }}
+            </p>
+          </div>
+        </ion-col>
+      </ng-container>
+
+      <!--
       <ion-col size="6" class="ion-text-center border-separator-right card-menu" routerLink="/production-contracts">
         <div>
           <img src="assets/imgs/contratacion.png" alt="">
@@ -64,6 +78,7 @@
           </p>
         </div>
       </ion-col>
+      -->
     </ion-row>
   </ion-grid>
 </ion-content>

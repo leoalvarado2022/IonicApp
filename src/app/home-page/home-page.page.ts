@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as MenuAction from '../store/menu/menu.action';
 import {Store} from '@ngrx/store';
 import {StorageService} from '../services/storage/storage.service';
@@ -10,10 +10,9 @@ import {SyncService} from '../shared/services/sync/sync.service';
   templateUrl: './home-page.page.html',
   styleUrls: ['./home-page.page.scss'],
 })
-export class HomePagePage {
+export class HomePagePage implements OnInit {
 
   public userData = null;
-  private syncedData = null;
 
   public menus = [];
 
@@ -26,7 +25,7 @@ export class HomePagePage {
 
   }
 
-  ionViewWillEnter() {
+  ngOnInit() {
     this.getUserData();
     this.loadMenus();
   }
@@ -38,28 +37,14 @@ export class HomePagePage {
     const data = await this.userService.getUserData();
     this.store.dispatch(new MenuAction.AddProfile(data));
     this.userData = data;
-
-    await this.syncData();
-    await this.syncService.storeSync(this.syncedData);
-  }
-
-  /**
-   * syncData
-   */
-  private syncData = () => {
-    const username = this.userData.user.username;
-    this.syncService.syncData(username).subscribe((success: any) => {
-      this.syncedData = success.data;
-    }, error => {
-      console.log(error);
-    });
-  }
+  };
 
   /**
    * loadMenus
    */
   private loadMenus = async () => {
-    this.menus = await this.syncService.getMenus();
-  }
+    const menus: any = await this.syncService.getMenus();
+    this.menus = menus;
+  };
 
 }

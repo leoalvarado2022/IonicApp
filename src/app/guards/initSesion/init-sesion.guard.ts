@@ -7,6 +7,7 @@ import {StorageService} from '../../services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../store/menu/menu.action';
 import {UserService} from '../../services/user/user.service';
+import {SyncService} from '../../shared/services/sync/sync.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class InitSesionGuard implements CanActivate {
     private toastService: ToastService,
     private loaderService: LoaderService,
     private storageService: StorageService,
+    private syncService: SyncService,
     private userService: UserService
   ) {
 
@@ -55,8 +57,13 @@ export class InitSesionGuard implements CanActivate {
             await this.userService.removeUserData();
             this.userService.setUserData(login);
             if (login.connections) {
-              this.authService.setConnection(login.connections[0].token);
+              this.authService.setConnection(login.connections[0]);
             }
+            this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
+              await this.syncService.storeSync(success.data);
+            }, error => {
+              console.log(error);
+            });
             this.router.navigate(['home-page']);
           } else {
 

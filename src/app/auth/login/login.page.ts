@@ -8,6 +8,7 @@ import {StorageService} from '../../services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../store/menu/menu.action';
 import {UserService} from '../../services/user/user.service';
+import {SyncService} from '../../shared/services/sync/sync.service';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,7 @@ export class LoginPage implements OnInit {
               private storage: StorageService,
               private toastService: ToastService,
               public store: Store<any>,
+              private syncService: SyncService,
               private userService: UserService) {
 
     this.loginForm = this.formBuilder.group({
@@ -80,7 +82,14 @@ export class LoginPage implements OnInit {
             }
           }
           this.authService.setToken(login.token);
-          this.makeLogin();
+
+          this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
+            await this.syncService.storeSync(success.data);
+            this.makeLogin();
+          }, error => {
+            console.log(error);
+          });
+
         }
       }
     } catch (e) {

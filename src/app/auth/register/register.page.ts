@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
 import {DetectPlatformService} from '../../services/detect-platform/detect-platform.service';
 import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
 
-// import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
+import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +29,7 @@ export class RegisterPage {
     private router: Router,
     public _detectPlatform: DetectPlatformService,
     private authService: AuthService,
-    // private camera: Camera
+    private camera: Camera
   ) {
     this.registerForm = this.formBuilder.group({
       names: ['', Validators.required],
@@ -105,7 +105,7 @@ export class RegisterPage {
       reader.readAsDataURL(file);
       reader.onload = () => {
         const result = String(reader.result).split(',')[1];
-        this.avatarPreview = 'data:image/png;base64,' + result;
+        this.avatarPreview =`data:image/png;base64,${result}`;
         this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
       };
     }
@@ -134,36 +134,36 @@ export class RegisterPage {
    * onFileCamera
    * @param event
    */
-  // public onFileCamera = async (sourceType: any, uri: any) => {
-  //
-  // 	const options: CameraOptions = {
-  // 		quality: 50,
-  // 		destinationType: uri,
-  // 		encodingType: this.camera.EncodingType.JPEG,
-  // 		mediaType: this.camera.MediaType.PICTURE,
-  // 		saveToPhotoAlbum: true,
-  //     targetWidth: 300,
-  //     targetHeight: 300,
-  //     correctOrientation: true,
-  // 		sourceType: sourceType
-  // 	};
-  //
-  //   this.loaderService.showLoader();
-  //
-  // 	this.camera.getPicture(options).then((imageData) => {
-  // 		// imageData is either a base64 encoded string or a file URI
-  // 		// If it's base64 (DATA_URL):
-  // 		console.log(imageData);
-  //
-  // 		const image = 'data:image/jpeg;base64,' + imageData;
-  // 		this.avatarPreview = image;
-  //     this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
-  //     this.loaderService.hideLoader();
-  //
-  //
-  // 	}, (err) => {
-  // 		// Handle error
-  // 		this.loaderService.hideLoader();
-  // 	});
-  // };
+  public onFileCamera = async (sourceType: any, uri: any) => {
+
+  	const options: CameraOptions = {
+  		quality: 50,
+  		destinationType: uri,
+  		encodingType: this.camera.EncodingType.JPEG,
+  		mediaType: this.camera.MediaType.PICTURE,
+  		saveToPhotoAlbum: true,
+      targetWidth: 300,
+      targetHeight: 300,
+      correctOrientation: true,
+  		sourceType: sourceType
+  	};
+
+    this.loaderService.showLoader();
+
+  	this.camera.getPicture(options).then((imageData) => {
+  		// imageData is either a base64 encoded string or a file URI
+  		// If it's base64 (DATA_URL):
+  		// console.log(imageData);
+
+      const image = `data:image/png;base64,${imageData}`;
+  		this.avatarPreview = image;
+      this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
+      this.loaderService.hideLoader();
+
+
+  	}, (err) => {
+  		// Handle error
+  		this.loaderService.hideLoader();
+  	});
+  };
 }

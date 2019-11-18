@@ -2,23 +2,23 @@
   <br>
   <div class="pd-default">
 
-    <!--<div *ngIf="!_detectPlatform.hasCordova;">
+    <div *ngIf="!_detectPlatform.hasCordova;">
       <input #avatar (change)="onFileChange($event)" accept="image/png,image/gif,image/jpeg" hidden
              type="file"/>
       <ion-avatar (click)="avatar.click()" class="ion-no-margin" style="margin: 0 auto !important;">
         <img
             [src]="avatarPreview || 'assets/imgs/user.png'">
       </ion-avatar>
-    </div>-->
+    </div>
 
-    <!--<div *ngIf="_detectPlatform.hasCordova;">
+    <div *ngIf="_detectPlatform.hasCordova;">
       <ion-avatar class="ion-no-margin" style="margin: 0 auto !important;">
         <img
             [src]="avatarPreview || 'assets/imgs/user.png'">
       </ion-avatar>
-    </div>-->
+    </div>
 
-    <!--<div *ngIf="!_detectPlatform.isIos && _detectPlatform.hasCordova;">
+    <div *ngIf="!_detectPlatform.isIos && _detectPlatform.hasCordova;">
       <ion-row>
         <ion-col size="6" class="cameras">
           <ion-avatar  style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
@@ -50,7 +50,7 @@
           </ion-avatar>
         </ion-col>
       </ion-row>
-    </div>-->
+    </div>
 
     <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
       <ion-item>

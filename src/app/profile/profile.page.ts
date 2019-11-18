@@ -10,8 +10,9 @@ import {Store} from '@ngrx/store';
 import * as MenuAction from '../store/menu/menu.action';
 import {ModalController} from '@ionic/angular';
 import {ChangePasswordComponent} from './change-password/change-password.component';
+import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
 
-// import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
+import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 
 @Component({
   selector: 'app-profile',
@@ -34,9 +35,9 @@ export class ProfilePage implements OnInit {
       private router: Router,
       public store: Store<any>,
       public modalController: ModalController,
-      // public _detectPlatform: DetectPlatformService,
+      public _detectPlatform: DetectPlatformService,
       private authService: AuthService,
-      // private camera: Camera
+      private camera: Camera
   ) {
     this.initForm();
   }
@@ -53,6 +54,7 @@ export class ProfilePage implements OnInit {
   initForm = (data?) => {
     this.registerForm = this.formBuilder.group({
       nombre: [data && data !== null ? data.name : null, Validators.required],
+      avatar: [data && data !== null ? data.avatar : null],
       apellido_paterno: [data && data !== null ? data.lastName : null, Validators.required],
       apellido_materno: [data && data !== null ? data.surName : null, Validators.required],
       rut: [data && data !== null ? data.rut : null, [
@@ -107,7 +109,7 @@ export class ProfilePage implements OnInit {
           this.data.user.lastName = data.apellido_paterno;
           this.data.user.name = data.nombre;
           this.data.user.phone = data.telefono;
-          //this.data.user.avatar = data.avatar;
+          this.data.user.avatar = data.avatar;
         }
 
         this.userService.setUserData(this.data);
@@ -138,18 +140,16 @@ export class ProfilePage implements OnInit {
 
       // console.log(file);
       const size = (file.size / 1024) / 1024;
-      if (size >= 1.2) {
-        this.toastService.warningToast('La imagen supera el limite. No puede ser mayor 1.2MB');
+      if (size >= 4) {
+        this.toastService.warningToast('La imagen supera el limite. No puede ser mayor 4MB');
         return;
       }
 
       reader.readAsDataURL(file);
       reader.onload = () => {
-        /*
         const result = String(reader.result).split(',')[1];
-        this.avatarPreview = 'data:image/png;base64,' + result;
+        this.avatarPreview =`data:image/png;base64,${result}`;
         this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
-        */
       };
     }
   }
@@ -166,37 +166,36 @@ export class ProfilePage implements OnInit {
    * onFileCamera
    * @param event
    */
-  // public onFileCamera = async (sourceType: any, uri: any) => {
-  //
-  // 	const options: CameraOptions = {
-  // 		quality: 50,
-  // 		destinationType: uri,
-  // 		encodingType: this.camera.EncodingType.JPEG,
-  // 		mediaType: this.camera.MediaType.PICTURE,
-  // 		saveToPhotoAlbum: true,
-  //     targetWidth: 300,
-  //     targetHeight: 300,
-  //     correctOrientation: true,
-  // 		sourceType: sourceType
-  // 	};
-  //
-  //   this.loaderService.showLoader();
-  //
-  // 	this.camera.getPicture(options).then((imageData) => {
-  // 		// imageData is either a base64 encoded string or a file URI
-  // 		// If it's base64 (DATA_URL):
-  // 		console.log(imageData);
-  //
-  // 		const image = 'data:image/jpeg;base64,' + imageData;
-  // 		this.avatarPreview = image;
-  //     this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
-  //     this.loaderService.hideLoader();
-  //
-  //
-  // 	}, (err) => {
-  // 		// Handle error
-  // 		this.loaderService.hideLoader();
-  // 	});
-  // };
+  public onFileCamera = async (sourceType: any, uri: any) => {
+
+  	const options: CameraOptions = {
+  		quality: 50,
+  		destinationType: uri,
+  		encodingType: this.camera.EncodingType.JPEG,
+  		mediaType: this.camera.MediaType.PICTURE,
+  		saveToPhotoAlbum: true,
+      targetWidth: 300,
+      targetHeight: 300,
+      correctOrientation: true,
+  		sourceType: sourceType
+  	};
+
+    this.loaderService.showLoader();
+
+  	this.camera.getPicture(options).then((imageData) => {
+  		// imageData is either a base64 encoded string or a file URI
+  		// If it's base64 (DATA_URL):
+  		// console.log(imageData);
+
+  		const image = `data:image/png;base64,${imageData}`;
+  		this.avatarPreview = image;
+      this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
+      this.loaderService.hideLoader();
+
+  	}, (err) => {
+  		// Handle error
+  		this.loaderService.hideLoader();
+  	});
+  };
 
 }

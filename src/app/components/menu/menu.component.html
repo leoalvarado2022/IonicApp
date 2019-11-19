@@ -8,21 +8,27 @@
     <div class="profile ion-text-center">
       <div>
         <ion-avatar class="ion-no-margin" style="margin: 0 auto !important;">
-          <img
-            [src]="profile?.avatar || 'assets/imgs/user.png'">
+          <img [src]="profile?.avatar || 'assets/imgs/user.png'">
         </ion-avatar>
       </div>
-      <p class="nameProfile">{{profile?.name + ' ' + profile?.lastName}}</p>
+      <p class="nameProfile">
+        {{profile?.name + ' ' + profile?.lastName}}
+      </p>
       <div>
-        <ion-button (click)="routerLink('profile')" color="danger" fill="clear">Ver Perfil
+        <ion-button (click)="routerLink('profile')" color="danger" fill="clear">
+          Ver Perfil
         </ion-button>
       </div>
     </div>
 
     <ion-list>
       <ion-item (click)="routerLink('home-page')"><span>Inicio</span></ion-item>
-      <ion-item (click)="routerLink('companies')"><span>Empresas</span></ion-item>
-      <ion-item (click)="routerLink('connections')"><span>Conexiones</span></ion-item>
+      <ng-container *ngIf="connections && connections.length > 1">
+        <ion-item (click)="routerLink('companies')"><span>Empresas</span></ion-item>
+      </ng-container>
+      <ng-container *ngIf="companies && companies.length > 1">
+        <ion-item (click)="routerLink('connections')"><span>Conexiones</span></ion-item>
+      </ng-container>
       <ion-item><span>Agregar PIN</span></ion-item>
       <ion-item><span>Soporte</span></ion-item>
       <ion-item (click)="close()"><span>Cerrar Sesión</span></ion-item>

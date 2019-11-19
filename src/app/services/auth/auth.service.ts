@@ -191,11 +191,31 @@ export class AuthService {
   }
 
   /**
+   * setRemember
+   */
+  public setRemember = () => {
+    localStorage.setItem('remember', 'true');
+  }
+
+  /**
+   * unsetRemember
+   */
+  public unsetRemember = () => {
+    localStorage.setItem('remember', 'false');
+  }
+
+  /**
+   * getRememberStatus
+   */
+  public getRememberStatus = () => {
+    return localStorage.getItem('remember');
+  }
+
+  /**
    * closeSesion
    */
   public closeSesion = async () => {
     this.setLoggedOut();
-    await this.storage.remove('userRemember');
     this.removeToken();
     this.removeConnection();
     this.router.navigate(['auth/login']);

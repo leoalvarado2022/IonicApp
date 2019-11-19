@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../shared/services/sync/sync.service';
-import {CostCenter} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-lista',
@@ -9,7 +8,7 @@ import {CostCenter} from '@primetec/primetec-angular';
 })
 export class ListaPage implements OnInit {
 
-  private costCenters: CostCenter[] = [];
+  private costCenters: any[] = [];
 
   constructor(
     private syncService: SyncService

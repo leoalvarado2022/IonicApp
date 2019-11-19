@@ -59,6 +59,7 @@ export class HomePagePage implements OnInit {
   public reSync = async (event: any) => {
     const {user} = this.userData;
     await this.syncData(user.username);
+    event.target.complete();
   }
 
   /**
@@ -68,6 +69,8 @@ export class HomePagePage implements OnInit {
   private syncData = (username: string) => {
     return new Promise((resolve, reject) => {
       this.syncService.syncData(username).subscribe(async (success: any) => {
+        console.log(success.data);
+
         await this.syncService.storeSync(success.data);
         await this.loadMenus();
         await this.getUserData();

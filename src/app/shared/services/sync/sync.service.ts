@@ -58,7 +58,7 @@ export class SyncService {
   /**
    * setCostCenters
    */
-  public setCostCenters = async (costCenters: CostCenter[]) => {
+  public setCostCenters = async (costCenters: any) => {
     await this.storageService.setRow('costCenters', costCenters);
   }
 

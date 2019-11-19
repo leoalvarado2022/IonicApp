@@ -1,4 +1,41 @@
 <ion-content>
+
+  <!--
+    code: "CC1"
+   companyContract: 1
+   contractDocumentNumber: 88
+   contractResponsible: null
+   contractsNumber: 4
+   id: 1
+   name: "Esta es la prueba 1"
+   producerName: "Soluciones Tecnologicas Primetec Ltda."
+   productionContract: 8
+   speciesName: "Especie 1"
+   varietyName: "Variedad 1"
+   */
+  -->
+
+  <ng-container *ngFor="let center of costCenters">
+    <div class="item" routerLink="/contract-detail">
+      <div class="card">
+        <div class="card-image">
+          <img src="assets/imgs/item-img-card.png" alt="image">
+        </div>
+        <div class="card-text-one">
+          <p>{{ center.producerName }}</p>
+          <p>{{ center.contractResponsible }}</p>
+          <p>Fecha Cosecha</p>
+        </div>
+        <div class="card-text-two">
+          <p># {{ center.contractDocumentNumber }}</p>
+          <p>{{ center.speciesName }} / {{ center.varietyName }}</p>
+          <p>{{ center.contractsNumber }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!--
   <div class="item" routerLink="/contract-detail">
     <div class="card">
       <div class="card-image">
@@ -16,166 +53,5 @@
       </div>
     </div>
   </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="item">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
+  -->
 </ion-content>

@@ -3,7 +3,8 @@ import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
 import {UserService} from '../../services/user/user.service';
-import {SyncService} from "../../shared/services/sync/sync.service";
+import {SyncService} from '../../shared/services/sync/sync.service';
+import {Company, Connection} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-menu',
@@ -15,8 +16,8 @@ export class MenuComponent implements OnInit {
   name: string;
   profile: any = null;
 
-  public connections: any = [];
-  public companies: any = [];
+  public connections: Connection[] = [];
+  public companies: Company[] = [];
 
   constructor(
     private menu: MenuController,

@@ -85,7 +85,6 @@ export class LoginPage implements OnInit {
           }
 
           this.authService.setToken(login.token);
-
           this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
             await this.syncService.storeSync(success.data);
             this.makeLogin();
@@ -93,7 +92,6 @@ export class LoginPage implements OnInit {
             const msg = this.authService.errorsHandler(error);
             this.toastService.warningToast(error.error.message);
           });
-
         }
       }
     } catch (e) {

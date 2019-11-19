@@ -13,8 +13,8 @@ const routes: Routes = [
   {path: 'auth', loadChildren: './auth/auth.module#AuthPageModule', canActivate: [InitSesionGuard]},
   {path: 'home-page', loadChildren: './home-page/home-page.module#HomePagePageModule'},
   {
-    path: 'produccion_contratos',
-    loadChildren: './production-contracts/production-contracts.module#ProductionContractsPageModule'
+    path: 'produccion_centrocosto',
+    loadChildren: () => import('./center-cost/center-cost.module').then(m => m.CenterCostPageModule),
   },
   {path: 'contract-detail', loadChildren: './contract-detail/contract-detail.module#ContractDetailPageModule'},
   {path: 'harvest-estimate', loadChildren: './harvest-estimate/harvest-estimate.module#HarvestEstimatePageModule'},
@@ -26,6 +26,7 @@ const routes: Routes = [
   {path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule'},
   {path: 'connections', loadChildren: './connections/connections.module#ConnectionsPageModule'},
   {path: 'companies', loadChildren: './companies/companies.module#CompaniesPageModule'},
+  {path: 'center-cost', loadChildren: './center-cost/center-cost.module#CenterCostPageModule'},
 ];
 
 @NgModule({

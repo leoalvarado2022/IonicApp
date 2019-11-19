@@ -9,9 +9,9 @@ export class SyncService {
   private readonly syncUrl = 'sync/mobile';
 
   constructor(
-      private authService: AuthService,
-      private httpClient: HttpClient,
-      private storageService: StorageService
+    private authService: AuthService,
+    private httpClient: HttpClient,
+    private storageService: StorageService
   ) {
 
   }

@@ -27,6 +27,9 @@ ion-button {
   text-transform: capitalize;
 }
 
+.header-back-button {
+  --color: white;
+}
 
 .button-primary-home {
   --background: var(--color-home);

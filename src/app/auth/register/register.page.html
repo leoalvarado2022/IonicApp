@@ -2,26 +2,26 @@
   <br>
   <div class="pd-default">
 
-    <div *ngIf="!_detectPlatform.hasCordova;">
+    <div *ngIf="!detectPlatformService.hasCordova">
       <input #avatar (change)="onFileChange($event)" accept="image/png,image/gif,image/jpeg" hidden
              type="file"/>
       <ion-avatar (click)="avatar.click()" class="ion-no-margin" style="margin: 0 auto !important;">
         <img
-            [src]="avatarPreview || 'assets/imgs/user.png'">
+          [src]="avatarPreview || 'assets/imgs/user.png'">
       </ion-avatar>
     </div>
 
-    <div *ngIf="_detectPlatform.hasCordova;">
+    <div *ngIf="detectPlatformService.hasCordova">
       <ion-avatar class="ion-no-margin" style="margin: 0 auto !important;">
         <img
-            [src]="avatarPreview || 'assets/imgs/user.png'">
+          [src]="avatarPreview || 'assets/imgs/user.png'">
       </ion-avatar>
     </div>
 
-    <div *ngIf="!_detectPlatform.isIos && _detectPlatform.hasCordova;">
+    <div *ngIf="!detectPlatformService.isIos && detectPlatformService.hasCordova;">
       <ion-row>
         <ion-col size="6" class="cameras">
-          <ion-avatar  style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
+          <ion-avatar style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
                       (click)="onFileCamera(camera.PictureSourceType.CAMERA, camera.DestinationType.DATA_URL)">
             <ion-icon name="camera"></ion-icon>
           </ion-avatar>
@@ -35,7 +35,7 @@
       </ion-row>
     </div>
 
-    <div *ngIf="_detectPlatform.isIos && _detectPlatform.hasCordova;">
+    <div *ngIf="detectPlatformService.isIos && detectPlatformService.hasCordova;">
       <ion-row>
         <ion-col size="6" class="cameras">
           <ion-avatar style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
@@ -167,10 +167,10 @@
       <br><br>
 
       <ion-button
-          [disabled]="registerForm.invalid"
-          color="danger"
-          expand="block"
-          type="submit">
+        [disabled]="registerForm.invalid"
+        color="danger"
+        expand="block"
+        type="submit">
         Registrar
       </ion-button>
     </form>

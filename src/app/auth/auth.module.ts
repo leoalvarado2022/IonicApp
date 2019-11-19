@@ -1,10 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {Routes, RouterModule} from '@angular/router';
-
-import {IonicModule} from '@ionic/angular';
-
+import {RouterModule, Routes} from '@angular/router';
 import {AuthPage} from './auth.page';
 import {SharedModule} from '../shared/shared.module';
 
@@ -12,13 +7,13 @@ const routes: Routes = [
   {
     path: '',
     component: AuthPage,
-    children:[
+    children: [
       {
         path: 'login',
         children: [
           {
             path: '',
-            loadChildren: './login/login.module#LoginPageModule'
+            loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule),
           }
         ]
       },
@@ -27,7 +22,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: './register/register.module#RegisterPageModule'
+            loadChildren: () => import('./register/register.module').then(m => m.RegisterPageModule),
           }
         ]
       },
@@ -45,16 +40,13 @@ const routes: Routes = [
   }
 ];
 
-
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
     SharedModule,
     RouterModule.forChild(routes),
   ],
   declarations: [AuthPage]
 })
 export class AuthPageModule {
+
 }

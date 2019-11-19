@@ -2,9 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../auth/auth.service';
 import {Observable} from 'rxjs';
-import * as MenuAction from '../../store/menu/menu.action';
-import {getMenuProfile, State} from '../../reducers/reducers';
-import { Store } from "@ngrx/store";
+import {getMenuProfile} from '../../reducers/reducers';
+import {Store} from '@ngrx/store';
 import {StorageService} from '../storage/storage.service';
 
 @Injectable({
@@ -94,14 +93,14 @@ export class UserService {
    * @description obtener usuario login
    */
   getUserRemember = async () => {
-    return await this.storageService.getRow('userRemember')
+    return await this.storageService.getRow('userRemember');
   }
 
   /**
    * @description remover usuario login
    */
   removeUserRemember = async () => {
-    await this.storageService.removeRow('userRemember')
+    await this.storageService.removeRow('userRemember');
   }
 
   ///////////////// END USUARIO

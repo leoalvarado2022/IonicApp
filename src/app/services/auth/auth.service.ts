@@ -17,9 +17,9 @@ export class AuthService {
   private checkUrl = 'auth/check-token';
 
   constructor(
-      private httpClient: HttpClient,
-      private storage: Storage,
-      private router: Router
+    private httpClient: HttpClient,
+    private storage: Storage,
+    private router: Router
   ) {
 
   }
@@ -109,7 +109,7 @@ export class AuthService {
    */
   public buildBody = (data: any = null) => {
     const connection = this.getConnection();
-    
+
     if (data) {
       return Object.assign({}, data, {
         app: environment.app_name,
@@ -170,29 +170,54 @@ export class AuthService {
   }
 
   /**
-   * getToken
+   * setLoggedIn
    */
-  public getRemember = (): string => {
-    return localStorage.getItem('remember');
+  public setLoggedIn = () => {
+    localStorage.setItem('logged', 'true');
   }
 
   /**
-   * setToken
-   * @param token
+   * setLoggedOut
    */
-  public setRemember = (remember: string) => {
-    localStorage.setItem('remember', `${remember}`);
+  public setLoggedOut = () => {
+    localStorage.setItem('logged', 'false');
+  }
+
+  /**
+   * getLoggedStatus
+   */
+  public getLoggedStatus = () => {
+    return localStorage.getItem('logged');
+  }
+
+  /**
+   * setRemember
+   */
+  public setRemember = () => {
+    localStorage.setItem('remember', 'true');
+  }
+
+  /**
+   * unsetRemember
+   */
+  public unsetRemember = () => {
+    localStorage.setItem('remember', 'false');
+  }
+
+  /**
+   * getRememberStatus
+   */
+  public getRememberStatus = () => {
+    return localStorage.getItem('remember');
   }
 
   /**
    * closeSesion
    */
   public closeSesion = async () => {
-    this.setRemember('0');
-    await this.storage.remove('userRemember');
+    this.setLoggedOut();
     this.removeToken();
     this.removeConnection();
-
     this.router.navigate(['auth/login']);
   }
 

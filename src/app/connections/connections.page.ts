@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../services/user/user.service';
 import {AuthService} from '../services/auth/auth.service';
+import {Connection} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-connections',
@@ -9,8 +10,8 @@ import {AuthService} from '../services/auth/auth.service';
 })
 export class ConnectionsPage implements OnInit {
 
-  public connections: any = [];
-  public currentConnection: any = null;
+  public connections: Connection[] = [];
+  public currentConnection: Connection = null;
 
   constructor(
     private userService: UserService,
@@ -36,7 +37,8 @@ export class ConnectionsPage implements OnInit {
    * selectConnection
    * @param connection
    */
-  public selectConnection = (connection: any) => {
+  public selectConnection = (connection: Connection) => {
     this.authService.setConnection(connection);
   }
+
 }

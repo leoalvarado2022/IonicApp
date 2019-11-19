@@ -39,33 +39,24 @@ export class PinPage implements OnInit {
   public onSubmit = async () => {
 
     try {
-
       const data = Object.assign({}, this.pinForm.value);
 
       if (data && data.pin) {
-
         const connectionPin = await this.createUserConnection(data);
 
         if (connectionPin.data && connectionPin.status === 201) {
-
           this.pinForm.reset();
           await this.userService.removeUserRemember();
           await this.userService.removeUserData();
-          this.authService.setRemember('0');
           this.authService.removeToken();
           this.authService.removeConnection();
           this.router.navigate(['auth/login'])
-
         }
       }
 
     } catch (e) {
-
       this.loaderService.hideLoader();
-
     }
-
-
   };
 
 
@@ -96,4 +87,5 @@ export class PinPage implements OnInit {
       });
     });
   };
+  
 }

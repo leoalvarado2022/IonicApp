@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../shared/services/sync/sync.service';
+import {Company} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-companies',
@@ -8,7 +9,7 @@ import {SyncService} from '../shared/services/sync/sync.service';
 })
 export class CompaniesPage implements OnInit {
 
-  public companies: any = [];
+  public companies: Company[] = [];
 
   constructor(
     private syncService: SyncService
@@ -31,7 +32,7 @@ export class CompaniesPage implements OnInit {
    * selectCompany
    * @param company
    */
-  public selectCompany = (company: any) => {
+  public selectCompany = (company: Company) => {
     console.log(company);
   }
 

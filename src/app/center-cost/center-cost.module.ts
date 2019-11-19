@@ -1,12 +1,12 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ProductionContractsPage} from './production-contracts.page';
+import {CenterCostPage} from './center-cost.page';
 import {SharedModule} from '../shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: ProductionContractsPage,
+    component: CenterCostPage,
     children: [
       {
         path: 'lista',
@@ -28,26 +28,25 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/produccion_contratos/lista',
+        redirectTo: '/produccion_centrocosto/lista',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/produccion_contratos/lista',
+    redirectTo: '/produccion_centrocosto/lista',
     pathMatch: 'full'
   }
 ];
-
 
 @NgModule({
   imports: [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ProductionContractsPage]
+  declarations: [CenterCostPage]
 })
-export class ProductionContractsPageModule {
+export class CenterCostPageModule {
 
 }

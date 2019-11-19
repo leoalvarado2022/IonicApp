@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../../services/loader/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {ToastService} from '../../services/toast/toast.service';
 import {StorageService} from '../../services/storage/storage.service';
 import {Store} from '@ngrx/store';
@@ -19,25 +19,53 @@ export class LoginPage implements OnInit {
 
   public loginForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder,
-              private loaderService: LoaderService,
-              private authService: AuthService,
-              private router: Router,
-              private storage: StorageService,
-              private toastService: ToastService,
-              public store: Store<any>,
-              private syncService: SyncService,
-              private userService: UserService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private loaderService: LoaderService,
+    private authService: AuthService,
+    private router: Router,
+    private storage: StorageService,
+    private toastService: ToastService,
+    public store: Store<any>,
+    private syncService: SyncService,
+    private userService: UserService
+  ) {
 
+  }
+
+  ngOnInit() {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required],
       remember: ['false']
     });
 
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd && event.url === '/auth/login') {
+        this.checkRemember();
+      }
+    });
   }
 
-  ngOnInit() {
+  /**
+   * checkRemember
+   */
+  private checkRemember = async () => {
+    const remember = this.authService.getRememberStatus();
+
+    if (remember) {
+      const userData = await this.userService.getUserRemember();
+
+      if (userData) {
+        this.loginForm.patchValue({
+          username: userData.username,
+          password: userData.password,
+          remember: ['true']
+        });
+
+        this.loginForm.updateValueAndValidity();
+      }
+    }
   }
 
   /**
@@ -47,20 +75,18 @@ export class LoginPage implements OnInit {
     try {
 
       const data = Object.assign({}, this.loginForm.value);
-
       data.username = data.username.toLowerCase();
-
       const login = await this.login(data);
 
       // recordar usuario
-      if (login !== null && data.remember === true) {
-        this.authService.setRemember('1');
+      if (data.remember === true) {
+        this.authService.setRemember();
         this.userService.setUserRemember(data);
       }
 
       // no recordar usuario
-      if (login !== null && data.remember === false) {
-        this.authService.setRemember('0');
+      if (data.remember === false) {
+        this.authService.unsetRemember();
         await this.userService.removeUserRemember();
       }
 
@@ -84,8 +110,9 @@ export class LoginPage implements OnInit {
             }
           }
 
+          this.authService.setLoggedIn();
           this.authService.setToken(login.token);
-
+          this.authService.setToken(login.token);
           this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
             await this.syncService.storeSync(success.data);
             this.makeLogin();
@@ -93,7 +120,6 @@ export class LoginPage implements OnInit {
             const msg = this.authService.errorsHandler(error);
             this.toastService.warningToast(error.error.message);
           });
-
         }
       }
     } catch (e) {
@@ -124,11 +150,8 @@ export class LoginPage implements OnInit {
    */
   public makeLogin = () => {
     this.loginForm.reset();
-    this.router.navigate(['home-page']);
-
+    this.router.navigate(['/home-page']);
   }
-
-
   /**
    * filterKeys
    * @param event

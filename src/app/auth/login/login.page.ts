@@ -79,15 +79,19 @@ export class LoginPage implements OnInit {
 
             if (defaultConnection) {
               this.authService.setConnection(defaultConnection);
+            } else {
+              this.authService.setConnection(login.connections[0]);
             }
           }
+
           this.authService.setToken(login.token);
 
           this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
             await this.syncService.storeSync(success.data);
             this.makeLogin();
           }, error => {
-            console.log(error);
+            const msg = this.authService.errorsHandler(error);
+            this.toastService.warningToast(error.error.message);
           });
 
         }

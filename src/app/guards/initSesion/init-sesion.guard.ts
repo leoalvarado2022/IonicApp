@@ -4,8 +4,6 @@ import {AuthService} from '../../services/auth/auth.service';
 import {ToastService} from '../../services/toast/toast.service';
 import {LoaderService} from '../../services/loader/loader.service';
 import {StorageService} from '../../services/storage/storage.service';
-import {Store} from '@ngrx/store';
-import * as MenuAction from '../../store/menu/menu.action';
 import {UserService} from '../../services/user/user.service';
 import {SyncService} from '../../shared/services/sync/sync.service';
 

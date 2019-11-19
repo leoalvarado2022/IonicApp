@@ -37,14 +37,14 @@ export class HomePagePage implements OnInit {
     const data = await this.userService.getUserData();
     this.store.dispatch(new MenuAction.AddProfile(data));
     this.userData = data;
-  };
+  }
 
   /**
    * loadMenus
    */
   private loadMenus = async () => {
-    const menus: any = await this.syncService.getMenus();
+    const menus = await this.syncService.getMenus();
     this.menus = menus;
-  };
+  }
 
 }

@@ -1,37 +1,79 @@
 import {NgModule} from '@angular/core';
-import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
-import {HomeGuard} from './guards/home/home.guard';
-import {InitSesionGuard} from './guards/initSesion/init-sesion.guard';
+import {RouterModule, Routes} from '@angular/router';
+import {LoggedGuard} from './guards/logged/logged.guard';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
+  {
+    path: '',
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
+    canActivate: [LoggedGuard]
+  },
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
-    canActivate: [HomeGuard]
+    canActivate: [LoggedGuard]
   },
-  {path: 'auth', loadChildren: './auth/auth.module#AuthPageModule', canActivate: [InitSesionGuard]},
-  {path: 'home-page', loadChildren: './home-page/home-page.module#HomePagePageModule'},
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule),
+  },
+  {
+    path: 'home-page',
+    loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePagePageModule),
+  },
   {
     path: 'produccion_centrocosto',
     loadChildren: () => import('./center-cost/center-cost.module').then(m => m.CenterCostPageModule),
   },
-  {path: 'contract-detail', loadChildren: './contract-detail/contract-detail.module#ContractDetailPageModule'},
-  {path: 'harvest-estimate', loadChildren: './harvest-estimate/harvest-estimate.module#HarvestEstimatePageModule'},
-  {path: 'quality-estimate', loadChildren: './quality-estimate/quality-estimate.module#QualityEstimatePageModule'},
-  {path: 'notes', loadChildren: './notes/notes.module#NotesPageModule'},
-  {path: 'pin', loadChildren: './auth/pin/pin.module#PinPageModule'},
-  {path: 'expired', loadChildren: './auth/expired/expired.module#ExpiredPageModule'},
-  {path: 'recovery-password', loadChildren: './auth/recovery/recovery.module#RecoveryPageModule'},
-  {path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule'},
-  {path: 'connections', loadChildren: './connections/connections.module#ConnectionsPageModule'},
-  {path: 'companies', loadChildren: './companies/companies.module#CompaniesPageModule'},
-  {path: 'center-cost', loadChildren: './center-cost/center-cost.module#CenterCostPageModule'},
+  {
+    path: 'contract-detail',
+    loadChildren: () => import('./contract-detail/contract-detail.module').then(m => m.ContractDetailPageModule),
+  },
+  {
+    path: 'harvest-estimate',
+    loadChildren: () => import('./harvest-estimate/harvest-estimate.module').then(m => m.HarvestEstimatePageModule),
+  },
+  {
+    path: 'quality-estimate',
+    loadChildren: () => import('./quality-estimate/quality-estimate.module').then(m => m.QualityEstimatePageModule),
+  },
+  {
+    path: 'notes',
+    loadChildren: () => import('./notes/notes.module').then(m => m.NotesPageModule),
+  },
+  {
+    path: 'pin',
+    loadChildren: () => import('./auth/pin/pin.module').then(m => m.PinPageModule),
+  },
+  {
+    path: 'expired',
+    loadChildren: () => import('./auth/expired/expired.module').then(m => m.ExpiredPageModule),
+  },
+  {
+    path: 'recovery-password',
+    loadChildren: () => import('./auth/recovery/recovery.module').then(m => m.RecoveryPageModule),
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule),
+  },
+  {
+    path: 'connections',
+    loadChildren: () => import('./connections/connections.module').then(m => m.ConnectionsPageModule),
+  },
+  {
+    path: 'companies',
+    loadChildren: () => import('./companies/companies.module').then(m => m.CompaniesPageModule),
+  },
+  {
+    path: 'center-cost',
+    loadChildren: () => import('./center-cost/center-cost.module').then(m => m.CenterCostPageModule),
+  },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
+    RouterModule.forRoot(routes)
   ],
   exports: [RouterModule]
 })

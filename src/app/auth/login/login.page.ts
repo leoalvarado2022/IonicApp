@@ -19,25 +19,26 @@ export class LoginPage implements OnInit {
 
   public loginForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder,
-              private loaderService: LoaderService,
-              private authService: AuthService,
-              private router: Router,
-              private storage: StorageService,
-              private toastService: ToastService,
-              public store: Store<any>,
-              private syncService: SyncService,
-              private userService: UserService) {
-
+  constructor(
+    private formBuilder: FormBuilder,
+    private loaderService: LoaderService,
+    private authService: AuthService,
+    private router: Router,
+    private storage: StorageService,
+    private toastService: ToastService,
+    public store: Store<any>,
+    private syncService: SyncService,
+    private userService: UserService
+  ) {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required],
       remember: ['false']
     });
-
   }
 
   ngOnInit() {
+
   }
 
   /**
@@ -47,20 +48,16 @@ export class LoginPage implements OnInit {
     try {
 
       const data = Object.assign({}, this.loginForm.value);
-
       data.username = data.username.toLowerCase();
-
       const login = await this.login(data);
 
       // recordar usuario
       if (login !== null && data.remember === true) {
-        this.authService.setRemember('1');
         this.userService.setUserRemember(data);
       }
 
       // no recordar usuario
       if (login !== null && data.remember === false) {
-        this.authService.setRemember('0');
         await this.userService.removeUserRemember();
       }
 
@@ -84,6 +81,8 @@ export class LoginPage implements OnInit {
             }
           }
 
+          this.authService.setLoggedIn();
+          this.authService.setToken(login.token);
           this.authService.setToken(login.token);
           this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
             await this.syncService.storeSync(success.data);
@@ -122,11 +121,8 @@ export class LoginPage implements OnInit {
    */
   public makeLogin = () => {
     this.loginForm.reset();
-    this.router.navigate(['home-page']);
-
+    this.router.navigate(['/home-page']);
   }
-
-
   /**
    * filterKeys
    * @param event

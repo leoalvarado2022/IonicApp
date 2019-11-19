@@ -28,16 +28,16 @@ export class ProfilePage implements OnInit {
   public avatarPreview: any = null;
 
   constructor(
-      private userService: UserService,
-      private formBuilder: FormBuilder,
-      private loaderService: LoaderService,
-      private toastService: ToastService,
-      private router: Router,
-      public store: Store<any>,
-      public modalController: ModalController,
-      public _detectPlatform: DetectPlatformService,
-      private authService: AuthService,
-      private camera: Camera
+    private userService: UserService,
+    private formBuilder: FormBuilder,
+    private loaderService: LoaderService,
+    private toastService: ToastService,
+    private router: Router,
+    public store: Store<any>,
+    public modalController: ModalController,
+    public detectPlatformService: DetectPlatformService,
+    private authService: AuthService,
+    public camera: Camera
   ) {
     this.initForm();
   }
@@ -148,7 +148,7 @@ export class ProfilePage implements OnInit {
       reader.readAsDataURL(file);
       reader.onload = () => {
         const result = String(reader.result).split(',')[1];
-        this.avatarPreview =`data:image/png;base64,${result}`;
+        this.avatarPreview = `data:image/png;base64,${result}`;
         this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
       };
     }
@@ -168,34 +168,34 @@ export class ProfilePage implements OnInit {
    */
   public onFileCamera = async (sourceType: any, uri: any) => {
 
-  	const options: CameraOptions = {
-  		quality: 50,
-  		destinationType: uri,
-  		encodingType: this.camera.EncodingType.JPEG,
-  		mediaType: this.camera.MediaType.PICTURE,
-  		saveToPhotoAlbum: true,
+    const options: CameraOptions = {
+      quality: 50,
+      destinationType: uri,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: true,
       targetWidth: 300,
       targetHeight: 300,
       correctOrientation: true,
-  		sourceType: sourceType
-  	};
+      sourceType: sourceType
+    };
 
     this.loaderService.showLoader();
 
-  	this.camera.getPicture(options).then((imageData) => {
-  		// imageData is either a base64 encoded string or a file URI
-  		// If it's base64 (DATA_URL):
-  		// console.log(imageData);
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      // console.log(imageData);
 
-  		const image = `data:image/png;base64,${imageData}`;
-  		this.avatarPreview = image;
+      const image = `data:image/png;base64,${imageData}`;
+      this.avatarPreview = image;
       this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
       this.loaderService.hideLoader();
 
-  	}, (err) => {
-  		// Handle error
-  		this.loaderService.hideLoader();
-  	});
+    }, (err) => {
+      // Handle error
+      this.loaderService.hideLoader();
+    });
   };
 
 }

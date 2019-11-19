@@ -8,7 +8,7 @@ import {SyncService} from '../../shared/services/sync/sync.service';
 })
 export class ListaPage implements OnInit {
 
-  private costCenters: any[] = [];
+  public costCenters: any[] = [];
 
   constructor(
     private syncService: SyncService
@@ -25,7 +25,6 @@ export class ListaPage implements OnInit {
    */
   private loadCostCenters = async () => {
     this.costCenters = await this.syncService.getCostCenters();
-    console.log(this.costCenters);
   }
 
 }

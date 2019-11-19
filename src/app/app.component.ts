@@ -6,7 +6,6 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {StorageService} from './services/storage/storage.service';
 import {AuthService} from './services/auth/auth.service';
 import {LoaderService} from './services/loader/loader.service';
-import {ToastService} from './services/toast/toast.service';
 import {Router} from '@angular/router';
 import {UserService} from './services/user/user.service';
 
@@ -31,7 +30,6 @@ export class AppComponent {
   }
 
   initializeApp() {
-
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();

@@ -13,7 +13,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: './lista/lista.module#ListaPageModule'
+            loadChildren: () => import('./lista/lista.module').then(m => m.ListaPageModule),
           }
         ]
       },
@@ -22,7 +22,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: './mapa/mapa.module#MapaPageModule'
+            loadChildren: () => import('./mapa/mapa.module').then(m => m.MapaPageModule),
           }
         ]
       },

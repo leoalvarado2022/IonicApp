@@ -1,22 +1,17 @@
+<ion-searchbar (ionChange)="searchCostCenter($event.target.value)" class="production" showCancelButton="never" animated (ionClear)="cancelSearch()"></ion-searchbar>
+
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="reload($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
 
-  <!--
-    code: "CC1"
-   companyContract: 1
-   contractDocumentNumber: 88
-   contractResponsible: null
-   contractsNumber: 4
-   id: 1
-   name: "Esta es la prueba 1"
-   producerName: "Soluciones Tecnologicas Primetec Ltda."
-   productionContract: 8
-   speciesName: "Especie 1"
-   varietyName: "Variedad 1"
-   */
-  -->
-
-  <ng-container *ngFor="let center of costCenters">
-    <div class="item" routerLink="/contract-detail">
+  <ng-container *ngFor="let center of filteredCostCenters">
+    <div class="item" [routerLink]="['/contract-detail', center.id ]">
       <div class="card">
         <div class="card-image">
           <img src="assets/imgs/item-img-card.png" alt="image">

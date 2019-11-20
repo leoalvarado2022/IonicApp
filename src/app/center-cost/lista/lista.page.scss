@@ -3,10 +3,16 @@ ion-content {
   background: var(--color-background-tabs);
 }
 
+ion-searchbar {
+  background: var(--color-searchbar-menu);
+  color: white;
+}
+
 .item {
   height: 120px;
   padding: 5px 2px;
   overflow: hidden;
+
   .card {
     background: white;
     border-radius: 2px;
@@ -15,26 +21,32 @@ ion-content {
     display: table;
     width: 100%;
     font-size: 14px;
-    .card-image{
+
+    .card-image {
       width: 72px;
       display: table-cell;
     }
+
     .card-text-one {
       display: table-cell;
       vertical-align: top;
-      p{
+
+      p {
         margin-top: 0;
       }
     }
+
     .card-text-two {
       display: table-cell;
       vertical-align: top;
       text-align: right;
-      p{
+
+      p {
         margin-top: 0;
       }
     }
   }
+
   &:last-child {
     margin-bottom: 4px;
   }

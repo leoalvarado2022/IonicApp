@@ -13,59 +13,56 @@
 </ion-header>
 
 <ion-content>
-<!--  header-->
+  <!--  header-->
   <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
-    <div class="card">
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p class="card-contrato"># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-    <div class="scroll-card">
+
+    <ng-container *ngIf="costCenterListItem">
       <div class="card-text">
         <div class="card-text-one">
-          <p>Productor</p>
-          <p>Responsable</p>
+          <p>{{ costCenterListItem.producerName }}</p>
+          <p>{{ costCenterListItem.contractResponsible }}</p>
           <p>Fecha Cosecha</p>
         </div>
         <div class="card-text-two">
-          <p class="card-contrato"># Contrato</p>
-          <p>Especie / Variedad</p>
-          <p>Cantidad (TN)</p>
+          <p class="card-contrato"># {{ costCenterListItem.contractDocumentNumber }}</p>
+          <p>{{ costCenterListItem.speciesName }} / {{ costCenterListItem.varietyName }}</p>
+          <p>Cantidad</p>
         </div>
       </div>
-      <div class="card-text">
-        <div class="card-text-one">
-          <p>Productor</p>
-          <p>Responsable</p>
-          <p>Fecha Cosecha</p>
-        </div>
-        <div class="card-text-two">
-          <p class="card-contrato"># Contrato</p>
-          <p>Especie / Variedad</p>
-          <p>Cantidad (TN)</p>
-        </div>
+    </ng-container>
+    <ng-container *ngIf="productionContracts.length">
+      <div class="scroll-card">
+        <ng-container *ngFor="let contract of productionContracts; let index = index">
+          <div class="card-text" *ngIf="index > 1">
+            <div class="card-text-one">
+              <p>Productor</p>
+              <p>Responsable</p>
+              <p>Fecha Cosecha</p>
+            </div>
+            <div class="card-text-two">
+              <p class="card-contrato"># Contrato</p>
+              <p>Especie / Variedad</p>
+              <p>Cantidad (TN)</p>
+            </div>
+          </div>
+        </ng-container>
       </div>
-    </div>
+    </ng-container>
   </div>
-<!--  estimaciones-->
+  <!--  estimaciones-->
   <div class="estimates-card">
     <div>
       <p>KG CONTRATOS</p>
-      <p><ion-icon name="arrow-round-up" color="danger"></ion-icon>&nbsp;<span>3.200,00</span></p>
+      <p>
+        <ion-icon name="arrow-round-up" color="danger"></ion-icon>&nbsp;<span>3.200,00</span></p>
     </div>
     <div>
       <p>KG RECIBIDOS</p>
-      <p><ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
+      <p>
+        <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
     </div>
   </div>
-<!--  estimacion contrato-->
+  <!--  estimacion contrato-->
   <div class="estimates-contract">
     <div class="name" routerLink="/harvest-estimate">
       <div class="icon">
@@ -87,13 +84,14 @@
         </div>
         <div class="total">
           <p class="font-10 margin-0 grey">KG Totales</p>
-          <p class="margin-0 bold"><ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
+          <p class="margin-0 bold">
+            <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
         </div>
       </div>
     </div>
   </div>
 
-<!--  estimaciones de calidad-->
+  <!--  estimaciones de calidad-->
   <div class="estimates-calidad">
     <div class="name" routerLink="/quality-estimate">
       <div class="icon">
@@ -115,21 +113,22 @@
         </div>
         <div class="total">
           <p class="font-10 margin-0 grey">% EXPORTACION</p>
-          <p class="margin-0 bold"><ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;<span>92%</span></p>
+          <p class="margin-0 bold">
+            <ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;<span>92%</span></p>
         </div>
       </div>
-      <p class="responsable--name"  (click)="openSelectedGraphics()">Desplegar Gráficos</p>
+      <p class="responsable--name" (click)="openSelectedGraphics()">Desplegar Gráficos</p>
     </div>
 
   </div>
 
-<!--  graficos-->
+  <!--  graficos-->
   <div class="graphics" [class.selected]="selectedGraphics">
-    <div id ="container">
+    <div id="container">
     </div>
   </div>
 
-<!--  notas-->
+  <!--  notas-->
   <div class="estimates-notas">
     <div class="name" routerLink="/notes">
       <div class="icon">

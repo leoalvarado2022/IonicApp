@@ -1,29 +1,26 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {Routes, RouterModule} from '@angular/router';
-
-import {IonicModule} from '@ionic/angular';
-
+import {RouterModule, Routes} from '@angular/router';
 import {ContractDetailPage} from './contract-detail.page';
 import {SharedModule} from '../shared/shared.module';
+import {ContractDetailService} from './services/contract-detail/contract-detail.service';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':id',
     component: ContractDetailPage
   }
 ];
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ContractDetailPage]
+  declarations: [ContractDetailPage],
+  providers: [
+    ContractDetailService
+  ]
 })
 export class ContractDetailPageModule {
+
 }

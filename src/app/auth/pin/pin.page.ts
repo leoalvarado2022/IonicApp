@@ -4,7 +4,7 @@ import {LoaderService} from '../../services/loader/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../services/toast/toast.service';
-import {UserService} from '../../services/user/user.service';
+import {UserService} from '../../shared/services/user/user.service';
 
 @Component({
   selector: 'app-pin',
@@ -87,5 +87,5 @@ export class PinPage implements OnInit {
       });
     });
   };
-  
+
 }

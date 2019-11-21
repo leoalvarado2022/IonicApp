@@ -1,12 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import * as MenuAction from '../store/menu/menu.action';
 import {Store} from '@ngrx/store';
-import {StorageService} from '../services/storage/storage.service';
-import {UserService} from '../services/user/user.service';
+import {StorageService} from '../shared/services/storage/storage.service';
+import {UserService} from '../shared/services/user/user.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {TabMenu} from '@primetec/primetec-angular';
 import {AuthService} from '../services/auth/auth.service';
 import {ToastService} from '../services/toast/toast.service';
+import {Network} from '@ionic-native/network/ngx';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home-page',
@@ -25,12 +27,35 @@ export class HomePagePage implements OnInit {
     private userService: UserService,
     private syncService: SyncService,
     private authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private network: Network,
+    private router: Router
   ) {
 
   }
 
   ngOnInit() {
+    this.network.onDisconnect().subscribe(() => {
+      localStorage.setItem('isNetwork', 'false');
+      console.log('network was disconnected :-(');
+    });
+
+    this.network.onConnect().subscribe(() => {
+      localStorage.setItem('isNetwork', 'true');
+      console.log('network connected!', this.network.type);
+      // We just got a connection but we need to wait briefly
+      // before we determine the connection type. Might need to wait.
+      // prior to doing any api requests as well.
+      /*
+      setTimeout(() => {
+        if (this.network.type === 'wifi') {
+          console.log('we got a wifi connection, woohoo!');
+        }
+      }, 3000);
+      */
+    });
+
+
     this.getUserData();
     this.loadMenus();
   }
@@ -83,4 +108,25 @@ export class HomePagePage implements OnInit {
       });
     });
   }
+
+  /**
+   * navigate
+   * @param url
+   */
+  public navigate = (menu: TabMenu) => {
+    const isNetwork = localStorage.getItem('isNetwork');
+
+    if (isNetwork === 'true' || (isNetwork === 'false' && menu.offlineMenu === true)) {
+      this.router.navigate(['/' + menu.menu_url]);
+    }
+  }
+
+  /**
+   * checkDisabled
+   */
+  public checkDisabled = () => {
+    const isNetwork = localStorage.getItem('isNetwork');
+    return isNetwork === 'false';
+  }
+
 }

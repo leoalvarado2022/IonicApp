@@ -3,11 +3,11 @@ import {Component} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {StorageService} from './services/storage/storage.service';
+import {StorageService} from './shared/services/storage/storage.service';
 import {AuthService} from './services/auth/auth.service';
 import {LoaderService} from './services/loader/loader.service';
 import {Router} from '@angular/router';
-import {UserService} from './services/user/user.service';
+import {UserService} from './shared/services/user/user.service';
 
 @Component({
   selector: 'app-root',

@@ -2,11 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../../services/loader/loader.service';
 import {ToastService} from '../../services/toast/toast.service';
-import {ValidateRut} from '@primetec/primetec-angular';
 import {confirmPassword} from '../../validators/confirm-password.validator';
 import {UserService} from '../../services/user/user.service';
 import {AuthService} from '../../services/auth/auth.service';
-import * as MenuAction from '../../store/menu/menu.action';
 import {ModalController} from '@ionic/angular';
 
 @Component({
@@ -35,7 +33,7 @@ export class ChangePasswordComponent implements OnInit {
       password: ['', Validators.required],
       confirm: ['', Validators.required],
     }, {validator: confirmPassword});
-  };
+  }
 
   /**
    * @description actualizar usuario
@@ -46,8 +44,8 @@ export class ChangePasswordComponent implements OnInit {
     const token = this.authService.getToken();
 
     const custom = {
-      token: token,
-      password: password,
+      token,
+      password,
       newPassword: this.passwordForm.get('password').value,
       newPassword_confirm: this.passwordForm.get('confirm').value,
     };
@@ -55,7 +53,7 @@ export class ChangePasswordComponent implements OnInit {
     const data = Object.assign({}, custom);
 
     await this.update(data, user);
-  };
+  }
 
   /**
    * create
@@ -86,6 +84,6 @@ export class ChangePasswordComponent implements OnInit {
 
   modalClose = () => {
     this.modalController.dismiss();
-  };
+  }
 
 }

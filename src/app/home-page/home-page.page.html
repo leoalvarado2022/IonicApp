@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title class="ion-text-center">
-      <strong>Pág. Inicio</strong>
+      <strong>Menú</strong>
     </ion-title>
     <ion-buttons slot="end">
       <app-notifications></app-notifications>
@@ -13,72 +13,45 @@
 </ion-header>
 
 <ion-content>
-  <br>
+
+  <ion-refresher slot="fixed" (ionRefresh)="reSync($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
   <ion-grid>
     <ion-row>
       <ng-container *ngIf="menus">
-        <ion-col *ngFor="let menu of menus; let i = index" size="6" class="ion-text-center"
+        <ion-col *ngFor="let menu of menus; let i = index" size="6"
+                 class="ion-text-center card-menu"
                  [ngClass]="{ 'border-separator-right': i % 2 === 0, 'border-separator-left': i % 2 !== 0 }"
                  routerLink="/{{ menu.menu_url }}">
           <div>
-            <img src="assets/imgs/contratacion.png" alt="">
+            <ion-icon class="icon-size" [color]="menu.icon_color" [name]="menu.icon_url"></ion-icon>
             <p class="title-menu ion-text-capitalize">
               {{ menu.caption }}
             </p>
           </div>
         </ion-col>
-      </ng-container>
 
-      <!--
-      <ion-col size="6" class="ion-text-center border-separator-right card-menu" routerLink="/production-contracts">
-        <div>
-          <img src="assets/imgs/contratacion.png" alt="">
-          <p class="title-menu">
-            Contratos de Producción
-          </p>
-        </div>
-      </ion-col>
-      <ion-col size="6" class="ion-text-center border-separator-left">
-        <div>
-          <img src="assets/imgs/contratacion.png" alt="">
-          <p class="title-menu">
-            Contratos de Producción
-          </p>
-        </div>
-      </ion-col>
-      <ion-col size="6" class="ion-text-center border-separator-right card-menu">
-        <div>
-          <img src="assets/imgs/contratacion.png" alt="">
-          <p class="title-menu">
-            Contratos de Producción
-          </p>
-        </div>
-      </ion-col>
-      <ion-col size="6" class="ion-text-center border-separator-left">
-        <div>
-          <img src="assets/imgs/contratacion.png" alt="">
-          <p class="title-menu">
-            Contratos de Producción
-          </p>
-        </div>
-      </ion-col>
-      <ion-col size="6" class="ion-text-center border-separator-right card-menu">
-        <div>
-          <img src="assets/imgs/contratacion.png" alt="">
-          <p class="title-menu">
-            Contratos de Producción
-          </p>
-        </div>
-      </ion-col>
-      <ion-col size="6" class="ion-text-center border-separator-left">
-        <div>
-          <img src="assets/imgs/contratacion.png" alt="">
-          <p class="title-menu">
-            Contratos de Producción
-          </p>
-        </div>
-      </ion-col>
-      -->
+        <!--
+        <ion-col size="6" class="ion-text-center border-separator-right card-menu" routerLink="/production-contracts">
+          <div>
+            <img src="assets/imgs/contratacion.png" alt="">
+            <p class="title-menu">
+              Contratos de Producción
+            </p>
+          </div>
+        </ion-col>
+        -->
+
+      </ng-container>
     </ion-row>
   </ion-grid>
+
 </ion-content>
+

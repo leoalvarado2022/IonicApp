@@ -1,25 +1,17 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit{
+export class HomePage implements OnInit {
 
-  constructor(private router: Router) {
+  constructor() {
 
-    const loadInit = localStorage.getItem('initLoad');
-
-    if (loadInit === null) {
-      localStorage.setItem('initLoad','init');
-    }
   }
 
-
   ngOnInit(): void {
-
 
   }
 

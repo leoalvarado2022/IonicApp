@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '../../../services/auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {StorageService} from '../../../services/storage/storage.service';
+import {Company, CostCenter, TabMenu} from '@primetec/primetec-angular';
 
 @Injectable()
 export class SyncService {
@@ -9,9 +10,9 @@ export class SyncService {
   private readonly syncUrl = 'sync/mobile';
 
   constructor(
-      private authService: AuthService,
-      private httpClient: HttpClient,
-      private storageService: StorageService
+    private authService: AuthService,
+    private httpClient: HttpClient,
+    private storageService: StorageService
   ) {
 
   }
@@ -43,7 +44,7 @@ export class SyncService {
    * setCompanies
    * @param companies
    */
-  public setCompanies = async (companies: any) => {
+  public setCompanies = async (companies: Company[]) => {
     await this.storageService.setRow('companies', companies);
   }
 
@@ -71,7 +72,7 @@ export class SyncService {
   /**
    * setMenus
    */
-  public setMenus = async (menus: any) => {
+  public setMenus = async (menus: TabMenu[]) => {
     await this.storageService.setRow('menus', menus);
   }
 

@@ -27,6 +27,13 @@ ion-button {
   text-transform: capitalize;
 }
 
+.header-back-button {
+  --color: white;
+}
+
+.icon-size {
+  font-size: 56px !important;
+}
 
 .button-primary-home {
   --background: var(--color-home);

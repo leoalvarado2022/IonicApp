@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {confirmPassword} from '../../validators/confirm-password.validator';
 import {UserService} from '../../services/user/user.service';
@@ -27,9 +27,9 @@ export class RegisterPage {
     private loaderService: LoaderService,
     private toastService: ToastService,
     private router: Router,
-    public _detectPlatform: DetectPlatformService,
+    public detectPlatformService: DetectPlatformService,
     private authService: AuthService,
-    private camera: Camera
+    public camera: Camera
   ) {
     this.registerForm = this.formBuilder.group({
       names: ['', Validators.required],
@@ -105,7 +105,7 @@ export class RegisterPage {
       reader.readAsDataURL(file);
       reader.onload = () => {
         const result = String(reader.result).split(',')[1];
-        this.avatarPreview =`data:image/png;base64,${result}`;
+        this.avatarPreview = `data:image/png;base64,${result}`;
         this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
       };
     }
@@ -136,34 +136,34 @@ export class RegisterPage {
    */
   public onFileCamera = async (sourceType: any, uri: any) => {
 
-  	const options: CameraOptions = {
-  		quality: 50,
-  		destinationType: uri,
-  		encodingType: this.camera.EncodingType.JPEG,
-  		mediaType: this.camera.MediaType.PICTURE,
-  		saveToPhotoAlbum: true,
+    const options: CameraOptions = {
+      quality: 50,
+      destinationType: uri,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      saveToPhotoAlbum: true,
       targetWidth: 300,
       targetHeight: 300,
       correctOrientation: true,
-  		sourceType: sourceType
-  	};
+      sourceType: sourceType
+    };
 
     this.loaderService.showLoader();
 
-  	this.camera.getPicture(options).then((imageData) => {
-  		// imageData is either a base64 encoded string or a file URI
-  		// If it's base64 (DATA_URL):
-  		// console.log(imageData);
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      // console.log(imageData);
 
       const image = `data:image/png;base64,${imageData}`;
-  		this.avatarPreview = image;
+      this.avatarPreview = image;
       this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
       this.loaderService.hideLoader();
 
 
-  	}, (err) => {
-  		// Handle error
-  		this.loaderService.hideLoader();
-  	});
+    }, (err) => {
+      // Handle error
+      this.loaderService.hideLoader();
+    });
   };
 }

@@ -1,19 +1,73 @@
 import {Component, OnInit} from '@angular/core';
 import * as HighCharts from 'highcharts';
 import {HttpClient} from '@angular/common/http';
+import {ActivatedRoute} from '@angular/router';
+import {ContractDetailService} from './services/contract-detail/contract-detail.service';
+import {CostCenter, CostCenterList, ProductContract, ProductContractDetail} from '@primetec/primetec-angular';
+import {AuthService} from '../services/auth/auth.service';
+import {SyncService} from '../shared/services/sync/sync.service';
 
 @Component({
   selector: 'app-contract-detail',
   templateUrl: './contract-detail.page.html',
   styleUrls: ['./contract-detail.page.scss'],
 })
-export class ContractDetailPage{
+export class ContractDetailPage implements OnInit {
 
-  public openSelected: boolean = false;
-  public selectedGraphics: boolean = false;
+  public openSelected = false;
+  public selectedGraphics = false;
 
-  constructor(private httpClient: HttpClient) {
+  public costCenterListItem: CostCenterList = null;
+  public costCenter: CostCenter = null;
+  public productionContracts: ProductContract[] = [];
+  public productionContractsDetails: ProductContractDetail[] = [];
+
+  constructor(
+    private httpClient: HttpClient,
+    private route: ActivatedRoute,
+    private contractDetailService: ContractDetailService,
+    private authService: AuthService,
+    private syncService: SyncService
+  ) {
+
+  }
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadContractDetail(id);
+      this.loadCostCenter(id);
+    }
+
     this.initChart();
+  }
+
+  /**
+   * loadCostCenters
+   */
+  public loadCostCenter = async (id: string) => {
+    const centers = await this.syncService.getCostCenters();
+    this.costCenterListItem = centers.find(item => item.id === +id);
+  }
+
+  /**
+   * loadContractDetail
+   * @param id
+   */
+  private loadContractDetail = (id: string) => {
+    this.contractDetailService.getCostCenter(id).subscribe((success: any) => {
+      const data = success.data;
+      const {costCenter, productionContracts, productionContractsDetails} = data;
+      this.costCenter = costCenter;
+      this.productionContracts = productionContracts;
+      this.productionContractsDetails = productionContractsDetails;
+
+      // console.table([this.costCenterListItem, productionContracts[0], productionContractsDetails[0]]);
+      console.log({costCenter, productionContracts, productionContractsDetails});
+
+    }, error => {
+      this.authService.errorsHandler(error);
+    });
   }
 
   /**
@@ -30,14 +84,14 @@ export class ContractDetailPage{
 
     const json = await this.getJsonData();
 
-    const data:any = [{
+    const data: any = [{
       type: 'area',
       name: 'USD to EUR',
       data: json
-    }]
+    }];
 
 
-    const area:any = {
+    const area: any = {
       fillColor: {
         linearGradient: {
           x1: 0,
@@ -60,7 +114,7 @@ export class ContractDetailPage{
         }
       },
       threshold: null
-    }
+    };
 
     HighCharts.chart('container', {
       chart: {
@@ -85,7 +139,7 @@ export class ContractDetailPage{
         enabled: false
       },
       plotOptions: {
-        area: area
+        area
       },
       series: data
     });
@@ -103,6 +157,13 @@ export class ContractDetailPage{
    */
   openSelectedGraphics() {
     this.selectedGraphics = !this.selectedGraphics;
+  }
+
+  /**
+   * getTotal
+   */
+  public getTotal = () => {
+    return this.productionContractsDetails.reduce((accumulator, contractDetail) => accumulator + contractDetail.value, 0);
   }
 
 }

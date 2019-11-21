@@ -27,8 +27,14 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {metaReducers, reducers} from './reducers/reducers';
 import {environment} from '../environments/environment';
 
+import localeCL from '@angular/common/locales/es-CL';
+import localeCLExtra from '@angular/common/locales/extra/es-CL';
+import {registerLocaleData} from '@angular/common';
+
+registerLocaleData(localeCL, 'es-CL', localeCLExtra);
+
 const NGRX_IMPORTS = [
-  StoreModule.forRoot(reducers, {metaReducers: metaReducers}),
+  StoreModule.forRoot(reducers, {metaReducers}),
   EffectsModule.forRoot([]),
   StoreDevtoolsModule.instrument({
     name: 'ngFX11Ngrx',

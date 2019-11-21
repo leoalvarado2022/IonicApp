@@ -3,6 +3,8 @@ import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
 import {UserService} from '../../services/user/user.service';
+import {SyncService} from '../../shared/services/sync/sync.service';
+import {Company, Connection} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-menu',
@@ -14,11 +16,15 @@ export class MenuComponent implements OnInit {
   name: string;
   profile: any = null;
 
+  public connections: Connection[] = [];
+  public companies: Company[] = [];
+
   constructor(
     private menu: MenuController,
     private router: Router,
     private authService: AuthService,
-    public userService: UserService
+    private userService: UserService,
+    private syncService: SyncService
   ) {
 
   }
@@ -29,6 +35,24 @@ export class MenuComponent implements OnInit {
         this.profile = menuProfile.data.user;
       }
     });
+
+    this.loadConnections();
+    this.loadCompanies();
+  }
+
+  /**
+   * loadConnections
+   */
+  private loadConnections = async () => {
+    const user = await this.userService.getUserData();
+    this.connections = user.connections;
+  }
+
+  /**
+   * loadCompanies
+   */
+  private loadCompanies = async () => {
+    this.companies = await this.syncService.getCompanies();
   }
 
   routerLink = (router: string) => {

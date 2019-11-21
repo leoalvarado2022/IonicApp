@@ -15,38 +15,61 @@
 <ion-content>
   <!--  header-->
   <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
-
-    <ng-container *ngIf="costCenterListItem">
-      <div class="card-text">
-        <div class="card-text-one">
-          <p>{{ costCenterListItem.producerName }}</p>
-          <p>{{ costCenterListItem.contractResponsible }}</p>
-          <p>Fecha Cosecha</p>
-        </div>
-        <div class="card-text-two">
-          <p class="card-contrato"># {{ costCenterListItem.contractDocumentNumber }}</p>
-          <p>{{ costCenterListItem.speciesName }} / {{ costCenterListItem.varietyName }}</p>
-          <p>Cantidad</p>
-        </div>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="productionContracts.length">
-      <div class="scroll-card">
-        <ng-container *ngFor="let contract of productionContracts; let index = index">
-          <div class="card-text" *ngIf="index > 1">
-            <div class="card-text-one">
-              <p>Productor</p>
-              <p>Responsable</p>
-              <p>Fecha Cosecha</p>
-            </div>
-            <div class="card-text-two">
-              <p class="card-contrato"># Contrato</p>
-              <p>Especie / Variedad</p>
-              <p>Cantidad (TN)</p>
-            </div>
+    <!--
+    active: true
+company: 1
+cp1: ""
+cp2: ""
+cp3: ""
+cp4: ""
+cp5: ""
+cp6: ""
+date: "2019-12-12T00:00:00.000Z"
+documentNumber: 99
+harvestDate: "30-11-2019"
+id: 4
+origin: "fx11_prod_contrato"
+originId: 3
+producerName: "Soluciones Tecnologicas Primetec Ltda."
+responsible: 1
+responsibleName: "Soluciones Tecnologicas Primetec Ltda."
+speciesName: "Especie 1"
+totalQuantity: 50
+varietyName: "Variedad 1"
+    -->
+    <ng-container *ngFor="let contract of productionContracts; let index = index">
+      <ng-container *ngIf="index === 0">
+        <div class="card-text">
+          <div class="card-text-one">
+            <p>{{ contract.producerName }}</p>
+            <p>{{ contract.responsibleName }}</p>
+            <p>{{ contract.harvestDate }}</p>
           </div>
-        </ng-container>
-      </div>
+          <div class="card-text-two">
+            <p class="card-contrato"># {{ contract.documentNumber }}</p>
+            <p>{{ contract.speciesName }} / {{ contract.varietyName }}</p>
+            <p>{{ contract.totalQuantity }}</p>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="index > 0">
+        <div class="scroll-card">
+          <ng-container>
+            <div class="card-text">
+              <div class="card-text-one">
+                <p>{{ contract.producerName }}</p>
+                <p>{{ contract.responsibleName }}</p>
+                <p>{{ contract.harvestDate }}</p>
+              </div>
+              <div class="card-text-two">
+                <p class="card-contrato"># {{ contract.documentNumber }}</p>
+                <p>{{ contract.speciesName }} / {{ contract.varietyName }}</p>
+                <p>{{ contract.totalQuantity }}</p>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
     </ng-container>
   </div>
   <!--  estimaciones-->
@@ -54,7 +77,9 @@
     <div>
       <p>KG CONTRATOS</p>
       <p>
-        <ion-icon name="arrow-round-up" color="danger"></ion-icon>&nbsp;<span>3.200,00</span></p>
+        <ion-icon name="arrow-round-up" color="danger"></ion-icon>&nbsp;
+        <span>{{ getTotal() | number:'.2':'es-CL' }}</span>
+      </p>
     </div>
     <div>
       <p>KG RECIBIDOS</p>

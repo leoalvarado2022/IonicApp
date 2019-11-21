@@ -38,11 +38,12 @@ export class ListaPage implements OnInit {
     if (search) {
       this.filteredCostCenters = this.costCenters.filter(item => {
         return (
-          item.producerName.toLowerCase().indexOf(search.toLowerCase()) === 0 ||
-          item.contractResponsible.toLowerCase().indexOf(search.toLowerCase()) === 0 ||
-          item.contractDocumentNumber.toLowerCase().indexOf(search.toLowerCase()) === 0 ||
-          item.speciesName.toLowerCase().indexOf(search.toLowerCase()) === 0 ||
-          item.varietyName.toLowerCase().indexOf(search.toLowerCase()) === 0
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.producerName.toLowerCase().includes(search.toLowerCase()) ||
+          item.contractResponsible.toLowerCase().includes(search.toLowerCase()) ||
+          item.contractDocumentNumber.toLowerCase().includes(search.toLowerCase()) ||
+          item.speciesName.toLowerCase().includes(search.toLowerCase()) ||
+          item.varietyName.toLowerCase().includes(search.toLowerCase())
         );
       });
     } else {

@@ -39,7 +39,6 @@ export class ContractDetailPage implements OnInit {
       this.loadCostCenter(id);
     }
 
-
     this.initChart();
   }
 
@@ -62,6 +61,10 @@ export class ContractDetailPage implements OnInit {
       this.costCenter = costCenter;
       this.productionContracts = productionContracts;
       this.productionContractsDetails = productionContractsDetails;
+
+      // console.table([this.costCenterListItem, productionContracts[0], productionContractsDetails[0]]);
+      console.log({costCenter, productionContracts, productionContractsDetails});
+
     }, error => {
       this.authService.errorsHandler(error);
     });
@@ -154,6 +157,13 @@ export class ContractDetailPage implements OnInit {
    */
   openSelectedGraphics() {
     this.selectedGraphics = !this.selectedGraphics;
+  }
+
+  /**
+   * getTotal
+   */
+  public getTotal = () => {
+    return this.productionContractsDetails.reduce((accumulator, contractDetail) => accumulator + contractDetail.value, 0);
   }
 
 }

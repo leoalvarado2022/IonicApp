@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from '../../../services/auth/auth.service';
 import {HttpClient} from '@angular/common/http';
-import {StorageService} from '../../../services/storage/storage.service';
+import {StorageService} from '../storage/storage.service';
 import {Company, CostCenter, TabMenu} from '@primetec/primetec-angular';
 
 @Injectable()

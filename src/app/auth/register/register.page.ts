@@ -1,12 +1,12 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {confirmPassword} from '../../validators/confirm-password.validator';
-import {UserService} from '../../services/user/user.service';
+import {UserService} from '../../shared/services/user/user.service';
 import {LoaderService} from '../../services/loader/loader.service';
 import {ToastService} from '../../services/toast/toast.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {Router} from '@angular/router';
-import {DetectPlatformService} from '../../services/detect-platform/detect-platform.service';
+import {DetectPlatformService} from '../../shared/services/detect-platform/detect-platform.service';
 import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
 
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';

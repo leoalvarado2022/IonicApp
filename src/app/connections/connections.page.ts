@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../services/user/user.service';
+import {UserService} from '../shared/services/user/user.service';
 import {AuthService} from '../services/auth/auth.service';
 import {Connection} from '@primetec/primetec-angular';
 

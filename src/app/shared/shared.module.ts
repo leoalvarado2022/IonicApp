@@ -5,10 +5,11 @@ import {IonicModule} from '@ionic/angular';
 
 import {NotificationsComponent} from '../components/notifications/notifications.component';
 import {HttpClientModule} from '@angular/common/http';
-import {UserService} from '../services/user/user.service';
-import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
-import {StorageService} from '../services/storage/storage.service';
+import {UserService} from './services/user/user.service';
+import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
+import {StorageService} from './services/storage/storage.service';
 import {SyncService} from './services/sync/sync.service';
+import {Network} from '@ionic-native/network/ngx';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {SyncService} from './services/sync/sync.service';
     UserService,
     DetectPlatformService,
     StorageService,
-    SyncService
+    SyncService,
+    Network
   ],
   exports: [
     CommonModule,

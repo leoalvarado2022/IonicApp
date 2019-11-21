@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../services/user/user.service';
+import {UserService} from '../shared/services/user/user.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../services/loader/loader.service';
 import {ToastService} from '../services/toast/toast.service';
@@ -10,7 +10,7 @@ import {Store} from '@ngrx/store';
 import * as MenuAction from '../store/menu/menu.action';
 import {ModalController} from '@ionic/angular';
 import {ChangePasswordComponent} from './change-password/change-password.component';
-import {DetectPlatformService} from '../services/detect-platform/detect-platform.service';
+import {DetectPlatformService} from '../shared/services/detect-platform/detect-platform.service';
 
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 

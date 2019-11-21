@@ -4,10 +4,10 @@ import {LoaderService} from '../../services/loader/loader.service';
 import {AuthService} from '../../services/auth/auth.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {ToastService} from '../../services/toast/toast.service';
-import {StorageService} from '../../services/storage/storage.service';
+import {StorageService} from '../../shared/services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../store/menu/menu.action';
-import {UserService} from '../../services/user/user.service';
+import {UserService} from '../../shared/services/user/user.service';
 import {SyncService} from '../../shared/services/sync/sync.service';
 
 @Component({

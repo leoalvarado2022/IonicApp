@@ -28,7 +28,7 @@
       <ng-container *ngIf="menus">
         <ion-col *ngFor="let menu of menus; let i = index" size="6"
                  class="ion-text-center card-menu"
-                 [ngClass]="{ 'border-separator-right': i % 2 === 0, 'border-separator-left': i % 2 !== 0, 'disabled': checkDisabled() }"
+                 [ngClass]="{ 'border-separator-right': i % 2 === 0, 'border-separator-left': i % 2 !== 0, 'disabled': checkDisabled(menu) }"
                  (click)="navigate(menu)">
           <div>
             <ion-icon class="icon-size" [color]="menu.icon_color" [name]="menu.icon_url"></ion-icon>

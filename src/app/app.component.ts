@@ -4,10 +4,6 @@ import {Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {StorageService} from './shared/services/storage/storage.service';
-import {AuthService} from './services/auth/auth.service';
-import {LoaderService} from './services/loader/loader.service';
-import {Router} from '@angular/router';
-import {UserService} from './shared/services/user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -16,15 +12,11 @@ import {UserService} from './shared/services/user/user.service';
   providers: [StorageService]
 })
 export class AppComponent {
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
-    private loaderService: LoaderService,
-    private storageService: StorageService,
-    private authService: AuthService,
-    private router: Router,
-    private userService: UserService
+    private statusBar: StatusBar
   ) {
     this.initializeApp();
   }

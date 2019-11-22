@@ -9,7 +9,7 @@ import {UserService} from './services/user/user.service';
 import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
 import {StorageService} from './services/storage/storage.service';
 import {SyncService} from './services/sync/sync.service';
-import {Network} from '@ionic-native/network/ngx';
+import {NetworkService} from './services/network/network.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,7 @@ import {Network} from '@ionic-native/network/ngx';
     DetectPlatformService,
     StorageService,
     SyncService,
-    Network
+    NetworkService
   ],
   exports: [
     CommonModule,

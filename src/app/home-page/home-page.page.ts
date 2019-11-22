@@ -8,6 +8,7 @@ import {TabMenu} from '@primetec/primetec-angular';
 import {AuthService} from '../services/auth/auth.service';
 import {ToastService} from '../services/toast/toast.service';
 import {Router} from '@angular/router';
+import {NetworkService} from '../shared/services/network/network.service';
 
 @Component({
   selector: 'app-home-page',
@@ -27,7 +28,8 @@ export class HomePagePage implements OnInit {
     private syncService: SyncService,
     private authService: AuthService,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    public networkService: NetworkService
   ) {
 
   }
@@ -89,28 +91,16 @@ export class HomePagePage implements OnInit {
    * @param url
    */
   public navigate = (menu: TabMenu) => {
-    const isNetwork = localStorage.getItem('isNetwork');
-
-    if (isNetwork) {
-      if (isNetwork === 'true' || (isNetwork === 'false' && menu.offlineMenu === true)) {
-        this.router.navigate(['/' + menu.menu_url]);
-      }
+    if (this.networkService.getNetworkStatus() || (!this.networkService.getNetworkStatus() && menu.offlineMenu)) {
+      this.router.navigate(['/' + menu.menu_url]);
     }
-
-    this.router.navigate(['/' + menu.menu_url]);
   }
 
   /**
    * checkDisabled
    */
   public checkDisabled = (menu: TabMenu) => {
-    const isNetwork = localStorage.getItem('isNetwork');
-
-    if (isNetwork) {
-      return isNetwork === 'false' && menu.offlineMenu === true;
-    }
-
-    return false;
+    return !this.networkService.getNetworkStatus() && !menu.offlineMenu;
   }
 
 }

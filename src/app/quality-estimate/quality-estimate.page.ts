@@ -10,8 +10,16 @@ import {HttpClient} from '@angular/common/http';
 export class QualityEstimatePage implements OnInit {
 
   public selectedGraphics: boolean = false;
+  public qualityEstimate = [];
+  public qualityEstimateDetail = [];
 
   constructor(private httpClient: HttpClient) {
+    this.qualityEstimate = JSON.parse(localStorage.getItem('qualityEstimate'));
+    this.qualityEstimateDetail = JSON.parse(localStorage.getItem('qualityEstimateDetail'));
+
+    console.log(this.qualityEstimate);
+    console.log(this.qualityEstimateDetail);
+
     this.initChart();
   }
 

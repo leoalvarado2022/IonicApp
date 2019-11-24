@@ -47,7 +47,7 @@ const NGRX_IMPORTS = [
   declarations: [
     AppComponent,
     MenuComponent,
-    LoaderComponent,
+    LoaderComponent
   ],
   entryComponents: [],
   imports: [
@@ -73,4 +73,5 @@ const NGRX_IMPORTS = [
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
 }

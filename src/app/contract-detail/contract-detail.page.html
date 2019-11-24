@@ -15,35 +15,13 @@
 <ion-content>
   <!--  header-->
   <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
-    <!--
-    active: true
-company: 1
-cp1: ""
-cp2: ""
-cp3: ""
-cp4: ""
-cp5: ""
-cp6: ""
-date: "2019-12-12T00:00:00.000Z"
-documentNumber: 99
-harvestDate: "30-11-2019"
-id: 4
-origin: "fx11_prod_contrato"
-originId: 3
-producerName: "Soluciones Tecnologicas Primetec Ltda."
-responsible: 1
-responsibleName: "Soluciones Tecnologicas Primetec Ltda."
-speciesName: "Especie 1"
-totalQuantity: 50
-varietyName: "Variedad 1"
-    -->
     <ng-container *ngFor="let contract of productionContracts; let index = index">
       <ng-container *ngIf="index === 0">
         <div class="card-text">
           <div class="card-text-one">
             <p>{{ contract.producerName }}</p>
             <p>{{ contract.responsibleName }}</p>
-            <p>{{ contract.harvestDate }}</p>
+            <p>{{ contract.harvestDate | customDate }}</p>
           </div>
           <div class="card-text-two">
             <p class="card-contrato"># {{ contract.documentNumber }}</p>
@@ -59,7 +37,7 @@ varietyName: "Variedad 1"
               <div class="card-text-one">
                 <p>{{ contract.producerName }}</p>
                 <p>{{ contract.responsibleName }}</p>
-                <p>{{ contract.harvestDate }}</p>
+                <p>{{ contract.harvestDate | customDate }}</p>
               </div>
               <div class="card-text-two">
                 <p class="card-contrato"># {{ contract.documentNumber }}</p>
@@ -95,22 +73,31 @@ varietyName: "Variedad 1"
       </div>
       <div class="name--name">
         <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
-        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
+        <p *ngIf="lastHarvest" class="margin-0 date">Ult. Act. {{ lastHarvest.registrationDate | customDate }}</p>
+        <p *ngIf="!lastHarvest" class="margin-0 date">Ult. Act. No Registra</p>
       </div>
     </div>
     <div class="responsable">
-      <p class="responsable--name">
-        Responsable: Fernando Bravo
+      <p class="responsable--name" *ngIf="lastHarvest">
+        Responsable: {{ lastHarvest.userName }}
+      </p>
+      <p class="responsable--name" *ngIf="!lastHarvest">
+        Responsable: No Registra
       </p>
       <div class="costos ion-text-center">
         <div class="date">
           <p class="font-10 margin-0 grey">Fecha Inicio</p>
-          <p class="margin-0 bold">22/09/2019</p>
+          <p *ngIf="lastHarvest" class="margin-0 bold">{{ lastHarvest.startDate | customDate  }}</p>
+          <p *ngIf="!lastHarvest" class="margin-0 bold">No Registra</p>
         </div>
         <div class="total">
           <p class="font-10 margin-0 grey">KG Totales</p>
           <p class="margin-0 bold">
-            <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
+            <ion-icon name="arrow-round-down" color="primary"></ion-icon>
+            &nbsp;&nbsp;
+            <span *ngIf="lastHarvest">{{ lastHarvest.quantity }}</span>
+            <span *ngIf="!lastHarvest">0</span>
+          </p>
         </div>
       </div>
     </div>
@@ -124,22 +111,26 @@ varietyName: "Variedad 1"
       </div>
       <div class="name--name">
         <p class="mayu margin-0"><strong>Estimacion de Calidad</strong></p>
-        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
+        <p *ngIf="lastQuality" class="margin-0 date">Ult. Act. {{ lastQuality.registrationDate | customDate }}</p>
+        <p *ngIf="!lastQuality" class="margin-0 date">Ult. Act. No registra</p>
       </div>
     </div>
     <div class="responsable">
-      <p class="responsable--name">
-        Responsable: Fernando Bravo
-      </p>
+      <p *ngIf="lastQuality" class="responsable--name">Responsable: {{ lastQuality.userName }}</p>
+      <p *ngIf="!lastQuality" class="responsable--name">Responsable: Fernando Bravo</p>
       <div class="costos ion-text-center">
         <div class="date">
           <p class="font-10 margin-0 grey">Calidad</p>
-          <p class="margin-0 bold">PREMIUM</p>
+          <p *ngIf="lastQuality" class="margin-0 bold">{{ lastQuality.qualityName }}</p>
+          <p *ngIf="!lastQuality" class="margin-0 bold">No registrado</p>
         </div>
         <div class="total">
           <p class="font-10 margin-0 grey">% EXPORTACION</p>
           <p class="margin-0 bold">
-            <ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;<span>92%</span></p>
+            <ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;
+            <span *ngIf="lastQuality"> {{ lastQuality.exportPercentage }} %</span>
+            <span *ngIf="!lastQuality">0%</span>
+          </p>
         </div>
       </div>
       <p class="responsable--name" (click)="openSelectedGraphics()">Desplegar Gráficos</p>

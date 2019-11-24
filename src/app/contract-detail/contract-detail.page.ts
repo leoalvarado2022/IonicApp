@@ -21,6 +21,11 @@ export class ContractDetailPage implements OnInit {
   public costCenter: CostCenter = null;
   public productionContracts: ProductContract[] = [];
   public productionContractsDetails: ProductContractDetail[] = [];
+  public harvestEstimate = [];
+  public qualityEstimate = [];
+  public qualityEstimateDetail = [];
+  public lastHarvest = null;
+  public lastQuality = null;
 
   constructor(
     private httpClient: HttpClient,
@@ -57,14 +62,27 @@ export class ContractDetailPage implements OnInit {
   private loadContractDetail = (id: string) => {
     this.contractDetailService.getCostCenter(id).subscribe((success: any) => {
       const data = success.data;
-      const {costCenter, productionContracts, productionContractsDetails} = data;
+      const {
+        costCenter,
+        productionContracts,
+        productionContractsDetails,
+        harvestEstimate,
+        qualityEstimate,
+        qualityEstimateDetail
+      } = data;
       this.costCenter = costCenter;
       this.productionContracts = productionContracts;
       this.productionContractsDetails = productionContractsDetails;
+      this.harvestEstimate = harvestEstimate;
+      this.qualityEstimate = qualityEstimate;
+      this.qualityEstimateDetail = qualityEstimateDetail
 
-      // console.table([this.costCenterListItem, productionContracts[0], productionContractsDetails[0]]);
-      console.log({costCenter, productionContracts, productionContractsDetails});
+      localStorage.setItem('harvestEstimate', JSON.stringify(harvestEstimate));
+      localStorage.setItem('qualityEstimate', JSON.stringify(qualityEstimate));
+      localStorage.setItem('qualityEstimateDetail', JSON.stringify(qualityEstimateDetail));
 
+      this.getLastHarvest();
+      this.getLastQuality();
     }, error => {
       this.authService.errorsHandler(error);
     });
@@ -164,6 +182,29 @@ export class ContractDetailPage implements OnInit {
    */
   public getTotal = () => {
     return this.productionContractsDetails.reduce((accumulator, contractDetail) => accumulator + contractDetail.value, 0);
+  }
+
+  /**
+   * getLastHarves
+   */
+  private getLastHarvest = () => {
+    if (this.harvestEstimate.length === 1) {
+      this.lastHarvest = Object.assign({}, this.harvestEstimate[0]);
+    } else if (this.harvestEstimate.length > 1) {
+      console.log('harvestEstimate', this.harvestEstimate);
+    }
+  }
+
+  /**
+   * getLastQuality
+   */
+  private getLastQuality = () => {
+    if (this.qualityEstimate.length === 1) {
+      console.log(this.qualityEstimate[0]);
+      this.lastQuality = Object.assign({}, this.qualityEstimate[0]);
+    } else if (this.qualityEstimate.length > 1) {
+      console.log('qualityEstimate', this.qualityEstimate);
+    }
   }
 
 }

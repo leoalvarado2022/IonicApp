@@ -10,10 +10,12 @@ import {DetectPlatformService} from './services/detect-platform/detect-platform.
 import {StorageService} from './services/storage/storage.service';
 import {SyncService} from './services/sync/sync.service';
 import {NetworkService} from './services/network/network.service';
+import {CustomDatePipe} from '../pipes/custom-date.pipe';
 
 @NgModule({
   declarations: [
-    NotificationsComponent
+    NotificationsComponent,
+    CustomDatePipe
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import {NetworkService} from './services/network/network.service';
     IonicModule,
     HttpClientModule,
     NotificationsComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CustomDatePipe
   ]
 })
 export class SharedModule {

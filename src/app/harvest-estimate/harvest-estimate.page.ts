@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-harvest-estimate',
@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HarvestEstimatePage implements OnInit {
 
-  constructor() { }
+  public harvestEstimate = [];
+
+  constructor() {
+    this.harvestEstimate = JSON.parse(localStorage.getItem('harvestEstimate'));
+  }
 
   ngOnInit() {
+
   }
 
 }

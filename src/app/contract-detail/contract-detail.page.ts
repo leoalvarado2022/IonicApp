@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import * as HighCharts from 'highcharts';
 import {HttpClient} from '@angular/common/http';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from './services/contract-detail/contract-detail.service';
 import {CostCenter, CostCenterList, ProductContract, ProductContractDetail} from '@primetec/primetec-angular';
 import {AuthService} from '../services/auth/auth.service';
 import {SyncService} from '../shared/services/sync/sync.service';
+import {LoaderService} from "../services/loader/loader.service";
+import {ToastService} from "../services/toast/toast.service";
 
 @Component({
   selector: 'app-contract-detail',
@@ -32,7 +34,10 @@ export class ContractDetailPage implements OnInit {
     private route: ActivatedRoute,
     private contractDetailService: ContractDetailService,
     private authService: AuthService,
-    private syncService: SyncService
+    private syncService: SyncService,
+    private loaderService: LoaderService,
+    private toastService: ToastService,
+    private router: Router
   ) {
 
   }
@@ -60,6 +65,7 @@ export class ContractDetailPage implements OnInit {
    * @param id
    */
   private loadContractDetail = (id: string) => {
+    this.loaderService.showLoader('Cargando...');
     this.contractDetailService.getCostCenter(id).subscribe((success: any) => {
       const data = success.data;
       const {
@@ -83,8 +89,12 @@ export class ContractDetailPage implements OnInit {
 
       this.getLastHarvest();
       this.getLastQuality();
+      this.loaderService.hideLoader();
     }, error => {
-      this.authService.errorsHandler(error);
+      this.loaderService.hideLoader();
+      const msg = this.authService.errorsHandler(error);
+      this.toastService.warningToast(msg);
+      this.router.navigate(['home-page']);
     });
   }
 
@@ -188,10 +198,8 @@ export class ContractDetailPage implements OnInit {
    * getLastHarves
    */
   private getLastHarvest = () => {
-    if (this.harvestEstimate.length === 1) {
+    if (this.harvestEstimate.length > 0) {
       this.lastHarvest = Object.assign({}, this.harvestEstimate[0]);
-    } else if (this.harvestEstimate.length > 1) {
-      console.log('harvestEstimate', this.harvestEstimate);
     }
   }
 
@@ -199,11 +207,8 @@ export class ContractDetailPage implements OnInit {
    * getLastQuality
    */
   private getLastQuality = () => {
-    if (this.qualityEstimate.length === 1) {
-      console.log(this.qualityEstimate[0]);
+    if (this.qualityEstimate.length > 0) {
       this.lastQuality = Object.assign({}, this.qualityEstimate[0]);
-    } else if (this.qualityEstimate.length > 1) {
-      console.log('qualityEstimate', this.qualityEstimate);
     }
   }
 

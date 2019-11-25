@@ -95,7 +95,7 @@
           <p class="margin-0 bold">
             <ion-icon name="arrow-round-down" color="primary"></ion-icon>
             &nbsp;&nbsp;
-            <span *ngIf="lastHarvest">{{ lastHarvest.quantity }}</span>
+            <span *ngIf="lastHarvest">{{ lastHarvest.quantity | number:'.2':'es-CL' }}</span>
             <span *ngIf="!lastHarvest">0</span>
           </p>
         </div>

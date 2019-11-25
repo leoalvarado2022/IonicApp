@@ -16,7 +16,7 @@ import {SyncService} from '../../shared/services/sync/sync.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  
+
   public loginForm: FormGroup;
 
   constructor(

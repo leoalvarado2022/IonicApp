@@ -13,8 +13,8 @@
 </ion-header>
 
 <ion-content class="content">
-  <div class="card-content" *ngFor="let est of harvestEstimate">
-    <div class="estimate-content">
+  <div class="card-content" *ngFor="let est of harvestEstimate; let index =index">
+    <div class="estimate-content" [ngClass]="{ 'old': index > 0}">
       <div class="card">
         <p>Fecha de Inicio</p>
         <p class="bold">{{ est.startDate | customDate }}</p>
@@ -31,7 +31,7 @@
         <p class="bold">GAMELA</p>
       </div>
     </div>
-    <div class="estimate-content">
+    <div class="estimate-content" [ngClass]="{ 'old': index > 0}">
       <div class="card">
         <p>Fecha Est. Termino</p>
         <p class="bold">{{ est.endDate | customDate }}</p>
@@ -47,78 +47,8 @@
         <p>N/A</p>
       </div>
     </div>
-    <div class="update-card">
+    <div class="update-card" [ngClass]="{ 'old': index > 0}">
       <p class="ion-text-center">Ult. Act. {{ est.registrationDate | customDate }}</p>
-    </div>
-  </div>
-
-  <div class="card-content">
-    <div class="estimate-content old">
-      <div class="card">
-        <p>Fecha de Inicio</p>
-        <p class="bold">22/09/2019</p>
-      </div>
-      <div class="card">
-        <p>KG Diarios</p>
-        <p class="bold">
-          <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
-      </div>
-      <div class="card">
-        <p>ENVASE</p>
-        <p class="bold">GAMELA</p>
-      </div>
-    </div>
-    <div class="estimate-content old">
-      <div class="card">
-        <p>Fecha Est. Termino</p>
-        <p class="bold">22/09/2019</p>
-      </div>
-      <div class="card">
-        <p>KG Totales</p>
-        <p class="bold">
-          <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>31.200,00</span></p>
-      </div>
-      <div class="card">
-        <p>N/A</p>
-      </div>
-    </div>
-    <div class="update-card old">
-      <p><span class="ion-float-start">Responsable: Fernando Bravo</span><span class="ion-float-end">Ult. Act. 22/10/2019</span></p>
-    </div>
-  </div>
-
-  <div class="card-content">
-    <div class="estimate-content old">
-      <div class="card">
-        <p>Fecha de Inicio</p>
-        <p class="bold">22/09/2019</p>
-      </div>
-      <div class="card">
-        <p>KG Diarios</p>
-        <p class="bold">
-          <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
-      </div>
-      <div class="card">
-        <p>ENVASE</p>
-        <p class="bold">GAMELA</p>
-      </div>
-    </div>
-    <div class="estimate-content old">
-      <div class="card">
-        <p>Fecha Est. Termino</p>
-        <p class="bold">22/09/2019</p>
-      </div>
-      <div class="card">
-        <p>KG Totales</p>
-        <p class="bold">
-          <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>31.200,00</span></p>
-      </div>
-      <div class="card">
-        <p>N/A</p>
-      </div>
-    </div>
-    <div class="update-card old">
-      <p><span class="ion-float-start">Responsable: Fernando Bravo</span><span class="ion-float-end">Ult. Act. 22/10/2019</span></p>
     </div>
   </div>
 </ion-content>

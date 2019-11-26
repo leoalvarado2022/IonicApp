@@ -13,56 +13,23 @@
   <ng-container *ngFor="let center of filteredCostCenters">
     <ion-card button="true" [routerLink]="['/contract-detail', center.id ]" [routerDirection]="'forward'">
       <ion-card-header>
-        <ion-card-subtitle>Centro de costo</ion-card-subtitle>
+        <ion-card-subtitle>{{ center.code }}</ion-card-subtitle>
         <ion-card-title>{{ center.name }}</ion-card-title>
       </ion-card-header>
 
       <ion-card-content>
-        <p>{{ center.producerName }}</p>
-        <p>{{ center.contractResponsible }}</p>
-        <p>{{ center.speciesName }} / {{ center.varietyName }}</p>
-        <p>Numero de Contrato: {{ center.contractDocumentNumber }}</p>
-        <p>Fecha Cosecha: {{ center.harvestDate | customDate }}</p>
-        <p>Cantidad de Contratos: {{ center.contractsNumber }}</p>
+        <ion-row>
+          <ion-col size="12">{{ center.producerName }}</ion-col>
+          <ion-col size="12">{{ center.speciesName }} / {{ center.varietyName }}</ion-col>
+          <ion-col size="12">Fecha Cosecha: {{ center.harvestDate | customDate }}</ion-col>
+          <ion-col size="12" *ngIf="center.contractResponsible">{{ center.contractResponsible }}</ion-col>
+          <ng-container *ngIf="center.contractDocumentNumber && center.contractsNumber">
+            <ion-col size="6"># {{ center.contractDocumentNumber }}</ion-col>
+            <ion-col size="6">Nº Contratos: {{ center.contractsNumber }}</ion-col>
+          </ng-container>
+        </ion-row>
       </ion-card-content>
     </ion-card>
   </ng-container>
 
-  <!-- EJEMPLO DE LISTA
-  <ion-list>
-    <ng-container *ngFor="let center of filteredCostCenters">
-      <ion-item>
-        <ion-icon name="home" slot="start"></ion-icon>
-        <ion-label>
-          <h2>{{ center.name }}</h2>
-          <p>{{ center.producerName }}</p>
-          <p>{{ center.contractResponsible }}</p>
-          <p>Fecha Cosecha - # {{ center.contractDocumentNumber }}</p>
-          <p>{{ center.speciesName }} / {{ center.varietyName }}</p>
-          <p># {{ center.contractsNumber }}</p>
-        </ion-label>
-      </ion-item>
-    </ng-container>
-  </ion-list>
-  -->
-
-  <!-- PLANTILLA ORIGINAL
-  <div class="item" routerLink="/contract-detail">
-    <div class="card">
-      <div class="card-image">
-        <img src="assets/imgs/item-img-card.png" alt="image">
-      </div>
-      <div class="card-text-one">
-        <p>Productor</p>
-        <p>Responsable</p>
-        <p>Fecha Cosecha</p>
-      </div>
-      <div class="card-text-two">
-        <p># Contrato</p>
-        <p>Especie / Variedad</p>
-        <p>Cantidad (TN)</p>
-      </div>
-    </div>
-  </div>
-  -->
 </ion-content>

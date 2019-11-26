@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ToastController} from '@ionic/angular';
 
 @Injectable({
@@ -16,14 +16,14 @@ export class ToastService {
    * @param time
    * @param position
    */
-  async successToast(msg: string = 'Loading...', time: number = 2000, position: any = 'bottom') {
+  async successToast(msg: string = 'Loading...', time: number = 2000, position: any = 'top') {
     const toast = await this.toastController.create({
       message: msg,
       duration: time,
       animated: true,
       color: 'success',
       keyboardClose: true,
-      position: position,
+      position,
       cssClass: 'customToast'
     });
 
@@ -36,14 +36,14 @@ export class ToastService {
    * @param time
    * @param position
    */
-  async errorToast(msg: string = 'Loading...', time: number = 2000, position: any = 'bottom') {
+  async errorToast(msg: string = 'Loading...', time: number = 2000, position: any = 'top') {
     const toast = await this.toastController.create({
       message: msg,
       duration: time,
       animated: true,
       color: 'danger',
       keyboardClose: true,
-      position: position,
+      position,
       cssClass: 'customToast'
     });
 
@@ -56,14 +56,14 @@ export class ToastService {
    * @param time
    * @param position
    */
-  async warningToast(msg: string = 'Loading...', time: number = 3500, position: any = 'bottom') {
+  async warningToast(msg: string = 'Loading...', time: number = 3500, position: any = 'top') {
     const toast = await this.toastController.create({
       message: msg,
       duration: time,
       animated: true,
       color: 'warning',
       keyboardClose: true,
-      position: position,
+      position,
       cssClass: 'customToast'
     });
 

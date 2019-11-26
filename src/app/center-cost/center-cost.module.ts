@@ -45,7 +45,9 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CenterCostPage]
+  declarations: [
+    CenterCostPage
+  ]
 })
 export class CenterCostPageModule {
 

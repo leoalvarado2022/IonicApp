@@ -3,6 +3,7 @@ import {environment} from '../../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {Router} from '@angular/router';
+import {Company} from "@primetec/primetec-angular";
 
 @Injectable({
   providedIn: 'root'
@@ -144,6 +145,29 @@ export class AuthService {
    */
   public removeConnection = () => {
     localStorage.removeItem('connection');
+  }
+
+  /**
+   * setCompany
+   * @param company
+   */
+  public setCompany = (company: Company) => {
+    localStorage.setItem('company', JSON.stringify(company));
+  }
+
+  /**
+   * getCompany
+   */
+  public getCompany = () => {
+    const company = localStorage.getItem('company');
+    return company ? JSON.parse(company) : null;
+  }
+
+  /**
+   * removeCompany
+   */
+  public removeCompany = () => {
+    localStorage.removeItem('company');
   }
 
   /**

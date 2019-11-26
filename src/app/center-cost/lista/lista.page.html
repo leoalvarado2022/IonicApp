@@ -22,7 +22,7 @@
         <p>{{ center.contractResponsible }}</p>
         <p>{{ center.speciesName }} / {{ center.varietyName }}</p>
         <p>Numero de Contrato: {{ center.contractDocumentNumber }}</p>
-        <p>Fecha Cosecha: {{ center.harvestDate }}</p>
+        <p>Fecha Cosecha: {{ center.harvestDate | customDate }}</p>
         <p>Cantidad de Contratos: {{ center.contractsNumber }}</p>
       </ion-card-content>
     </ion-card>

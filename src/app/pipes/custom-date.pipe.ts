@@ -9,10 +9,8 @@ export class CustomDatePipe extends DatePipe implements PipeTransform {
 
   transform(date: string) {
 
-    const parsed = moment(date);
-    // const parsed = Date.parse(date);
-
-    if (parsed) {
+    if (moment(date)) {
+      const parsed = moment(date);
       return super.transform(parsed, 'dd/MM/yyyy');
     }
 

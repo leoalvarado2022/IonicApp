@@ -79,9 +79,9 @@ export class HomePagePage implements OnInit {
 
         resolve(true);
       }, error => {
-        reject(error);
         const msg = this.authService.errorsHandler(error);
-        this.toastService.warningToast(error.error.message);
+        this.toastService.warningToast(msg);
+        resolve(true);
       });
     });
   }

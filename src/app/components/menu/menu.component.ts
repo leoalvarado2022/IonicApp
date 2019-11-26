@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MenuController} from '@ionic/angular';
+import {Events, MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
 import {UserService} from '../../shared/services/user/user.service';
@@ -24,9 +24,18 @@ export class MenuComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private userService: UserService,
-    private syncService: SyncService
+    private syncService: SyncService,
+    private events: Events
   ) {
+    this.events.subscribe('connectionChange', (status) => {
+      console.log('connectionChange');
+      this.loadConnections();
+    });
 
+    this.events.subscribe('companyChange', (status) => {
+      console.log('companyChange');
+      this.loadCompanies();
+    });
   }
 
   ngOnInit() {
@@ -55,12 +64,19 @@ export class MenuComponent implements OnInit {
     this.companies = await this.syncService.getCompanies();
   }
 
-  routerLink = (router: string) => {
+  /**
+   * routerLink
+   * @param router
+   */
+  public routerLink = (router: string) => {
     this.menu.close('menu');
     this.router.navigate([router]);
   }
 
-  close = () => {
+  /**
+   * close
+   */
+  public close = () => {
     this.menu.close('menu');
     this.authService.closeSesion();
   }

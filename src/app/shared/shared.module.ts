@@ -11,6 +11,7 @@ import {StorageService} from './services/storage/storage.service';
 import {SyncService} from './services/sync/sync.service';
 import {NetworkService} from './services/network/network.service';
 import {CustomDatePipe} from '../pipes/custom-date.pipe';
+import {SharedEventsService} from './services/shared-events/shared-events.service';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {CustomDatePipe} from '../pipes/custom-date.pipe';
     DetectPlatformService,
     StorageService,
     SyncService,
-    NetworkService
+    NetworkService,
+    SharedEventsService
   ],
   exports: [
     CommonModule,

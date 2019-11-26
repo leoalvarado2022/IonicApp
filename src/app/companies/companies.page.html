@@ -15,7 +15,11 @@
 <ion-content>
   <ng-container *ngIf="companies">
     <ion-list>
-      <ion-item (click)="selectCompany(company)" *ngFor="let company of companies">
+      <ion-item
+        *ngFor="let company of companies"
+        (click)="selectCompany(company)"
+        [ngClass]="{'company-active': company.id === selectedCompany.id, 'company-inactive': company.id !== selectedCompany.id}"
+      >
         <ion-icon slot="start" name="switch"></ion-icon>
         <ion-label>{{ company.name }}</ion-label>
       </ion-item>

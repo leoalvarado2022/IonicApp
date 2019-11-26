@@ -5,6 +5,7 @@ import {Connection} from '@primetec/primetec-angular';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {ToastService} from '../services/toast/toast.service';
 import {Router} from '@angular/router';
+import {SharedEventsService} from '../shared/services/shared-events/shared-events.service';
 
 @Component({
   selector: 'app-connections',
@@ -22,7 +23,8 @@ export class ConnectionsPage implements OnInit {
     private authService: AuthService,
     private syncService: SyncService,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private sharedEventsService: SharedEventsService
   ) {
 
   }
@@ -44,26 +46,33 @@ export class ConnectionsPage implements OnInit {
    * selectConnection
    * @param connection
    */
-  public selectConnection = (connection: Connection) => {
+  public selectConnection = async (connection: Connection) => {
     if (connection.token !== this.currentConnection.token) {
       this.authService.setConnection(connection);
-      this.syncMobile();
+      await this.syncMobile();
+      this.sharedEventsService.connectionChanged();
       this.loadConnections();
+      this.router.navigate(['home-page']);
     }
   }
 
   /**
    * syncMobile
    */
-  private syncMobile = () => {
-    if (this.userData) {
-      this.syncService.syncData(this.userData.user.username).subscribe(async (success: any) => {
-        await this.syncService.storeSync(success.data);
-        this.router.navigate(['home-page']);
-      }, error => {
-        const msg = this.authService.errorsHandler(error);
-        this.toastService.warningToast(msg);
-      });
-    }
+  private syncMobile = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      if (this.userData) {
+        this.syncService.syncData(this.userData.user.username).subscribe(async (success: any) => {
+          await this.syncService.storeSync(success.data);
+          resolve(true);
+        }, error => {
+          const msg = this.authService.errorsHandler(error);
+          this.toastService.warningToast(msg);
+          reject('error');
+        });
+      } else {
+        reject('error');
+      }
+    });
   }
 }

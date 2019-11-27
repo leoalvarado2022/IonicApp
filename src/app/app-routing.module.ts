@@ -27,6 +27,7 @@ const routes: Routes = [
   {
     path: 'produccion_centrocosto',
     loadChildren: () => import('./center-cost/center-cost.module').then(m => m.CenterCostPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'contract-detail',
@@ -36,14 +37,17 @@ const routes: Routes = [
   {
     path: 'harvest-estimate',
     loadChildren: () => import('./harvest-estimate/harvest-estimate.module').then(m => m.HarvestEstimatePageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'quality-estimate',
     loadChildren: () => import('./quality-estimate/quality-estimate.module').then(m => m.QualityEstimatePageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'notes',
     loadChildren: () => import('./notes/notes.module').then(m => m.NotesPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'pin',
@@ -64,14 +68,17 @@ const routes: Routes = [
   {
     path: 'connections',
     loadChildren: () => import('./connections/connections.module').then(m => m.ConnectionsPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'companies',
     loadChildren: () => import('./companies/companies.module').then(m => m.CompaniesPageModule),
+    canActivate: [AuthGuard]
   },
   {
     path: 'center-cost',
     loadChildren: () => import('./center-cost/center-cost.module').then(m => m.CenterCostPageModule),
+    canActivate: [AuthGuard]
   },
 ];
 

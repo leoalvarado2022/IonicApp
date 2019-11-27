@@ -15,7 +15,7 @@ export class CostCenterCardComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private networkService: NetworkService,
+    public networkService: NetworkService,
     private events: Events
   ) {
     this.events.subscribe('appOnline', (status) => {

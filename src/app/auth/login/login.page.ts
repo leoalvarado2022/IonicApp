@@ -86,7 +86,7 @@ export class LoginPage implements OnInit {
 
       // no recordar usuario
       if (data.remember === false) {
-        this.authService.unsetRemember();
+        this.authService.removeRemember();
         await this.userService.removeUserRemember();
       }
 
@@ -111,7 +111,6 @@ export class LoginPage implements OnInit {
           }
 
           this.authService.setLoggedIn();
-          this.authService.setToken(login.token);
           this.authService.setToken(login.token);
           this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
             await this.syncService.storeSync(success.data);

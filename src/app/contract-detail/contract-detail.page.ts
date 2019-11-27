@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import * as HighCharts from 'highcharts';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from './services/contract-detail/contract-detail.service';
@@ -77,13 +76,13 @@ export class ContractDetailPage implements OnInit {
       this.costCenter = costCenter;
       this.productionContracts = productionContracts;
       this.productionContractsDetails = productionContractsDetails;
-      this.harvestEstimate = [...harvestEstimate];
-      this.qualityEstimate = [...qualityEstimate];
+      this.harvestEstimate = this.defineArrows(harvestEstimate, 'quantity');
+      this.qualityEstimate = this.defineArrows(qualityEstimate, 'exportPercentage');
       this.qualityEstimateDetail = qualityEstimateDetail;
 
-      localStorage.setItem('harvestEstimate', JSON.stringify(harvestEstimate));
-      localStorage.setItem('qualityEstimate', JSON.stringify(qualityEstimate));
-      localStorage.setItem('qualityEstimateDetail', JSON.stringify(qualityEstimateDetail));
+      localStorage.setItem('harvestEstimate', JSON.stringify(this.harvestEstimate));
+      localStorage.setItem('qualityEstimate', JSON.stringify(this.qualityEstimate));
+      localStorage.setItem('qualityEstimateDetail', JSON.stringify(this.qualityEstimateDetail));
 
       this.loaderService.hideLoader();
     }, error => {
@@ -95,81 +94,6 @@ export class ContractDetailPage implements OnInit {
   }
 
   /**
-   * Get data hightchart
-   */
-  getJsonData(): Promise<any> {
-    return this.httpClient.get<any>('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/usdeur.json').toPromise();
-  }
-
-  /**
-   * iniciar el chart
-   */
-  async initChart() {
-
-    const json = await this.getJsonData();
-
-    const data: any = [{
-      type: 'area',
-      name: 'USD to EUR',
-      data: json
-    }];
-
-
-    const area: any = {
-      fillColor: {
-        linearGradient: {
-          x1: 0,
-          y1: 0,
-          x2: 0,
-          y2: 1
-        },
-        stops: [
-          [0, HighCharts.getOptions().colors[0]],
-          [1, new HighCharts.Color(HighCharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-        ]
-      },
-      marker: {
-        radius: 2
-      },
-      lineWidth: 1,
-      states: {
-        hover: {
-          lineWidth: 1
-        }
-      },
-      threshold: null
-    };
-
-    HighCharts.chart('container', {
-      chart: {
-        zoomType: 'x'
-      },
-      title: {
-        text: 'USD to EUR exchange rate over time'
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-          'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-      },
-      xAxis: {
-        type: 'datetime'
-      },
-      yAxis: {
-        title: {
-          text: 'Exchange rate'
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      plotOptions: {
-        area
-      },
-      series: data
-    });
-  }
-
-  /**
    * abrir el panel header
    */
   openCloseSelected() {
@@ -177,16 +101,45 @@ export class ContractDetailPage implements OnInit {
   }
 
   /**
-   * abrir el grafico
-   */
-  openSelectedGraphics() {
-    this.selectedGraphics = !this.selectedGraphics;
-  }
-
-  /**
    * getTotal
    */
   public getTotal = () => {
     return this.productionContracts.reduce((accumulator, contract) => accumulator + contract.totalQuantity, 0);
+  }
+
+  /**
+   * defineArrows
+   * @param data
+   * @param field
+   */
+  private defineArrows = (data: Array<any> = [], field: string) => {
+    if (data.length > 0) {
+      const mappedData = data.map((item, index, arr) => {
+        if (arr.length === 1) {
+          return Object.assign({}, item, {
+            arrow: 'remove',
+            color: 'default'
+          });
+        } else if (arr.length > 1) {
+          const limit = arr.length - 1;
+
+          if (index < limit) {
+            return Object.assign({}, item, {
+              arrow: arr[index][field] > arr[index + 1][field] ? 'arrow-up' : 'arrow-down',
+              color: arr[index][field] > arr[index + 1][field] ? 'primary' : 'danger'
+            });
+          } else {
+            return Object.assign({}, item, {
+              arrow: 'remove',
+              color: 'default'
+            });
+          }
+        }
+      });
+
+      return mappedData;
+    }
+
+    return data;
   }
 }

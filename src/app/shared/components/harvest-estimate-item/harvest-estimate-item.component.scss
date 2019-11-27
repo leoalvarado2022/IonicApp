@@ -8,6 +8,10 @@
     padding-left: 10px;
   }
 
+  &.old {
+    background: var(--color-box-light) !important;
+  }
+
   .font-10 {
     font-size: 10px;
   }

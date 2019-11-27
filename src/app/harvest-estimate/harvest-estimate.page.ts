@@ -10,11 +10,13 @@ export class HarvestEstimatePage implements OnInit {
   public harvestEstimate = [];
 
   constructor() {
-    this.harvestEstimate = JSON.parse(localStorage.getItem('harvestEstimate'));
+    const data = JSON.parse(localStorage.getItem('harvestEstimate'));
+    this.harvestEstimate = [...data];
   }
 
   ngOnInit() {
 
   }
+
 
 }

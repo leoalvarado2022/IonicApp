@@ -1,6 +1,14 @@
+<ng-container *ngIf="checkButton()">
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
+    <ion-fab-button color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ng-container>
+
 <ng-container *ngIf="item; else empty">
   <div class="quality-estimate">
-    <div class="name" routerLink="/quality-estimate">
+    <div class="name" (click)="showList()">
       <div class="icon">
         <ion-icon name="card" color="success"></ion-icon>
       </div>
@@ -19,21 +27,19 @@
         <div class="total">
           <p class="font-10 margin-0 grey">% EXPORTACION</p>
           <p class="margin-0 bold">
-            <ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;
+            <ion-icon [name]="item.arrow" [color]="item.color"></ion-icon>&nbsp;
             <span>{{ item.exportPercentage }} %</span>
           </p>
         </div>
       </div>
-      <!--
-      <p class="responsable--name" (click)="openSelectedGraphics()">Desplegar Gráficos</p>
-      -->
+      <p class="responsable--name">Desplegar Gráficos</p>
     </div>
   </div>
 </ng-container>
 
 <ng-template #empty>
   <div class="quality-estimate">
-    <div class="name" routerLink="/quality-estimate">
+    <div class="name">
       <div class="icon">
         <ion-icon name="card" color="success"></ion-icon>
       </div>
@@ -52,7 +58,7 @@
         <div class="total">
           <p class="font-10 margin-0 grey">% EXPORTACION</p>
           <p class="margin-0 bold">
-            <ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;
+            <ion-icon name="remove" color="default"></ion-icon>&nbsp;
             <span>0%</span>
           </p>
         </div>

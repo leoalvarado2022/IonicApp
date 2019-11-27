@@ -13,6 +13,12 @@
 </ion-header>
 
 <ion-content class="content">
+
+  <ng-container *ngFor="let harvest of harvestEstimate ; let index =index">
+    <app-harvest-estimate-item [isOld]="index > 0" [item]="harvest"></app-harvest-estimate-item>
+  </ng-container>
+
+  <!--
   <div class="card-content" *ngFor="let est of harvestEstimate; let index =index">
     <div class="estimate-content" [ngClass]="{ 'old': index > 0}">
       <div class="card">
@@ -51,4 +57,6 @@
       <p class="ion-text-center">Ult. Act. {{ est.registrationDate | customDate }}</p>
     </div>
   </div>
+
+  -->
 </ion-content>

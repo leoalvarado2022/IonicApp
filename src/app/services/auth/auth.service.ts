@@ -3,7 +3,7 @@ import {environment} from '../../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {Router} from '@angular/router';
-import {Company} from "@primetec/primetec-angular";
+import {Company} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -222,9 +222,9 @@ export class AuthService {
   }
 
   /**
-   * unsetRemember
+   * removeRemember
    */
-  public unsetRemember = () => {
+  public removeRemember = () => {
     localStorage.setItem('remember', 'false');
   }
 
@@ -239,6 +239,11 @@ export class AuthService {
    * closeSesion
    */
   public closeSesion = async () => {
+    if (this.getRememberStatus() !== 'true') {
+      localStorage.clear();
+      await this.storage.clear();
+    }
+
     this.setLoggedOut();
     this.removeToken();
     this.removeConnection();

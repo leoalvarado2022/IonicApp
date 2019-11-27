@@ -79,7 +79,7 @@ export class ContractDetailPage implements OnInit {
       this.productionContractsDetails = productionContractsDetails;
       this.harvestEstimate = [...harvestEstimate];
       this.qualityEstimate = [...qualityEstimate];
-      this.qualityEstimateDetail = qualityEstimateDetail
+      this.qualityEstimateDetail = qualityEstimateDetail;
 
       localStorage.setItem('harvestEstimate', JSON.stringify(harvestEstimate));
       localStorage.setItem('qualityEstimate', JSON.stringify(qualityEstimate));
@@ -187,6 +187,6 @@ export class ContractDetailPage implements OnInit {
    * getTotal
    */
   public getTotal = () => {
-    return this.productionContractsDetails.reduce((accumulator, contractDetail) => accumulator + contractDetail.value, 0);
+    return this.productionContracts.reduce((accumulator, contract) => accumulator + contract.totalQuantity, 0);
   }
 }

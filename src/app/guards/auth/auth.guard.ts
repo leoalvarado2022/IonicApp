@@ -5,7 +5,7 @@ import {AuthService} from '../../services/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class LoggedGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
 
   constructor(
     private router: Router,
@@ -18,14 +18,9 @@ export class LoggedGuard implements CanActivate {
    * canActivate
    */
   canActivate = (): boolean => {
-    const loggedStatus = this.authService.getLoggedStatus();
-
-    if (!loggedStatus) {
-      localStorage.setItem('logged', 'false');
-    }
-
-    if (loggedStatus === 'true') {
-      this.router.navigate(['home-page']);
+    if (this.authService.getLoggedStatus() !== 'true') {
+      this.router.navigate(['auth']);
+      return false;
     }
 
     return true;

@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {Company} from '@primetec/primetec-angular';
+import {AuthService} from '../services/auth/auth.service';
+import {Router} from '@angular/router';
+import {SharedEventsService} from "../shared/services/shared-events/shared-events.service";
 
 @Component({
   selector: 'app-companies',
@@ -10,9 +13,13 @@ import {Company} from '@primetec/primetec-angular';
 export class CompaniesPage implements OnInit {
 
   public companies: Company[] = [];
+  public selectedCompany: Company = null;
 
   constructor(
-    private syncService: SyncService
+    private syncService: SyncService,
+    private authService: AuthService,
+    private router: Router,
+    private sharedEventsService: SharedEventsService
   ) {
 
   }
@@ -26,6 +33,7 @@ export class CompaniesPage implements OnInit {
    */
   private loadCompanies = async () => {
     this.companies = await this.syncService.getCompanies();
+    this.selectedCompany = this.authService.getCompany();
   }
 
   /**
@@ -33,7 +41,12 @@ export class CompaniesPage implements OnInit {
    * @param company
    */
   public selectCompany = (company: Company) => {
-    console.log(company);
+    if (company.id !== this.selectedCompany.id) {
+      this.authService.setCompany(company);
+      this.loadCompanies();
+      this.sharedEventsService.companyChanged();
+      this.router.navigate(['home-page']);
+    }
   }
 
 }

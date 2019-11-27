@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from '../shared/services/user/user.service';
 import {AuthService} from '../services/auth/auth.service';
 import {Connection} from '@primetec/primetec-angular';
+import {SyncService} from '../shared/services/sync/sync.service';
+import {ToastService} from '../services/toast/toast.service';
+import {Router} from '@angular/router';
+import {SharedEventsService} from '../shared/services/shared-events/shared-events.service';
 
 @Component({
   selector: 'app-connections',
@@ -12,10 +16,15 @@ export class ConnectionsPage implements OnInit {
 
   public connections: Connection[] = [];
   public currentConnection: Connection = null;
+  private userData = null;
 
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private syncService: SyncService,
+    private toastService: ToastService,
+    private router: Router,
+    private sharedEventsService: SharedEventsService
   ) {
 
   }
@@ -28,17 +37,42 @@ export class ConnectionsPage implements OnInit {
    * loadConnections
    */
   private loadConnections = async () => {
-    const user = await this.userService.getUserData();
+    this.userData = await this.userService.getUserData();
     this.currentConnection = await this.authService.getConnection();
-    this.connections = user.connections;
+    this.connections = this.userData.connections;
   }
 
   /**
    * selectConnection
    * @param connection
    */
-  public selectConnection = (connection: Connection) => {
-    this.authService.setConnection(connection);
+  public selectConnection = async (connection: Connection) => {
+    if (connection.token !== this.currentConnection.token) {
+      this.authService.setConnection(connection);
+      await this.syncMobile();
+      this.sharedEventsService.connectionChanged();
+      this.loadConnections();
+      this.router.navigate(['home-page']);
+    }
   }
 
+  /**
+   * syncMobile
+   */
+  private syncMobile = (): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      if (this.userData) {
+        this.syncService.syncData(this.userData.user.username).subscribe(async (success: any) => {
+          await this.syncService.storeSync(success.data);
+          resolve(true);
+        }, error => {
+          const msg = this.authService.errorsHandler(error);
+          this.toastService.warningToast(msg);
+          reject('error');
+        });
+      } else {
+        reject('error');
+      }
+    });
+  }
 }

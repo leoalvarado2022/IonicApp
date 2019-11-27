@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '../../../services/auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {StorageService} from '../storage/storage.service';
-import {Company, CostCenter, TabMenu} from '@primetec/primetec-angular';
+import {Company, TabMenu} from '@primetec/primetec-angular';
 
 @Injectable()
 export class SyncService {
@@ -33,6 +33,10 @@ export class SyncService {
   public storeSync = async (data) => {
     if (data) {
       const {companies, costCenters, menus} = data;
+
+      if (!this.authService.getCompany() && companies) {
+        this.authService.setCompany(companies[0]);
+      }
 
       await this.setCompanies(companies);
       await this.setCostCenters(costCenters);

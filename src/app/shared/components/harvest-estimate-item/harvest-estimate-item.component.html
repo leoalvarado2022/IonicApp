@@ -1,0 +1,107 @@
+<ng-container *ngIf="item; else empty">
+  <div class="harvest-estimate">
+    <div class="name" (click)="showList()">
+      <div class="icon">
+        <ion-icon name="cart" color="warning"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
+        <p class="margin-0 date">Ult. Act. {{ item.registrationDate | customDate }}</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name">
+        Responsable: {{ item.userName }}
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Fecha Inicio</p>
+          <p class="margin-0 bold">{{ item.startDate | customDate  }}</p>
+        </div>
+        <div class="total">
+          <p class="font-10 margin-0 grey">KG Totales</p>
+          <p class="margin-0 bold">
+            <ion-icon name="arrow-round-down" color="primary"></ion-icon>
+            &nbsp;&nbsp;
+            <span>{{ item.quantity | number:'1.0-0':'es-CL' }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #empty>
+
+  <div class="harvest-estimate">
+    <div class="name">
+      <div class="icon">
+        <ion-icon name="cart" color="warning"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
+        <p class="margin-0 date">Ult. Act. 00/00/0000</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name">
+        Responsable: N/A
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Fecha Inicio</p>
+          <p class="margin-0 bold">00/00/0000</p>
+        </div>
+        <div class="total">
+          <p class="font-10 margin-0 grey">KG Totales</p>
+          <p class="margin-0 bold">
+            <ion-icon name="arrow-round-down" color="primary"></ion-icon>
+            &nbsp;&nbsp;
+            <span>0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-template>
+
+
+<!--  ESTIMACION DE COSECHA
+  <div class="estimates-contract">
+    <div class="name" routerLink="/harvest-estimate">
+      <div class="icon">
+        <ion-icon name="cart" color="warning"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
+        <p *ngIf="lastHarvest" class="margin-0 date">Ult. Act. {{ lastHarvest.registrationDate | customDate }}</p>
+        <p *ngIf="!lastHarvest" class="margin-0 date">Ult. Act. No Registra</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name" *ngIf="lastHarvest">
+        Responsable: {{ lastHarvest.userName }}
+      </p>
+      <p class="responsable--name" *ngIf="!lastHarvest">
+        Responsable: No Registra
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Fecha Inicio</p>
+          <p *ngIf="lastHarvest" class="margin-0 bold">{{ lastHarvest.startDate | customDate  }}</p>
+          <p *ngIf="!lastHarvest" class="margin-0 bold">No Registra</p>
+        </div>
+        <div class="total">
+          <p class="font-10 margin-0 grey">KG Totales</p>
+          <p class="margin-0 bold">
+            <ion-icon name="arrow-round-down" color="primary"></ion-icon>
+            &nbsp;&nbsp;
+            <span *ngIf="lastHarvest">{{ lastHarvest.quantity | number:'1.0-0':'es-CL' }}</span>
+            <span *ngIf="!lastHarvest">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  -->

@@ -4,7 +4,7 @@
       <ion-back-button text=""></ion-back-button>
     </ion-buttons>
     <ion-title>
-      <strong>Contrato Detalles</strong>
+      <strong>Detalle Centro de Costo</strong>
     </ion-title>
     <ion-buttons slot="end">
       <app-notifications></app-notifications>
@@ -15,134 +15,87 @@
 <ion-content>
   <!--  header-->
   <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
+    <ng-container *ngIf="costCenterListItem">
+      <ion-row class="row">
+        <ion-col size="12">
+          <div class="white">{{ costCenterListItem.code }}</div>
+        </ion-col>
+        <ion-col size="12">
+          <div class="white">{{ costCenterListItem.name }}</div>
+        </ion-col>
+        <ion-col size="12">
+          <div class="white">{{ costCenterListItem.producerName }}</div>
+        </ion-col>
+        <ion-col size="12">
+          <div class="white">{{ costCenterListItem.speciesName }} / {{ costCenterListItem.varietyName }}</div>
+        </ion-col>
+        <ion-col size="12">
+          <div class="white">Fecha Cosecha: {{ costCenterListItem.harvestDate | customDate }}</div>
+        </ion-col>
+        <ion-col size="12" *ngIf="costCenterListItem.contractResponsible">
+          <div class="white">Numero de Contratos: {{ costCenterListItem.contractsNumber }}</div>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+
     <ng-container *ngFor="let contract of productionContracts; let index = index">
-      <ng-container *ngIf="index === 0">
-        <div class="card-text">
-          <div class="card-text-one">
-            <p>{{ contract.producerName }}</p>
-            <p>{{ contract.responsibleName }}</p>
-            <p>{{ contract.harvestDate | customDate }}</p>
-          </div>
-          <div class="card-text-two">
-            <p class="card-contrato"># {{ contract.documentNumber }}</p>
-            <p>{{ contract.speciesName }} / {{ contract.varietyName }}</p>
-            <p>{{ contract.totalQuantity }}</p>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="index > 0">
-        <div class="scroll-card">
-          <ng-container>
-            <div class="card-text">
-              <div class="card-text-one">
-                <p>{{ contract.producerName }}</p>
-                <p>{{ contract.responsibleName }}</p>
-                <p>{{ contract.harvestDate | customDate }}</p>
-              </div>
-              <div class="card-text-two">
-                <p class="card-contrato"># {{ contract.documentNumber }}</p>
-                <p>{{ contract.speciesName }} / {{ contract.varietyName }}</p>
-                <p>{{ contract.totalQuantity }}</p>
-              </div>
+      <div class="scroll-card">
+        <ng-container>
+          <div class="card-text">
+            <div class="card-text-one">
+              <p># {{ contract.documentNumber }}</p>
+              <p>{{ contract.date| customDate }}</p>
+              <p>{{ contract.responsibleName }}</p>
             </div>
-          </ng-container>
-        </div>
-      </ng-container>
+            <div class="card-text-two">
+              <p>{{ contract.totalQuantity }}</p>
+            </div>
+          </div>
+        </ng-container>
+      </div>
     </ng-container>
   </div>
   <!--  estimaciones-->
   <div class="estimates-card">
     <div>
-      <p>KG CONTRATOS</p>
+      <p>KG CONTRATADOS</p>
       <p>
         <ion-icon name="arrow-round-up" color="danger"></ion-icon>&nbsp;
-        <span>{{ getTotal() | number:'.2':'es-CL' }}</span>
+        <span>{{ getTotal() | number:'1.0-0':'es-CL' }}</span>
       </p>
     </div>
     <div>
       <p>KG RECIBIDOS</p>
       <p>
-        <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200,00</span></p>
-    </div>
-  </div>
-  <!--  estimacion contrato-->
-  <div class="estimates-contract">
-    <div class="name" routerLink="/harvest-estimate">
-      <div class="icon">
-        <ion-icon name="cart" color="warning"></ion-icon>
-      </div>
-      <div class="name--name">
-        <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
-        <p *ngIf="lastHarvest" class="margin-0 date">Ult. Act. {{ lastHarvest.registrationDate | customDate }}</p>
-        <p *ngIf="!lastHarvest" class="margin-0 date">Ult. Act. No Registra</p>
-      </div>
-    </div>
-    <div class="responsable">
-      <p class="responsable--name" *ngIf="lastHarvest">
-        Responsable: {{ lastHarvest.userName }}
-      </p>
-      <p class="responsable--name" *ngIf="!lastHarvest">
-        Responsable: No Registra
-      </p>
-      <div class="costos ion-text-center">
-        <div class="date">
-          <p class="font-10 margin-0 grey">Fecha Inicio</p>
-          <p *ngIf="lastHarvest" class="margin-0 bold">{{ lastHarvest.startDate | customDate  }}</p>
-          <p *ngIf="!lastHarvest" class="margin-0 bold">No Registra</p>
-        </div>
-        <div class="total">
-          <p class="font-10 margin-0 grey">KG Totales</p>
-          <p class="margin-0 bold">
-            <ion-icon name="arrow-round-down" color="primary"></ion-icon>
-            &nbsp;&nbsp;
-            <span *ngIf="lastHarvest">{{ lastHarvest.quantity | number:'.2':'es-CL' }}</span>
-            <span *ngIf="!lastHarvest">0</span>
-          </p>
-        </div>
-      </div>
+        <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200</span></p>
     </div>
   </div>
 
-  <!--  estimaciones de calidad-->
-  <div class="estimates-calidad">
-    <div class="name" routerLink="/quality-estimate">
-      <div class="icon">
-        <ion-icon name="card" color="success"></ion-icon>
-      </div>
-      <div class="name--name">
-        <p class="mayu margin-0"><strong>Estimacion de Calidad</strong></p>
-        <p *ngIf="lastQuality" class="margin-0 date">Ult. Act. {{ lastQuality.registrationDate | customDate }}</p>
-        <p *ngIf="!lastQuality" class="margin-0 date">Ult. Act. No registra</p>
-      </div>
+  <div>
+    <div *ngIf="harvestEstimate.length > 0">
+      <app-harvest-estimate-item [item]="harvestEstimate[0]"></app-harvest-estimate-item>
     </div>
-    <div class="responsable">
-      <p *ngIf="lastQuality" class="responsable--name">Responsable: {{ lastQuality.userName }}</p>
-      <p *ngIf="!lastQuality" class="responsable--name">Responsable: Fernando Bravo</p>
-      <div class="costos ion-text-center">
-        <div class="date">
-          <p class="font-10 margin-0 grey">Calidad</p>
-          <p *ngIf="lastQuality" class="margin-0 bold">{{ lastQuality.qualityName }}</p>
-          <p *ngIf="!lastQuality" class="margin-0 bold">No registrado</p>
-        </div>
-        <div class="total">
-          <p class="font-10 margin-0 grey">% EXPORTACION</p>
-          <p class="margin-0 bold">
-            <ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;
-            <span *ngIf="lastQuality"> {{ lastQuality.exportPercentage }} %</span>
-            <span *ngIf="!lastQuality">0%</span>
-          </p>
-        </div>
-      </div>
-      <p class="responsable--name" (click)="openSelectedGraphics()">Desplegar Gráficos</p>
+    <div *ngIf="harvestEstimate.length === 0">
+      <app-harvest-estimate-item></app-harvest-estimate-item>
     </div>
+  </div>
 
+  <div>
+    <div *ngIf="qualityEstimate.length > 0">
+      <app-quality-estimate-item [item]="qualityEstimate[0]"></app-quality-estimate-item>
+    </div>
+    <div *ngIf="qualityEstimate.length === 0">
+      <app-quality-estimate-item></app-quality-estimate-item>
+    </div>
   </div>
 
   <!--  graficos-->
   <div class="graphics" [class.selected]="selectedGraphics">
-    <div id="container">
-    </div>
+    <!--
+    <div id="container"></div>
+    -->
   </div>
+
 
   <!--  notas-->
   <div class="estimates-notas">

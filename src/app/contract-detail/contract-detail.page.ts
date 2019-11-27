@@ -6,8 +6,8 @@ import {ContractDetailService} from './services/contract-detail/contract-detail.
 import {CostCenter, CostCenterList, ProductContract, ProductContractDetail} from '@primetec/primetec-angular';
 import {AuthService} from '../services/auth/auth.service';
 import {SyncService} from '../shared/services/sync/sync.service';
-import {LoaderService} from "../services/loader/loader.service";
-import {ToastService} from "../services/toast/toast.service";
+import {LoaderService} from '../services/loader/loader.service';
+import {ToastService} from '../services/toast/toast.service';
 
 @Component({
   selector: 'app-contract-detail',
@@ -26,8 +26,6 @@ export class ContractDetailPage implements OnInit {
   public harvestEstimate = [];
   public qualityEstimate = [];
   public qualityEstimateDetail = [];
-  public lastHarvest = null;
-  public lastQuality = null;
 
   constructor(
     private httpClient: HttpClient,
@@ -49,7 +47,7 @@ export class ContractDetailPage implements OnInit {
       this.loadCostCenter(id);
     }
 
-    this.initChart();
+    // this.initChart();
   }
 
   /**
@@ -79,16 +77,14 @@ export class ContractDetailPage implements OnInit {
       this.costCenter = costCenter;
       this.productionContracts = productionContracts;
       this.productionContractsDetails = productionContractsDetails;
-      this.harvestEstimate = harvestEstimate;
-      this.qualityEstimate = qualityEstimate;
+      this.harvestEstimate = [...harvestEstimate];
+      this.qualityEstimate = [...qualityEstimate];
       this.qualityEstimateDetail = qualityEstimateDetail
 
       localStorage.setItem('harvestEstimate', JSON.stringify(harvestEstimate));
       localStorage.setItem('qualityEstimate', JSON.stringify(qualityEstimate));
       localStorage.setItem('qualityEstimateDetail', JSON.stringify(qualityEstimateDetail));
 
-      this.getLastHarvest();
-      this.getLastQuality();
       this.loaderService.hideLoader();
     }, error => {
       this.loaderService.hideLoader();
@@ -193,23 +189,4 @@ export class ContractDetailPage implements OnInit {
   public getTotal = () => {
     return this.productionContractsDetails.reduce((accumulator, contractDetail) => accumulator + contractDetail.value, 0);
   }
-
-  /**
-   * getLastHarves
-   */
-  private getLastHarvest = () => {
-    if (this.harvestEstimate.length > 0) {
-      this.lastHarvest = Object.assign({}, this.harvestEstimate[0]);
-    }
-  }
-
-  /**
-   * getLastQuality
-   */
-  private getLastQuality = () => {
-    if (this.qualityEstimate.length > 0) {
-      this.lastQuality = Object.assign({}, this.qualityEstimate[0]);
-    }
-  }
-
 }

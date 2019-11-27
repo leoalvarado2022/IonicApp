@@ -1,24 +1,15 @@
 import {Injectable} from '@angular/core';
+import {Events} from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NetworkService {
 
-  private isOnline = true;
+  private isOnline: boolean = navigator.onLine;
 
-  constructor() {
-    console.log('listen to online');
-    window.addEventListener('online', () => {
-      console.log('back online');
-      this.setOnline();
-    });
+  constructor(private events: Events) {
 
-    console.log('listen to offline');
-    window.addEventListener('offline', () => {
-      console.log('went offline');
-      this.setOffline();
-    });
   }
 
   /**
@@ -29,9 +20,10 @@ export class NetworkService {
   }
 
   /**
-   *
+   * setOnline
    */
   public setOnline = (): void => {
+    this.events.publish('appOnline', true);
     this.isOnline = true;
   }
 
@@ -39,6 +31,7 @@ export class NetworkService {
    * setOffline
    */
   public setOffline = (): void => {
+    this.events.publish('appOffline', false);
     this.isOnline = false;
   }
 

@@ -9,6 +9,7 @@ import {AuthService} from '../services/auth/auth.service';
 import {ToastService} from '../services/toast/toast.service';
 import {Router} from '@angular/router';
 import {NetworkService} from '../shared/services/network/network.service';
+import {Events} from "@ionic/angular";
 
 @Component({
   selector: 'app-home-page',
@@ -18,7 +19,6 @@ import {NetworkService} from '../shared/services/network/network.service';
 export class HomePagePage implements OnInit {
 
   public userData = null;
-
   public menus: TabMenu[] = [];
 
   constructor(
@@ -29,9 +29,18 @@ export class HomePagePage implements OnInit {
     private authService: AuthService,
     private toastService: ToastService,
     private router: Router,
-    public networkService: NetworkService
+    public networkService: NetworkService,
+    private events: Events
   ) {
+    this.events.subscribe('appOnline', (status) => {
+      this.networkService.setOnline();
+      console.log('appOnline', status);
+    });
 
+    this.events.subscribe('appOffline', (status) => {
+      this.networkService.setOffline();
+      console.log('appOffline', status);
+    });
   }
 
   ngOnInit() {

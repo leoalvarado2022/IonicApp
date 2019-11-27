@@ -1,12 +1,16 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoggedGuard} from './guards/logged/logged.guard';
+import {InternetGuard} from './guards/internet/internet.guard';
 
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
-    canActivate: [LoggedGuard]
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule),
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule),
   },
   {
     path: 'home',
@@ -14,16 +18,13 @@ const routes: Routes = [
     canActivate: [LoggedGuard]
   },
   {
-    path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule),
-  },
-  {
     path: 'home-page',
-    loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePagePageModule),
+    loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePagePageModule)
   },
   {
     path: 'produccion_centrocosto',
     loadChildren: () => import('./center-cost/center-cost.module').then(m => m.CenterCostPageModule),
+    canActivate: [InternetGuard]
   },
   {
     path: 'contract-detail',

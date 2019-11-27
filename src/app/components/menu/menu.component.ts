@@ -28,13 +28,13 @@ export class MenuComponent implements OnInit {
     private events: Events
   ) {
     this.events.subscribe('connectionChange', (status) => {
-      console.log('connectionChange');
-      this.loadConnections();
+      // console.log('connectionChange');
+      this.reloadData();
     });
 
     this.events.subscribe('companyChange', (status) => {
-      console.log('companyChange');
-      this.loadCompanies();
+      // console.log('companyChange');
+      this.reloadData();
     });
   }
 
@@ -45,8 +45,15 @@ export class MenuComponent implements OnInit {
       }
     });
 
-    this.loadConnections();
-    this.loadCompanies();
+    this.reloadData();
+  }
+
+  /**
+   * reloadData
+   */
+  private reloadData = async () => {
+    await this.loadConnections();
+    await this.loadCompanies();
   }
 
   /**
@@ -54,14 +61,17 @@ export class MenuComponent implements OnInit {
    */
   private loadConnections = async () => {
     const user = await this.userService.getUserData();
-    this.connections = user.connections;
+    // console.log('user.connections', user.connections);
+    this.connections = [...user.connections];
   }
 
   /**
    * loadCompanies
    */
   private loadCompanies = async () => {
-    this.companies = await this.syncService.getCompanies();
+    const data = await this.syncService.getCompanies();
+    // console.log('companies', data);
+    this.companies = [...data];
   }
 
   /**

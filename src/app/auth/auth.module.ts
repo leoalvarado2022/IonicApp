@@ -9,6 +9,11 @@ const routes: Routes = [
     component: AuthPage,
     children: [
       {
+        path: '',
+        redirectTo: '/auth/login',
+        pathMatch: 'full'
+      },
+      {
         path: 'login',
         children: [
           {
@@ -25,19 +30,9 @@ const routes: Routes = [
             loadChildren: () => import('./register/register.module').then(m => m.RegisterPageModule),
           }
         ]
-      },
-      {
-        path: '',
-        redirectTo: '/auth/login',
-        pathMatch: 'full'
       }
     ]
   },
-  {
-    path: '',
-    redirectTo: '/auth/login',
-    pathMatch: 'full'
-  }
 ];
 
 @NgModule({

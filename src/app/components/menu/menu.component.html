@@ -26,14 +26,13 @@
         <ion-icon slot="start" name="home"></ion-icon>
         <ion-label>Inicio</ion-label>
       </ion-item>
-
-      <ng-container *ngIf="companies && companies.length > 1">
+      <ng-container *ngIf="companies.length > 1">
         <ion-item (click)="routerLink('companies')" button>
           <ion-icon slot="start" name="business"></ion-icon>
           <ion-label>Empresas</ion-label>
         </ion-item>
       </ng-container>
-      <ng-container *ngIf="connections && connections.length > 1">
+      <ng-container *ngIf="connections.length > 1">
         <ion-item (click)="routerLink('connections')" button>
           <ion-icon slot="start" name="switch"></ion-icon>
           <ion-label>Conexiones</ion-label>

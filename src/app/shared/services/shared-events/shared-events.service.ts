@@ -1,15 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Events} from '@ionic/angular';
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class SharedEventsService {
 
-  constructor(
-    private events: Events
-  ) {
+  constructor(private events: Events) {
 
   }
 

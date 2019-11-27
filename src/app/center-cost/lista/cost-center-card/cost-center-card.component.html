@@ -1,7 +1,10 @@
 <ng-container *ngIf="costCenter">
-  <ion-card button="true" (click)="showDetails()" [routerDirection]="'forward'">
+  <ion-card button="true" (click)="showDetails()" [routerDirection]="'forward'" [disabled]="!networkService.getNetworkStatus()">
     <ion-card-header>
+      <ion-card-subtitle>{{ networkService.getNetworkStatus() }}</ion-card-subtitle>
+      <!--
       <ion-card-subtitle>{{ costCenter.code }}</ion-card-subtitle>
+      -->
       <ion-card-title>{{ costCenter.name }}</ion-card-title>
     </ion-card-header>
 

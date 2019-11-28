@@ -194,4 +194,11 @@ export class LoginPage implements OnInit {
     });
   }
 
+  /**
+   * limpiarCache
+   */
+  public limpiarCache = async () => {
+    localStorage.clear();
+    await this.storage.clearAllRow();
+  }
 }

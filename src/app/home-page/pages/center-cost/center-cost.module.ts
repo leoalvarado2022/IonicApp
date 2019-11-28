@@ -10,14 +10,14 @@ const routes: Routes = [
     children: [
       {
         path: 'lista',
-        loadChildren: () => import('./lista/lista.module').then(m => m.ListaPageModule),
+        loadChildren: () => import('./lista/lista.module').then(module => module.ListaPageModule),
       },
       {
         path: 'mapa',
-        loadChildren: () => import('./mapa/mapa.module').then(m => m.MapaPageModule),
+        loadChildren: () => import('./mapa/mapa.module').then(module => module.MapaPageModule),
       },
       {
-        path: '',
+        path: '**',
         redirectTo: 'lista'
       }
     ]

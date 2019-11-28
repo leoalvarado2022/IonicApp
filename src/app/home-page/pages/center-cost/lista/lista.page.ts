@@ -12,9 +12,7 @@ export class ListaPage implements OnInit {
   private costCenters: CostCenterList[] = [];
   public filteredCostCenters: CostCenterList[] = [];
 
-  constructor(
-    private syncService: SyncService
-  ) {
+  constructor(private syncService: SyncService) {
 
   }
 
@@ -26,6 +24,8 @@ export class ListaPage implements OnInit {
    * loadCostCenters
    */
   public loadCostCenters = async () => {
+    this.costCenters = [];
+    this.filteredCostCenters = [];
     this.costCenters = await this.syncService.getCostCenters();
     this.filteredCostCenters = this.costCenters;
   }
@@ -59,11 +59,12 @@ export class ListaPage implements OnInit {
   }
 
   /**
-   * reload
-   * @param event
+   * trackByfn
+   * @param index
+   * @param item
    */
-  public reload = async (event: any) => {
-    await this.loadCostCenters();
-    event.target.complete();
+  public trackByfn = (index: number, item: any) => {
+    return item ? item.id : index;
   }
+
 }

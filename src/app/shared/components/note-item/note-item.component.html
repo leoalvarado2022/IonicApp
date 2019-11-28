@@ -1,0 +1,47 @@
+<ng-container *ngIf="item; else empty">
+  <div class="estimates-notas">
+    <div class="name" (click)="showList()">
+      <div class="icon">
+        <ion-icon name="bookmark" color="danger"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>NOTAS</strong></p>
+        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name">
+        Responsable: Fernando Bravo
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Calidad</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #empty>
+  <div class="estimates-notas">
+    <div class="name" (click)="showList()">
+      <div class="icon">
+        <ion-icon name="bookmark" color="danger"></ion-icon>
+      </div>
+      <div class="name--name">
+        <p class="mayu margin-0"><strong>NOTAS</strong></p>
+        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
+      </div>
+    </div>
+    <div class="responsable">
+      <p class="responsable--name">
+        Responsable: Fernando Bravo
+      </p>
+      <div class="costos ion-text-center">
+        <div class="date">
+          <p class="font-10 margin-0 grey">Calidad</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

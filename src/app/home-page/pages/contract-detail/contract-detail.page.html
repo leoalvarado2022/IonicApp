@@ -55,6 +55,7 @@
       </div>
     </ng-container>
   </div>
+
   <!--  estimaciones-->
   <div class="estimates-card">
     <div>
@@ -71,6 +72,7 @@
     </div>
   </div>
 
+  <!-- ESTIMACION DE COSECHA -->
   <div>
     <div *ngIf="harvestEstimate.length > 0">
       <app-harvest-estimate-item [item]="harvestEstimate[0]"></app-harvest-estimate-item>
@@ -80,13 +82,19 @@
     </div>
   </div>
 
+  <!-- ESTIMACION DE CALIDAD -->
   <div>
-    <div *ngIf="qualityEstimate.length > 0">
+    <ng-container *ngIf="qualityEstimate.length > 0">
       <app-quality-estimate-item [item]="qualityEstimate[0]"></app-quality-estimate-item>
-    </div>
-    <div *ngIf="qualityEstimate.length === 0">
+    </ng-container>
+    <ng-container *ngIf="qualityEstimate.length === 0">
       <app-quality-estimate-item></app-quality-estimate-item>
-    </div>
+    </ng-container>
+  </div>
+
+  <!--  notas-->
+  <div>
+    <app-note-item></app-note-item>
   </div>
 
   <!--  graficos-->
@@ -96,26 +104,4 @@
     -->
   </div>
 
-  <!--  notas-->
-  <div class="estimates-notas">
-    <div class="name" routerLink="/home-page/notes">
-      <div class="icon">
-        <ion-icon name="bookmark" color="danger"></ion-icon>
-      </div>
-      <div class="name--name">
-        <p class="mayu margin-0"><strong>NOTAS</strong></p>
-        <p class="margin-0 date">Ult. Act. 18/09/2019</p>
-      </div>
-    </div>
-    <div class="responsable">
-      <p class="responsable--name">
-        Responsable: Fernando Bravo
-      </p>
-      <div class="costos ion-text-center">
-        <div class="date">
-          <p class="font-10 margin-0 grey">Calidad</p>
-        </div>
-      </div>
-    </div>
-  </div>
 </ion-content>

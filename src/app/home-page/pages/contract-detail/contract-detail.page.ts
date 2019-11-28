@@ -17,14 +17,13 @@ export class ContractDetailPage implements OnInit {
 
   public openSelected = false;
   public selectedGraphics = false;
-
   public costCenterListItem: CostCenterList = null;
-  public costCenter: CostCenter = null;
-  public productionContracts: ProductContract[] = [];
-  public productionContractsDetails: ProductContractDetail[] = [];
-  public harvestEstimate = [];
-  public qualityEstimate = [];
-  public qualityEstimateDetail = [];
+  public costCenter: CostCenter;
+  public productionContracts: Array<ProductContract>;
+  public productionContractsDetails: Array<ProductContractDetail> = [];
+  public harvestEstimate: Array<any> = [];
+  public qualityEstimate: Array<any> = [];
+  public qualityEstimateDetail: Array<any> = [];
 
   constructor(
     private httpClient: HttpClient,
@@ -40,13 +39,19 @@ export class ContractDetailPage implements OnInit {
   }
 
   ngOnInit(): void {
+    this.costCenter = null;
+    this.productionContracts = [];
+    this.productionContractsDetails = [];
+    this.harvestEstimate = [];
+    this.qualityEstimate = []
+    this.qualityEstimateDetail = [];
+
+    this.unsetStorage();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadContractDetail(id);
       this.loadCostCenter(id);
     }
-
-    // this.initChart();
   }
 
   /**
@@ -73,16 +78,14 @@ export class ContractDetailPage implements OnInit {
         qualityEstimate,
         qualityEstimateDetail
       } = data;
+
       this.costCenter = costCenter;
       this.productionContracts = productionContracts;
       this.productionContractsDetails = productionContractsDetails;
       this.harvestEstimate = this.defineArrows(harvestEstimate, 'quantity');
       this.qualityEstimate = this.defineArrows(qualityEstimate, 'exportPercentage');
       this.qualityEstimateDetail = qualityEstimateDetail;
-
-      localStorage.setItem('harvestEstimate', JSON.stringify(this.harvestEstimate));
-      localStorage.setItem('qualityEstimate', JSON.stringify(this.qualityEstimate));
-      localStorage.setItem('qualityEstimateDetail', JSON.stringify(this.qualityEstimateDetail));
+      this.setStorage();
 
       this.loaderService.hideLoader();
     }, error => {
@@ -142,4 +145,24 @@ export class ContractDetailPage implements OnInit {
 
     return data;
   }
+
+  /**
+   * setStorage
+   */
+  private setStorage = () => {
+    localStorage.setItem('harvestEstimate', JSON.stringify(this.harvestEstimate));
+    localStorage.setItem('qualityEstimate', JSON.stringify(this.qualityEstimate));
+    localStorage.setItem('qualityEstimateDetail', JSON.stringify(this.qualityEstimateDetail));
+  }
+
+  /**
+   * unsetStorage
+   */
+  private unsetStorage = () => {
+    localStorage.removeItem('harvestEstimate');
+    localStorage.removeItem('qualityEstimate');
+    localStorage.removeItem('qualityEstimateDetail');
+  }
+
+
 }

@@ -8,7 +8,6 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
-import {MenuComponent} from './components/menu/menu.component';
 // custom0
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {IonicStorageModule} from '@ionic/storage';
@@ -46,17 +45,16 @@ const NGRX_IMPORTS = [
 @NgModule({
   declarations: [
     AppComponent,
-    MenuComponent,
     LoaderComponent
   ],
   entryComponents: [],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot(),
-    HttpClientModule,
+    IonicModule.forRoot(),
     SharedModule,
+    HttpClientModule,
     ...NGRX_IMPORTS
   ],
   providers: [

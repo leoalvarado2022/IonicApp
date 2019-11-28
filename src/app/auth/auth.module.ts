@@ -5,7 +5,7 @@ import {SharedModule} from '../shared/shared.module';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'auth',
     loadChildren: () => import('./pages/welcome/welcome.module').then(module => module.WelcomePageModule)
   },
   {
@@ -19,6 +19,10 @@ const routes: Routes = [
   {
     path: 'expired',
     loadChildren: () => import('./pages/expired/expired.module').then(module => module.ExpiredPageModule)
+  },
+  {
+    path: '',
+    redirectTo: 'auth'
   }
 ];
 

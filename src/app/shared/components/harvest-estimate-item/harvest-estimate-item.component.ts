@@ -24,8 +24,8 @@ export class HarvestEstimateItemComponent implements OnInit {
    * showList
    */
   public showList = () => {
-    if (this.currentUrl !== '/harvest-estimate') {
-      this.router.navigate(['harvest-estimate']);
+    if (this.currentUrl !== '/home-page/harvest-estimate') {
+      this.router.navigate(['/home-page/harvest-estimate']);
     }
   }
 
@@ -33,6 +33,6 @@ export class HarvestEstimateItemComponent implements OnInit {
    * checkButton
    */
   public checkButton = () => {
-    return this.currentUrl === '/harvest-estimate';
+    return this.currentUrl === '/home-page/harvest-estimate';
   }
 }

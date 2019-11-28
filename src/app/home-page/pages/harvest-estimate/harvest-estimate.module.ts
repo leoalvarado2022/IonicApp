@@ -5,13 +5,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { QualityEstimatePage } from './quality-estimate.page';
-import {SharedModule} from '../shared/shared.module';
+import { HarvestEstimatePage } from './harvest-estimate.page';
+import {SharedModule} from '../../../shared/shared.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: QualityEstimatePage
+    component: HarvestEstimatePage
   }
 ];
 
@@ -23,6 +23,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [QualityEstimatePage]
+  declarations: [HarvestEstimatePage]
 })
-export class QualityEstimatePageModule {}
+export class HarvestEstimatePageModule {}

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {Router} from '@angular/router';
-import {NetworkService} from '../../../shared/services/network/network.service';
+import {NetworkService} from '../../../../../shared/services/network/network.service';
 
 @Component({
   selector: 'app-cost-center-card',
@@ -28,7 +28,7 @@ export class CostCenterCardComponent implements OnInit {
    */
   public showDetails = () => {
     if (this.networkService.getNetworkStatus()) {
-      this.router.navigate(['contract-detail', this.costCenter.id]);
+      this.router.navigate(['home-page/contract-detail', this.costCenter.id]);
     }
   }
 }

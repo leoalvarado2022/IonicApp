@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content scrollX="false" scrollY="false">
   <div class="pd-default">
     <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
       <br>
@@ -26,7 +26,7 @@
         <span>Recordarme</span>
       </div>
       <div class="ion-text-right">
-        <ion-button routerLink="/password-recovery" routerDirection="forward" color="danger" fill="clear">Olvide mi
+        <ion-button routerLink="/auth/password-recovery" routerDirection="forward" color="danger" fill="clear">Olvide mi
           contraseña
         </ion-button>
       </div>

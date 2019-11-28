@@ -23,8 +23,8 @@ export class QualityEstimateItemComponent implements OnInit {
    * showList
    */
   public showList = () => {
-    if (this.currentUrl !== '/quality-estimate') {
-      this.router.navigate(['quality-estimate']);
+    if (this.currentUrl !== '/home-page/quality-estimate') {
+      this.router.navigate(['/home-page/quality-estimate']);
     }
   }
 
@@ -32,7 +32,7 @@ export class QualityEstimateItemComponent implements OnInit {
    * checkButton
    */
   public checkButton = () => {
-    return this.currentUrl === '/quality-estimate';
+    return this.currentUrl === '/home-page/quality-estimate';
   }
 
 }

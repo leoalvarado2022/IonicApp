@@ -3,10 +3,10 @@ import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from './services/contract-detail/contract-detail.service';
 import {CostCenter, CostCenterList, ProductContract, ProductContractDetail} from '@primetec/primetec-angular';
-import {AuthService} from '../services/auth/auth.service';
-import {SyncService} from '../shared/services/sync/sync.service';
-import {LoaderService} from '../services/loader/loader.service';
-import {ToastService} from '../services/toast/toast.service';
+import {AuthService} from '../../../services/auth/auth.service';
+import {SyncService} from '../../../shared/services/sync/sync.service';
+import {LoaderService} from '../../../services/loader/loader.service';
+import {ToastService} from '../../../services/toast/toast.service';
 
 @Component({
   selector: 'app-contract-detail',

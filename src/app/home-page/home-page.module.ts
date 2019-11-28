@@ -24,8 +24,29 @@ const routes: Routes = [
       {
         path: 'profile',
         loadChildren: () => import('./pages/profile/profile.module').then(module => module.ProfilePageModule)
-      }
+      },
+      {
+        path: 'produccion_centrocosto',
+        loadChildren: () => import('./pages/center-cost/center-cost.module').then(module => module.CenterCostPageModule)
+      },
+      {
+        path: 'contract-detail',
+        loadChildren: () => import('./pages/contract-detail/contract-detail.module').then(module => module.ContractDetailPageModule),
+      },
+      {
+        path: 'harvest-estimate',
+        loadChildren: () => import('./pages/harvest-estimate/harvest-estimate.module').then(module => module.HarvestEstimatePageModule),
+      },
+      {
+        path: 'quality-estimate',
+        loadChildren: () => import('./pages/quality-estimate/quality-estimate.module').then(module => module.QualityEstimatePageModule),
+      },
+      {
+        path: 'notes',
+        loadChildren: () => import('./pages/notes/notes.module').then(module => module.NotesPageModule)
+      },
     ]
+
   },
 ];
 

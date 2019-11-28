@@ -1,0 +1,21 @@
+<ng-container *ngIf="costCenter">
+  <ion-card button="true" (click)="showDetails()" [routerDirection]="'forward'" [disabled]="!networkService.getNetworkStatus()">
+    <ion-card-header>
+      <ion-card-subtitle>{{ costCenter.code }}</ion-card-subtitle>
+      <ion-card-title>{{ costCenter.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-row>
+        <ion-col size="12">{{ costCenter.producerName }}</ion-col>
+        <ion-col size="12">{{ costCenter.speciesName }} / {{ costCenter.varietyName }}</ion-col>
+        <ion-col size="12">Fecha Cosecha: {{ costCenter.harvestDate | customDate }}</ion-col>
+        <ion-col size="12" *ngIf="costCenter.contractResponsible">{{ costCenter.contractResponsible }}</ion-col>
+        <ng-container *ngIf="costCenter.contractDocumentNumber && costCenter.contractsNumber">
+          <ion-col size="6"># {{ costCenter.contractDocumentNumber }}</ion-col>
+          <ion-col size="6">Nº Contratos: {{ costCenter.contractsNumber }}</ion-col>
+        </ng-container>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ng-container>

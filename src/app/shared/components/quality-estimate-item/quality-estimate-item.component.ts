@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-quality-estimate-item',
@@ -8,11 +9,30 @@ import {Component, Input, OnInit} from '@angular/core';
 export class QualityEstimateItemComponent implements OnInit {
 
   @Input() item: any = null;
+  private currentUrl: any;
 
-  constructor() {
+  constructor(private router: Router) {
+    this.currentUrl = this.router.url;
   }
 
   ngOnInit() {
+
+  }
+
+  /**
+   * showList
+   */
+  public showList = () => {
+    if (this.currentUrl !== '/home-page/quality-estimate') {
+      this.router.navigate(['/home-page/quality-estimate']);
+    }
+  }
+
+  /**
+   * checkButton
+   */
+  public checkButton = () => {
+    return this.currentUrl === '/home-page/quality-estimate';
   }
 
 }

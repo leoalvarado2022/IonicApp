@@ -1,0 +1,44 @@
+<ion-content scrollX="false" scrollY="false">
+  <div class="pd-default">
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+      <br>
+      <ion-item>
+        <ion-label position="floating">Usuario o correo</ion-label>
+        <ion-input
+          formControlName="username"
+          type="text">
+        </ion-input>
+      </ion-item>
+      <div *ngIf="loginForm.controls.username.dirty && loginForm.hasError('required', 'username')" style="color: red">
+        El Usuario o correo es requerido.
+      </div>
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input
+          formControlName="password"
+          type="password">
+        </ion-input>
+      </ion-item>
+
+      <br/><br/>
+      <div class="ion-text-left recordarme">
+        <ion-checkbox color="primary" id="remember" name='remember' formControlName="remember" [checked]="false"></ion-checkbox>
+        <span>Recordarme</span>
+      </div>
+      <div class="ion-text-right">
+        <ion-button routerLink="/auth/password-recovery" routerDirection="forward" color="danger" fill="clear">Olvide mi
+          contraseña
+        </ion-button>
+      </div>
+      <br/>
+
+      <ion-button
+        [disabled]="loginForm.invalid"
+        color="danger"
+        expand="block"
+        type="submit">
+        Iniciar Sesión
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

@@ -1,5 +1,5 @@
 import {environment} from '../../environments/environment';
-import {ActionReducerMap, ActionReducer, MetaReducer, createSelector} from '@ngrx/store';
+import {ActionReducer, ActionReducerMap, createSelector, MetaReducer} from '@ngrx/store';
 import * as fromMenu from '../store/menu/menu.reducer';
 
 
@@ -14,16 +14,16 @@ export const reducers: ActionReducerMap<any> = {
 
 // console.log all actions
 export function debug(reducer: ActionReducer<any>): ActionReducer<any> {
-  return function(state, action) {
-    console.log('state', state);
-    console.log('action', action);
+  return function (state, action) {
+    // console.log('state', state);
+    // console.log('action', action);
 
     return reducer(state, action);
   };
 }
 
 
-export const metaReducers: MetaReducer<any>[] =  !environment.production ? [debug] : [];
+export const metaReducers: MetaReducer<any>[] = !environment.production ? [debug] : [];
 
 // menu profile
 export const getProfileState = (state: any) => state.menuProfile;

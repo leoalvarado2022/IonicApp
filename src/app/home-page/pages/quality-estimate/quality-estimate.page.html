@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button text="" class="white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="white">
+      <strong>Estimación de Calidad</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+  <ng-container *ngFor="let quality of qualityEstimate">
+    <app-quality-estimate-item [item]="quality"></app-quality-estimate-item>
+  </ng-container>
+</ion-content>

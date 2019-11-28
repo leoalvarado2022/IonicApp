@@ -18,16 +18,14 @@ export class LoggedGuard implements CanActivate {
    * canActivate
    */
   canActivate = (): boolean => {
-    const remember = this.authService.getLoggedStatus();
+    const loggedStatus = this.authService.getLoggedStatus();
 
-    if (!remember) {
+    if (!loggedStatus) {
       localStorage.setItem('logged', 'false');
-    } else {
-      if (remember === 'true') {
-        this.router.navigate(['home-page']);
-      } else {
-        this.router.navigate(['auth/login']);
-      }
+    }
+
+    if (loggedStatus === 'true') {
+      this.router.navigate(['home-page']);
     }
 
     return true;

@@ -1,9 +1,19 @@
 <ion-searchbar (ionChange)="searchCostCenter($event.target.value)" class="production" showCancelButton="never" animated (ionClear)="cancelSearch()"></ion-searchbar>
 
 <ion-content>
+  <ng-container *ngIf="filteredCostCenters">
+    <ng-container *ngFor="let item of filteredCostCenters">
+      <app-cost-center-card [costCenter]="item"></app-cost-center-card>
+    </ng-container>
+  </ng-container>
+
+  <!--
+  NO FUNCIONA EN IOS
   <ion-virtual-scroll [items]="filteredCostCenters" approxItemHeight="275px" [trackBy]="trackByfn">
     <ng-container *virtualItem="let item">
       <app-cost-center-card [costCenter]="item"></app-cost-center-card>
     </ng-container>
   </ion-virtual-scroll>
+  -->
+
 </ion-content>

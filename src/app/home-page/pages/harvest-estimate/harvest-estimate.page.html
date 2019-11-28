@@ -18,6 +18,14 @@
     <app-harvest-estimate-item [isOld]="index > 0" [item]="harvest"></app-harvest-estimate-item>
   </ng-container>
 
+  <ng-container *ngIf="checkButton()">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button color="warning">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ng-container>
+
   <!--
   <div class="card-content" *ngFor="let est of harvestEstimate; let index =index">
     <div class="estimate-content" [ngClass]="{ 'old': index > 0}">

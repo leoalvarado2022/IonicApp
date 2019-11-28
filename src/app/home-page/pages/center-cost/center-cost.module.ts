@@ -9,16 +9,16 @@ const routes: Routes = [
     component: CenterCostPage,
     children: [
       {
+        path: '',
+        loadChildren: () => import('./lista/lista.module').then(module => module.ListaPageModule),
+      },
+      {
         path: 'lista',
-        loadChildren: () => import('./lista/lista.module').then(m => m.ListaPageModule),
+        loadChildren: () => import('./lista/lista.module').then(module => module.ListaPageModule),
       },
       {
         path: 'mapa',
-        loadChildren: () => import('./mapa/mapa.module').then(m => m.MapaPageModule),
-      },
-      {
-        path: '',
-        redirectTo: 'lista'
+        loadChildren: () => import('./mapa/mapa.module').then(module => module.MapaPageModule),
       }
     ]
   }

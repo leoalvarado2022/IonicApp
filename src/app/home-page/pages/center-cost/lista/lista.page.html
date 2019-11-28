@@ -1,17 +1,9 @@
 <ion-searchbar (ionChange)="searchCostCenter($event.target.value)" class="production" showCancelButton="never" animated (ionClear)="cancelSearch()"></ion-searchbar>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="reload($event)">
-    <ion-refresher-content
-      pullingIcon="arrow-dropdown"
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
-      refreshingText="Refreshing...">
-    </ion-refresher-content>
-  </ion-refresher>
-
-  <ng-container *ngFor="let center of filteredCostCenters">
-    <app-cost-center-card [costCenter]="center"></app-cost-center-card>
-  </ng-container>
-
+  <ion-virtual-scroll [items]="filteredCostCenters" approxItemHeight="275px" [trackBy]="trackByfn">
+    <ng-container *virtualItem="let item">
+      <app-cost-center-card [costCenter]="item"></app-cost-center-card>
+    </ng-container>
+  </ion-virtual-scroll>
 </ion-content>

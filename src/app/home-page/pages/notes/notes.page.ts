@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
 
 @Component({
   selector: 'app-notes',
@@ -7,9 +8,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotesPage implements OnInit {
 
-  constructor() { }
+  public notes: Array<any> = [];
+  private currentUrl: string;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((route) => {
+      if (route instanceof NavigationEnd) {
+        this.currentUrl = route.url;
+      }
+    });
+  }
 
   ngOnInit() {
+
   }
+
+  /**
+   * checkButton
+   */
+  public checkButton = () => {
+    return this.currentUrl === '/home-page/notes';
+  }
+
 
 }

@@ -13,7 +13,17 @@
 </ion-header>
 
 <ion-content class="content">
+
   <ng-container *ngFor="let quality of qualityEstimate">
     <app-quality-estimate-item [item]="quality"></app-quality-estimate-item>
   </ng-container>
+
+  <ng-container *ngIf="checkButton()">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
+      <ion-fab-button color="success">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ng-container>
+
 </ion-content>

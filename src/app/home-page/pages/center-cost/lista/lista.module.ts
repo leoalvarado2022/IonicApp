@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {ListaPage} from './lista.page';
 import {SharedModule} from '../../../../shared/shared.module';
 import {CostCenterCardComponent} from './cost-center-card/cost-center-card.component';
+import {IonicModule} from '@ionic/angular';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    IonicModule,
     SharedModule,
     RouterModule.forChild(routes)
   ],

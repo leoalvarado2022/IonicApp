@@ -8,12 +8,12 @@ import * as moment from 'moment';
 export class CustomDatePipe extends DatePipe implements PipeTransform {
 
   transform(date: string) {
-
-    if (moment(date)) {
+    if (moment(date).isValid()) {
       const parsed = moment(date);
       return super.transform(parsed, 'dd/MM/yyyy');
     }
 
+    console.log('bad date', date);
     return `${date}*`;
   }
 

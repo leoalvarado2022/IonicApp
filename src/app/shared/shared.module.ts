@@ -13,13 +13,15 @@ import {NetworkService} from './services/network/network.service';
 import {CustomDatePipe} from '../pipes/custom-date.pipe';
 import {HarvestEstimateItemComponent} from './components/harvest-estimate-item/harvest-estimate-item.component';
 import {QualityEstimateItemComponent} from './components/quality-estimate-item/quality-estimate-item.component';
+import {NoteItemComponent} from './components/note-item/note-item.component';
 
 @NgModule({
   declarations: [
     NotificationsComponent,
     CustomDatePipe,
     HarvestEstimateItemComponent,
-    QualityEstimateItemComponent
+    QualityEstimateItemComponent,
+    NoteItemComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +46,8 @@ import {QualityEstimateItemComponent} from './components/quality-estimate-item/q
     ReactiveFormsModule,
     CustomDatePipe,
     HarvestEstimateItemComponent,
-    QualityEstimateItemComponent
+    QualityEstimateItemComponent,
+    NoteItemComponent
   ]
 })
 export class SharedModule {

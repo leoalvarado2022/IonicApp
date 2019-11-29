@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ContractDetailService} from './services/contract-detail/contract-detail.service';
-import {CostCenter, CostCenterList, ProductContract, ProductContractDetail} from '@primetec/primetec-angular';
+import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
+import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {AuthService} from '../../../services/auth/auth.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {LoaderService} from '../../../services/loader/loader.service';
@@ -21,9 +21,10 @@ export class ContractDetailPage implements OnInit {
   public costCenter: CostCenter;
   public productionContracts: Array<ProductContract>;
   public productionContractsDetails: Array<ProductContractDetail> = [];
-  public harvestEstimate: Array<any> = [];
-  public qualityEstimate: Array<any> = [];
-  public qualityEstimateDetail: Array<any> = [];
+  public harvestEstimate: Array<HarvestEstimate> = [];
+  public qualityEstimate: Array<QualityEstimate> = [];
+  public qualityEstimateDetail: Array<QualityDetail> = [];
+  public notes: Array<Note> = [];
 
   constructor(
     private httpClient: HttpClient,
@@ -43,8 +44,9 @@ export class ContractDetailPage implements OnInit {
     this.productionContracts = [];
     this.productionContractsDetails = [];
     this.harvestEstimate = [];
-    this.qualityEstimate = []
+    this.qualityEstimate = [];
     this.qualityEstimateDetail = [];
+    this.notes = [];
 
     this.unsetStorage();
     const id = this.route.snapshot.paramMap.get('id');
@@ -76,7 +78,8 @@ export class ContractDetailPage implements OnInit {
         productionContractsDetails,
         harvestEstimate,
         qualityEstimate,
-        qualityEstimateDetail
+        qualityEstimateDetail,
+        notes
       } = data;
 
       this.costCenter = costCenter;
@@ -85,6 +88,7 @@ export class ContractDetailPage implements OnInit {
       this.harvestEstimate = this.defineArrows(harvestEstimate, 'quantity');
       this.qualityEstimate = this.defineArrows(qualityEstimate, 'exportPercentage');
       this.qualityEstimateDetail = qualityEstimateDetail;
+      this.notes = notes;
       this.setStorage();
 
       this.loaderService.hideLoader();
@@ -128,7 +132,7 @@ export class ContractDetailPage implements OnInit {
 
           if (index < limit) {
             return Object.assign({}, item, {
-              arrow: arr[index][field] > arr[index + 1][field] ? 'arrow-up' : 'arrow-down',
+              arrow: arr[index][field] > arr[index + 1][field] ? 'arrow-round-up' : 'arrow-round-down',
               color: arr[index][field] > arr[index + 1][field] ? 'primary' : 'danger'
             });
           } else {
@@ -150,19 +154,22 @@ export class ContractDetailPage implements OnInit {
    * setStorage
    */
   private setStorage = () => {
+    localStorage.setItem('costCenter', JSON.stringify(this.costCenter));
     localStorage.setItem('harvestEstimate', JSON.stringify(this.harvestEstimate));
     localStorage.setItem('qualityEstimate', JSON.stringify(this.qualityEstimate));
     localStorage.setItem('qualityEstimateDetail', JSON.stringify(this.qualityEstimateDetail));
+    localStorage.setItem('notes', JSON.stringify(this.notes));
   }
 
   /**
    * unsetStorage
    */
   private unsetStorage = () => {
+    localStorage.removeItem('costCenter');
     localStorage.removeItem('harvestEstimate');
     localStorage.removeItem('qualityEstimate');
     localStorage.removeItem('qualityEstimateDetail');
+    localStorage.removeItem('notes');
   }
-
 
 }

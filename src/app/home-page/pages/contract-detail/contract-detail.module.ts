@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ContractDetailPage} from './contract-detail.page';
 import {SharedModule} from '../../../shared/shared.module';
-import {ContractDetailService} from './services/contract-detail/contract-detail.service';
 
 const routes: Routes = [
   {
@@ -16,10 +15,8 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ContractDetailPage],
-  providers: [
-    ContractDetailService
-  ]
+  declarations: [ContractDetailPage]
+
 })
 export class ContractDetailPageModule {
 

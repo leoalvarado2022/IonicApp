@@ -101,8 +101,6 @@ export class PinPage implements OnInit {
   };
 
 
-
-
   /**
    * check token
    * @param pin

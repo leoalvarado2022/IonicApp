@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '../../../services/auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {StorageService} from '../storage/storage.service';
-import {Company, TabMenu} from '@primetec/primetec-angular';
+import {Company, CostCenterList, TabMenu} from '@primetec/primetec-angular';
 
 @Injectable()
 export class SyncService {
@@ -32,7 +32,7 @@ export class SyncService {
    */
   public storeSync = async (data) => {
     if (data) {
-      const {companies, costCenters, menus} = data;
+      const {companies, costCenters, menus, units, qualities, calibers} = data;
 
       if (!this.authService.getCompany() && companies) {
         this.authService.setCompany(companies[0]);
@@ -41,6 +41,9 @@ export class SyncService {
       await this.setCompanies(companies);
       await this.setCostCenters(costCenters);
       await this.setMenus(menus);
+      await this.setUnits(units);
+      await this.setQualities(qualities);
+      await this.setCalibers(calibers);
     }
   }
 
@@ -48,7 +51,7 @@ export class SyncService {
    * setCompanies
    * @param companies
    */
-  public setCompanies = async (companies: Company[]) => {
+  public setCompanies = async (companies: Array<Company>) => {
     await this.storageService.setRow('companies', companies);
   }
 
@@ -62,7 +65,7 @@ export class SyncService {
   /**
    * setCostCenters
    */
-  public setCostCenters = async (costCenters: any) => {
+  public setCostCenters = async (costCenters: Array<CostCenterList>) => {
     await this.storageService.setRow('costCenters', costCenters);
   }
 
@@ -76,7 +79,7 @@ export class SyncService {
   /**
    * setMenus
    */
-  public setMenus = async (menus: TabMenu[]) => {
+  public setMenus = async (menus: Array<TabMenu>) => {
     await this.storageService.setRow('menus', menus);
   }
 
@@ -85,6 +88,51 @@ export class SyncService {
    */
   public getMenus = async () => {
     return await this.storageService.getRow('menus');
+  }
+
+  /**
+   * setUnits
+   * @param units
+   */
+  public setUnits = async (units: Array<any>) => {
+    await this.storageService.setRow('units', units);
+  }
+
+  /**
+   * getUnits
+   */
+  public getUnits = async () => {
+    return await this.storageService.getRow('units');
+  }
+
+  /**
+   * setQualities
+   * @param menus
+   */
+  public setQualities = async (qualities: Array<any>) => {
+    await this.storageService.setRow('qualities', qualities);
+  }
+
+  /**
+   * getQualities
+   */
+  public getQualities = async () => {
+    return await this.storageService.getRow('qualities');
+  }
+
+  /**
+   * setCalibers
+   * @param calibers
+   */
+  public setCalibers = async (calibers: Array<any>) => {
+    await this.storageService.setRow('calibers', calibers);
+  }
+
+  /**
+   * getCalibers
+   */
+  public getCalibers = async () => {
+    return await this.storageService.getRow('calibers');
   }
 
 }

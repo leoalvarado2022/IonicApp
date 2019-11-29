@@ -92,9 +92,14 @@
     </ng-container>
   </div>
 
-  <!--  notas-->
+  <!--  NOTAS-->
   <div>
-    <app-note-item></app-note-item>
+    <ng-container *ngIf="notes.length > 0">
+      <app-note-item [item]="notes[0]"></app-note-item>
+    </ng-container>
+    <ng-container *ngIf="notes.length === 0">
+      <app-note-item></app-note-item>
+    </ng-container>
   </div>
 
   <!--  graficos-->

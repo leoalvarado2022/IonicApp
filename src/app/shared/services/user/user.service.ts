@@ -32,7 +32,7 @@ export class UserService {
   public createUser = (data: any) => {
     const url = this.authService.buildUrl(this.createUrl);
     return this.httpClient.post(url, data);
-  };
+  }
 
   /**
    * updateUser
@@ -50,7 +50,7 @@ export class UserService {
   public updateUser = (data: any) => {
     const url = this.authService.buildUrl(this.updateUrl);
     return this.httpClient.put(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
-  };
+  }
 
 
   /**
@@ -69,7 +69,7 @@ export class UserService {
   public updatePassword = (data: any) => {
     const url = this.authService.buildUrl(this.updatePasswordUrl);
     return this.httpClient.put(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
-  };
+  }
 
   /**
    * @descripcion obtener datos del perfil cuando se loguea
@@ -92,14 +92,14 @@ export class UserService {
    * @description obtener usuario
    */
   getUserData = async () => {
-    return await this.storageService.getRow('userData')
+    return await this.storageService.getRow('userData');
   }
 
   /**
    * @description remover usuario
    */
   removeUserData = async () => {
-    await this.storageService.removeRow('userData')
+    await this.storageService.removeRow('userData');
   }
 
   /**

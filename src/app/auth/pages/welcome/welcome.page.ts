@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {StorageService} from '../../../shared/services/storage/storage.service';
 
 @Component({
   selector: 'app-welcome',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomePage implements OnInit {
 
-  constructor() { }
+  constructor(private storage: StorageService) { }
 
   ngOnInit() {
   }
 
+  /**
+   * limpiarCache
+   */
+  public limpiarCache = async () => {
+    localStorage.clear();
+    await this.storage.clearAllRow();
+  }
 }

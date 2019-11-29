@@ -106,7 +106,7 @@ export class RegisterPage {
       reader.onload = () => {
         const result = String(reader.result).split(',')[1];
         this.avatarPreview = `data:image/png;base64,${result}`;
-        this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
+        this.registerForm.controls.avatar.patchValue(this.avatarPreview);
       };
     }
   }
@@ -128,7 +128,7 @@ export class RegisterPage {
     }
 
     return rut;
-  };
+  }
 
   /**
    * onFileCamera
@@ -145,7 +145,7 @@ export class RegisterPage {
       targetWidth: 300,
       targetHeight: 300,
       correctOrientation: true,
-      sourceType: sourceType
+      sourceType
     };
 
     this.loaderService.showLoader();
@@ -157,7 +157,7 @@ export class RegisterPage {
 
       const image = `data:image/png;base64,${imageData}`;
       this.avatarPreview = image;
-      this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
+      this.registerForm.controls.avatar.patchValue(this.avatarPreview);
       this.loaderService.hideLoader();
 
 
@@ -165,5 +165,5 @@ export class RegisterPage {
       // Handle error
       this.loaderService.hideLoader();
     });
-  };
+  }
 }

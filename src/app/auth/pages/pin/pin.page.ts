@@ -50,14 +50,14 @@ export class PinPage implements OnInit {
           await this.userService.removeUserData();
           this.authService.removeToken();
           this.authService.removeConnection();
-          this.router.navigate(['auth/login'])
+          this.router.navigate(['auth/login']);
         }
       }
 
     } catch (e) {
       this.loaderService.hideLoader();
     }
-  };
+  }
 
 
   /**
@@ -81,11 +81,11 @@ export class PinPage implements OnInit {
         this.loaderService.hideLoader();
         const msg = this.authService.errorsHandler(error);
 
-        this.toastService.errorToast(msg)
+        this.toastService.errorToast(msg);
 
         resolve(null);
       });
     });
-  };
+  }
 
 }

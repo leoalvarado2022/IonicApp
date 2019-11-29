@@ -113,7 +113,7 @@ export class ProfilePage implements OnInit {
         }
 
         this.userService.setUserData(this.data);
-        this.store.dispatch(new MenuAction.AddProfile(this.data))
+        this.store.dispatch(new MenuAction.AddProfile(this.data));
         this.ngOnInit();
 
         this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
@@ -149,7 +149,7 @@ export class ProfilePage implements OnInit {
       reader.onload = () => {
         const result = String(reader.result).split(',')[1];
         this.avatarPreview = `data:image/png;base64,${result}`;
-        this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
+        this.registerForm.controls.avatar.patchValue(this.avatarPreview);
       };
     }
   }
@@ -160,7 +160,7 @@ export class ProfilePage implements OnInit {
       cssClass: 'change-modal-password'
     });
     return await modal.present();
-  };
+  }
 
   /**
    * onFileCamera
@@ -177,7 +177,7 @@ export class ProfilePage implements OnInit {
       targetWidth: 300,
       targetHeight: 300,
       correctOrientation: true,
-      sourceType: sourceType
+      sourceType
     };
 
     this.loaderService.showLoader();
@@ -189,13 +189,13 @@ export class ProfilePage implements OnInit {
 
       const image = `data:image/png;base64,${imageData}`;
       this.avatarPreview = image;
-      this.registerForm.controls['avatar'].patchValue(this.avatarPreview);
+      this.registerForm.controls.avatar.patchValue(this.avatarPreview);
       this.loaderService.hideLoader();
 
     }, (err) => {
       // Handle error
       this.loaderService.hideLoader();
     });
-  };
+  }
 
 }

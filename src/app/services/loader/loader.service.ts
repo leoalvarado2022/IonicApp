@@ -7,7 +7,7 @@ import {Subject} from 'rxjs';
 export class LoaderService {
 
   public status: Subject<boolean> = new Subject();
-  private loader: boolean = false;
+  private loader = false;
   private message: string;
 
   constructor() { }
@@ -20,7 +20,7 @@ export class LoaderService {
     this.loader = true;
     this.message = message;
     this.status.next(true);
-  };
+  }
 
   /**
    * hideLoader
@@ -28,19 +28,19 @@ export class LoaderService {
   public hideLoader = () => {
     this.loader = false;
     this.status.next(false);
-  };
+  }
 
   /**
    * getLoaderStatus
    */
   public getLoaderStatus = (): boolean => {
     return this.loader;
-  };
+  }
 
   /**
    * getLoaderMessage
    */
   public getLoaderMessage = (): string => {
     return this.message;
-  };
+  }
 }

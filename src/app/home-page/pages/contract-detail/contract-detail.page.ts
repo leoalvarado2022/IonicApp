@@ -44,7 +44,7 @@ export class ContractDetailPage implements OnInit {
     this.productionContracts = [];
     this.productionContractsDetails = [];
     this.harvestEstimate = [];
-    this.qualityEstimate = []
+    this.qualityEstimate = [];
     this.qualityEstimateDetail = [];
     this.notes = [];
 
@@ -166,6 +166,7 @@ export class ContractDetailPage implements OnInit {
   private unsetStorage = () => {
     localStorage.removeItem('harvestEstimate');
     localStorage.removeItem('qualityEstimate');
+    localStorage.removeItem('qualityEstimateDetail');
     localStorage.removeItem('notes');
   }
 

@@ -17,7 +17,7 @@ export class StorageService {
    */
   public setRow = (nameDB: string, data: any) => {
     this.storage.set(nameDB, data);
-  };
+  }
 
   /**
    * @description get row DB
@@ -25,7 +25,7 @@ export class StorageService {
    */
   public getRow = async (nameDB: string) => {
     return await this.storage.get(nameDB);
-  };
+  }
 
   /**
    * @description delete row
@@ -33,12 +33,12 @@ export class StorageService {
    */
   public removeRow = async (nameDB: string): Promise<any> => {
     await this.storage.remove(nameDB);
-  };
+  }
 
   /**
    * @description clear all DB
    */
   public clearAllRow = async (): Promise<any> => {
     await this.storage.clear();
-  };
+  }
 }

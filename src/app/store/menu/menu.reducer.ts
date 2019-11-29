@@ -1,12 +1,12 @@
 import * as MenuAction from './menu.action';
 import {MenuActionTypes} from './menu.action';
-import * as reducers from '../../reducers/reducers'
+import * as reducers from '../../reducers/reducers';
 
 export const initialState: reducers.State = {
   data: {}
 };
 
-export function MenuReducer(state:any = initialState, action: MenuAction.actions): reducers.State {
+export function MenuReducer(state: any = initialState, action: MenuAction.actions): reducers.State {
   switch (action.type) {
     case MenuActionTypes.AddProfile:
 
@@ -19,4 +19,4 @@ export function MenuReducer(state:any = initialState, action: MenuAction.actions
   }
 }
 
-export const getProfile= (state: reducers.State) => state;
+export const getProfile = (state: reducers.State) => state;

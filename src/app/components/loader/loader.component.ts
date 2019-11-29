@@ -6,9 +6,9 @@ import {LoaderService} from '../../services/loader/loader.service';
   templateUrl: './loader.component.html',
   styleUrls: ['./loader.component.scss'],
 })
-export class LoaderComponent{
+export class LoaderComponent {
 
-  public isLoading: boolean = false;
+  public isLoading = false;
 
   constructor(public loaderService: LoaderService) {
     this.loaderService.status.subscribe((status: boolean) => {

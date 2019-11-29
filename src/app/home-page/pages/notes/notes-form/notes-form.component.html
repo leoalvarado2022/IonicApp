@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button color="secondary" (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Registrar Nota</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="noteForm">
+    <ion-item>
+      <ion-label position="floating">Cantidad</ion-label>
+      <ion-textarea cols="5" formControlName="note" placeholder="Escriba la nota..."></ion-textarea>
+      <ng-container *ngIf="showErrors && noteForm.get('note').hasError('required')">
+        <span class="errorMsg">Ingrese la nota</span>
+      </ng-container>
+    </ion-item>
+
+    <ion-item>
+      <ion-thumbnail>
+        <ion-img [src]="noteForm.get('image').value"></ion-img>
+      </ion-thumbnail>
+    </ion-item>
+
+    <ion-item>
+      <ion-button slot="start" (click)="openCamera()">
+        <ion-icon slot="icon-only" name="camera"></ion-icon>
+      </ion-button>
+      <ion-label>Imagen</ion-label>
+      <ion-button slot="end" (click)="openGallery()">
+        <ion-icon slot="icon-only" name="image"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-button [disabled]="noteForm.invalid" (click)="submit()" expand="block" color="primary">
+      Guardar
+    </ion-button>
+
+  </form>
+</ion-content>

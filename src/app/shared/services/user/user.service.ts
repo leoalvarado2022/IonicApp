@@ -12,6 +12,8 @@ import {StorageService} from '../storage/storage.service';
 export class UserService {
 
   private createUrl = 'user/create';
+  private userUrl = 'user';
+  private assignUrl = 'user/assign';
   private updateUrl = 'user/update';
   private updatePasswordUrl = 'user/password';
 
@@ -36,10 +38,29 @@ export class UserService {
    * updateUser
    * @param data
    */
+  public getUser = () => {
+    const url = this.authService.buildUrl(this.userUrl);
+    return this.httpClient.post(url, this.authService.buildBody(null), {headers: this.authService.getHeaders()});
+  };
+
+  /**
+   * updateUser
+   * @param data
+   */
   public updateUser = (data: any) => {
     const url = this.authService.buildUrl(this.updateUrl);
     return this.httpClient.put(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
   }
+
+
+  /**
+   * assign user
+   * @param data
+   */
+  public assignUser = (data: any) => {
+    const url = this.authService.buildUrl(this.assignUrl);
+    return this.httpClient.post(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
+  };
 
   /**
    * updatePassword

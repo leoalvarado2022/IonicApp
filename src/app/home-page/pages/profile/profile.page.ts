@@ -116,7 +116,8 @@ export class ProfilePage implements OnInit {
         this.store.dispatch(new MenuAction.AddProfile(this.data));
         this.ngOnInit();
 
-        this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
+        // this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
+        this.router.navigate(['home-page']);
         this.loaderService.hideLoader();
         resolve(true);
       }, error => {

@@ -140,7 +140,7 @@ export class LoginPage implements OnInit {
 
     this.authService.setToken(login.token);
 
-    this.router.navigate(['pin']);
+    this.router.navigate(['auth/pin']);
 
   }
 

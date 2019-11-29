@@ -9,11 +9,16 @@ ion-header {
   color:white;
   .title-header {
     background: var(--color-login-header);
+    text-align: center !important;
+    img {
+      height: 80px;
+      margin-top: 10px;
+    }
     h3 {
-      padding-left: 5%;
+      text-align: center !important;
+      //padding-left: 5%;
       @media (min-width: 360px) {
         padding-bottom: 10px;
-        padding-top: 20px;
       }
     }
   }

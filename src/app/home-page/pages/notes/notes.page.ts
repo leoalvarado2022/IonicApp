@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
+import {Note} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-notes',
@@ -8,7 +9,7 @@ import {NavigationEnd, Router} from '@angular/router';
 })
 export class NotesPage implements OnInit {
 
-  public notes: Array<any> = [];
+  public notes: Array<Note> = [];
   private currentUrl: string;
 
   constructor(private router: Router) {
@@ -17,6 +18,9 @@ export class NotesPage implements OnInit {
         this.currentUrl = route.url;
       }
     });
+
+    const data = JSON.parse(localStorage.getItem('notes'));
+    this.notes = [...data];
   }
 
   ngOnInit() {
@@ -29,6 +33,5 @@ export class NotesPage implements OnInit {
   public checkButton = () => {
     return this.currentUrl === '/home-page/notes';
   }
-
 
 }

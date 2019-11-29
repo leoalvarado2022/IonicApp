@@ -1,5 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {HarvestEstimate} from '@primetec/primetec-angular';
+
+interface Arrows extends HarvestEstimate {
+  arrow: string;
+  color: string;
+}
 
 @Component({
   selector: 'app-harvest-estimate-item',
@@ -8,7 +14,7 @@ import {Router} from '@angular/router';
 })
 export class HarvestEstimateItemComponent implements OnInit {
 
-  @Input() item: any = null;
+  @Input() item: Arrows = null;
   @Input() isOld = false;
 
   constructor(private router: Router) {

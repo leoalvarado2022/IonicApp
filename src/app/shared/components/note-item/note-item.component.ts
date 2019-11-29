@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {Note} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-note-item',
@@ -8,7 +9,7 @@ import {Router} from '@angular/router';
 })
 export class NoteItemComponent implements OnInit {
 
-  @Input() item: any = null;
+  @Input() item: Note = null;
 
   constructor(private router: Router) {
 

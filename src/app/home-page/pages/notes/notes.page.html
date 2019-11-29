@@ -15,6 +15,9 @@
 <ion-content>
   <ion-searchbar class="production" showCancelButton="never" animated></ion-searchbar>
 
+  <ng-container *ngFor="let item of notes">
+    <app-note-item [item]="item"></app-note-item>
+  </ng-container>
 
   <ng-container *ngIf="checkButton()">
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">

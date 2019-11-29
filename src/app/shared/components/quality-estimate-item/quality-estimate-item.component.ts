@@ -1,5 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
+import {QualityEstimate} from '@primetec/primetec-angular';
+
+interface Arrows extends QualityEstimate {
+  arrow: string;
+  color: string;
+}
 
 @Component({
   selector: 'app-quality-estimate-item',
@@ -8,7 +14,7 @@ import {Router} from '@angular/router';
 })
 export class QualityEstimateItemComponent implements OnInit {
 
-  @Input() item: any = null;
+  @Input() item: Arrows = null;
 
   constructor(private router: Router) {
 

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ContractDetailService} from './services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {AuthService} from '../../../services/auth/auth.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
@@ -154,6 +154,7 @@ export class ContractDetailPage implements OnInit {
    * setStorage
    */
   private setStorage = () => {
+    localStorage.setItem('costCenter', JSON.stringify(this.costCenter));
     localStorage.setItem('harvestEstimate', JSON.stringify(this.harvestEstimate));
     localStorage.setItem('qualityEstimate', JSON.stringify(this.qualityEstimate));
     localStorage.setItem('qualityEstimateDetail', JSON.stringify(this.qualityEstimateDetail));
@@ -164,6 +165,7 @@ export class ContractDetailPage implements OnInit {
    * unsetStorage
    */
   private unsetStorage = () => {
+    localStorage.removeItem('costCenter');
     localStorage.removeItem('harvestEstimate');
     localStorage.removeItem('qualityEstimate');
     localStorage.removeItem('qualityEstimateDetail');

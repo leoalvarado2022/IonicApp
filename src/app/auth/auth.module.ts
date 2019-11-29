@@ -13,7 +13,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/recovery/recovery.module').then(module => module.RecoveryPageModule)
   },
   {
-    path: 'pin',
+    path: 'auth/pin',
     loadChildren: () => import('./pages/pin/pin.module').then(module => module.PinPageModule)
   },
   {

@@ -19,8 +19,8 @@
   </ng-container>
 
   <ng-container *ngIf="checkButton()">
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed" >
-      <ion-fab-button color="success">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button color="success" (click)="openForm()">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

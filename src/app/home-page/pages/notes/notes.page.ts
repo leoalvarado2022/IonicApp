@@ -3,6 +3,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {CostCenter, Note} from '@primetec/primetec-angular';
 import {ModalController} from '@ionic/angular';
 import {NotesFormComponent} from './notes-form/notes-form.component';
+import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 
 @Component({
   selector: 'app-notes',
@@ -11,13 +12,14 @@ import {NotesFormComponent} from './notes-form/notes-form.component';
 })
 export class NotesPage implements OnInit {
 
-  public notes: Array<Note> = [];
+  public notes: Array<Note>;
+  private costCenter: CostCenter;
   private currentUrl: string;
-  private readonly costCenter: CostCenter;
 
   constructor(
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private contractDetailService: ContractDetailService
   ) {
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
@@ -25,9 +27,13 @@ export class NotesPage implements OnInit {
       }
     });
 
-    const data = JSON.parse(localStorage.getItem('notes'));
-    this.notes = [...data];
-    this.costCenter = JSON.parse(localStorage.getItem('costCenter'));
+    this.contractDetailService.getNotes().subscribe(value => {
+      this.notes = value;
+    });
+
+    this.contractDetailService.getCostCenter().subscribe(value => {
+      this.costCenter = value;
+    });
   }
 
   ngOnInit() {
@@ -55,7 +61,9 @@ export class NotesPage implements OnInit {
     });
 
     modal.onDidDismiss().then((data) => {
-      // QUE HACEMOS AQUI
+      if (data.data) {
+        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+      }
     });
 
     return await modal.present();

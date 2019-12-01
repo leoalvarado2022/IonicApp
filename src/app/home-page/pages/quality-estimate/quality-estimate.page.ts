@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
+import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
+import {CostCenter, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
+import {ModalController} from '@ionic/angular';
+import {QualityEstimateFormComponent} from './quality-estimate-form/quality-estimate-form.component';
 
 @Component({
   selector: 'app-quality-estimate',
@@ -8,19 +12,33 @@ import {NavigationEnd, Router} from '@angular/router';
 })
 export class QualityEstimatePage implements OnInit {
 
-  public qualityEstimate = [];
-  public qualityEstimateDetail = [];
+  public qualityEstimate: Array<QualityEstimate>;
+  public qualityEstimateDetail: Array<QualityDetail>;
+  private costCenter: CostCenter;
   private currentUrl: string;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private contractDetailService: ContractDetailService,
+    private modalController: ModalController
+  ) {
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
         this.currentUrl = route.url;
       }
     });
 
-    this.qualityEstimate = JSON.parse(localStorage.getItem('qualityEstimate'));
-    this.qualityEstimateDetail = JSON.parse(localStorage.getItem('qualityEstimateDetail'));
+    this.contractDetailService.getCostCenter().subscribe(value => {
+      this.costCenter = value;
+    });
+
+    this.contractDetailService.getQualityEstimate().subscribe(value => {
+      this.qualityEstimate = value;
+    });
+
+    this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
+      this.qualityEstimateDetail = value;
+    });
   }
 
   ngOnInit() {
@@ -32,5 +50,27 @@ export class QualityEstimatePage implements OnInit {
    */
   public checkButton = () => {
     return this.currentUrl === '/home-page/quality-estimate';
+  }
+
+  /**
+   * openForm
+   */
+  public openForm = async () => {
+    const modal = await this.modalController.create({
+      component: QualityEstimateFormComponent,
+      componentProps: {
+        costCenter: this.costCenter
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+      }
+    });
+
+    return await modal.present();
   }
 }

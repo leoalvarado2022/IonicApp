@@ -14,7 +14,6 @@ import {CustomDatePipe} from '../pipes/custom-date.pipe';
 import {HarvestEstimateItemComponent} from './components/harvest-estimate-item/harvest-estimate-item.component';
 import {QualityEstimateItemComponent} from './components/quality-estimate-item/quality-estimate-item.component';
 import {NoteItemComponent} from './components/note-item/note-item.component';
-import {ContractDetailService} from "./services/contract-detail/contract-detail.service";
 
 @NgModule({
   declarations: [
@@ -36,8 +35,7 @@ import {ContractDetailService} from "./services/contract-detail/contract-detail.
     DetectPlatformService,
     StorageService,
     SyncService,
-    NetworkService,
-    ContractDetailService
+    NetworkService
   ],
   exports: [
     CommonModule,

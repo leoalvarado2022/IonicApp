@@ -58,13 +58,4 @@ export class ListaPage implements OnInit {
     this.filteredCostCenters = this.costCenters;
   }
 
-  /**
-   * trackByfn
-   * @param index
-   * @param item
-   */
-  public trackByfn = (index: number, item: any) => {
-    return item ? item.id : index;
-  }
-
 }

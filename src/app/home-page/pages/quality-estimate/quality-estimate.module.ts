@@ -19,6 +19,9 @@ const routes: Routes = [
   declarations: [
     QualityEstimatePage,
     QualityEstimateFormComponent
+  ],
+  entryComponents: [
+    QualityEstimateFormComponent
   ]
 })
 export class QualityEstimatePageModule {

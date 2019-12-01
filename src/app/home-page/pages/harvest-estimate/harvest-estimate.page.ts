@@ -3,6 +3,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
 import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
+import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 
 @Component({
   selector: 'app-harvest-estimate',
@@ -11,13 +12,14 @@ import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
 })
 export class HarvestEstimatePage implements OnInit {
 
-  public harvestEstimate: Array<HarvestEstimate> = [];
+  public harvestEstimate: Array<HarvestEstimate>;
   private currentUrl: string;
-  private readonly costCenter: CostCenter;
+  private costCenter: CostCenter;
 
   constructor(
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private contractDetailService: ContractDetailService
   ) {
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
@@ -25,9 +27,13 @@ export class HarvestEstimatePage implements OnInit {
       }
     });
 
-    const data = JSON.parse(localStorage.getItem('harvestEstimate'));
-    this.costCenter = JSON.parse(localStorage.getItem('costCenter'));
-    this.harvestEstimate = [...data];
+    this.contractDetailService.getHarvestEstimate().subscribe(value => {
+      this.harvestEstimate = value;
+    });
+
+    this.contractDetailService.getCostCenter().subscribe(value => {
+      this.costCenter = value;
+    });
   }
 
   ngOnInit() {
@@ -55,7 +61,9 @@ export class HarvestEstimatePage implements OnInit {
     });
 
     modal.onDidDismiss().then((data) => {
-      // QUE HACEMOS AQUI
+      if (data.data) {
+        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+      }
     });
 
     return await modal.present();

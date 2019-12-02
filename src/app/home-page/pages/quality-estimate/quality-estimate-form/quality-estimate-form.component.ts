@@ -17,12 +17,12 @@ export class QualityEstimateFormComponent implements OnInit {
   @Input() costCenter: CostCenter;
 
   private costCenterListItem: CostCenterList;
-  private qualityForm: FormGroup;
-  private loader = false;
-  private showErrors = false;
+  public qualityForm: FormGroup;
+  public loader = false;
+  public showErrors = false;
   private userConnection: any;
   private calibers: Array<any>;
-  private qualities: Array<any>;
+  public qualities: Array<any>;
   private filteredCalibers: Array<any>;
 
   constructor(
@@ -49,7 +49,10 @@ export class QualityEstimateFormComponent implements OnInit {
         costCenter: [this.costCenter.id, Validators.required],
         user: [this.userConnection.user, Validators.required],
         quality: ['', Validators.required],
-        exportPercentage: ['', Validators.required],
+        exportPercentage: ['', [
+          Validators.required,
+          Validators.max(100)
+        ]],
         temp: [1]
       }),
       calibers: this.formBuilder.array([])
@@ -73,7 +76,10 @@ export class QualityEstimateFormComponent implements OnInit {
         id: [0, Validators.required],
         quality: [0, Validators.required],
         caliber: [item.id, Validators.required],
-        percentage: ['', Validators.required],
+        percentage: ['', [
+          Validators.required,
+          Validators.max(100)
+        ]],
         temp: [1]
       });
       items.push(newCaliber);

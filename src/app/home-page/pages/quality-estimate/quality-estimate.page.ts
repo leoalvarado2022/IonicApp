@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
-import {CostCenter, CostCenterList, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
+import {CostCenter, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {ModalController} from '@ionic/angular';
 import {QualityEstimateFormComponent} from './quality-estimate-form/quality-estimate-form.component';
 
@@ -14,7 +14,6 @@ export class QualityEstimatePage implements OnInit {
 
   public qualityEstimate: Array<QualityEstimate>;
   public qualityEstimateDetail: Array<QualityDetail>;
-  public costCenterListItem: CostCenterList;
   private costCenter: CostCenter;
   private currentUrl: string;
 

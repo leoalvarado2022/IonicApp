@@ -31,16 +31,22 @@
           <ng-container *ngIf="showErrors && qualityForm.get('exportPercentage').hasError('required')">
             <span class="errorMsg">Ingrese Porcentaje</span>
           </ng-container>
+          <ng-container *ngIf="showErrors && qualityForm.get('exportPercentage').hasError('max')">
+            <span class="errorMsg">El porcentaje debe ser menor a 100</span>
+          </ng-container>
         </ion-item>
       </ng-container>
 
       <ng-container formArrayName="calibers">
-        <ng-container *ngFor="let item of qualityForm.get('calibers').controls; let index = index" [formGroupName]="index.toString()">
+        <ng-container *ngFor="let item of qualityForm.get('calibers')['controls']; let index = index" [formGroupName]="index.toString()">
           <ion-item>
             <ion-label position="floating">{{ getCaliberName(item) }}</ion-label>
             <ion-input formControlName="percentage" placeholder="Ingresar el Porcentaje" type="number" clearInput value="clear"></ion-input>
             <ng-container *ngIf="showErrors && qualityForm.get('percentage').hasError('required')">
               <span class="errorMsg">Ingrese el Porcentaje</span>
+            </ng-container>
+            <ng-container *ngIf="showErrors && qualityForm.get('percentage').hasError('max')">
+              <span class="errorMsg">El porcentaje debe ser menor a 100</span>
             </ng-container>
           </ion-item>
         </ng-container>

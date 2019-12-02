@@ -135,35 +135,37 @@ export class RegisterPage {
    * @param event
    */
   public onFileCamera = async (sourceType: any, uri: any) => {
+    if (this.detectPlatformService.hasCordova) {
+      const options: CameraOptions = {
+        quality: 50,
+        destinationType: uri,
+        encodingType: this.camera.EncodingType.JPEG,
+        mediaType: this.camera.MediaType.PICTURE,
+        saveToPhotoAlbum: true,
+        targetWidth: 300,
+        targetHeight: 300,
+        correctOrientation: true,
+        sourceType
+      };
 
-    const options: CameraOptions = {
-      quality: 50,
-      destinationType: uri,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      saveToPhotoAlbum: true,
-      targetWidth: 300,
-      targetHeight: 300,
-      correctOrientation: true,
-      sourceType
-    };
+      this.loaderService.showLoader();
 
-    this.loaderService.showLoader();
+      this.camera.getPicture(options).then((imageData) => {
+        // imageData is either a base64 encoded string or a file URI
+        // If it's base64 (DATA_URL):
+        // console.log(imageData);
 
-    this.camera.getPicture(options).then((imageData) => {
-      // imageData is either a base64 encoded string or a file URI
-      // If it's base64 (DATA_URL):
-      // console.log(imageData);
+        const image = `data:image/jpeg;base64,${imageData}`;
+        this.avatarPreview = image;
+        this.registerForm.controls.avatar.patchValue(this.avatarPreview);
+        this.loaderService.hideLoader();
 
-      const image = `data:image/png;base64,${imageData}`;
-      this.avatarPreview = image;
-      this.registerForm.controls.avatar.patchValue(this.avatarPreview);
-      this.loaderService.hideLoader();
-
-
-    }, (err) => {
-      // Handle error
-      this.loaderService.hideLoader();
-    });
+      }, (err) => {
+        // Handle error
+        this.loaderService.hideLoader();
+      });
+    } else {
+      this.toastService.warningToast('Cordova requerido');
+    }
   }
 }

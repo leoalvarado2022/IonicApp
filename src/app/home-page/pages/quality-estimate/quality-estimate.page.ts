@@ -62,7 +62,8 @@ export class QualityEstimatePage implements OnInit {
         costCenter: this.costCenter
       },
       backdropDismiss: false,
-      keyboardClose: false
+      keyboardClose: false,
+      cssClass: 'full-screen-modal'
     });
 
     modal.onDidDismiss().then((data) => {

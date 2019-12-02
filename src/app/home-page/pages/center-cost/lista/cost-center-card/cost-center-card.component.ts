@@ -26,7 +26,7 @@ export class CostCenterCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.contractDetailService.setCostCenterListItem(this.costCenter);
+
   }
 
   /**
@@ -34,6 +34,8 @@ export class CostCenterCardComponent implements OnInit {
    */
   public showDetails = () => {
     if (this.isOnline) {
+      this.contractDetailService.setCostCenterListItem(this.costCenter);
+
       this.router.navigate(['home-page/contract-detail', this.costCenter.id]);
     }
   }

@@ -32,5 +32,4 @@ export class HarvestEstimateItemComponent implements OnInit {
     this.router.navigate(['/home-page/harvest-estimate']);
   }
 
-
 }

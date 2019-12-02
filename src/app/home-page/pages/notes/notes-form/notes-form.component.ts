@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CostCenter} from '@primetec/primetec-angular';
+import {CostCenter, Note} from '@primetec/primetec-angular';
 import {AuthService} from '../../../../services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -16,9 +16,11 @@ import {DetectPlatformService} from '../../../../shared/services/detect-platform
 export class NotesFormComponent implements OnInit {
 
   @Input() costCenter: CostCenter;
+  @Input() note: Note = null;
 
   public noteForm: FormGroup;
   public showErrors = false;
+  public imageSrc = '';
   private userConnection: any;
   private commonOptions: CameraOptions = {
     quality: 50,
@@ -45,12 +47,14 @@ export class NotesFormComponent implements OnInit {
     this.userConnection = this.authService.getCompany();
 
     this.noteForm = this.formBuilder.group({
-      id: [0, Validators.required],
+      id: [this.note ? this.note.id : 0, Validators.required],
       costCenter: [this.costCenter.id, Validators.required],
       user: [this.userConnection.user, Validators.required],
-      note: ['', Validators.required],
-      image: ['', Validators.required]
+      note: [this.note ? this.note.note : '', Validators.required],
+      image: [this.note ? this.note.image : '', Validators.required]
     });
+
+    this.imageSrc = this.note ? 'data:image/jpeg;base64,' + this.note.image : '';
   }
 
   /**
@@ -71,7 +75,6 @@ export class NotesFormComponent implements OnInit {
 
       this.storeNote(note);
     } else {
-      console.log(this.noteForm);
       this.showErrors = true;
     }
   }
@@ -128,7 +131,8 @@ export class NotesFormComponent implements OnInit {
    */
   private getImage = (options) => {
     this.camera.getPicture(options).then((image) => {
-      const imageUrl = `data:image/jpeg;base64,${image}`;
+      const imageUrl = image;
+      this.imageSrc = `data:image/jpeg;base64,${image}`;
 
       this.noteForm.patchValue({
         image: imageUrl

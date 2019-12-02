@@ -139,7 +139,6 @@ export class ProfilePage implements OnInit {
       const reader = new FileReader();
       const file = event.target.files[0];
 
-      // console.log(file);
       const size = (file.size / 1024) / 1024;
       if (size >= 4) {
         this.toastService.warningToast('La imagen supera el limite. No puede ser mayor 4MB');
@@ -155,6 +154,9 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  /**
+   * changePassword
+   */
   changePassword = async () => {
     const modal = await this.modalController.create({
       component: ChangePasswordComponent,
@@ -168,7 +170,6 @@ export class ProfilePage implements OnInit {
    * @param event
    */
   public onFileCamera = async (sourceType: any, uri: any) => {
-
     const options: CameraOptions = {
       quality: 50,
       destinationType: uri,
@@ -186,11 +187,10 @@ export class ProfilePage implements OnInit {
     this.camera.getPicture(options).then((imageData) => {
       // imageData is either a base64 encoded string or a file URI
       // If it's base64 (DATA_URL):
-      // console.log(imageData);
 
-      const image = `data:image/png;base64,${imageData}`;
+      const image = `data:image/jpeg;base64,${imageData}`;
       this.avatarPreview = image;
-      this.registerForm.controls.avatar.patchValue(this.avatarPreview);
+      this.registerForm.controls.avatar.patchValue(image);
       this.loaderService.hideLoader();
 
     }, (err) => {

@@ -22,9 +22,9 @@
       vertical-align: middle;
       font-size: 35px;
       padding: 7px;
-      @media (max-width: 345px) {
-        display: none;
-      }
+      //@media (max-width: 345px) {
+      //  display: none;
+      //}
     }
 
     &--name .date {

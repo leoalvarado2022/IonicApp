@@ -44,6 +44,10 @@ export class NotesFormComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    // console.log('app-notes-form')
+
+
     this.userConnection = this.authService.getCompany();
 
     this.noteForm = this.formBuilder.group({
@@ -63,6 +67,7 @@ export class NotesFormComponent implements OnInit {
   public closeModal = (status: boolean = false) => {
     this.noteForm.reset();
     this.modalController.dismiss(status);
+    // console.log('se cierra el modal')
   }
 
   /**

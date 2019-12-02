@@ -23,6 +23,7 @@ export class NoteItemComponent implements OnInit {
     private contractDetailService: ContractDetailService
   ) {
     this.router.events.subscribe((route) => {
+      // console.log(route, 'route')
       if (route instanceof NavigationEnd) {
         this.currentUrl = route.url;
       }
@@ -34,14 +35,19 @@ export class NoteItemComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    // console.log('hola, aqui inicio note-item', this.router.url)
+    if (this.currentUrl === undefined) {
+      this.currentUrl = this.router.url;
+    }
   }
 
   /**
    * showList
    */
   public showList = () => {
+    // console.log(this.currentUrl);
     if (this.currentUrl === '/home-page/notes') {
+      // console.log('luis es marico')
       this.openForm();
     }
 
@@ -63,13 +69,12 @@ export class NoteItemComponent implements OnInit {
       cssClass: 'full-screen-modal'
     });
 
-    /*
-    modal.onDidDismiss().then((data) => {
-      if (data.data) {
-        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-      }
-    });
-    */
+    // modal.onDidDismiss().then(() => {
+    //   // console.log('se cerro , viva el clap')
+    //   // if (data.data) {
+    //     this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+    //   // }
+    // });
 
     return await modal.present();
   }

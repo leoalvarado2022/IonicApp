@@ -17,14 +17,14 @@ export class ContractDetailPage implements OnInit {
 
   public openSelected = false;
   public selectedGraphics = false;
-  public costCenterListItem: CostCenterList = null;
+  public costCenterListItem: CostCenterList;
   public costCenter: CostCenter;
   public productionContracts: Array<ProductContract>;
-  public productionContractsDetails: Array<ProductContractDetail> = [];
-  public harvestEstimate: Array<HarvestEstimate> = [];
-  public qualityEstimate: Array<QualityEstimate> = [];
-  public qualityEstimateDetail: Array<QualityDetail> = [];
-  public notes: Array<Note> = [];
+  public productionContractsDetails: Array<ProductContractDetail>;
+  public harvestEstimate: Array<HarvestEstimate>;
+  public qualityEstimate: Array<QualityEstimate>;
+  public qualityEstimateDetail: Array<QualityDetail>;
+  public notes: Array<Note>;
 
   constructor(
     private httpClient: HttpClient,
@@ -36,32 +36,48 @@ export class ContractDetailPage implements OnInit {
     private toastService: ToastService,
     private router: Router
   ) {
+    this.contractDetailService.getCostCenter().subscribe(value => {
+      this.costCenter = value;
+    });
 
+    this.contractDetailService.getProductionContracts().subscribe(value => {
+      this.productionContracts = value;
+    });
+
+    this.contractDetailService.getProductionContractsDetails().subscribe(value => {
+      this.productionContractsDetails = value;
+    });
+
+    this.contractDetailService.getHarvestEstimate().subscribe(value => {
+      this.harvestEstimate = value;
+    });
+
+    this.contractDetailService.getQualityEstimate().subscribe(value => {
+      this.qualityEstimate = value;
+    });
+
+    this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
+      this.qualityEstimateDetail = value;
+    });
+
+    this.contractDetailService.getNotes().subscribe(value => {
+      this.notes = value;
+    });
+
+    this.contractDetailService.getNotes().subscribe(value => {
+      this.notes = value;
+    });
+
+    this.contractDetailService.getCostCenterListItem().subscribe(value => {
+      this.costCenterListItem = value;
+    });
   }
 
   ngOnInit(): void {
-    this.costCenter = null;
-    this.productionContracts = [];
-    this.productionContractsDetails = [];
-    this.harvestEstimate = [];
-    this.qualityEstimate = [];
-    this.qualityEstimateDetail = [];
-    this.notes = [];
-
-    this.unsetStorage();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadContractDetail(id);
-      this.loadCostCenter(id);
     }
-  }
-
-  /**
-   * loadCostCenters
-   */
-  public loadCostCenter = async (id: string) => {
-    const centers = await this.syncService.getCostCenters();
-    this.costCenterListItem = centers.find(item => item.id === +id);
   }
 
   /**
@@ -69,35 +85,7 @@ export class ContractDetailPage implements OnInit {
    * @param id
    */
   private loadContractDetail = (id: string) => {
-    this.loaderService.showLoader('Cargando...');
-    this.contractDetailService.getCostCenter(id).subscribe((success: any) => {
-      const data = success.data;
-      const {
-        costCenter,
-        productionContracts,
-        productionContractsDetails,
-        harvestEstimate,
-        qualityEstimate,
-        qualityEstimateDetail,
-        notes
-      } = data;
-
-      this.costCenter = costCenter;
-      this.productionContracts = productionContracts;
-      this.productionContractsDetails = productionContractsDetails;
-      this.harvestEstimate = this.defineArrows(harvestEstimate, 'quantity');
-      this.qualityEstimate = this.defineArrows(qualityEstimate, 'exportPercentage');
-      this.qualityEstimateDetail = qualityEstimateDetail;
-      this.notes = notes;
-      this.setStorage();
-
-      this.loaderService.hideLoader();
-    }, error => {
-      this.loaderService.hideLoader();
-      const msg = this.authService.errorsHandler(error);
-      this.toastService.warningToast(msg);
-      this.router.navigate(['home-page']);
-    });
+    this.contractDetailService.getCostCenterDetail(id);
   }
 
   /**
@@ -112,64 +100,6 @@ export class ContractDetailPage implements OnInit {
    */
   public getTotal = () => {
     return this.productionContracts.reduce((accumulator, contract) => accumulator + contract.totalQuantity, 0);
-  }
-
-  /**
-   * defineArrows
-   * @param data
-   * @param field
-   */
-  private defineArrows = (data: Array<any> = [], field: string) => {
-    if (data.length > 0) {
-      const mappedData = data.map((item, index, arr) => {
-        if (arr.length === 1) {
-          return Object.assign({}, item, {
-            arrow: 'remove',
-            color: 'default'
-          });
-        } else if (arr.length > 1) {
-          const limit = arr.length - 1;
-
-          if (index < limit) {
-            return Object.assign({}, item, {
-              arrow: arr[index][field] > arr[index + 1][field] ? 'arrow-round-up' : 'arrow-round-down',
-              color: arr[index][field] > arr[index + 1][field] ? 'primary' : 'danger'
-            });
-          } else {
-            return Object.assign({}, item, {
-              arrow: 'remove',
-              color: 'default'
-            });
-          }
-        }
-      });
-
-      return mappedData;
-    }
-
-    return data;
-  }
-
-  /**
-   * setStorage
-   */
-  private setStorage = () => {
-    localStorage.setItem('costCenter', JSON.stringify(this.costCenter));
-    localStorage.setItem('harvestEstimate', JSON.stringify(this.harvestEstimate));
-    localStorage.setItem('qualityEstimate', JSON.stringify(this.qualityEstimate));
-    localStorage.setItem('qualityEstimateDetail', JSON.stringify(this.qualityEstimateDetail));
-    localStorage.setItem('notes', JSON.stringify(this.notes));
-  }
-
-  /**
-   * unsetStorage
-   */
-  private unsetStorage = () => {
-    localStorage.removeItem('costCenter');
-    localStorage.removeItem('harvestEstimate');
-    localStorage.removeItem('qualityEstimate');
-    localStorage.removeItem('qualityEstimateDetail');
-    localStorage.removeItem('notes');
   }
 
 }

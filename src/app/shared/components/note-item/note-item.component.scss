@@ -56,9 +56,9 @@
       display: table-cell;
     }
 
-    .costos {
-      width: 209px;
-      padding: 18px;
+    .note-text {
+      text-overflow: clip;
+      text-align: left;
     }
   }
 }

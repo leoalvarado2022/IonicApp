@@ -22,18 +22,19 @@
     </ion-item>
 
     <ion-item *ngIf="noteForm.get('image').value">
-        <ion-img [src]="noteForm.get('image').value"></ion-img>
+      <ion-img [src]="imageSrc"></ion-img>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Cantidad</ion-label>
-      <ion-textarea rows="20" formControlName="note" placeholder="Escriba la nota..."></ion-textarea>
+      <ion-textarea rows="10" formControlName="note" placeholder="Escriba la nota..."></ion-textarea>
       <ng-container *ngIf="showErrors && noteForm.get('note').hasError('required')">
         <span class="errorMsg">Ingrese la nota</span>
       </ng-container>
     </ion-item>
 
-    <ion-button [disabled]="noteForm.invalid" (click)="submit()" expand="block" color="primary">
+    <br><br>
+    <ion-button [disabled]="noteForm.invalid && note === null" (click)="submit()" expand="block" color="primary">
       Guardar
     </ion-button>
 

@@ -19,6 +19,7 @@ export class MenuListPage implements OnInit {
 
   public userData = null;
   public menus: TabMenu[] = [];
+  private isOnline: boolean;
 
   constructor(
     public store: Store<any>,
@@ -32,7 +33,7 @@ export class MenuListPage implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {
     this.networkService.onNetworkChange().subscribe((status: boolean) => {
-      console.log('hay internet', status);
+      this.isOnline = status;
     });
   }
 
@@ -93,7 +94,7 @@ export class MenuListPage implements OnInit {
    * @param url
    */
   public navigate = (menu: TabMenu) => {
-    if (this.networkService.getNetworkStatus() || (!this.networkService.getNetworkStatus() && menu.offlineMenu)) {
+    if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
       this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
     }
   }
@@ -102,7 +103,7 @@ export class MenuListPage implements OnInit {
    * checkDisabled
    */
   public checkDisabled = (menu: TabMenu) => {
-    return !this.networkService.getNetworkStatus() && !menu.offlineMenu;
+    return !this.isOnline && !menu.offlineMenu;
   }
 
 }

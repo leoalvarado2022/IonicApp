@@ -12,49 +12,50 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!--  header-->
-  <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
-    <ng-container *ngIf="costCenterListItem">
-      <ion-row class="row">
-        <ion-col size="12">
-          <div class="white">{{ costCenterListItem.code }}</div>
-        </ion-col>
-        <ion-col size="12">
-          <div class="white">{{ costCenterListItem.name }}</div>
-        </ion-col>
-        <ion-col size="12">
-          <div class="white">{{ costCenterListItem.producerName }}</div>
-        </ion-col>
-        <ion-col size="12">
-          <div class="white">{{ costCenterListItem.speciesName }} / {{ costCenterListItem.varietyName }}</div>
-        </ion-col>
-        <ion-col size="12">
-          <div class="white">Fecha Cosecha: {{ costCenterListItem.harvestDate | customDate }}</div>
-        </ion-col>
-        <ion-col size="12" *ngIf="costCenterListItem.contractResponsible">
-          <div class="white">Numero de Contratos: {{ costCenterListItem.contractsNumber }}</div>
-        </ion-col>
-      </ion-row>
-    </ng-container>
+<!--  header-->
+<div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
+  <ng-container *ngIf="costCenterListItem">
+    <ion-row class="row">
+      <ion-col size="12">
+        <div class="white">{{ costCenterListItem.code }}</div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="white">{{ costCenterListItem.name }}</div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="white">{{ costCenterListItem.producerName }}</div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="white">{{ costCenterListItem.speciesName }} / {{ costCenterListItem.varietyName }}</div>
+      </ion-col>
+      <ion-col size="12">
+        <div class="white">Fecha Cosecha: {{ costCenterListItem.harvestDate | customDate }}</div>
+      </ion-col>
+      <ion-col size="12" *ngIf="costCenterListItem.contractResponsible">
+        <div class="white">Numero de Contratos: {{ costCenterListItem.contractsNumber }}</div>
+      </ion-col>
+    </ion-row>
+  </ng-container>
 
-    <ng-container *ngFor="let contract of productionContracts; let index = index">
-      <div class="scroll-card">
-        <ng-container>
-          <div class="card-text">
-            <div class="card-text-one">
-              <p># {{ contract.documentNumber }}</p>
-              <p>{{ contract.date| customDate }}</p>
-              <p>{{ contract.responsibleName }}</p>
-            </div>
-            <div class="card-text-two">
-              <p>{{ contract.totalQuantity }}</p>
-            </div>
+  <ng-container *ngFor="let contract of productionContracts; let index = index">
+    <div class="scroll-card">
+      <ng-container>
+        <div class="card-text">
+          <div class="card-text-one">
+            <p># {{ contract.documentNumber }}</p>
+            <p>{{ contract.date| customDate }}</p>
+            <p>{{ contract.responsibleName }}</p>
           </div>
-        </ng-container>
-      </div>
-    </ng-container>
-  </div>
+          <div class="card-text-two">
+            <p>{{ contract.totalQuantity }}</p>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>
+
+<ion-content>
 
   <!--  estimaciones-->
   <div class="estimates-card">

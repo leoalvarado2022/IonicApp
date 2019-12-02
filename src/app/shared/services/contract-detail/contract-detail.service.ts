@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from '../../../services/auth/auth.service';
 import {HttpClient} from '@angular/common/http';
-import {CostCenter, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
+import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {BehaviorSubject} from 'rxjs';
 
 @Injectable()
@@ -9,8 +9,10 @@ export class ContractDetailService {
 
   private readonly getCostCenterUrl = 'costcenter';
   private readonly storeHarvestUrl = 'costcenter/store/harvest';
+  private readonly storeQualityUrl = 'costcenter/store/quality';
   private readonly storeNoteUrl = 'costcenter/store/note';
 
+  private costCenterListItem: BehaviorSubject<CostCenterList>;
   private costCenter: BehaviorSubject<CostCenter>;
   private productionContracts: BehaviorSubject<Array<ProductContract>>;
   private productionContractsDetails: BehaviorSubject<Array<ProductContractDetail>>;
@@ -23,6 +25,7 @@ export class ContractDetailService {
     private authService: AuthService,
     private httpClient: HttpClient
   ) {
+    this.costCenterListItem = new BehaviorSubject<CostCenterList>(null);
     this.costCenter = new BehaviorSubject<CostCenter>(null);
     this.productionContracts = new BehaviorSubject<Array<ProductContract>>([]);
     this.productionContractsDetails = new BehaviorSubject<Array<ProductContractDetail>>([]);
@@ -30,8 +33,6 @@ export class ContractDetailService {
     this.qualityEstimate = new BehaviorSubject<Array<QualityEstimate>>([]);
     this.qualityEstimateDetail = new BehaviorSubject<Array<QualityDetail>>([]);
     this.notes = new BehaviorSubject<Array<Note>>([]);
-
-    console.log('se inicia ContractDetailService');
   }
 
   /**
@@ -78,7 +79,6 @@ export class ContractDetailService {
    *getCostCenter
    */
   public getCostCenter = () => {
-    console.log('getCostCenter', this.costCenter.getValue());
     return this.costCenter.asObservable();
   }
 
@@ -86,7 +86,6 @@ export class ContractDetailService {
    * getProductionContracts
    */
   public getProductionContracts = () => {
-    console.log('productionContracts', this.productionContracts.getValue());
     return this.productionContracts.asObservable();
   }
 
@@ -94,7 +93,6 @@ export class ContractDetailService {
    * getProductionContractsDetails
    */
   public getProductionContractsDetails = () => {
-    console.log('productionContractsDetails', this.productionContractsDetails.getValue());
     return this.productionContractsDetails.asObservable();
   }
 
@@ -102,7 +100,6 @@ export class ContractDetailService {
    * getHarvestEstimate
    */
   public getHarvestEstimate = () => {
-    console.log('harvestEstimate', this.harvestEstimate.getValue());
     return this.harvestEstimate.asObservable();
   }
 
@@ -110,7 +107,6 @@ export class ContractDetailService {
    * getQualityEstimate
    */
   public getQualityEstimate = () => {
-    console.log('qualityEstimate', this.qualityEstimate.getValue());
     return this.qualityEstimate.asObservable();
   }
 
@@ -118,7 +114,6 @@ export class ContractDetailService {
    * getQualityEstimateDetail
    */
   public getQualityEstimateDetail = () => {
-    console.log('qualityEstimateDetail', this.qualityEstimateDetail.getValue());
     return this.qualityEstimateDetail.asObservable();
   }
 
@@ -126,8 +121,22 @@ export class ContractDetailService {
    * getNotes
    */
   public getNotes = () => {
-    console.log('notes', this.notes.getValue());
     return this.notes.asObservable();
+  }
+
+  /**
+   * setCostCenterListItem
+   * @param costCenter
+   */
+  public setCostCenterListItem = (costCenter: CostCenterList) => {
+    this.costCenterListItem.next(costCenter);
+  }
+
+  /**
+   * getCostCenterListItem
+   */
+  public getCostCenterListItem = () => {
+    return this.costCenterListItem.asObservable();
   }
 
   /**
@@ -136,6 +145,15 @@ export class ContractDetailService {
    */
   public storeHarvest = (data: any) => {
     const url = this.authService.buildUrl(this.storeHarvestUrl);
+    return this.httpClient.post(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
+  }
+
+  /**
+   * storeQuality
+   * @param data
+   */
+  public storeQuality = (data: any) => {
+    const url = this.authService.buildUrl(this.storeQualityUrl);
     return this.httpClient.post(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
   }
 

@@ -18,6 +18,7 @@ export class CostCenterCardComponent implements OnInit {
   constructor(
     private router: Router,
     private networkService: NetworkService,
+    private contractDetailService: ContractDetailService
   ) {
     this.networkService.onNetworkChange().subscribe(value => {
       this.isOnline = value;
@@ -25,7 +26,7 @@ export class CostCenterCardComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.contractDetailService.setCostCenterListItem(this.costCenter);
   }
 
   /**

@@ -17,7 +17,7 @@ export class ContractDetailPage implements OnInit {
 
   public openSelected = false;
   public selectedGraphics = false;
-  public costCenterListItem: CostCenterList = null;
+  public costCenterListItem: CostCenterList;
   public costCenter: CostCenter;
   public productionContracts: Array<ProductContract>;
   public productionContractsDetails: Array<ProductContractDetail>;
@@ -37,38 +37,39 @@ export class ContractDetailPage implements OnInit {
     private router: Router
   ) {
     this.contractDetailService.getCostCenter().subscribe(value => {
-      console.log('this.costCenter', value);
       this.costCenter = value;
     });
 
     this.contractDetailService.getProductionContracts().subscribe(value => {
-      console.log('this.productionContracts', value);
       this.productionContracts = value;
     });
 
     this.contractDetailService.getProductionContractsDetails().subscribe(value => {
-      console.log('this.productionContractsDetails', value);
       this.productionContractsDetails = value;
     });
 
     this.contractDetailService.getHarvestEstimate().subscribe(value => {
-      console.log('this.harvestEstimate', value);
       this.harvestEstimate = value;
     });
 
     this.contractDetailService.getQualityEstimate().subscribe(value => {
-      console.log('this.qualityEstimate', value);
       this.qualityEstimate = value;
     });
 
     this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
-      console.log('this.qualityEstimateDetail', value);
       this.qualityEstimateDetail = value;
     });
 
     this.contractDetailService.getNotes().subscribe(value => {
-      console.log('this.notes', value);
       this.notes = value;
+    });
+
+    this.contractDetailService.getNotes().subscribe(value => {
+      this.notes = value;
+    });
+
+    this.contractDetailService.getCostCenterListItem().subscribe(value => {
+      this.costCenterListItem = value;
     });
   }
 
@@ -76,16 +77,7 @@ export class ContractDetailPage implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadContractDetail(id);
-      this.loadCostCenter(id);
     }
-  }
-
-  /**
-   * loadCostCenters
-   */
-  public loadCostCenter = async (id: string) => {
-    const centers = await this.syncService.getCostCenters();
-    this.costCenterListItem = centers.find(item => item.id === +id);
   }
 
   /**

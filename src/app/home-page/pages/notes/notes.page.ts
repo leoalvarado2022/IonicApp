@@ -12,7 +12,8 @@ import {ContractDetailService} from '../../../shared/services/contract-detail/co
 })
 export class NotesPage implements OnInit {
 
-  public notes: Array<Note>;
+  private notes: Array<Note>;
+  public filteredNotes: Array<Note>;
   private costCenter: CostCenter;
   private currentUrl: string;
 
@@ -29,6 +30,7 @@ export class NotesPage implements OnInit {
 
     this.contractDetailService.getNotes().subscribe(value => {
       this.notes = value;
+      this.filteredNotes = value;
     });
 
     this.contractDetailService.getCostCenter().subscribe(value => {
@@ -48,13 +50,46 @@ export class NotesPage implements OnInit {
   }
 
   /**
+   * searchNote
+   * @param search
+   */
+  public searchNote = (search: string) => {
+    if (search) {
+      this.filteredNotes = this.notes.filter(item => {
+        return (
+          item.note.toLowerCase().includes(search.toLowerCase()) ||
+          item.responsibleName.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    } else {
+      this.filteredNotes = this.notes;
+    }
+  }
+
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = () => {
+    this.filteredNotes = this.notes;
+  }
+
+  /**
+   * viewNote
+   * @param item
+   */
+  public viewNote = async (note: Note) => {
+    await this.openForm(note);
+  }
+
+  /**
    * openForm
    */
-  public openForm = async () => {
+  public openForm = async (note: Note = null) => {
     const modal = await this.modalController.create({
       component: NotesFormComponent,
       componentProps: {
-        costCenter: this.costCenter
+        costCenter: this.costCenter,
+        note
       },
       backdropDismiss: false,
       keyboardClose: false,

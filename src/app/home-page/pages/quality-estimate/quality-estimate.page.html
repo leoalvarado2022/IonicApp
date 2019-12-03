@@ -12,9 +12,11 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-searchbar (ionChange)="searchQuality($event.target.value)" class="production" showCancelButton="never" animated (ionClear)="cancelSearch()"></ion-searchbar>
+
 <ion-content class="content">
 
-  <ng-container *ngFor="let quality of qualityEstimate">
+  <ng-container *ngFor="let quality of filteredQualityEstimate">
     <app-quality-estimate-item [item]="quality"></app-quality-estimate-item>
   </ng-container>
 

@@ -15,7 +15,7 @@
 <!--  header-->
 <ion-content>
 
-  <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
+  <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openSelected = !openSelected">
     <ng-container *ngIf="costCenterListItem">
       <ion-row class="row">
         <ion-col size="12">
@@ -96,10 +96,10 @@
   <!--  NOTAS-->
   <div>
     <ng-container *ngIf="notes.length > 0">
-      <app-note-item [item]="notes[0]"></app-note-item>
+      <app-note-item (noteClicked)="goToList($event)" [item]="notes[0]"></app-note-item>
     </ng-container>
     <ng-container *ngIf="notes.length === 0">
-      <app-note-item></app-note-item>
+      <app-note-item (noteClicked)="goToList($event)"></app-note-item>
     </ng-container>
   </div>
 

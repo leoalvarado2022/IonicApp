@@ -38,20 +38,16 @@ export class NotesFormComponent implements OnInit {
     private contractDetailService: ContractDetailService,
     private toastService: ToastService,
     private camera: Camera,
-    public detectPlatformService: DetectPlatformService
+    public detectPlatformService: DetectPlatformService,
   ) {
 
   }
 
   ngOnInit() {
-
-    // console.log('app-notes-form')
-
-
     this.userConnection = this.authService.getCompany();
 
     this.noteForm = this.formBuilder.group({
-      id: [this.note ? this.note.id : 0, Validators.required],
+      id: [this.note ? -this.note.id : 0, Validators.required],
       costCenter: [this.costCenter.id, Validators.required],
       user: [this.userConnection.user, Validators.required],
       note: [this.note ? this.note.note : '', Validators.required],
@@ -67,7 +63,6 @@ export class NotesFormComponent implements OnInit {
   public closeModal = (status: boolean = false) => {
     this.noteForm.reset();
     this.modalController.dismiss(status);
-    // console.log('se cierra el modal')
   }
 
   /**
@@ -148,4 +143,5 @@ export class NotesFormComponent implements OnInit {
       this.toastService.warningToast(error);
     });
   }
+
 }

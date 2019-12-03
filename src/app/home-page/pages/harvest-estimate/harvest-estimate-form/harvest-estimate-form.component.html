@@ -29,7 +29,6 @@
         <ion-input formControlName="quantity" placeholder="Ingresar Cantidad" type="number" clearInput value="clear"></ion-input>
         <ng-container *ngIf="showErrors && harvestForm.get('quantity').hasError('required')">
           <span class="errorMsg">Ingrese Cantidad</span>
-
         </ng-container>
       </ion-item>
 
@@ -40,6 +39,26 @@
           <span class="errorMsg">Ingrese cantidad diaria</span>
         </ng-container>
       </ion-item>
+
+      <ion-radio-group formControlName="workHolidays">
+        <ion-list-header>
+          <ion-label>Trabaja Festivos ?</ion-label>
+        </ion-list-header>
+
+        <ion-item>
+          <ion-label>Si</ion-label>
+          <ion-radio slot="start" value="1" checked></ion-radio>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>No</ion-label>
+          <ion-radio slot="start" value="0"></ion-radio>
+        </ion-item>
+
+        <ng-container *ngIf=" showErrors && harvestForm.get('workHolidays').hasError('required')">
+          <span class="errorMsg">Indique si trabaja los feriados.</span>
+        </ng-container>
+      </ion-radio-group>
 
       <ion-item>
         <ion-label position="floating">Fecha Inicio</ion-label>
@@ -54,29 +73,8 @@
         <ion-datetime formControlName="endDate" placeholder="Ingresar Fecha Fin" [displayFormat]="displayFormat"></ion-datetime>
         <ng-container *ngIf="showErrors && harvestForm.get('startDate').hasError('required')">
           <span class="errorMsg">Ingrese fecha fin</span>
-
         </ng-container>
       </ion-item>
-
-      <ion-radio-group formControlName="workHolidays">
-        <ion-list-header>
-          <ion-label>Trabaja Festivos ?</ion-label>
-        </ion-list-header>
-
-        <ion-item>
-          <ion-label>Si</ion-label>
-          <ion-radio  slot="start" value="1" checked></ion-radio>
-        </ion-item>
-
-        <ion-item>
-          <ion-label>No</ion-label>
-          <ion-radio slot="start" value="0"></ion-radio>
-        </ion-item>
-
-        <ng-container *ngIf=" showErrors && harvestForm.get('workHolidays').hasError('required')">
-          <span class="errorMsg">Indique si trabaja los feriados.</span>
-        </ng-container>
-      </ion-radio-group>
 
       <br><br>
       <ion-button [disabled]="harvestForm.invalid" (click)="submit()" expand="block" color="primary">

@@ -12,7 +12,8 @@ import {ContractDetailService} from '../../../shared/services/contract-detail/co
 })
 export class HarvestEstimatePage implements OnInit {
 
-  public harvestEstimate: Array<HarvestEstimate>;
+  private harvestEstimate: Array<HarvestEstimate>;
+  public filteredHarvestEstimate: Array<HarvestEstimate>;
   private currentUrl: string;
   private costCenter: CostCenter;
 
@@ -29,6 +30,7 @@ export class HarvestEstimatePage implements OnInit {
 
     this.contractDetailService.getHarvestEstimate().subscribe(value => {
       this.harvestEstimate = value;
+      this.filteredHarvestEstimate = value;
     });
 
     this.contractDetailService.getCostCenter().subscribe(value => {
@@ -68,5 +70,29 @@ export class HarvestEstimatePage implements OnInit {
     });
 
     return await modal.present();
+  }
+
+  /**
+   * searchHarvest
+   * @param search
+   */
+  public searchHarvest = (search: string) => {
+    if (search) {
+      this.filteredHarvestEstimate = this.harvestEstimate.filter(item => {
+        return (
+          item.userName.toLowerCase().includes(search.toLowerCase()) ||
+          item.quantity === parseInt(search, 10)
+        );
+      });
+    } else {
+      this.filteredHarvestEstimate = this.harvestEstimate;
+    }
+  }
+
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = () => {
+    this.filteredHarvestEstimate = this.harvestEstimate;
   }
 }

@@ -3,7 +3,7 @@ import {AuthService} from '../auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {BehaviorSubject} from 'rxjs';
-import {LoaderService} from "../loader/loader.service";
+import {LoaderService} from '../loader/loader.service';
 
 @Injectable()
 export class ContractDetailService {
@@ -13,28 +13,21 @@ export class ContractDetailService {
   private readonly storeQualityUrl = 'costcenter/store/quality';
   private readonly storeNoteUrl = 'costcenter/store/note';
 
-  private costCenterListItem: BehaviorSubject<CostCenterList>;
-  private costCenter: BehaviorSubject<CostCenter>;
-  private productionContracts: BehaviorSubject<Array<ProductContract>>;
-  private productionContractsDetails: BehaviorSubject<Array<ProductContractDetail>>;
-  private harvestEstimate: BehaviorSubject<Array<HarvestEstimate>>;
-  private qualityEstimate: BehaviorSubject<Array<QualityEstimate>>;
-  private qualityEstimateDetail: BehaviorSubject<Array<QualityDetail>>;
-  private notes: BehaviorSubject<Array<Note>>;
+  private costCenterListItem: BehaviorSubject<CostCenterList> = new BehaviorSubject<CostCenterList>(null);
+  private costCenter: BehaviorSubject<CostCenter> = new BehaviorSubject<CostCenter>(null);
+  private productionContracts: BehaviorSubject<Array<ProductContract>> = new BehaviorSubject<Array<ProductContract>>([]);
+  private productionContractsDetails: BehaviorSubject<Array<ProductContractDetail>> = new BehaviorSubject<Array<ProductContractDetail>>([]);
+  private harvestEstimate: BehaviorSubject<Array<HarvestEstimate>> = new BehaviorSubject<Array<HarvestEstimate>>([]);
+  private qualityEstimate: BehaviorSubject<Array<QualityEstimate>> = new BehaviorSubject<Array<QualityEstimate>>([]);
+  private qualityEstimateDetail: BehaviorSubject<Array<QualityDetail>> = new BehaviorSubject<Array<QualityDetail>>([]);
+  private notes: BehaviorSubject<Array<Note>> = new BehaviorSubject<Array<Note>>([]);
 
   constructor(
     private authService: AuthService,
     private httpClient: HttpClient,
     private loaderService: LoaderService
   ) {
-    this.costCenterListItem = new BehaviorSubject<CostCenterList>(null);
-    this.costCenter = new BehaviorSubject<CostCenter>(null);
-    this.productionContracts = new BehaviorSubject<Array<ProductContract>>([]);
-    this.productionContractsDetails = new BehaviorSubject<Array<ProductContractDetail>>([]);
-    this.harvestEstimate = new BehaviorSubject<Array<HarvestEstimate>>([]);
-    this.qualityEstimate = new BehaviorSubject<Array<QualityEstimate>>([]);
-    this.qualityEstimateDetail = new BehaviorSubject<Array<QualityDetail>>([]);
-    this.notes = new BehaviorSubject<Array<Note>>([]);
+
   }
 
   /**
@@ -45,7 +38,6 @@ export class ContractDetailService {
     this.loaderService.startLoader('Cargando centro de costo');
     const url = this.authService.buildUrl(this.getCostCenterUrl, id);
     return this.httpClient.post(url, this.authService.buildBody(), {headers: this.authService.getHeaders()}).subscribe((success: any) => {
-      this.loaderService.stopLoader();
 
       const data = success.data;
 
@@ -67,9 +59,9 @@ export class ContractDetailService {
       this.qualityEstimateDetail.next(qualityEstimateDetail);
       this.notes.next(notes);
 
+      this.loaderService.stopLoader();
 
     }, error => {
-      this.loaderService.stopLoader();
 
       this.costCenter.next(null);
       this.productionContracts.next([]);
@@ -78,6 +70,8 @@ export class ContractDetailService {
       this.qualityEstimate.next([]);
       this.qualityEstimateDetail.next([]);
       this.notes.next([]);
+
+      this.loaderService.stopLoader();
 
       this.authService.errorsHandler(error);
     });

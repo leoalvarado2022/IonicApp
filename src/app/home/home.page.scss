@@ -1,10 +1,12 @@
 ion-content {
-  .logo-home{
+  .logo-home {
     text-align: center;
     margin-top: 20%;
+
     img {
       height: 130px;
     }
+
     p {
       color: white;
       text-transform: uppercase;
@@ -18,5 +20,10 @@ ion-content {
     position: absolute;
     width: 100%;
     bottom: 2.5rem;
+  }
+
+  .version {
+    font-size: 1em;
+    color: white;
   }
 }

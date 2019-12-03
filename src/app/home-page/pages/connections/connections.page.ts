@@ -5,6 +5,7 @@ import {Connection} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Router} from '@angular/router';
+import {LoaderService} from "../../../shared/services/loader/loader.service";
 
 @Component({
   selector: 'app-connections',
@@ -22,7 +23,8 @@ export class ConnectionsPage implements OnInit {
     private authService: AuthService,
     private syncService: SyncService,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService,
   ) {
 
   }
@@ -35,9 +37,11 @@ export class ConnectionsPage implements OnInit {
    * loadConnections
    */
   private loadConnections = async () => {
+    this.loaderService.startLoader('Cargando conexiones');
     this.userData = await this.userService.getUserData();
     this.currentConnection = await this.authService.getConnection();
     this.connections = this.userData.connections;
+    this.loaderService.stopLoader();
   }
 
   /**

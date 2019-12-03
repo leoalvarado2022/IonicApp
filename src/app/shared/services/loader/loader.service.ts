@@ -31,9 +31,8 @@ export class LoaderService {
 
   /**
    * stopLoader
-   * @param message
    */
-  public stopLoader = (message: string = 'Cargando...') => {
+  public stopLoader = () => {
     this.message = '';
     this.isLoading.next(false);
   }

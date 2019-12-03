@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {LoaderService} from '../../shared/services/loader/loader.service';
+import {LoaderService} from '../../services/loader/loader.service';
 import {LoadingController} from "@ionic/angular";
 
 @Component({

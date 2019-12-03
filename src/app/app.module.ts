@@ -11,7 +11,7 @@ import {AppRoutingModule} from './app-routing.module';
 // custom0
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {IonicStorageModule} from '@ionic/storage';
-import {LoaderComponent} from './components/loader/loader.component';
+import {LoaderComponent} from './shared/components/loader/loader.component';
 import {LoaderService} from './shared/services/loader/loader.service';
 import {AuthService} from './shared/services/auth/auth.service';
 import {HttpClientModule} from '@angular/common/http';

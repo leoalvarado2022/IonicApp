@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Company} from '@primetec/primetec-angular';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-companies',
@@ -17,6 +18,7 @@ export class CompaniesPage implements OnInit {
   constructor(
     private syncService: SyncService,
     private authService: AuthService,
+    private loaderService: LoaderService,
     private router: Router
   ) {
 
@@ -30,8 +32,10 @@ export class CompaniesPage implements OnInit {
    * loadCompanies
    */
   private loadCompanies = async () => {
+    this.loaderService.startLoader('Cargando empresass');
     this.companies = await this.syncService.getCompanies();
     this.selectedCompany = this.authService.getCompany();
+    this.loaderService.stopLoader();
   }
 
   /**

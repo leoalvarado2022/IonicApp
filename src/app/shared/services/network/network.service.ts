@@ -40,9 +40,16 @@ export class NetworkService {
    * updateNetworkStatus
    * @param status
    */
-  private updateNetworkStatus = async (status: boolean) => {
+  private updateNetworkStatus = (status: boolean) => {
     this.isOnline.next(status);
+    this.showAlert(status);
+  }
 
+  /**
+   * showAlert
+   * @param status
+   */
+  private showAlert = async (status: boolean) => {
     const msg = status === true ? 'Online' : 'Offline';
     const toast = await this.toastController.create({
       message: `App ${msg}`,

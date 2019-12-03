@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {Router} from '@angular/router';
 import {Company} from '@primetec/primetec-angular';
+import {ToastService} from "../toast/toast.service";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class AuthService {
   constructor(
     private httpClient: HttpClient,
     private storage: Storage,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
 
   }
@@ -111,8 +113,13 @@ export class AuthService {
           msg = 'No hay conexion con el servidor.';
           break;
         case 400:
+          msg = error.error.message;
+          break;
+        case 401:
         case 403:
           msg = error.error.message;
+          this.toastService.errorToast('Token vencido.');
+          this.router.navigate(['/home-page']);
           break;
         case 500:
           msg = error.error.message || 'Ocurrio un error en el servidor.';

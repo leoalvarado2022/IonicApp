@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Company, Connection} from '@primetec/primetec-angular';

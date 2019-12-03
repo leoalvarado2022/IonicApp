@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../../shared/services/user/user.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoaderService} from '../../../services/loader/loader.service';
-import {ToastService} from '../../../services/toast/toast.service';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Router} from '@angular/router';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {ValidateRut} from '@primetec/primetec-angular';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../../store/menu/menu.action';
@@ -98,7 +98,7 @@ export class ProfilePage implements OnInit {
    */
   private async update(data): Promise<any> {
 
-    await this.loaderService.showLoader();
+    await this.loaderService.startLoader();
 
     return new Promise((resolve, reject) => {
       this.userService.updateUser(data).subscribe(success => {
@@ -118,11 +118,11 @@ export class ProfilePage implements OnInit {
 
         // this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
         this.router.navigate(['home-page']);
-        this.loaderService.hideLoader();
+        this.loaderService.stopLoader();
         resolve(true);
       }, error => {
         const msg = this.authService.errorsHandler(error);
-        this.loaderService.hideLoader();
+        this.loaderService.stopLoader();
         this.toastService.errorToast(msg);
         resolve(false);
       });
@@ -182,7 +182,7 @@ export class ProfilePage implements OnInit {
       sourceType
     };
 
-    this.loaderService.showLoader();
+    this.loaderService.startLoader();
 
     this.camera.getPicture(options).then((imageData) => {
       // imageData is either a base64 encoded string or a file URI
@@ -191,11 +191,11 @@ export class ProfilePage implements OnInit {
       const image = `data:image/jpeg;base64,${imageData}`;
       this.avatarPreview = image;
       this.registerForm.controls.avatar.patchValue(image);
-      this.loaderService.hideLoader();
+      this.loaderService.stopLoader();
 
     }, (err) => {
       // Handle error
-      this.loaderService.hideLoader();
+      this.loaderService.stopLoader();
     });
   }
 

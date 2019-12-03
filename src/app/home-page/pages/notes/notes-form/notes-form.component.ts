@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CostCenter, Note} from '@primetec/primetec-angular';
-import {AuthService} from '../../../../services/auth/auth.service';
+import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
-import {ToastService} from '../../../../services/toast/toast.service';
+import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {DetectPlatformService} from '../../../../shared/services/detect-platform/detect-platform.service';
 

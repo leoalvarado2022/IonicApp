@@ -3,10 +3,9 @@ import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
-import {LoaderService} from '../../../services/loader/loader.service';
-import {ToastService} from '../../../services/toast/toast.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-contract-detail',
@@ -32,7 +31,6 @@ export class ContractDetailPage implements OnInit {
     private contractDetailService: ContractDetailService,
     private authService: AuthService,
     private syncService: SyncService,
-    private loaderService: LoaderService,
     private toastService: ToastService,
     private router: Router
   ) {

@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoaderService} from '../../../services/loader/loader.service';
-import {AuthService} from '../../../services/auth/auth.service';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
-import {ToastService} from '../../../services/toast/toast.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 import {UserService} from '../../../shared/services/user/user.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class PinPage implements OnInit {
    * onSubmit pin
    */
   public onSubmit = async () => {
-    this.loaderService.showLoader();
+    this.loaderService.startLoader();
     try {
       const data = Object.assign({}, this.pinForm.value);
 
@@ -93,10 +93,10 @@ export class PinPage implements OnInit {
         }
       }
 
-      this.loaderService.hideLoader();
+      this.loaderService.stopLoader();
 
     } catch (e) {
-      this.loaderService.hideLoader();
+      this.loaderService.stopLoader();
     }
   };
 

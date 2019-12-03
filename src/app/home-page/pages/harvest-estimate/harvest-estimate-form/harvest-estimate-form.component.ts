@@ -6,8 +6,8 @@ import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {UserService} from '../../../../shared/services/user/user.service';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
-import {AuthService} from '../../../../services/auth/auth.service';
-import {ToastService} from '../../../../services/toast/toast.service';
+import {AuthService} from '../../../../shared/services/auth/auth.service';
+import {ToastService} from '../../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-harvest-estimate-form',

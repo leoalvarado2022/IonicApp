@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {CostCenter, Note} from '@primetec/primetec-angular';
-import {NotesFormComponent} from '../../../home-page/pages/notes/notes-form/notes-form.component';
+import {NotesFormComponent} from '../notes-form/notes-form.component';
 import {ModalController} from '@ionic/angular';
-import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 
 @Component({
   selector: 'app-note-item',

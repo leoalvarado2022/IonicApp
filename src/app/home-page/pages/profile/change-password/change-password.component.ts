@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoaderService} from '../../../../services/loader/loader.service';
-import {ToastService} from '../../../../services/toast/toast.service';
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {confirmPassword} from '../../../../validators/confirm-password.validator';
 import {UserService} from '../../../../shared/services/user/user.service';
-import {AuthService} from '../../../../services/auth/auth.service';
+import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
 
 @Component({
@@ -61,7 +61,7 @@ export class ChangePasswordComponent implements OnInit {
    */
   private async update(data: any, userRemember: any): Promise<any> {
 
-    await this.loaderService.showLoader();
+    await this.loaderService.startLoader();
 
     return new Promise((resolve, reject) => {
       this.userService.updatePassword(data).subscribe(success => {
@@ -71,11 +71,11 @@ export class ChangePasswordComponent implements OnInit {
         userRemember.password = data.newPassword;
         this.userService.setUserRemember(userRemember);
         this.toastService.successToast('Se actualizo la contraseña correctamente');
-        this.loaderService.hideLoader();
+        this.loaderService.stopLoader();
         resolve(true);
       }, error => {
         const msg = this.authService.errorsHandler(error);
-        this.loaderService.hideLoader();
+        this.loaderService.stopLoader();
         this.toastService.errorToast(msg);
         resolve(false);
       });

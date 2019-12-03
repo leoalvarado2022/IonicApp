@@ -12,10 +12,9 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {IonicStorageModule} from '@ionic/storage';
 import {LoaderComponent} from './components/loader/loader.component';
-import {LoaderService} from './services/loader/loader.service';
-import {AuthService} from './services/auth/auth.service';
+import {LoaderService} from './shared/services/loader/loader.service';
+import {AuthService} from './shared/services/auth/auth.service';
 import {HttpClientModule} from '@angular/common/http';
-import {ToastService} from './services/toast/toast.service';
 import {Device} from '@ionic-native/device/ngx';
 import {SharedModule} from './shared/shared.module';
 import {Camera} from '@ionic-native/camera/ngx';
@@ -29,6 +28,7 @@ import {environment} from '../environments/environment';
 import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
+import {NetworkService} from "./shared/services/network/network.service";
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -58,15 +58,14 @@ const NGRX_IMPORTS = [
     ...NGRX_IMPORTS
   ],
   providers: [
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     StatusBar,
     SplashScreen,
     AppVersion,
-    LoaderService,
-    AuthService,
-    ToastService,
     Device,
     Camera,
-    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+    LoaderService,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

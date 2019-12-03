@@ -2,10 +2,10 @@ import {Component, Input, OnInit} from '@angular/core';
 import {CostCenter, CostCenterList} from '@primetec/primetec-angular';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
-import {AuthService} from '../../../../services/auth/auth.service';
+import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
-import {ToastService} from '../../../../services/toast/toast.service';
+import {ToastService} from '../../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-quality-estimate-form',

@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {BehaviorSubject} from 'rxjs';
+import {LoaderService} from "../loader/loader.service";
 
 @Injectable()
 export class ContractDetailService {
@@ -23,7 +24,8 @@ export class ContractDetailService {
 
   constructor(
     private authService: AuthService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private loaderService: LoaderService
   ) {
     this.costCenterListItem = new BehaviorSubject<CostCenterList>(null);
     this.costCenter = new BehaviorSubject<CostCenter>(null);
@@ -40,8 +42,11 @@ export class ContractDetailService {
    * @param id
    */
   public getCostCenterDetail = (id: string) => {
+    this.loaderService.startLoader('Cargando centro de costo');
     const url = this.authService.buildUrl(this.getCostCenterUrl, id);
     return this.httpClient.post(url, this.authService.buildBody(), {headers: this.authService.getHeaders()}).subscribe((success: any) => {
+      this.loaderService.stopLoader();
+
       const data = success.data;
 
       const {
@@ -62,7 +67,10 @@ export class ContractDetailService {
       this.qualityEstimateDetail.next(qualityEstimateDetail);
       this.notes.next(notes);
 
+
     }, error => {
+      this.loaderService.stopLoader();
+
       this.costCenter.next(null);
       this.productionContracts.next([]);
       this.productionContractsDetails.next([]);

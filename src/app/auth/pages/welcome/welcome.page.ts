@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from '../../../shared/services/storage/storage.service';
-import {ToastService} from '../../../services/toast/toast.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertController} from '@ionic/angular';
 
 @Component({

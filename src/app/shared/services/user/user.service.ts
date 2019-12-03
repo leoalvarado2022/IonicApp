@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../auth/auth.service';
 import {Observable} from 'rxjs';
 import {getMenuProfile} from '../../../reducers/reducers';
 import {Store} from '@ngrx/store';

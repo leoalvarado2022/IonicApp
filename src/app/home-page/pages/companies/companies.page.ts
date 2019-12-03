@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Company} from '@primetec/primetec-angular';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
 
 @Component({

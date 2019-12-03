@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoaderService} from '../../../services/loader/loader.service';
-import {AuthService} from '../../../services/auth/auth.service';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {NavigationEnd, Router} from '@angular/router';
-import {ToastService} from '../../../services/toast/toast.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 import {StorageService} from '../../../shared/services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../../store/menu/menu.action';
@@ -123,7 +123,7 @@ export class LoginPage implements OnInit {
       }
     } catch (e) {
       console.log({e});
-      this.loaderService.hideLoader();
+      this.loaderService.startLoader();
     }
 
   }
@@ -170,16 +170,16 @@ export class LoginPage implements OnInit {
    * @param data LoginEndpoint
    */
   private login = (data: any): Promise<any> => {
-    this.loaderService.showLoader('Iniciando sesion...');
+    this.loaderService.startLoader('Iniciando sesion...');
 
     return new Promise((resolve) => {
       this.authService.login(data).subscribe((success: any) => {
 
-        this.loaderService.hideLoader();
+        this.loaderService.stopLoader();
         resolve(success);
 
       }, error => {
-        this.loaderService.hideLoader();
+        this.loaderService.stopLoader();
         const name = error.error.name;
 
         if (name === 'ConnectionsNotFound') {

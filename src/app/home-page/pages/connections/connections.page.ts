@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../../shared/services/user/user.service';
-import {AuthService} from '../../../services/auth/auth.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Connection} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
-import {ToastService} from '../../../services/toast/toast.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Router} from '@angular/router';
 
 @Component({

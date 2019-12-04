@@ -6,7 +6,9 @@ export enum MenuActionTypes {
 
 export class AddProfile implements Action {
   readonly type = MenuActionTypes.AddProfile;
-  constructor(public payload?: any) {}
+
+  constructor(public payload?: any) {
+  }
 }
 
 

@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {CostCenter, Note} from '@primetec/primetec-angular';
-import {ModalController} from '@ionic/angular';
+import {AlertController, ModalController} from '@ionic/angular';
 import {NotesFormComponent} from './notes-form/notes-form.component';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
+import {HttpService} from '../../../shared/services/http/http.service';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-notes',
@@ -12,15 +14,18 @@ import {ContractDetailService} from '../../../shared/services/contract-detail/co
 })
 export class NotesPage implements OnInit {
 
-  private notes: Array<Note>;
   public filteredNotes: Array<Note>;
-  private costCenter: CostCenter;
+  private notes: Array<Note>;
+  public costCenter: CostCenter;
   private currentUrl: string;
 
   constructor(
-    private router: Router,
     private modalController: ModalController,
-    private contractDetailService: ContractDetailService
+    private contractDetailService: ContractDetailService,
+    private router: Router,
+    private httpService: HttpService,
+    private loaderService: LoaderService,
+    private alertController: AlertController
   ) {
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
@@ -105,4 +110,45 @@ export class NotesPage implements OnInit {
     return await modal.present();
   }
 
+  /**
+   * deleteNoteConfirm
+   */
+  public deleteNoteConfirm = async (note: Note) => {
+    const alert = await this.alertController.create({
+      message: 'Desea borrar esta nota?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Si',
+          handler: async () => {
+            const newNote = Object.assign({}, note, {id: -note.id});
+            await this.storeNote(newNote);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  /**
+   * storeNote
+   * @param data
+   */
+  private storeNote = async (data: any) => {
+    await this.loaderService.startLoader('Borrando nota');
+    this.contractDetailService.storeNote(data).subscribe(async success => {
+      await this.loaderService.stopLoader();
+      await this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+    }, async error => {
+      await this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
+  }
 }

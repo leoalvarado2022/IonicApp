@@ -12,8 +12,8 @@ import {QualityEstimateFormComponent} from './quality-estimate-form/quality-esti
 })
 export class QualityEstimatePage implements OnInit {
 
-  private qualityEstimate: Array<QualityEstimate>;
   public filteredQualityEstimate: Array<QualityEstimate>;
+  private qualityEstimate: Array<QualityEstimate>;
   private qualityEstimateDetail: Array<QualityDetail>;
   private costCenter: CostCenter;
   private currentUrl: string;

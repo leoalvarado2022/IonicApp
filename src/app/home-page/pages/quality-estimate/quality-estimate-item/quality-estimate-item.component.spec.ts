@@ -1,7 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { QualityEstimateItemComponent } from './quality-estimate-item.component';
+import {QualityEstimateItemComponent} from './quality-estimate-item.component';
 
 describe('QualityEstimateItemComponent', () => {
   let component: QualityEstimateItemComponent;
@@ -9,10 +9,10 @@ describe('QualityEstimateItemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QualityEstimateItemComponent ],
+      declarations: [QualityEstimateItemComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

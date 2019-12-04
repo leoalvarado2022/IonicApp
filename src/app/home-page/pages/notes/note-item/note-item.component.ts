@@ -9,7 +9,9 @@ import {Note} from '@primetec/primetec-angular';
 export class NoteItemComponent implements OnInit {
 
   @Output() noteClicked: EventEmitter<Note | null> = new EventEmitter<Note | null>();
+  @Output() deleteNote: EventEmitter<Note | null> = new EventEmitter<Note | null>();
   @Input() item: Note = null;
+  @Input() slideDisabled = true;
 
   constructor() {
 
@@ -17,14 +19,6 @@ export class NoteItemComponent implements OnInit {
 
   ngOnInit() {
 
-  }
-
-  /**
-   * itemClicked
-   * @param item
-   */
-  public itemClicked = (item: Note = null) => {
-    this.noteClicked.emit(item);
   }
 
   /**
@@ -37,4 +31,21 @@ export class NoteItemComponent implements OnInit {
 
     return '';
   }
+
+  /**
+   * itemClicked
+   * @param item
+   */
+  public itemClicked = (item: Note = null) => {
+    this.noteClicked.emit(item);
+  }
+
+  /**
+   * deleteItem
+   * @param item
+   */
+  public deleteItem = (item: Note) => {
+    this.deleteNote.emit(item);
+  }
+
 }

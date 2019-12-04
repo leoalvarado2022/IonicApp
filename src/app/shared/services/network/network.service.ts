@@ -20,6 +20,20 @@ export class NetworkService {
   }
 
   /**
+   * getNetworkStatus
+   */
+  public getNetworkStatus = (): boolean => {
+    return this.isOnline.getValue();
+  }
+
+  /**
+   * onNetworkChange
+   */
+  public onNetworkChange = (): Observable<boolean> => {
+    return this.isOnline.asObservable();
+  }
+
+  /**
    * initializeNetworkEvents
    */
   private initializeNetworkEvents = () => {
@@ -59,20 +73,6 @@ export class NetworkService {
     });
 
     await toast.present();
-  }
-
-  /**
-   * getNetworkStatus
-   */
-  public getNetworkStatus = (): boolean => {
-    return this.isOnline.getValue();
-  }
-
-  /**
-   * onNetworkChange
-   */
-  public onNetworkChange = (): Observable<boolean> => {
-    return this.isOnline.asObservable();
   }
 
 }

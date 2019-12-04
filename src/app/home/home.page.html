@@ -1,13 +1,13 @@
 <ion-content class="background-color-home" scrollX="false" scrollY="false">
   <div>
     <div class="logo-home">
-      <img src="assets/imgs/logo.png" alt="Primetec">
+      <img alt="Primetec" src="assets/imgs/logo.png">
       <p>FX11</p>
       <div class="version">{{ getVersion() }}</div>
     </div>
     <div class="ion-text-center buttons-home">
-      <ion-button class="button-primary-home" [routerLink]="['/auth/login']">Iniciar Sesión</ion-button>
-      <ion-button class="button-secondary-home" [routerLink]="['/auth/register']">Registrarse</ion-button>
+      <ion-button [routerLink]="['/auth/login']" class="button-primary-home">Iniciar Sesión</ion-button>
+      <ion-button [routerLink]="['/auth/register']" class="button-secondary-home">Registrarse</ion-button>
     </div>
   </div>
 </ion-content>

@@ -1,8 +1,8 @@
 <ng-container *ngIf="item; else empty">
-  <div class="harvest-estimate" [ngClass]="{ 'old': isOld}">
-    <div class="name" (click)="showList()">
+  <div [ngClass]="{ 'old': isOld}" class="harvest-estimate">
+    <div (click)="showList()" class="name">
       <div class="icon">
-        <ion-icon name="cart" color="warning"></ion-icon>
+        <ion-icon color="warning" name="cart"></ion-icon>
       </div>
       <div class="name--name">
         <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
@@ -21,7 +21,7 @@
         <div class="total">
           <p class="font-10 margin-0 grey">KG Totales</p>
           <p class="margin-0 bold">
-            <ion-icon [name]="item.arrow" [color]="item.color"></ion-icon>&nbsp;
+            <ion-icon [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
             <span>{{ item.quantity | number:'1.0-0':'es-CL' }}</span>
           </p>
         </div>
@@ -32,9 +32,9 @@
 
 <ng-template #empty>
   <div class="harvest-estimate">
-    <div class="name" (click)="showList()">
+    <div (click)="showList()" class="name">
       <div class="icon">
-        <ion-icon name="cart" color="warning"></ion-icon>
+        <ion-icon color="warning" name="cart"></ion-icon>
       </div>
       <div class="name--name">
         <p class="mayu margin-0"><strong>Estimacion de Cosecha</strong></p>
@@ -53,7 +53,7 @@
         <div class="total">
           <p class="font-10 margin-0 grey">KG Totales</p>
           <p class="margin-0 bold">
-            <ion-icon name="remove" color="default"></ion-icon>&nbsp;
+            <ion-icon color="default" name="remove"></ion-icon>&nbsp;
             <span>0</span>
           </p>
         </div>

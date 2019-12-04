@@ -5,6 +5,7 @@ import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {UserService} from '../../../shared/services/user/user.service';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-pin',
@@ -15,22 +16,24 @@ export class PinPage implements OnInit {
 
   public pinForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder,
-              private loaderService: LoaderService,
-              private authService: AuthService,
-              private userService: UserService,
-              private router: Router,
-              private toastService: ToastService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private loaderService: LoaderService,
+    private authService: AuthService,
+    private userService: UserService,
+    private router: Router,
+    private toastService: ToastService,
+    private httpService: HttpService
+  ) {
 
+  }
+
+  ngOnInit() {
     this.pinForm = this.formBuilder.group({
       pin: ['', [
         Validators.required,
       ]]
     });
-
-  }
-
-  ngOnInit() {
   }
 
   /**
@@ -55,9 +58,9 @@ export class PinPage implements OnInit {
 
               this.authService.setConnection(checkToken.data[0]);
 
-              console.log(connectionPin, 'connectionPin')
-              console.log(user, 'user')
-              console.log(checkToken, 'checkToken')
+              console.log(connectionPin, 'connectionPin');
+              console.log(user, 'user');
+              console.log(checkToken, 'checkToken');
 
               const role = checkToken.data[0].rol;
               const id_conexion = connectionPin.data[0].id_conexion;
@@ -65,7 +68,7 @@ export class PinPage implements OnInit {
               const data = Object.assign(user.user[0], {
                 names: user.user[0].name,
                 password: '',
-                role: role,
+                role,
                 pin: this.pinForm.value.pin,
                 connectionId: id_conexion,
                 app: 'FX10',
@@ -83,7 +86,7 @@ export class PinPage implements OnInit {
                 await this.userService.removeUserData();
                 this.authService.removeToken();
                 this.authService.removeConnection();
-                this.router.navigate(['auth/login'])
+                this.router.navigate(['auth/login']);
                 // this.router.navigate(['/auth'])
               }
               //
@@ -98,7 +101,7 @@ export class PinPage implements OnInit {
     } catch (e) {
       this.loaderService.stopLoader();
     }
-  };
+  }
 
 
   /**
@@ -106,113 +109,72 @@ export class PinPage implements OnInit {
    * @param pin
    */
   private checkToken = (): Promise<any> => {
-
     // this.loaderService.showLoader();
-
     return new Promise((resolve) => {
-
       this.authService.checkToken().subscribe((success: any) => {
 
         // this.loaderService.hideLoader();
         // this.toastService.successToast('Se creo la conexion correctamente, por favor inicie sesión');
         resolve(success);
-
       }, error => {
-
-        // this.loaderService.hideLoader();
-        const msg = this.authService.errorsHandler(error);
-
-        this.toastService.errorToast(msg)
-
+        this.httpService.errorHandler(error);
         resolve(null);
       });
     });
-  };
-
+  }
 
   /**
    * check token
    * @param pin
    */
   private assignUser = (data: any): Promise<any> => {
-
     // this.loaderService.showLoader();
-
     return new Promise((resolve) => {
-
       this.userService.assignUser(data).subscribe((success: any) => {
-
         // this.loaderService.hideLoader();
         // this.toastService.successToast('Se creo la conexion correctamente, por favor inicie sesión');
         resolve(success);
-
       }, error => {
-
-        // this.loaderService.hideLoader();
-        const msg = this.authService.errorsHandler(error);
-
-        this.toastService.errorToast(msg)
-
+        this.httpService.errorHandler(error);
         resolve(null);
       });
     });
-  };
-
+  }
 
   /**
    * use connection
    * @param pin
    */
   private userConnection = (): Promise<any> => {
-
     // this.loaderService.showLoader();
-
     return new Promise((resolve) => {
-
       this.userService.getUser().subscribe((success: any) => {
-
         // this.loaderService.hideLoader();
         // this.toastService.successToast('Se creo la conexion correctamente, por favor inicie sesión');
         resolve(success);
-
       }, error => {
-
-        // this.loaderService.hideLoader();
-        const msg = this.authService.errorsHandler(error);
-
-        this.toastService.errorToast(msg)
-
+        this.httpService.errorHandler(error);
         resolve(null);
       });
     });
-  };
+  }
 
   /**
    * createConnectionPin
    * @param pin
    */
   private createUserConnection = (pin: any): Promise<any> => {
-
     // this.loaderService.showLoader();
-
     return new Promise((resolve) => {
-
       this.authService.createPinConnection(pin).subscribe((success: any) => {
-
         // this.loaderService.hideLoader();
         // this.toastService.successToast('Se creo la conexion correctamente, por favor inicie sesión');
         resolve(success);
-
       }, error => {
-
-        // this.loaderService.hideLoader();
-        const msg = this.authService.errorsHandler(error);
-
-        this.toastService.errorToast(msg)
-
+        this.httpService.errorHandler(error);
         resolve(null);
       });
     });
-  };
+  }
 
 }

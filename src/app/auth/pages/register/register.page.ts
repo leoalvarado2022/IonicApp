@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {confirmPassword} from '../../../validators/confirm-password.validator';
 import {UserService} from '../../../shared/services/user/user.service';
@@ -10,13 +10,14 @@ import {DetectPlatformService} from '../../../shared/services/detect-platform/de
 import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
 
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage {
+export class RegisterPage implements OnInit {
 
   public registerForm: FormGroup;
   public avatarPreview: any = null;
@@ -29,8 +30,13 @@ export class RegisterPage {
     private router: Router,
     public detectPlatformService: DetectPlatformService,
     private authService: AuthService,
-    public camera: Camera
+    public camera: Camera,
+    private httpService: HttpService
   ) {
+
+  }
+
+  ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
       names: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -61,28 +67,6 @@ export class RegisterPage {
   public async onSubmit() {
     const data = Object.assign({}, this.registerForm.value);
     await this.create(data);
-  }
-
-  /**
-   * create
-   * @param data
-   */
-  private async create(data): Promise<any> {
-    await this.loaderService.startLoader();
-    return new Promise((resolve, reject) => {
-      this.userService.createUser(data).subscribe(success => {
-        this.toastService.successToast('Se creo el usuario correctamente, inicia sesión');
-        this.loaderService.stopLoader();
-        this.registerForm.reset();
-        this.router.navigate(['auth/login']);
-        resolve(true);
-      }, error => {
-        const msg = this.authService.errorsHandler(error);
-        this.loaderService.stopLoader();
-        this.toastService.errorToast(msg);
-        resolve(false);
-      });
-    });
   }
 
   /**
@@ -167,5 +151,26 @@ export class RegisterPage {
     } else {
       this.toastService.warningToast('Cordova requerido');
     }
+  }
+
+  /**
+   * create
+   * @param data
+   */
+  private async create(data): Promise<any> {
+    await this.loaderService.startLoader();
+    return new Promise((resolve, reject) => {
+      this.userService.createUser(data).subscribe(success => {
+        this.toastService.successToast('Se creo el usuario correctamente, inicia sesión');
+        this.loaderService.stopLoader();
+        this.registerForm.reset();
+        this.router.navigate(['auth/login']);
+        resolve(true);
+      }, error => {
+        this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+        resolve(false);
+      });
+    });
   }
 }

@@ -1,12 +1,12 @@
 import {TestBed} from '@angular/core/testing';
 
-import {SyncService} from './sync.service';
+import {HttpService} from './http.service';
 
-describe('SyncService', () => {
+describe('HttpService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SyncService = TestBed.get(SyncService);
+    const service: HttpService = TestBed.get(HttpService);
     expect(service).toBeTruthy();
   });
 });

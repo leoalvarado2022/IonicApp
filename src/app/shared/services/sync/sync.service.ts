@@ -3,6 +3,7 @@ import {AuthService} from '../auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {StorageService} from '../storage/storage.service';
 import {Company, CostCenterList, TabMenu} from '@primetec/primetec-angular';
+import {HttpService} from '../http/http.service';
 
 @Injectable()
 export class SyncService {
@@ -12,7 +13,8 @@ export class SyncService {
   constructor(
     private authService: AuthService,
     private httpClient: HttpClient,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private httpService: HttpService
   ) {
 
   }
@@ -22,8 +24,8 @@ export class SyncService {
    * @param username
    */
   public syncData = (username: string) => {
-    const url = this.authService.buildUrl(this.syncUrl);
-    return this.httpClient.post(url, this.authService.buildBody({username}), {headers: this.authService.getHeaders()});
+    const url = this.httpService.buildUrl(this.syncUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({username}), {headers: this.httpService.getHeaders()});
   }
 
   /**

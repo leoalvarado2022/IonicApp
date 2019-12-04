@@ -9,6 +9,7 @@ import {Store} from '@ngrx/store';
 import * as MenuAction from '../../../store/menu/menu.action';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-login',
@@ -26,9 +27,10 @@ export class LoginPage implements OnInit {
     private router: Router,
     private storage: StorageService,
     private toastService: ToastService,
-    public store: Store<any>,
+    private store: Store<any>,
     private syncService: SyncService,
-    private userService: UserService
+    private userService: UserService,
+    private httpService: HttpService
   ) {
 
   }
@@ -45,27 +47,6 @@ export class LoginPage implements OnInit {
         this.checkRemember();
       }
     });
-  }
-
-  /**
-   * checkRemember
-   */
-  private checkRemember = async () => {
-    const remember = this.authService.getRememberStatus();
-
-    if (remember) {
-      const userData = await this.userService.getUserRemember();
-
-      if (userData) {
-        this.loginForm.patchValue({
-          username: userData.username,
-          password: userData.password,
-          remember: ['true']
-        });
-
-        this.loginForm.updateValueAndValidity();
-      }
-    }
   }
 
   /**
@@ -116,8 +97,7 @@ export class LoginPage implements OnInit {
             await this.syncService.storeSync(success.data);
             this.makeLogin();
           }, error => {
-            const msg = this.authService.errorsHandler(error);
-            this.toastService.warningToast(error.error.message);
+            this.httpService.errorHandler(error);
           });
         }
       }
@@ -151,6 +131,7 @@ export class LoginPage implements OnInit {
     this.loginForm.reset();
     this.router.navigate(['/home-page']);
   }
+
   /**
    * filterKeys
    * @param event
@@ -163,6 +144,35 @@ export class LoginPage implements OnInit {
     }
 
     return false;
+  }
+
+  /**
+   * limpiarCache
+   */
+  public limpiarCache = async () => {
+    localStorage.clear();
+    await this.storage.clearAllRow();
+  }
+
+  /**
+   * checkRemember
+   */
+  private checkRemember = async () => {
+    const remember = this.authService.getRememberStatus();
+
+    if (remember) {
+      const userData = await this.userService.getUserRemember();
+
+      if (userData) {
+        this.loginForm.patchValue({
+          username: userData.username,
+          password: userData.password,
+          remember: ['true']
+        });
+
+        this.loginForm.updateValueAndValidity();
+      }
+    }
   }
 
   /**
@@ -186,19 +196,10 @@ export class LoginPage implements OnInit {
           const token = error.error.data.token;
           resolve({code: 1, token, user: data, message: error.error.message});
         } else {
-          const msg = this.authService.errorsHandler(error);
-          this.toastService.warningToast(error.error.message);
+          this.httpService.errorHandler(error);
           resolve(null);
         }
       });
     });
-  }
-
-  /**
-   * limpiarCache
-   */
-  public limpiarCache = async () => {
-    localStorage.clear();
-    await this.storage.clearAllRow();
   }
 }

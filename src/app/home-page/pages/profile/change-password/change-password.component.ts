@@ -6,6 +6,7 @@ import {confirmPassword} from '../../../../validators/confirm-password.validator
 import {UserService} from '../../../../shared/services/user/user.service';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
+import {HttpService} from '../../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-change-password',
@@ -16,12 +17,16 @@ export class ChangePasswordComponent implements OnInit {
 
   passwordForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder,
-              private userService: UserService,
-              private authService: AuthService,
-              private loaderService: LoaderService,
-              private toastService: ToastService,
-              private modalController: ModalController) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService,
+    private authService: AuthService,
+    private loaderService: LoaderService,
+    private toastService: ToastService,
+    private modalController: ModalController,
+    private httpService: HttpService
+  ) {
+
   }
 
   ngOnInit() {
@@ -55,6 +60,10 @@ export class ChangePasswordComponent implements OnInit {
     await this.update(data, user);
   }
 
+  modalClose = () => {
+    this.modalController.dismiss();
+  }
+
   /**
    * create
    * @param data
@@ -74,16 +83,11 @@ export class ChangePasswordComponent implements OnInit {
         this.loaderService.stopLoader();
         resolve(true);
       }, error => {
-        const msg = this.authService.errorsHandler(error);
         this.loaderService.stopLoader();
-        this.toastService.errorToast(msg);
+        this.httpService.errorHandler(error);
         resolve(false);
       });
     });
-  }
-
-  modalClose = () => {
-    this.modalController.dismiss();
   }
 
 }

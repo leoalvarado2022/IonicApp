@@ -12,8 +12,8 @@ import {ContractDetailService} from '../../../shared/services/contract-detail/co
 })
 export class HarvestEstimatePage implements OnInit {
 
-  private harvestEstimate: Array<HarvestEstimate>;
   public filteredHarvestEstimate: Array<HarvestEstimate>;
+  private harvestEstimate: Array<HarvestEstimate>;
   private currentUrl: string;
   private costCenter: CostCenter;
 

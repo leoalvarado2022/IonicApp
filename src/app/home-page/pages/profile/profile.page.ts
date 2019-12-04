@@ -13,6 +13,7 @@ import {ChangePasswordComponent} from './change-password/change-password.compone
 import {DetectPlatformService} from '../../../shared/services/detect-platform/detect-platform.service';
 
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-profile',
@@ -33,11 +34,12 @@ export class ProfilePage implements OnInit {
     private loaderService: LoaderService,
     private toastService: ToastService,
     private router: Router,
-    public store: Store<any>,
-    public modalController: ModalController,
+    private store: Store<any>,
+    private modalController: ModalController,
     public detectPlatformService: DetectPlatformService,
     private authService: AuthService,
-    public camera: Camera
+    public camera: Camera,
+    private httpService: HttpService
   ) {
     this.initForm();
   }
@@ -90,43 +92,6 @@ export class ProfilePage implements OnInit {
     const data = Object.assign(list, this.registerForm.value);
 
     await this.update(data);
-  }
-
-  /**
-   * update
-   * @param data
-   */
-  private async update(data): Promise<any> {
-
-    await this.loaderService.startLoader();
-
-    return new Promise((resolve, reject) => {
-      this.userService.updateUser(data).subscribe(success => {
-
-        if (this.data.user) {
-          this.data.user.access = data.acceso;
-          this.data.user.surName = data.apellido_materno;
-          this.data.user.lastName = data.apellido_paterno;
-          this.data.user.name = data.nombre;
-          this.data.user.phone = data.telefono;
-          this.data.user.avatar = data.avatar;
-        }
-
-        this.userService.setUserData(this.data);
-        this.store.dispatch(new MenuAction.AddProfile(this.data));
-        this.ngOnInit();
-
-        // this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
-        this.router.navigate(['home-page']);
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        const msg = this.authService.errorsHandler(error);
-        this.loaderService.stopLoader();
-        this.toastService.errorToast(msg);
-        resolve(false);
-      });
-    });
   }
 
   /**
@@ -196,6 +161,42 @@ export class ProfilePage implements OnInit {
     }, (err) => {
       // Handle error
       this.loaderService.stopLoader();
+    });
+  }
+
+  /**
+   * update
+   * @param data
+   */
+  private async update(data): Promise<any> {
+
+    await this.loaderService.startLoader();
+
+    return new Promise((resolve, reject) => {
+      this.userService.updateUser(data).subscribe(success => {
+
+        if (this.data.user) {
+          this.data.user.access = data.acceso;
+          this.data.user.surName = data.apellido_materno;
+          this.data.user.lastName = data.apellido_paterno;
+          this.data.user.name = data.nombre;
+          this.data.user.phone = data.telefono;
+          this.data.user.avatar = data.avatar;
+        }
+
+        this.userService.setUserData(this.data);
+        this.store.dispatch(new MenuAction.AddProfile(this.data));
+        this.ngOnInit();
+
+        // this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
+        this.router.navigate(['home-page']);
+        this.loaderService.stopLoader();
+        resolve(true);
+      }, error => {
+        this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+        resolve(false);
+      });
     });
   }
 

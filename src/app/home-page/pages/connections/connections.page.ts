@@ -5,7 +5,8 @@ import {Connection} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Router} from '@angular/router';
-import {LoaderService} from "../../../shared/services/loader/loader.service";
+import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-connections',
@@ -25,23 +26,13 @@ export class ConnectionsPage implements OnInit {
     private toastService: ToastService,
     private router: Router,
     private loaderService: LoaderService,
+    private httpService: HttpService
   ) {
 
   }
 
   ngOnInit() {
     this.loadConnections();
-  }
-
-  /**
-   * loadConnections
-   */
-  private loadConnections = async () => {
-    this.loaderService.startLoader('Cargando conexiones');
-    this.userData = await this.userService.getUserData();
-    this.currentConnection = await this.authService.getConnection();
-    this.connections = this.userData.connections;
-    this.loaderService.stopLoader();
   }
 
   /**
@@ -58,6 +49,17 @@ export class ConnectionsPage implements OnInit {
   }
 
   /**
+   * loadConnections
+   */
+  private loadConnections = async () => {
+    this.loaderService.startLoader('Cargando conexiones');
+    this.userData = await this.userService.getUserData();
+    this.currentConnection = await this.authService.getConnection();
+    this.connections = this.userData.connections;
+    this.loaderService.stopLoader();
+  }
+
+  /**
    * syncMobile
    */
   private syncMobile = (): Promise<any> => {
@@ -67,8 +69,7 @@ export class ConnectionsPage implements OnInit {
           await this.syncService.storeSync(success.data);
           resolve(true);
         }, error => {
-          const msg = this.authService.errorsHandler(error);
-          this.toastService.warningToast(msg);
+          this.httpService.errorHandler(error);
           reject('error');
         });
       } else {

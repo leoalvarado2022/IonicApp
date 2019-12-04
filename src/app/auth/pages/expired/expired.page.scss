@@ -1,10 +1,12 @@
 ion-content {
-  .logo-home{
+  .logo-home {
     text-align: center;
     margin-top: 20%;
+
     img {
       height: 130px;
     }
+
     p {
       color: white;
       text-transform: uppercase;
@@ -13,12 +15,11 @@ ion-content {
       margin-top: 0;
     }
 
-    .message{
+    .message {
       font-size: 12px !important;
       padding: 10px 85px;
     }
   }
-
 
 
   .buttons-home {

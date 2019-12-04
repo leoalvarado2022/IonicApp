@@ -1,7 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CostCenterCardComponent } from './cost-center-card.component';
+import {CostCenterCardComponent} from './cost-center-card.component';
 
 describe('CostCenterCardComponent', () => {
   let component: CostCenterCardComponent;
@@ -9,10 +9,10 @@ describe('CostCenterCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CostCenterCardComponent ],
+      declarations: [CostCenterCardComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

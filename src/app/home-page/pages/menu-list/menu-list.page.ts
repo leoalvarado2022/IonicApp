@@ -9,6 +9,7 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NetworkService} from '../../../shared/services/network/network.service';
 import * as MenuAction from '../../../store/menu/menu.action';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-menu-list',
@@ -29,8 +30,9 @@ export class MenuListPage implements OnInit {
     private authService: AuthService,
     private toastService: ToastService,
     private router: Router,
-    public networkService: NetworkService,
-    private activatedRoute: ActivatedRoute
+    private networkService: NetworkService,
+    private activatedRoute: ActivatedRoute,
+    private httpService: HttpService
   ) {
     this.networkService.onNetworkChange().subscribe((status: boolean) => {
       this.isOnline = status;
@@ -40,6 +42,33 @@ export class MenuListPage implements OnInit {
   ngOnInit() {
     this.getUserData();
     this.loadMenus();
+  }
+
+  /**
+   * reSync
+   * @param event
+   */
+  public reSync = async (event: any) => {
+    const {user} = this.userData;
+    await this.syncData(user.username);
+    event.target.complete();
+  }
+
+  /**
+   * navigate
+   * @param url
+   */
+  public navigate = (menu: TabMenu) => {
+    if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
+      this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
+    }
+  }
+
+  /**
+   * checkDisabled
+   */
+  public checkDisabled = (menu: TabMenu) => {
+    return !this.isOnline && !menu.offlineMenu;
   }
 
   /**
@@ -60,16 +89,6 @@ export class MenuListPage implements OnInit {
   }
 
   /**
-   * reSync
-   * @param event
-   */
-  public reSync = async (event: any) => {
-    const {user} = this.userData;
-    await this.syncData(user.username);
-    event.target.complete();
-  }
-
-  /**
    * syncData
    * @param username
    */
@@ -82,28 +101,10 @@ export class MenuListPage implements OnInit {
 
         resolve(true);
       }, error => {
-        const msg = this.authService.errorsHandler(error);
-        this.toastService.warningToast(msg);
+        this.httpService.errorHandler(error);
         resolve(true);
       });
     });
-  }
-
-  /**
-   * navigate
-   * @param url
-   */
-  public navigate = (menu: TabMenu) => {
-    if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
-      this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
-    }
-  }
-
-  /**
-   * checkDisabled
-   */
-  public checkDisabled = (menu: TabMenu) => {
-    return !this.isOnline && !menu.offlineMenu;
   }
 
 }

@@ -15,6 +15,7 @@ import {HarvestEstimateItemComponent} from '../home-page/pages/harvest-estimate/
 import {QualityEstimateItemComponent} from '../home-page/pages/quality-estimate/quality-estimate-item/quality-estimate-item.component';
 import {NoteItemComponent} from '../home-page/pages/notes/note-item/note-item.component';
 import {ToastService} from './services/toast/toast.service';
+import {HttpService} from './services/http/http.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {ToastService} from './services/toast/toast.service';
     StorageService,
     SyncService,
     ToastService,
-    NetworkService
+    NetworkService,
+    HttpService
   ],
   exports: [
     CommonModule,

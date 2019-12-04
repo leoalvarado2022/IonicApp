@@ -3,7 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
 import {MenuComponent} from './components/menu/menu.component';
-import {ContractDetailService} from "../shared/services/contract-detail/contract-detail.service";
+import {ContractDetailService} from '../shared/services/contract-detail/contract-detail.service';
 
 const routes: Routes = [
   {

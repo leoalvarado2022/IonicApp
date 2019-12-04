@@ -9,6 +9,7 @@ ion-title {
 .border-separator-right {
   border-right: 1px solid var(--color-light-separator);
   border-top: 1px solid var(--color-light-separator);
+
   &:first-child {
     border-top: 0 !important;
   }
@@ -16,9 +17,11 @@ ion-title {
 
 .border-separator-left {
   border-top: 1px solid var(--color-light-separator);
+
   &:first-child {
     border-top: 0 !important;
   }
+
   &:nth-child(2) {
     border-top: 0 !important;
   }

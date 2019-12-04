@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {RouterModule, Routes} from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 
-import { RecoveryPage } from './recovery.page';
+import {RecoveryPage} from './recovery.page';
 import {SharedModule} from '../../../shared/shared.module';
 
 const routes: Routes = [
@@ -25,4 +25,5 @@ const routes: Routes = [
   ],
   declarations: [RecoveryPage]
 })
-export class RecoveryPageModule {}
+export class RecoveryPageModule {
+}

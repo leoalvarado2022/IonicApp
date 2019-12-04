@@ -8,6 +8,7 @@ import {ContractDetailService} from '../../../../shared/services/contract-detail
 import * as moment from 'moment';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
+import {HttpService} from '../../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-harvest-estimate-form',
@@ -32,7 +33,8 @@ export class HarvestEstimateFormComponent implements OnInit {
     private userService: UserService,
     private contractDetailService: ContractDetailService,
     private authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private httpService: HttpService
   ) {
 
   }
@@ -94,8 +96,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     this.contractDetailService.storeHarvest(data).subscribe(success => {
       this.closeModal(true);
     }, error => {
-      const msg = this.authService.errorsHandler(error);
-      this.toastService.errorToast(msg);
+      this.httpService.errorHandler(error);
     });
   }
 }

@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {StorageService} from '../../../shared/services/storage/storage.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertController} from '@ionic/angular';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-welcome',
@@ -20,6 +21,13 @@ export class WelcomePage implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  /**
+   * getVersion
+   */
+  public getVersion = (): string => {
+    return environment.appVersion;
   }
 
   /**

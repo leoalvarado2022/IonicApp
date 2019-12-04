@@ -16,10 +16,10 @@
   <ng-container *ngIf="connections">
     <ion-list>
       <ion-item
-        *ngFor="let connection of connections"
         (click)="selectConnection(connection)"
+        *ngFor="let connection of connections"
         [ngClass]="{'connection-active': connection.token === currentConnection.token, 'connection-inactive': connection.token !== currentConnection.token}">
-        <ion-icon slot="start" name="switch"></ion-icon>
+        <ion-icon name="switch" slot="start"></ion-icon>
         <ion-label>
           {{ connection.name }}
         </ion-label>

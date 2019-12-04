@@ -12,8 +12,9 @@ import {QualityEstimateFormComponent} from './quality-estimate-form/quality-esti
 })
 export class QualityEstimatePage implements OnInit {
 
-  public qualityEstimate: Array<QualityEstimate>;
-  public qualityEstimateDetail: Array<QualityDetail>;
+  public filteredQualityEstimate: Array<QualityEstimate>;
+  private qualityEstimate: Array<QualityEstimate>;
+  private qualityEstimateDetail: Array<QualityDetail>;
   private costCenter: CostCenter;
   private currentUrl: string;
 
@@ -34,6 +35,7 @@ export class QualityEstimatePage implements OnInit {
 
     this.contractDetailService.getQualityEstimate().subscribe(value => {
       this.qualityEstimate = value;
+      this.filteredQualityEstimate = value;
     });
 
     this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
@@ -73,5 +75,30 @@ export class QualityEstimatePage implements OnInit {
     });
 
     return await modal.present();
+  }
+
+  /**
+   * searchQuality
+   * @param search
+   */
+  public searchQuality = (search: string) => {
+    if (search) {
+      this.filteredQualityEstimate = this.qualityEstimate.filter(item => {
+        return (
+          item.userName.toLowerCase().includes(search.toLowerCase()) ||
+          item.qualityName.toLowerCase().includes(search.toLowerCase()) ||
+          item.exportPercentage === parseInt(search, 10)
+        );
+      });
+    } else {
+      this.filteredQualityEstimate = this.qualityEstimate;
+    }
+  }
+
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = () => {
+    this.filteredQualityEstimate = this.qualityEstimate;
   }
 }

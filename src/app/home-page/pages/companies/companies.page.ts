@@ -29,16 +29,6 @@ export class CompaniesPage implements OnInit {
   }
 
   /**
-   * loadCompanies
-   */
-  private loadCompanies = async () => {
-    this.loaderService.startLoader('Cargando empresass');
-    this.companies = await this.syncService.getCompanies();
-    this.selectedCompany = this.authService.getCompany();
-    this.loaderService.stopLoader();
-  }
-
-  /**
    * selectCompany
    * @param company
    */
@@ -48,6 +38,16 @@ export class CompaniesPage implements OnInit {
       this.loadCompanies();
       this.router.navigate(['home-page']);
     }
+  }
+
+  /**
+   * loadCompanies
+   */
+  private loadCompanies = async () => {
+    this.loaderService.startLoader('Cargando empresass');
+    this.companies = await this.syncService.getCompanies();
+    this.selectedCompany = this.authService.getCompany();
+    this.loaderService.stopLoader();
   }
 
 }

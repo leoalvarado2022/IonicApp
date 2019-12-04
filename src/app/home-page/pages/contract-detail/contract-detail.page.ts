@@ -79,25 +79,25 @@ export class ContractDetailPage implements OnInit {
   }
 
   /**
-   * loadContractDetail
-   * @param id
-   */
-  private loadContractDetail = (id: string) => {
-    this.contractDetailService.getCostCenterDetail(id);
-  }
-
-  /**
-   * abrir el panel header
-   */
-  openCloseSelected() {
-    this.openSelected = !this.openSelected;
-  }
-
-  /**
    * getTotal
    */
   public getTotal = () => {
     return this.productionContracts.reduce((accumulator, contract) => accumulator + contract.totalQuantity, 0);
   }
 
+  /**
+   * goToList
+   * @param note
+   */
+  public goToList = (note: Note = null) => {
+    this.router.navigate(['/home-page/notes']);
+  }
+
+  /**
+   * loadContractDetail
+   * @param id
+   */
+  private loadContractDetail = (id: string) => {
+    this.contractDetailService.getCostCenterDetail(id);
+  }
 }

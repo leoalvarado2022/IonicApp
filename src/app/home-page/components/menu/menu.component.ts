@@ -39,38 +39,6 @@ export class MenuComponent implements OnInit {
   }
 
   /**
-   * reloadData
-   */
-  private reloadData = async () => {
-    await this.loadConnections();
-    await this.loadCompanies();
-  }
-
-  /**
-   * loadConnections
-   */
-  private loadConnections = async () => {
-    const user = await this.userService.getUserData();
-    if (user && user.connections) {
-      this.connections = [...user.connections];
-    } else {
-      this.connections = [];
-    }
-  }
-
-  /**
-   * loadCompanies
-   */
-  private loadCompanies = async () => {
-    const data = await this.syncService.getCompanies();
-    if (data) {
-      this.companies = [...data];
-    } else {
-      this.companies = [];
-    }
-  }
-
-  /**
    * routerLink
    * @param router
    */
@@ -100,5 +68,37 @@ export class MenuComponent implements OnInit {
    */
   public menuReload = async (event: any) => {
     await this.reloadData();
+  }
+
+  /**
+   * reloadData
+   */
+  private reloadData = async () => {
+    await this.loadConnections();
+    await this.loadCompanies();
+  }
+
+  /**
+   * loadConnections
+   */
+  private loadConnections = async () => {
+    const user = await this.userService.getUserData();
+    if (user && user.connections) {
+      this.connections = [...user.connections];
+    } else {
+      this.connections = [];
+    }
+  }
+
+  /**
+   * loadCompanies
+   */
+  private loadCompanies = async () => {
+    const data = await this.syncService.getCompanies();
+    if (data) {
+      this.companies = [...data];
+    } else {
+      this.companies = [];
+    }
   }
 }

@@ -1,9 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {CostCenter, Note} from '@primetec/primetec-angular';
-import {NotesFormComponent} from '../notes-form/notes-form.component';
-import {ModalController} from '@ionic/angular';
-import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Note} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-note-item',
@@ -12,71 +8,44 @@ import {ContractDetailService} from '../../../../shared/services/contract-detail
 })
 export class NoteItemComponent implements OnInit {
 
-  @Input() item: any = null;
+  @Output() noteClicked: EventEmitter<Note | null> = new EventEmitter<Note | null>();
+  @Output() deleteNote: EventEmitter<Note | null> = new EventEmitter<Note | null>();
+  @Input() item: Note = null;
+  @Input() slideDisabled = true;
 
-  private currentUrl: string;
-  private costCenter: CostCenter;
+  constructor() {
 
-  constructor(
-    private router: Router,
-    private modalController: ModalController,
-    private contractDetailService: ContractDetailService
-  ) {
-    this.router.events.subscribe((route) => {
-      // console.log(route, 'route')
-      if (route instanceof NavigationEnd) {
-        this.currentUrl = route.url;
-      }
-    });
-
-    this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
-    });
   }
 
   ngOnInit() {
-    // console.log('hola, aqui inicio note-item', this.router.url)
-    if (this.currentUrl === undefined) {
-      this.currentUrl = this.router.url;
-    }
+
   }
 
   /**
-   * showList
+   * getPhotoPath
    */
-  public showList = () => {
-    // console.log(this.currentUrl);
-    if (this.currentUrl === '/home-page/notes') {
-      // console.log('luis es marico')
-      this.openForm();
+  public getPhotoPath = () => {
+    if (this.item) {
+      return 'data:image/jpeg;base64,' + this.item.image;
     }
 
-    this.router.navigate(['/home-page/notes']);
+    return '';
   }
 
   /**
-   * openForm
+   * itemClicked
+   * @param item
    */
-  private openForm = async () => {
-    const modal = await this.modalController.create({
-      component: NotesFormComponent,
-      componentProps: {
-        costCenter: this.costCenter,
-        note: this.item
-      },
-      backdropDismiss: false,
-      keyboardClose: false,
-      cssClass: 'full-screen-modal'
-    });
+  public itemClicked = (item: Note = null) => {
+    this.noteClicked.emit(item);
+  }
 
-    // modal.onDidDismiss().then(() => {
-    //   // console.log('se cerro , viva el clap')
-    //   // if (data.data) {
-    //     this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-    //   // }
-    // });
-
-    return await modal.present();
+  /**
+   * deleteItem
+   * @param item
+   */
+  public deleteItem = (item: Note) => {
+    this.deleteNote.emit(item);
   }
 
 }

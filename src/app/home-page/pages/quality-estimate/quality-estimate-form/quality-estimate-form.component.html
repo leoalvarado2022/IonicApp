@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="end">
-      <ion-button color="secondary" (click)="closeModal()">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>Registrar Calidad</ion-title>
@@ -15,7 +15,7 @@
       <ng-container formGroupName="quality">
         <ion-item>
           <ion-label position="floating">Calidad</ion-label>
-          <ion-select formControlName="quality" okText="Seleccionar" cancelText="Cancelar">
+          <ion-select cancelText="Cancelar" formControlName="quality" okText="Seleccionar">
             <ion-select-option *ngFor="let q of qualities" [value]="q.id">
               {{ q.name }}
             </ion-select-option>
@@ -27,7 +27,7 @@
 
         <ion-item>
           <ion-label position="floating">Porcentaje de Exportación</ion-label>
-          <ion-input formControlName="exportPercentage" placeholder="Ingresar Cantidad" type="number" clearInput value="clear"></ion-input>
+          <ion-input clearInput formControlName="exportPercentage" placeholder="Ingresar Cantidad" type="number" value="clear"></ion-input>
           <ng-container *ngIf="showErrors && qualityForm.get('exportPercentage').hasError('required')">
             <span class="errorMsg">Ingrese Porcentaje</span>
           </ng-container>
@@ -41,7 +41,7 @@
         <ng-container *ngFor="let item of qualityForm.get('calibers')['controls']; let index = index" [formGroupName]="index.toString()">
           <ion-item>
             <ion-label position="floating">{{ getCaliberName(item) }}</ion-label>
-            <ion-input formControlName="percentage" placeholder="Ingresar el Porcentaje" type="number" clearInput value="clear"></ion-input>
+            <ion-input clearInput formControlName="percentage" placeholder="Ingresar el Porcentaje" type="number" value="clear"></ion-input>
             <ng-container *ngIf="showErrors && qualityForm.get('percentage').hasError('required')">
               <span class="errorMsg">Ingrese el Porcentaje</span>
             </ng-container>
@@ -57,7 +57,7 @@
       </ng-container>
 
       <br><br>
-      <ion-button [disabled]="qualityForm.invalid" (click)="submit()" expand="block" color="primary">
+      <ion-button (click)="submit()" [disabled]="qualityForm.invalid" color="primary" expand="block">
         Guardar
       </ion-button>
 

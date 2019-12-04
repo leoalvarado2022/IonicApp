@@ -20,15 +20,15 @@
 
     <div *ngIf="!detectPlatformService.isIos && detectPlatformService.hasCordova;">
       <ion-row>
-        <ion-col size="6" class="cameras">
-          <ion-avatar style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
-                      (click)="onFileCamera(camera.PictureSourceType.CAMERA, camera.DestinationType.DATA_URL)">
+        <ion-col class="cameras" size="6">
+          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.CAMERA, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
+                      style="margin: 0 auto !important;">
             <ion-icon name="camera"></ion-icon>
           </ion-avatar>
         </ion-col>
-        <ion-col size="6" class="cameras">
-          <ion-avatar style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
-                      (click)="onFileCamera(camera.PictureSourceType.PHOTOLIBRARY, camera.DestinationType.DATA_URL)">
+        <ion-col class="cameras" size="6">
+          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.PHOTOLIBRARY, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
+                      style="margin: 0 auto !important;">
             <ion-icon name="image"></ion-icon>
           </ion-avatar>
         </ion-col>
@@ -37,15 +37,15 @@
 
     <div *ngIf="detectPlatformService.isIos && detectPlatformService.hasCordova;">
       <ion-row>
-        <ion-col size="6" class="cameras">
-          <ion-avatar style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
-                      (click)="onFileCamera(camera.PictureSourceType.CAMERA, camera.DestinationType.DATA_URL)">
+        <ion-col class="cameras" size="6">
+          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.CAMERA, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
+                      style="margin: 0 auto !important;">
             <ion-icon name="camera"></ion-icon>
           </ion-avatar>
         </ion-col>
-        <ion-col size="6" class="cameras">
-          <ion-avatar style="margin: 0 auto !important;" class="avatar-camera ion-no-margin"
-                      (click)="onFileCamera(camera.PictureSourceType.PHOTOLIBRARY, camera.DestinationType.DATA_URL)">
+        <ion-col class="cameras" size="6">
+          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.PHOTOLIBRARY, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
+                      style="margin: 0 auto !important;">
             <ion-icon name="image"></ion-icon>
           </ion-avatar>
         </ion-col>
@@ -55,7 +55,7 @@
     <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
       <ion-item>
         <ion-label position="floating">Rut</ion-label>
-        <ion-input formControlName="rut" tabindex="0" (keyup)="formatIdentifier($event.target.value)"></ion-input>
+        <ion-input (keyup)="formatIdentifier($event.target.value)" formControlName="rut" tabindex="0"></ion-input>
       </ion-item>
       <div *ngIf="registerForm.controls.rut.dirty && registerForm.hasError('required', 'rut')"
            style="color: red">

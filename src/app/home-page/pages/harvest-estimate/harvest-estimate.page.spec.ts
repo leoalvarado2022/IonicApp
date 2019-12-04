@@ -1,7 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { HarvestEstimatePage } from './harvest-estimate.page';
+import {HarvestEstimatePage} from './harvest-estimate.page';
 
 describe('HarvestEstimatePage', () => {
   let component: HarvestEstimatePage;
@@ -9,10 +9,10 @@ describe('HarvestEstimatePage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HarvestEstimatePage ],
+      declarations: [HarvestEstimatePage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

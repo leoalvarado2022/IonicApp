@@ -1,5 +1,5 @@
 <ng-container *ngIf="costCenter">
-  <ion-card class="cost-center-size" button="true" (click)="showDetails()" [routerDirection]="'forward'" [disabled]="!isOnline">
+  <ion-card (click)="showDetails()" [disabled]="!isOnline" [routerDirection]="'forward'" button="true" class="cost-center-size">
     <ion-card-header>
       <ion-card-subtitle>{{ costCenter.code }}</ion-card-subtitle>
       <ion-card-title>{{ costCenter.name }}</ion-card-title>
@@ -10,7 +10,7 @@
         <ion-col size="12">{{ costCenter.producerName }}</ion-col>
         <ion-col size="12">{{ costCenter.speciesName }} / {{ costCenter.varietyName }}</ion-col>
         <ion-col size="12">Fecha Cosecha: {{ costCenter.harvestDate | customDate }}</ion-col>
-        <ion-col size="12" *ngIf="costCenter.contractResponsible">{{ costCenter.contractResponsible }}</ion-col>
+        <ion-col *ngIf="costCenter.contractResponsible" size="12">{{ costCenter.contractResponsible }}</ion-col>
         <ng-container *ngIf="costCenter.contractDocumentNumber && costCenter.contractsNumber">
           <ion-col size="6"># {{ costCenter.contractDocumentNumber }}</ion-col>
           <ion-col size="6">Nº Contratos: {{ costCenter.contractsNumber }}</ion-col>

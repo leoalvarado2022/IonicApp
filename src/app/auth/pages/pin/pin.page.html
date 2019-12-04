@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" class="white"></ion-back-button>
+      <ion-back-button class="white" text=""></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
   <div class="title-header">
@@ -16,8 +16,8 @@
       <ion-item>
         <ion-label position="floating">PIN</ion-label>
         <ion-input
-            formControlName="pin"
-            type="number">
+          formControlName="pin"
+          type="number">
         </ion-input>
       </ion-item>
       <div *ngIf="pinForm.controls.pin.dirty && pinForm.hasError('required', 'pin')" style="color: red">
@@ -26,10 +26,10 @@
 
       <br/>
       <ion-button
-          [disabled]="pinForm.invalid"
-          color="danger"
-          expand="block"
-          type="submit">
+        [disabled]="pinForm.invalid"
+        color="danger"
+        expand="block"
+        type="submit">
         Aceptar
       </ion-button>
     </form>

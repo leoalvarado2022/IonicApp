@@ -28,7 +28,6 @@ import {environment} from '../environments/environment';
 import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
-import {NetworkService} from "./shared/services/network/network.service";
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 

@@ -6,6 +6,7 @@ import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
+import {HttpService} from '../../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-quality-estimate-form',
@@ -31,7 +32,8 @@ export class QualityEstimateFormComponent implements OnInit {
     private authService: AuthService,
     private contractDetailService: ContractDetailService,
     private syncService: SyncService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private httpService: HttpService
   ) {
     this.contractDetailService.getCostCenterListItem().subscribe(value => {
       this.costCenterListItem = value;
@@ -66,27 +68,6 @@ export class QualityEstimateFormComponent implements OnInit {
   }
 
   /**
-   * loadCalibers
-   */
-  private loadCalibers = () => {
-    const items = this.qualityForm.get('calibers') as FormArray;
-
-    for (const item of this.filteredCalibers) {
-      const newCaliber = this.formBuilder.group({
-        id: [0, Validators.required],
-        quality: [0, Validators.required],
-        caliber: [item.id, Validators.required],
-        percentage: ['', [
-          Validators.required,
-          Validators.max(100)
-        ]],
-        temp: [1]
-      });
-      items.push(newCaliber);
-    }
-  }
-
-  /**
    * closeModal
    */
   public closeModal = (status: boolean = false) => {
@@ -110,19 +91,6 @@ export class QualityEstimateFormComponent implements OnInit {
     } else {
       this.showErrors = true;
     }
-  }
-
-  /**
-   * storeQuality
-   * @param data
-   */
-  private storeQuality(data: any) {
-    this.contractDetailService.storeQuality(data).subscribe(success => {
-      this.closeModal(true);
-    }, error => {
-      const msg = this.authService.errorsHandler(error);
-      this.toastService.errorToast(msg);
-    });
   }
 
   /**
@@ -150,5 +118,38 @@ export class QualityEstimateFormComponent implements OnInit {
     }
 
     return accum < 100 || accum > 100 ? {wrongPercentage: true} : null;
+  }
+
+  /**
+   * loadCalibers
+   */
+  private loadCalibers = () => {
+    const items = this.qualityForm.get('calibers') as FormArray;
+
+    for (const item of this.filteredCalibers) {
+      const newCaliber = this.formBuilder.group({
+        id: [0, Validators.required],
+        quality: [0, Validators.required],
+        caliber: [item.id, Validators.required],
+        percentage: ['', [
+          Validators.required,
+          Validators.max(100)
+        ]],
+        temp: [1]
+      });
+      items.push(newCaliber);
+    }
+  }
+
+  /**
+   * storeQuality
+   * @param data
+   */
+  private storeQuality(data: any) {
+    this.contractDetailService.storeQuality(data).subscribe(success => {
+      this.closeModal(true);
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
   }
 }

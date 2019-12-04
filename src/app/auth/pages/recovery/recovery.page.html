@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" class="white"></ion-back-button>
+      <ion-back-button class="white" text=""></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
   <div class="title-header">
@@ -9,21 +9,21 @@
   </div>
 </ion-header>
 
-<ion-content scrollY="false" scrollX="false">
+<ion-content scrollX="false" scrollY="false">
   <div class="pd-default">
-    <form action="" (ngSubmit)="onSubmit()" [formGroup]="recovery">
+    <form (ngSubmit)="onSubmit()" [formGroup]="recovery" action="">
       <br>
       <ion-item>
         <ion-label position="floating">Usuario o Correo</ion-label>
-        <ion-input type="text" formControlName="username"></ion-input>
+        <ion-input formControlName="username" type="text"></ion-input>
       </ion-item>
 
       <br/>
       <ion-button
-          [disabled]="recovery.invalid"
-          color="danger"
-          expand="block"
-          type="submit">
+        [disabled]="recovery.invalid"
+        color="danger"
+        expand="block"
+        type="submit">
         Recuperar contraseña
       </ion-button>
     </form>

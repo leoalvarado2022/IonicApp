@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="reSync($event)">
+  <ion-refresher (ionRefresh)="reSync($event)" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
       pullingText="Pull to refresh"
@@ -27,11 +27,11 @@
       <ng-container *ngIf="menus">
         <ion-col *ngFor="let menu of menus; let i = index" size="6">
           <div
-            class="ion-text-center card-menu"
+            (click)="navigate(menu)"
             [ngClass]="{ 'border-separator-right': i % 2 === 0, 'border-separator-left': i % 2 !== 0, 'disabled': checkDisabled(menu) }"
-            (click)="navigate(menu)">
+            class="ion-text-center card-menu">
             <div>
-              <ion-icon class="icon-size" [color]="menu.icon_color" [name]="menu.icon_url"></ion-icon>
+              <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
               <p class="title-menu ion-text-capitalize">
                 {{ menu.caption }}
               </p>

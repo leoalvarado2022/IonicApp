@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button text="" class="white"></ion-back-button>
+      <ion-back-button class="white" text=""></ion-back-button>
     </ion-buttons>
     <ion-title class="white">
       <strong>Notas</strong>
@@ -12,19 +12,23 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-searchbar class="production" showCancelButton="never" animated></ion-searchbar>
+<ion-searchbar (ionChange)="searchNote($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
-  <ng-container *ngFor="let item of notes">
-    <app-note-item [item]="item"></app-note-item>
+<ion-content>
+  <ng-container *ngFor="let item of filteredNotes">
+    <app-note-item
+      (deleteNote)="deleteNoteConfirm($event)"
+      (noteClicked)="viewNote(item)"
+      [item]="item"
+      [slideDisabled]="false"
+    ></app-note-item>
   </ng-container>
 
   <ng-container *ngIf="checkButton()">
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button color="danger" (click)="openForm()">
+    <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+      <ion-fab-button (click)="openForm()" [disabled]="!costCenter" color="danger">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>
   </ng-container>
-
 </ion-content>

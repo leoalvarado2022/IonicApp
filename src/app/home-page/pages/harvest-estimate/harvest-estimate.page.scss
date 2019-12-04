@@ -5,11 +5,13 @@
   .estimate-content {
     display: table;
     width: 100%;
+
     &.old {
       .card {
         background: var(--color-box-light) !important;
       }
     }
+
     .card {
       display: table-cell;
       text-align: center;
@@ -32,15 +34,18 @@
       }
     }
   }
+
   .update-card {
     &.old {
       background: white !important;
       height: 16px;
       padding: 0 5px;
+
       p {
         color: var(--ion-color-light-shade) !important;
       }
     }
+
     background: var(--color-login-header);
     width: 100%;
 

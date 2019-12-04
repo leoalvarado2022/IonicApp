@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import * as MenuAction from '../../../store/menu/menu.action';
 import {AuthService} from '../../../shared/services/auth/auth.service';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-recovery',
@@ -21,7 +21,9 @@ export class RecoveryPage implements OnInit {
     private router: Router,
     private toastService: ToastService,
     private authService: AuthService,
-  ) { }
+    private httpService: HttpService
+  ) {
+  }
 
   ngOnInit() {
     this.recovery = this.formBuilder.group({
@@ -38,7 +40,7 @@ export class RecoveryPage implements OnInit {
     const data = Object.assign(list, this.recovery.value);
 
     await this.update(data);
-  };
+  }
 
 
   /**
@@ -56,9 +58,8 @@ export class RecoveryPage implements OnInit {
         this.loaderService.stopLoader();
         resolve(true);
       }, error => {
-        const msg = this.authService.errorsHandler(error);
         this.loaderService.stopLoader();
-        this.toastService.errorToast(msg);
+        this.httpService.errorHandler(error);
         resolve(false);
       });
     });

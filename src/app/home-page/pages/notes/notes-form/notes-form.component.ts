@@ -7,6 +7,7 @@ import {ContractDetailService} from '../../../../shared/services/contract-detail
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {DetectPlatformService} from '../../../../shared/services/detect-platform/detect-platform.service';
+import {HttpService} from '../../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-notes-form',
@@ -29,29 +30,26 @@ export class NotesFormComponent implements OnInit {
     targetWidth: 300,
     targetHeight: 300,
     correctOrientation: true
-  }
+  };
 
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private httpService: HttpService,
     private contractDetailService: ContractDetailService,
     private toastService: ToastService,
     private camera: Camera,
-    public detectPlatformService: DetectPlatformService
+    public detectPlatformService: DetectPlatformService,
   ) {
 
   }
 
   ngOnInit() {
-
-    // console.log('app-notes-form')
-
-
     this.userConnection = this.authService.getCompany();
 
     this.noteForm = this.formBuilder.group({
-      id: [this.note ? this.note.id : 0, Validators.required],
+      id: [this.note ? -this.note.id : 0, Validators.required],
       costCenter: [this.costCenter.id, Validators.required],
       user: [this.userConnection.user, Validators.required],
       note: [this.note ? this.note.note : '', Validators.required],
@@ -67,7 +65,6 @@ export class NotesFormComponent implements OnInit {
   public closeModal = (status: boolean = false) => {
     this.noteForm.reset();
     this.modalController.dismiss(status);
-    // console.log('se cierra el modal')
   }
 
   /**
@@ -82,19 +79,6 @@ export class NotesFormComponent implements OnInit {
     } else {
       this.showErrors = true;
     }
-  }
-
-  /**
-   * storeNote
-   * @param data
-   */
-  private storeNote = (data: any) => {
-    this.contractDetailService.storeNote(data).subscribe(success => {
-      this.closeModal(true);
-    }, error => {
-      const msg = this.authService.errorsHandler(error);
-      this.toastService.errorToast(msg);
-    });
   }
 
   /**
@@ -131,6 +115,18 @@ export class NotesFormComponent implements OnInit {
   }
 
   /**
+   * storeNote
+   * @param data
+   */
+  private storeNote = (data: any) => {
+    this.contractDetailService.storeNote(data).subscribe(success => {
+      this.closeModal(true);
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
+  }
+
+  /**
    * getImage
    * @param options
    */
@@ -148,4 +144,5 @@ export class NotesFormComponent implements OnInit {
       this.toastService.warningToast(error);
     });
   }
+
 }

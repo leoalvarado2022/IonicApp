@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {AuthService} from '../auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {BehaviorSubject} from 'rxjs';
-import {LoaderService} from "../loader/loader.service";
+import {LoaderService} from '../loader/loader.service';
+import {HttpService} from '../http/http.service';
 
 @Injectable()
 export class ContractDetailService {
@@ -13,28 +13,21 @@ export class ContractDetailService {
   private readonly storeQualityUrl = 'costcenter/store/quality';
   private readonly storeNoteUrl = 'costcenter/store/note';
 
-  private costCenterListItem: BehaviorSubject<CostCenterList>;
-  private costCenter: BehaviorSubject<CostCenter>;
-  private productionContracts: BehaviorSubject<Array<ProductContract>>;
-  private productionContractsDetails: BehaviorSubject<Array<ProductContractDetail>>;
-  private harvestEstimate: BehaviorSubject<Array<HarvestEstimate>>;
-  private qualityEstimate: BehaviorSubject<Array<QualityEstimate>>;
-  private qualityEstimateDetail: BehaviorSubject<Array<QualityDetail>>;
-  private notes: BehaviorSubject<Array<Note>>;
+  private costCenterListItem: BehaviorSubject<CostCenterList> = new BehaviorSubject<CostCenterList>(null);
+  private costCenter: BehaviorSubject<CostCenter> = new BehaviorSubject<CostCenter>(null);
+  private productionContracts: BehaviorSubject<Array<ProductContract>> = new BehaviorSubject<Array<ProductContract>>([]);
+  private productionContractsDetails: BehaviorSubject<Array<ProductContractDetail>> = new BehaviorSubject<Array<ProductContractDetail>>([]);
+  private harvestEstimate: BehaviorSubject<Array<HarvestEstimate>> = new BehaviorSubject<Array<HarvestEstimate>>([]);
+  private qualityEstimate: BehaviorSubject<Array<QualityEstimate>> = new BehaviorSubject<Array<QualityEstimate>>([]);
+  private qualityEstimateDetail: BehaviorSubject<Array<QualityDetail>> = new BehaviorSubject<Array<QualityDetail>>([]);
+  private notes: BehaviorSubject<Array<Note>> = new BehaviorSubject<Array<Note>>([]);
 
   constructor(
-    private authService: AuthService,
     private httpClient: HttpClient,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private httpService: HttpService
   ) {
-    this.costCenterListItem = new BehaviorSubject<CostCenterList>(null);
-    this.costCenter = new BehaviorSubject<CostCenter>(null);
-    this.productionContracts = new BehaviorSubject<Array<ProductContract>>([]);
-    this.productionContractsDetails = new BehaviorSubject<Array<ProductContractDetail>>([]);
-    this.harvestEstimate = new BehaviorSubject<Array<HarvestEstimate>>([]);
-    this.qualityEstimate = new BehaviorSubject<Array<QualityEstimate>>([]);
-    this.qualityEstimateDetail = new BehaviorSubject<Array<QualityDetail>>([]);
-    this.notes = new BehaviorSubject<Array<Note>>([]);
+
   }
 
   /**
@@ -43,9 +36,8 @@ export class ContractDetailService {
    */
   public getCostCenterDetail = (id: string) => {
     this.loaderService.startLoader('Cargando centro de costo');
-    const url = this.authService.buildUrl(this.getCostCenterUrl, id);
-    return this.httpClient.post(url, this.authService.buildBody(), {headers: this.authService.getHeaders()}).subscribe((success: any) => {
-      this.loaderService.stopLoader();
+    const url = this.httpService.buildUrl(this.getCostCenterUrl, id);
+    return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()}).subscribe((success: any) => {
 
       const data = success.data;
 
@@ -67,9 +59,9 @@ export class ContractDetailService {
       this.qualityEstimateDetail.next(qualityEstimateDetail);
       this.notes.next(notes);
 
+      this.loaderService.stopLoader();
 
     }, error => {
-      this.loaderService.stopLoader();
 
       this.costCenter.next(null);
       this.productionContracts.next([]);
@@ -79,7 +71,9 @@ export class ContractDetailService {
       this.qualityEstimateDetail.next([]);
       this.notes.next([]);
 
-      this.authService.errorsHandler(error);
+      this.loaderService.stopLoader();
+
+      this.httpService.errorHandler(error);
     });
   }
 
@@ -152,8 +146,8 @@ export class ContractDetailService {
    * @param data
    */
   public storeHarvest = (data: any) => {
-    const url = this.authService.buildUrl(this.storeHarvestUrl);
-    return this.httpClient.post(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
+    const url = this.httpService.buildUrl(this.storeHarvestUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
   }
 
   /**
@@ -161,8 +155,8 @@ export class ContractDetailService {
    * @param data
    */
   public storeQuality = (data: any) => {
-    const url = this.authService.buildUrl(this.storeQualityUrl);
-    return this.httpClient.post(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
+    const url = this.httpService.buildUrl(this.storeQualityUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
   }
 
   /**
@@ -170,8 +164,8 @@ export class ContractDetailService {
    * @param data
    */
   public storeNote = (data: any) => {
-    const url = this.authService.buildUrl(this.storeNoteUrl);
-    return this.httpClient.post(url, this.authService.buildBody({note: data}), {headers: this.authService.getHeaders()});
+    const url = this.httpService.buildUrl(this.storeNoteUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({note: data}), {headers: this.httpService.getHeaders()});
   }
 
   /**

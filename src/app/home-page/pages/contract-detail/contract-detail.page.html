@@ -15,7 +15,7 @@
 <!--  header-->
 <ion-content>
 
-  <div class="header-content background-color--header" [class.selected]="openSelected" (click)="openCloseSelected()">
+  <div (click)="openSelected = !openSelected" [class.selected]="openSelected" class="header-content background-color--header">
     <ng-container *ngIf="costCenterListItem">
       <ion-row class="row">
         <ion-col size="12">
@@ -33,7 +33,7 @@
         <ion-col size="12">
           <div class="white">Fecha Cosecha: {{ costCenterListItem.harvestDate | customDate }}</div>
         </ion-col>
-        <ion-col size="12" *ngIf="costCenterListItem.contractResponsible">
+        <ion-col *ngIf="costCenterListItem.contractResponsible" size="12">
           <div class="white">Numero de Contratos: {{ costCenterListItem.contractsNumber }}</div>
         </ion-col>
       </ion-row>
@@ -62,14 +62,14 @@
     <div>
       <p>KG CONTRATADOS</p>
       <p>
-        <ion-icon name="arrow-round-up" color="danger"></ion-icon>&nbsp;
+        <ion-icon color="danger" name="arrow-round-up"></ion-icon>&nbsp;
         <span>{{ getTotal() | number:'1.0-0':'es-CL' }}</span>
       </p>
     </div>
     <div>
       <p>KG RECIBIDOS</p>
       <p>
-        <ion-icon name="arrow-round-down" color="primary"></ion-icon>&nbsp;<span>3.200</span></p>
+        <ion-icon color="primary" name="arrow-round-down"></ion-icon>&nbsp;<span>3.200</span></p>
     </div>
   </div>
 
@@ -96,15 +96,15 @@
   <!--  NOTAS-->
   <div>
     <ng-container *ngIf="notes.length > 0">
-      <app-note-item [item]="notes[0]"></app-note-item>
+      <app-note-item (noteClicked)="goToList($event)" [item]="notes[0]"></app-note-item>
     </ng-container>
     <ng-container *ngIf="notes.length === 0">
-      <app-note-item></app-note-item>
+      <app-note-item (noteClicked)="goToList($event)"></app-note-item>
     </ng-container>
   </div>
 
   <!--  graficos-->
-  <div class="graphics" [class.selected]="selectedGraphics">
+  <div [class.selected]="selectedGraphics" class="graphics">
     <!--
     <div id="container"></div>
     -->

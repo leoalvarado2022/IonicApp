@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button text="" class="white"></ion-back-button>
+      <ion-back-button class="white" text=""></ion-back-button>
     </ion-buttons>
     <ion-title class="white">
       <strong>Estimación de Calidad</strong>
@@ -12,15 +12,17 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-searchbar (ionChange)="searchQuality($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
 <ion-content class="content">
 
-  <ng-container *ngFor="let quality of qualityEstimate">
+  <ng-container *ngFor="let quality of filteredQualityEstimate">
     <app-quality-estimate-item [item]="quality"></app-quality-estimate-item>
   </ng-container>
 
   <ng-container *ngIf="checkButton()">
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button color="success" (click)="openForm()">
+    <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+      <ion-fab-button (click)="openForm()" color="success">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

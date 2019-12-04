@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="end">
-      <ion-button color="secondary" (click)="closeModal()">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>Registrar Estimacion</ion-title>
@@ -14,7 +14,7 @@
     <form [formGroup]="harvestForm">
       <ion-item>
         <ion-label position="floating">Unidad</ion-label>
-        <ion-select formControlName="unit" okText="Seleccionar" cancelText="Cancelar">
+        <ion-select cancelText="Cancelar" formControlName="unit" okText="Seleccionar">
           <ion-select-option *ngFor="let unit of units" [value]="unit.id">
             {{ unit.name }}
           </ion-select-option>
@@ -26,35 +26,17 @@
 
       <ion-item>
         <ion-label position="floating">Cantidad</ion-label>
-        <ion-input formControlName="quantity" placeholder="Ingresar Cantidad" type="number" clearInput value="clear"></ion-input>
+        <ion-input clearInput formControlName="quantity" placeholder="Ingresar Cantidad" type="number" value="clear"></ion-input>
         <ng-container *ngIf="showErrors && harvestForm.get('quantity').hasError('required')">
           <span class="errorMsg">Ingrese Cantidad</span>
-
         </ng-container>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Cantidad Diaria</ion-label>
-        <ion-input formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number" clearInput value="clear"></ion-input>
+        <ion-input clearInput formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number" value="clear"></ion-input>
         <ng-container *ngIf="showErrors && harvestForm.get('dailyAmount').hasError('required')">
           <span class="errorMsg">Ingrese cantidad diaria</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Fecha Inicio</ion-label>
-        <ion-datetime formControlName="startDate" placeholder="Ingresar Fecha Inicio" [displayFormat]="displayFormat"></ion-datetime>
-        <ng-container *ngIf="showErrors && harvestForm.get('startDate').hasError('required')">
-          <span class="errorMsg">Ingrese fecha inicio</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Fecha Fin</ion-label>
-        <ion-datetime formControlName="endDate" placeholder="Ingresar Fecha Fin" [displayFormat]="displayFormat"></ion-datetime>
-        <ng-container *ngIf="showErrors && harvestForm.get('startDate').hasError('required')">
-          <span class="errorMsg">Ingrese fecha fin</span>
-
         </ng-container>
       </ion-item>
 
@@ -65,7 +47,7 @@
 
         <ion-item>
           <ion-label>Si</ion-label>
-          <ion-radio  slot="start" value="1" checked></ion-radio>
+          <ion-radio checked slot="start" value="1"></ion-radio>
         </ion-item>
 
         <ion-item>
@@ -78,8 +60,24 @@
         </ng-container>
       </ion-radio-group>
 
+      <ion-item>
+        <ion-label position="floating">Fecha Inicio</ion-label>
+        <ion-datetime [displayFormat]="displayFormat" formControlName="startDate" placeholder="Ingresar Fecha Inicio"></ion-datetime>
+        <ng-container *ngIf="showErrors && harvestForm.get('startDate').hasError('required')">
+          <span class="errorMsg">Ingrese fecha inicio</span>
+        </ng-container>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Fecha Fin</ion-label>
+        <ion-datetime [displayFormat]="displayFormat" formControlName="endDate" placeholder="Ingresar Fecha Fin"></ion-datetime>
+        <ng-container *ngIf="showErrors && harvestForm.get('startDate').hasError('required')">
+          <span class="errorMsg">Ingrese fecha fin</span>
+        </ng-container>
+      </ion-item>
+
       <br><br>
-      <ion-button [disabled]="harvestForm.invalid" (click)="submit()" expand="block" color="primary">
+      <ion-button (click)="submit()" [disabled]="harvestForm.invalid" color="primary" expand="block">
         Guardar
       </ion-button>
 

@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {AuthService} from '../auth/auth.service';
 import {Observable} from 'rxjs';
 import {getMenuProfile} from '../../../reducers/reducers';
 import {Store} from '@ngrx/store';
 import {StorageService} from '../storage/storage.service';
+import {HttpService} from '../http/http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class UserService {
 
   constructor(
     private httpClient: HttpClient,
-    private authService: AuthService,
+    private httpService: HttpService,
     private store: Store<any>,
     private storageService: StorageService
   ) {
@@ -30,7 +30,7 @@ export class UserService {
    * @param data
    */
   public createUser = (data: any) => {
-    const url = this.authService.buildUrl(this.createUrl);
+    const url = this.httpService.buildUrl(this.createUrl);
     return this.httpClient.post(url, data);
   }
 
@@ -39,17 +39,17 @@ export class UserService {
    * @param data
    */
   public getUser = () => {
-    const url = this.authService.buildUrl(this.userUrl);
-    return this.httpClient.post(url, this.authService.buildBody(null), {headers: this.authService.getHeaders()});
-  };
+    const url = this.httpService.buildUrl(this.userUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()});
+  }
 
   /**
    * updateUser
    * @param data
    */
   public updateUser = (data: any) => {
-    const url = this.authService.buildUrl(this.updateUrl);
-    return this.httpClient.put(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
+    const url = this.httpService.buildUrl(this.updateUrl);
+    return this.httpClient.put(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
   }
 
 
@@ -58,17 +58,17 @@ export class UserService {
    * @param data
    */
   public assignUser = (data: any) => {
-    const url = this.authService.buildUrl(this.assignUrl);
-    return this.httpClient.post(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
-  };
+    const url = this.httpService.buildUrl(this.assignUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+  }
 
   /**
    * updatePassword
    * @param data
    */
   public updatePassword = (data: any) => {
-    const url = this.authService.buildUrl(this.updatePasswordUrl);
-    return this.httpClient.put(url, this.authService.buildBody(data), {headers: this.authService.getHeaders()});
+    const url = this.httpService.buildUrl(this.updatePasswordUrl);
+    return this.httpClient.put(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
   }
 
   /**

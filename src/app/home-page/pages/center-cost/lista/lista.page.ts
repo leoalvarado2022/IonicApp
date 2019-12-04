@@ -9,8 +9,8 @@ import {CostCenterList} from '@primetec/primetec-angular';
 })
 export class ListaPage implements OnInit {
 
-  private costCenters: CostCenterList[] = [];
   public filteredCostCenters: CostCenterList[] = [];
+  private costCenters: CostCenterList[] = [];
 
   constructor(private syncService: SyncService) {
 

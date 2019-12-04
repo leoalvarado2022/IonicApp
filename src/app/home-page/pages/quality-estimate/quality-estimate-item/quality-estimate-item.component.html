@@ -1,8 +1,8 @@
 <ng-container *ngIf="item; else empty">
   <div class="quality-estimate">
-    <div class="name" (click)="showList()">
+    <div (click)="showList()" class="name">
       <div class="icon">
-        <ion-icon name="card" color="success"></ion-icon>
+        <ion-icon color="success" name="card"></ion-icon>
       </div>
       <div class="name--name">
         <p class="mayu margin-0"><strong>Estimacion de Calidad</strong></p>
@@ -19,7 +19,7 @@
         <div class="total">
           <p class="font-10 margin-0 grey">% EXPORTACION</p>
           <p class="margin-0 bold">
-            <ion-icon [name]="item.arrow" [color]="item.color"></ion-icon>&nbsp;
+            <ion-icon [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
             <span>{{ item.exportPercentage }} %</span>
           </p>
         </div>
@@ -31,9 +31,9 @@
 
 <ng-template #empty>
   <div class="quality-estimate">
-    <div class="name" (click)="showList()">
+    <div (click)="showList()" class="name">
       <div class="icon">
-        <ion-icon name="card" color="success"></ion-icon>
+        <ion-icon color="success" name="card"></ion-icon>
       </div>
       <div class="name--name">
         <p class="mayu margin-0"><strong>Estimacion de Calidad</strong></p>
@@ -50,7 +50,7 @@
         <div class="total">
           <p class="font-10 margin-0 grey">% EXPORTACION</p>
           <p class="margin-0 bold">
-            <ion-icon name="remove" color="default"></ion-icon>&nbsp;
+            <ion-icon color="default" name="remove"></ion-icon>&nbsp;
             <span>0%</span>
           </p>
         </div>

@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {RouterModule, Routes} from '@angular/router';
 
-import { IonicModule } from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 
-import { ExpiredPage } from './expired.page';
+import {ExpiredPage} from './expired.page';
 
 const routes: Routes = [
   {
@@ -23,4 +23,5 @@ const routes: Routes = [
   ],
   declarations: [ExpiredPage]
 })
-export class ExpiredPageModule {}
+export class ExpiredPageModule {
+}

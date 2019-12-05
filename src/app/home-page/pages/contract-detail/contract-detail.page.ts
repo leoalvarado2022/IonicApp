@@ -91,9 +91,17 @@ export class ContractDetailPage implements OnInit {
    * showUnitName
    */
   public showUnitName = () => {
-    const find = this.units.find(item => item.id === this.costCenter.controlUnit);
-    return find ? find.code : 'N/A';
+    if (this.costCenter) {
+      const find = this.units.find(item => item.id === this.costCenter.controlUnit);
+
+      if (find) {
+        return find.code;
+      }
+    }
+
+    return 'N/A';
   }
+
   /**
    * goToList
    * @param note
@@ -108,5 +116,13 @@ export class ContractDetailPage implements OnInit {
    */
   public harvestPage = (item: HarvestEstimate) => {
     this.router.navigate(['/home-page/harvest-estimate']);
+  }
+
+  /**
+   * qualityPage
+   * @param item
+   */
+  public qualityPage = (item: QualityDetail) => {
+    this.router.navigate(['/home-page/quality-estimate']);
   }
 }

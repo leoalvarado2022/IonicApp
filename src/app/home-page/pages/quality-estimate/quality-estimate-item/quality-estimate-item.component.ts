@@ -1,5 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {QualityEstimate} from '@primetec/primetec-angular';
 
 interface Arrows extends QualityEstimate {
@@ -15,8 +14,12 @@ interface Arrows extends QualityEstimate {
 export class QualityEstimateItemComponent implements OnInit {
 
   @Input() item: Arrows = null;
+  @Input() isOld = false;
+  @Input() slideDisabled = true;
+  @Output() itemSelected: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
+  @Output() itemDelete: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
 
-  constructor(private router: Router) {
+  constructor() {
 
   }
 
@@ -25,10 +28,18 @@ export class QualityEstimateItemComponent implements OnInit {
   }
 
   /**
-   * showList
+   * clickItem
+   * @param item
    */
-  public showList = () => {
-    this.router.navigate(['/home-page/quality-estimate']);
+  public clickItem = (item: Arrows = null) => {
+    this.itemSelected.emit(item);
   }
 
+  /**
+   * deleteItem
+   * @param item
+   */
+  public deleteItem = (item: Arrows) => {
+    this.itemDelete.emit(item);
+  }
 }

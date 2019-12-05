@@ -74,7 +74,7 @@
   </div>
 
   <!-- ESTIMACION DE COSECHA -->
-  <ion-list>
+  <ion-list class="item-list">
     <ion-list-header>
       <ion-label>ESTIMACION DE COSECHA</ion-label>
     </ion-list-header>
@@ -87,17 +87,20 @@
   </ion-list>
 
   <!-- ESTIMACION DE CALIDAD -->
-  <div>
+  <ion-list class="item-list">
+    <ion-list-header>
+      <ion-label>ESTIMACION DE CALIDAD</ion-label>
+    </ion-list-header>
     <ng-container *ngIf="qualityEstimate.length > 0">
-      <app-quality-estimate-item [item]="qualityEstimate[0]"></app-quality-estimate-item>
+      <app-quality-estimate-item (itemSelected)="qualityPage($event)" [item]="qualityEstimate[0]"></app-quality-estimate-item>
     </ng-container>
     <ng-container *ngIf="qualityEstimate.length === 0">
-      <app-quality-estimate-item></app-quality-estimate-item>
+      <app-quality-estimate-item (itemSelected)="qualityPage($event)"></app-quality-estimate-item>
     </ng-container>
-  </div>
+  </ion-list>
 
   <!--  NOTAS-->
-  <ion-list>
+  <ion-list class="item-list">
     <ion-list-header>
       <ion-label>NOTA</ion-label>
     </ion-list-header>

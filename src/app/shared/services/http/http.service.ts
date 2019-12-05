@@ -81,7 +81,6 @@ export class HttpService {
           break;
         case 400:
         case 404:
-        case 500:
           this.toastService.errorToast(message);
           break;
         case 401:

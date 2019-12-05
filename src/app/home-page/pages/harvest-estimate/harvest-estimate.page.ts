@@ -116,7 +116,7 @@ export class HarvestEstimatePage implements OnInit {
    */
   public deleteHarvest = async (harvestEstimate: HarvestEstimate) => {
     const alert = await this.alertController.create({
-      message: 'Desea borrar esta estimacion de calidad?',
+      message: 'Desea borrar esta estimacion de cosecha?',
       buttons: [
         {
           text: 'Cancel',
@@ -138,7 +138,7 @@ export class HarvestEstimatePage implements OnInit {
               harvestEstimate: newHarvest
             };
             await this.storeEstimation(data);
-            this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+            await this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
           }
         }
       ]

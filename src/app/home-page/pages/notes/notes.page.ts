@@ -139,7 +139,7 @@ export class NotesPage implements OnInit, OnDestroy {
           handler: async () => {
             const newNote = Object.assign({}, note, {id: -note.id});
             await this.storeNote(newNote);
-            this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+            await this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
           }
         }
       ]

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from '../../../../environments/environment';
-import {HttpHeaders} from '@angular/common/http';
+import {HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ToastService} from '../toast/toast.service';
 
@@ -64,40 +64,37 @@ export class HttpService {
    * @param error
    */
   public errorHandler = (error: any): string => {
-    console.log('name', error.name);
-    console.log('message', error.message);
-    console.log('error', error.error);
-    console.log('status', error.status);
-    console.log('statusText', error.statusText);
+    if (error instanceof HttpErrorResponse) {
+      /*
+      console.log('name', error.name);
+      console.log('message', error.message);
+      console.log('error', error.error);
+      console.log('status', error.status);
+      console.log('statusText', error.statusText);
+      */
 
-    if (error.name === 'HttpErrorResponse') {
-      let msg: string = null;
+      const {name, message} = error.error;
+
       switch (error.status) {
         case 0:
-          msg = 'No hay conexion con el servidor.';
+          this.toastService.errorToast('No hay conexion con el servidor.');
           break;
         case 400:
-          msg = error.error.message;
+        case 404:
+          this.toastService.errorToast(message);
           break;
         case 401:
         case 403:
-          msg = error.error.message;
-          this.toastService.errorToast('Token vencido.');
+          this.toastService.errorToast(message);
           this.router.navigate(['/home-page']);
           break;
-        case 500:
-          msg = error.error.message || 'Ocurrio un error en el servidor.';
-          break;
         default:
-          msg = error.message;
+          this.toastService.errorToast(message);
           break;
       }
-
-      return msg;
     } else {
-      return 'Non Http error';
+      console.log('No Http error', error);
+      return 'No Http error';
     }
   }
-
-
 }

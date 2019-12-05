@@ -17,12 +17,18 @@
 <ion-content class="content">
 
   <ng-container *ngFor="let harvest of filteredHarvestEstimate ; let index =index">
-    <app-harvest-estimate-item [isOld]="index > 0" [item]="harvest"></app-harvest-estimate-item>
+    <app-harvest-estimate-item
+      (harvestSelected)="viewHarvest($event)"
+      (deleteHarvest)="deleteHarvest($event)"
+      [isOld]="index > 0"
+      [item]="harvest"
+      [slideDisabled]="false">
+    </app-harvest-estimate-item>
   </ng-container>
 
   <ng-container *ngIf="checkButton()">
     <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-      <ion-fab-button (click)="openForm()" color="warning">
+      <ion-fab-button (click)="openForm()" [disabled]="!costCenter" color="warning">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

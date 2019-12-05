@@ -15,8 +15,8 @@ export class StorageService {
    * @param nameDB
    * @param data
    */
-  public setRow = (nameDB: string, data: any) => {
-    this.storage.set(nameDB, data);
+  public setRow = async (nameDB: string, data: any) => {
+    await this.storage.set(nameDB, data);
   }
 
   /**

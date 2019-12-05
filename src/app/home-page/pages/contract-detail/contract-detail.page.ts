@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
-import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
-import {AuthService} from '../../../shared/services/auth/auth.service';
+import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
-import {ToastService} from '../../../shared/services/toast/toast.service';
+import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-contract-detail',
@@ -16,34 +14,33 @@ export class ContractDetailPage implements OnInit {
 
   public openSelected = false;
   public selectedGraphics = false;
-  public costCenterListItem: CostCenterList;
-  public costCenter: CostCenter;
-  public productionContracts: Array<ProductContract>;
-  public productionContractsDetails: Array<ProductContractDetail>;
-  public harvestEstimate: Array<HarvestEstimate>;
-  public qualityEstimate: Array<QualityEstimate>;
-  public qualityEstimateDetail: Array<QualityDetail>;
-  public notes: Array<Note>;
+  public costCenterListItem: CostCenterList = null;
+  public costCenter: CostCenter = null;
+  public productionContracts: Array<ProductContract> = [];
+  public productionContractsDetails: Array<ProductContractDetail> = [];
+  public harvestEstimate: Array<HarvestEstimate> = [];
+  public qualityEstimate: Array<QualityEstimate> = [];
+  public qualityEstimateDetail: Array<QualityDetail> = [];
+  public notes: Array<Note> = [];
+  private units: Array<Unit> = [];
 
   constructor(
-    private httpClient: HttpClient,
     private route: ActivatedRoute,
     private contractDetailService: ContractDetailService,
-    private authService: AuthService,
     private syncService: SyncService,
-    private toastService: ToastService,
+    private httpService: HttpService,
     private router: Router
   ) {
+    this.contractDetailService.getCostCenterListItem().subscribe(value => {
+      this.costCenterListItem = value;
+    });
+
     this.contractDetailService.getCostCenter().subscribe(value => {
       this.costCenter = value;
     });
 
     this.contractDetailService.getProductionContracts().subscribe(value => {
       this.productionContracts = value;
-    });
-
-    this.contractDetailService.getProductionContractsDetails().subscribe(value => {
-      this.productionContractsDetails = value;
     });
 
     this.contractDetailService.getHarvestEstimate().subscribe(value => {
@@ -54,28 +51,33 @@ export class ContractDetailPage implements OnInit {
       this.qualityEstimate = value;
     });
 
-    this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
-      this.qualityEstimateDetail = value;
-    });
-
     this.contractDetailService.getNotes().subscribe(value => {
       this.notes = value;
-    });
-
-    this.contractDetailService.getNotes().subscribe(value => {
-      this.notes = value;
-    });
-
-    this.contractDetailService.getCostCenterListItem().subscribe(value => {
-      this.costCenterListItem = value;
     });
   }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+
     if (id) {
       this.loadContractDetail(id);
+      this.loadUnits();
     }
+  }
+
+  /**
+   * loadUnits
+   */
+  private loadUnits = async () => {
+    this.units = await this.syncService.getUnits();
+  }
+
+  /**
+   * loadContractDetail
+   * @param id
+   */
+  private loadContractDetail = (id: string) => {
+    this.contractDetailService.getCostCenterDetail(id);
   }
 
   /**
@@ -86,18 +88,41 @@ export class ContractDetailPage implements OnInit {
   }
 
   /**
+   * showUnitName
+   */
+  public showUnitName = () => {
+    if (this.costCenter) {
+      const find = this.units.find(item => item.id === this.costCenter.controlUnit);
+
+      if (find) {
+        return find.code;
+      }
+    }
+
+    return 'N/A';
+  }
+
+  /**
    * goToList
    * @param note
    */
-  public goToList = (note: Note = null) => {
+  public noteListPage = (note: Note = null) => {
     this.router.navigate(['/home-page/notes']);
   }
 
   /**
-   * loadContractDetail
-   * @param id
+   * harvestPage
+   * @param item
    */
-  private loadContractDetail = (id: string) => {
-    this.contractDetailService.getCostCenterDetail(id);
+  public harvestPage = (item: HarvestEstimate) => {
+    this.router.navigate(['/home-page/harvest-estimate']);
+  }
+
+  /**
+   * qualityPage
+   * @param item
+   */
+  public qualityPage = (item: QualityDetail) => {
+    this.router.navigate(['/home-page/quality-estimate']);
   }
 }

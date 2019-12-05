@@ -49,7 +49,7 @@ export class NotesFormComponent implements OnInit {
     this.userConnection = this.authService.getCompany();
 
     this.noteForm = this.formBuilder.group({
-      id: [this.note ? -this.note.id : 0, Validators.required],
+      id: [this.note ? this.note.id : 0, Validators.required],
       costCenter: [this.costCenter.id, Validators.required],
       user: [this.userConnection.user, Validators.required],
       note: [this.note ? this.note.note : '', Validators.required],

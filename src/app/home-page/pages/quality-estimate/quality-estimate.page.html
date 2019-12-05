@@ -16,8 +16,14 @@
 
 <ion-content class="content">
 
-  <ng-container *ngFor="let quality of filteredQualityEstimate">
-    <app-quality-estimate-item [item]="quality"></app-quality-estimate-item>
+  <ng-container *ngFor="let quality of filteredQualityEstimate; let index = index">
+    <app-quality-estimate-item
+      (itemSelected)="viewQuality(quality)"
+      (itemDelete)="deleteQuality(quality)"
+      [isOld]="index > 0 "
+      [slideDisabled]="false"
+      [item]="quality">
+    </app-quality-estimate-item>
   </ng-container>
 
   <ng-container *ngIf="checkButton()">

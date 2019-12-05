@@ -64,23 +64,31 @@
 }
 
 .name {
-  text-align: right;
+  text-align: left;
   font-size: 10px;
-  padding-right: 10px;
+  padding-left: 10px;
   color: var(--ion-color-medium-shade);
+  padding-bottom: 10px;
 }
 
 .date {
   text-align: left;
   font-size: 10px;
+  padding-left: 10px;
   color: var(--ion-color-medium-shade);
+  padding-top: 10px;
 }
 
 .note {
+  padding-left: 10px;
   text-align: left;
   font-size: 10px;
   white-space: nowrap;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.icon {
+  font-size: 40px;
 }

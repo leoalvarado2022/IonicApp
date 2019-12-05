@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CostCenter, CostCenterList} from '@primetec/primetec-angular';
+import {CostCenter, CostCenterList, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
@@ -16,6 +16,8 @@ import {HttpService} from '../../../../shared/services/http/http.service';
 export class QualityEstimateFormComponent implements OnInit {
 
   @Input() costCenter: CostCenter;
+  @Input() qualityEstimate: QualityEstimate;
+  @Input() qualityEstimateDetail: Array<QualityDetail>;
 
   private costCenterListItem: CostCenterList;
   public qualityForm: FormGroup;
@@ -35,9 +37,7 @@ export class QualityEstimateFormComponent implements OnInit {
     private toastService: ToastService,
     private httpService: HttpService
   ) {
-    this.contractDetailService.getCostCenterListItem().subscribe(value => {
-      this.costCenterListItem = value;
-    });
+
   }
 
   async ngOnInit() {
@@ -47,11 +47,11 @@ export class QualityEstimateFormComponent implements OnInit {
 
     this.qualityForm = this.formBuilder.group({
       quality: this.formBuilder.group({
-        id: [0, Validators.required],
+        id: [this.qualityEstimate ? this.qualityEstimate.id : 0, Validators.required],
         costCenter: [this.costCenter.id, Validators.required],
         user: [this.userConnection.user, Validators.required],
-        quality: ['', Validators.required],
-        exportPercentage: ['', [
+        quality: [this.qualityEstimate ? this.qualityEstimate.quality : '', Validators.required],
+        exportPercentage: [this.qualityEstimate ? this.qualityEstimate.exportPercentage : '', [
           Validators.required,
           Validators.max(100)
         ]],
@@ -127,11 +127,16 @@ export class QualityEstimateFormComponent implements OnInit {
     const items = this.qualityForm.get('calibers') as FormArray;
 
     for (const item of this.filteredCalibers) {
+      let find = null;
+      if (this.qualityEstimateDetail) {
+        find = this.qualityEstimateDetail.find(detail => detail.caliber === item.id);
+      }
+
       const newCaliber = this.formBuilder.group({
-        id: [0, Validators.required],
-        quality: [0, Validators.required],
+        id: [find ? find.id : 0, Validators.required],
+        quality: [find ? find.qualityEstimate : '', Validators.required],
         caliber: [item.id, Validators.required],
-        percentage: ['', [
+        percentage: [find ? find.value : '', [
           Validators.required,
           Validators.max(100)
         ]],

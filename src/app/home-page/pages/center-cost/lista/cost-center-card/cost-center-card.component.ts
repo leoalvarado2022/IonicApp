@@ -1,8 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {Router} from '@angular/router';
 import {NetworkService} from '../../../../../shared/services/network/network.service';
-import {ContractDetailService} from '../../../../../shared/services/contract-detail/contract-detail.service';
 
 @Component({
   selector: 'app-cost-center-card',
@@ -12,17 +11,13 @@ import {ContractDetailService} from '../../../../../shared/services/contract-det
 export class CostCenterCardComponent implements OnInit {
 
   @Input() costCenter: CostCenterList;
-
-  public isOnline: boolean;
+  @Output() cardClicked: EventEmitter<CostCenterList | null> = new EventEmitter<CostCenterList | null>();
 
   constructor(
     private router: Router,
-    private networkService: NetworkService,
-    private contractDetailService: ContractDetailService
+    public networkService: NetworkService
   ) {
-    this.networkService.onNetworkChange().subscribe(value => {
-      this.isOnline = value;
-    });
+
   }
 
   ngOnInit() {
@@ -33,10 +28,7 @@ export class CostCenterCardComponent implements OnInit {
    * showDetails
    */
   public showDetails = () => {
-    if (this.isOnline) {
-      this.contractDetailService.setCostCenterListItem(this.costCenter);
-
-      this.router.navigate(['home-page/contract-detail', this.costCenter.id]);
-    }
+    this.cardClicked.emit(this.costCenter);
   }
+
 }

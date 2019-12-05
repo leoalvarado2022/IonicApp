@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {CostCenterList} from '@primetec/primetec-angular';
+import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-lista',
@@ -12,7 +14,11 @@ export class ListaPage implements OnInit {
   public filteredCostCenters: CostCenterList[] = [];
   private costCenters: CostCenterList[] = [];
 
-  constructor(private syncService: SyncService) {
+  constructor(
+    private syncService: SyncService,
+    private contractDetailService: ContractDetailService,
+    private router: Router
+  ) {
 
   }
 
@@ -58,4 +64,12 @@ export class ListaPage implements OnInit {
     this.filteredCostCenters = this.costCenters;
   }
 
+  /**
+   * costCenterSelected
+   * @param costCenter
+   */
+  public costCenterSelected = (costCenter: CostCenterList) => {
+    this.contractDetailService.setCostCenterListItem(costCenter);
+    this.router.navigate(['home-page/contract-detail', costCenter.id]);
+  }
 }

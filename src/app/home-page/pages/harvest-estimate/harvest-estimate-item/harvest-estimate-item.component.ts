@@ -1,6 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {HarvestEstimate} from '@primetec/primetec-angular';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {HarvestEstimate, Unit} from '@primetec/primetec-angular';
+import {SyncService} from '../../../../shared/services/sync/sync.service';
 
 interface Arrows extends HarvestEstimate {
   arrow: string;
@@ -16,20 +16,47 @@ export class HarvestEstimateItemComponent implements OnInit {
 
   @Input() item: Arrows = null;
   @Input() isOld = false;
+  @Input() slideDisabled = true;
+  @Output() harvestSelected: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
+  @Output() deleteHarvest: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
 
-  constructor(private router: Router) {
+  private units: Array<Unit> = [];
+
+  constructor(private syncService: SyncService) {
 
   }
 
   ngOnInit() {
+    this.loadUnits();
+  }
 
+  private loadUnits = async () => {
+    this.units = await this.syncService.getUnits();
   }
 
   /**
    * showList
+   * @param item
    */
-  public showList = () => {
-    this.router.navigate(['/home-page/harvest-estimate']);
+  public clickHarvest = (item: Arrows = null) => {
+    this.harvestSelected.emit(item);
+  }
+
+  /**
+   * deleteHarvest
+   * @param item
+   */
+  public deleteItem = (item: Arrows) => {
+    this.deleteHarvest.emit(item);
+  }
+
+
+  /**
+   * showUnitName
+   */
+  public showUnitName = () => {
+    const find = this.units.find(item => item.id === this.item.unit);
+    return find ? find.code : 'N/A';
   }
 
 }

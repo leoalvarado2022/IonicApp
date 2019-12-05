@@ -29,7 +29,7 @@ export class NoteItemComponent implements OnInit {
       return 'data:image/jpeg;base64,' + this.item.image;
     }
 
-    return '';
+    return null;
   }
 
   /**

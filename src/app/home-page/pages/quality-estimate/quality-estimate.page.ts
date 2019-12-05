@@ -28,19 +28,6 @@ export class QualityEstimatePage implements OnInit {
         this.currentUrl = route.url;
       }
     });
-
-    this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
-    });
-
-    this.contractDetailService.getQualityEstimate().subscribe(value => {
-      this.qualityEstimate = value;
-      this.filteredQualityEstimate = value;
-    });
-
-    this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
-      this.qualityEstimateDetail = value;
-    });
   }
 
   ngOnInit() {

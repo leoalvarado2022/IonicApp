@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NetworkService} from '../../../shared/services/network/network.service';
 import * as MenuAction from '../../../store/menu/menu.action';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {LoaderService} from "../../../shared/services/loader/loader.service";
 
 @Component({
   selector: 'app-menu-list',
@@ -32,7 +33,8 @@ export class MenuListPage implements OnInit {
     private router: Router,
     private networkService: NetworkService,
     private activatedRoute: ActivatedRoute,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private loaderService: LoaderService
   ) {
     this.networkService.onNetworkChange().subscribe((status: boolean) => {
       this.isOnline = status;
@@ -49,8 +51,7 @@ export class MenuListPage implements OnInit {
    * @param event
    */
   public reSync = async (event: any) => {
-    const {user} = this.userData;
-    await this.syncData(user.username);
+    await this.syncData();
     event.target.complete();
   }
 
@@ -92,19 +93,19 @@ export class MenuListPage implements OnInit {
    * syncData
    * @param username
    */
-  private syncData = (username: string) => {
-    return new Promise((resolve, reject) => {
+  private syncData = async () => {
+    if (this.userData) {
+      const {user} = this.userData;
+      const username = user.username;
+
       this.syncService.syncData(username).subscribe(async (success: any) => {
         await this.syncService.storeSync(success.data);
         await this.loadMenus();
         await this.getUserData();
-
-        resolve(true);
-      }, error => {
+      }, async error => {
         this.httpService.errorHandler(error);
-        resolve(true);
       });
-    });
+    }
   }
 
 }

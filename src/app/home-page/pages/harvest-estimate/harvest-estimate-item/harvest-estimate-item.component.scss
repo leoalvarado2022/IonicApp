@@ -74,3 +74,43 @@
     }
   }
 }
+
+.name {
+  text-align: left;
+  font-size: 10px;
+  padding-left: 10px;
+  color: var(--ion-color-medium-shade);
+  padding-bottom: 10px;
+}
+
+.date {
+  text-align: left;
+  font-size: 10px;
+  padding-left: 10px;
+  color: var(--ion-color-medium-shade);
+  padding-top: 10px;
+}
+
+.title {
+  font-size: 14px;
+  text-align: center;
+}
+
+.value {
+  font-size: 14px;
+  text-align: center;
+  font-weight: bolder;
+  color: black;
+}
+
+.icon {
+  font-size: 40px;
+}
+
+.highlight {
+  background: var(--color-light-box);
+}
+
+.old {
+  --background: var(--color-box-light) !important;
+}

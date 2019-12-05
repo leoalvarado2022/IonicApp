@@ -60,28 +60,31 @@
   <!--  estimaciones-->
   <div class="estimates-card">
     <div>
-      <p>KG CONTRATADOS</p>
+      <p>{{ showUnitName() | uppercase }} CONTRATADOS</p>
       <p>
         <ion-icon color="danger" name="arrow-round-up"></ion-icon>&nbsp;
         <span>{{ getTotal() | number:'1.0-0':'es-CL' }}</span>
       </p>
     </div>
     <div>
-      <p>KG RECIBIDOS</p>
+      <p>{{ showUnitName() | uppercase }} RECIBIDOS</p>
       <p>
         <ion-icon color="primary" name="arrow-round-down"></ion-icon>&nbsp;<span>3.200</span></p>
     </div>
   </div>
 
   <!-- ESTIMACION DE COSECHA -->
-  <div>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>ESTIMACION DE COSECHA</ion-label>
+    </ion-list-header>
     <div *ngIf="harvestEstimate.length > 0">
-      <app-harvest-estimate-item [item]="harvestEstimate[0]"></app-harvest-estimate-item>
+      <app-harvest-estimate-item (harvestSelected)="harvestPage($event)" [item]="harvestEstimate[0]"></app-harvest-estimate-item>
     </div>
     <div *ngIf="harvestEstimate.length === 0">
-      <app-harvest-estimate-item></app-harvest-estimate-item>
+      <app-harvest-estimate-item (harvestSelected)="harvestPage($event)"></app-harvest-estimate-item>
     </div>
-  </div>
+  </ion-list>
 
   <!-- ESTIMACION DE CALIDAD -->
   <div>
@@ -94,14 +97,17 @@
   </div>
 
   <!--  NOTAS-->
-  <div>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>NOTA</ion-label>
+    </ion-list-header>
     <ng-container *ngIf="notes.length > 0">
-      <app-note-item (noteClicked)="goToList($event)" [item]="notes[0]"></app-note-item>
+      <app-note-item (noteClicked)="noteListPage($event)" [item]="notes[0]"></app-note-item>
     </ng-container>
     <ng-container *ngIf="notes.length === 0">
-      <app-note-item (noteClicked)="goToList($event)"></app-note-item>
+      <app-note-item (noteClicked)="noteListPage($event)"></app-note-item>
     </ng-container>
-  </div>
+  </ion-list>
 
   <!--  graficos-->
   <div [class.selected]="selectedGraphics" class="graphics">

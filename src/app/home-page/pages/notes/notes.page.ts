@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {CostCenter, Note} from '@primetec/primetec-angular';
 import {AlertController, ModalController} from '@ionic/angular';
@@ -12,12 +12,16 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
   templateUrl: './notes.page.html',
   styleUrls: ['./notes.page.scss'],
 })
-export class NotesPage implements OnInit {
+export class NotesPage implements OnInit, OnDestroy {
 
+  public costCenter: CostCenter;
   public filteredNotes: Array<Note>;
   private notes: Array<Note>;
-  public costCenter: CostCenter;
   private currentUrl: string;
+
+  private router$: any;
+  private costCenter$: any;
+  private notes$: any;
 
   constructor(
     private modalController: ModalController,
@@ -27,24 +31,30 @@ export class NotesPage implements OnInit {
     private loaderService: LoaderService,
     private alertController: AlertController
   ) {
-    this.router.events.subscribe((route) => {
+
+  }
+
+  ngOnInit() {
+    this.router$ = this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
         this.currentUrl = route.url;
       }
     });
 
-    this.contractDetailService.getNotes().subscribe(value => {
+    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
+      this.costCenter = value;
+    });
+
+    this.notes$ = this.contractDetailService.getNotes().subscribe(value => {
       this.notes = value;
       this.filteredNotes = value;
     });
-
-    this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
-    });
   }
 
-  ngOnInit() {
-
+  ngOnDestroy(): void {
+    this.router$.unsubscribe();
+    this.costCenter$.unsubscribe();
+    this.notes$.unsubscribe();
   }
 
   /**
@@ -129,6 +139,7 @@ export class NotesPage implements OnInit {
           handler: async () => {
             const newNote = Object.assign({}, note, {id: -note.id});
             await this.storeNote(newNote);
+            this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
           }
         }
       ]
@@ -145,10 +156,10 @@ export class NotesPage implements OnInit {
     await this.loaderService.startLoader('Borrando nota');
     this.contractDetailService.storeNote(data).subscribe(async success => {
       await this.loaderService.stopLoader();
-      await this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
     }, async error => {
       await this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
   }
+
 }

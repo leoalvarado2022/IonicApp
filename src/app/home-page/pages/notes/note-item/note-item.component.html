@@ -2,20 +2,18 @@
 
   <ion-item-sliding [disabled]="slideDisabled">
     <ion-item (click)="itemClicked(item)" lines="none">
-      <ion-thumbnail slot="start">
-        <img [src]="getPhotoPath()">
-      </ion-thumbnail>
+      <ng-container *ngIf="getPhotoPath()">
+        <ion-thumbnail slot="start">
+          <img [src]="getPhotoPath()">
+        </ion-thumbnail>
+      </ng-container>
+      <ng-container slot="start" *ngIf="!getPhotoPath()">
+        <ion-icon class="icon" name="mail" color="danger"></ion-icon>
+      </ng-container>
       <ion-label>
         <h6 class="name">{{ item.responsibleName }}</h6>
-        <ion-row>
-          <ion-col size="4">
-            <div>Nota</div>
-            <div class="date">Ult. Act. {{ item.registrationDate | customDate }}</div>
-          </ion-col>
-          <ion-col size="8">
-            <div class="note">{{ item.note }}</div>
-          </ion-col>
-        </ion-row>
+        <div class="note">{{ item.note }}</div>
+        <div class="date">Ult. Act. {{ item.registrationDate | customDate }}</div>
       </ion-label>
     </ion-item>
 
@@ -52,21 +50,19 @@
 
 <ng-template #empty>
 
-  <ion-item (click)="itemClicked()" lines="none">
-    <ion-thumbnail slot="start">
-      <img [src]="getPhotoPath()">
-    </ion-thumbnail>
+  <ion-item (click)="itemClicked(item)" lines="none">
+    <ng-container *ngIf="getPhotoPath()">
+      <ion-thumbnail slot="start">
+        <img [src]="getPhotoPath()">
+      </ion-thumbnail>
+    </ng-container>
+    <ng-container slot="start" *ngIf="!getPhotoPath()">
+      <ion-icon class="icon" name="mail" color="danger"></ion-icon>
+    </ng-container>
     <ion-label>
       <h6 class="name">N/A</h6>
-      <ion-row>
-        <ion-col size="4">
-          <div>Nota</div>
-          <div class="date">Ult. Act. N/A</div>
-        </ion-col>
-        <ion-col size="8">
-          <div class="note">N/A</div>
-        </ion-col>
-      </ion-row>
+      <div class="note">N/A</div>
+      <div class="date">Ult. Act. 00/00/0000</div>
     </ion-label>
   </ion-item>
 

@@ -35,9 +35,7 @@ export class QualityEstimateFormComponent implements OnInit {
     private toastService: ToastService,
     private httpService: HttpService
   ) {
-    this.contractDetailService.getCostCenterListItem().subscribe(value => {
-      this.costCenterListItem = value;
-    });
+
   }
 
   async ngOnInit() {

@@ -1,9 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CostCenter} from '@primetec/primetec-angular';
+import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
-import {UserService} from '../../../../shared/services/user/user.service';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
@@ -18,6 +17,7 @@ import {HttpService} from '../../../../shared/services/http/http.service';
 export class HarvestEstimateFormComponent implements OnInit {
 
   @Input() costCenter: CostCenter;
+  @Input() harvestEstimate: HarvestEstimate;
 
   public readonly displayFormat = 'YYYY/MM/DD';
   public harvestForm: FormGroup;
@@ -30,7 +30,6 @@ export class HarvestEstimateFormComponent implements OnInit {
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private syncService: SyncService,
-    private userService: UserService,
     private contractDetailService: ContractDetailService,
     private authService: AuthService,
     private toastService: ToastService,
@@ -41,19 +40,20 @@ export class HarvestEstimateFormComponent implements OnInit {
 
   async ngOnInit() {
     this.loader = true;
-    this.units = await this.syncService.getUnits();
+
     this.userConnection = this.authService.getCompany();
+    this.units = await this.syncService.getUnits();
 
     this.harvestForm = this.formBuilder.group({
-      id: [0, Validators.required],
+      id: [this.harvestEstimate ? this.harvestEstimate.id : 0, Validators.required],
       costCenter: [this.costCenter.id],
       user: [this.userConnection.user, Validators.required],
-      unit: ['', Validators.required],
-      quantity: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      dailyAmount: ['', Validators.required],
-      workHolidays: [0, Validators.required]
+      unit: [this.costCenter.controlUnit, Validators.required],
+      quantity: [this.harvestEstimate ? this.harvestEstimate.quantity : '', Validators.required],
+      dailyAmount: [this.harvestEstimate ? this.harvestEstimate.dailyAmount : '', Validators.required],
+      workHolidays: [this.harvestEstimate ? this.harvestEstimate.workHolidays ? 1 : 0 : 0, Validators.required],
+      startDate: [this.harvestEstimate ? moment(this.harvestEstimate.startDate).format('YYYY/MM/DD') : '', Validators.required],
+      endDate: [this.harvestEstimate ? moment(this.harvestEstimate.endDate).format('YYYY/MM/DD') : '', Validators.required]
     });
     this.loader = false;
   }
@@ -98,5 +98,13 @@ export class HarvestEstimateFormComponent implements OnInit {
     }, error => {
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * showUnitName
+   */
+  public showUnitName = () => {
+    const find = this.units.find(item => item.id === this.costCenter.id);
+    return find ? find.code : 'N/A';
   }
 }

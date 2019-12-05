@@ -64,33 +64,32 @@
 </ng-container>
 
 <ng-template #empty>
-  <div class="quality-estimate">
-    <div (click)="showList()" class="name">
-      <div class="icon">
-        <ion-icon color="success" name="card"></ion-icon>
-      </div>
-      <div class="name--name">
-        <p class="mayu margin-0"><strong>Estimacion de Calidad</strong></p>
-        <p class="margin-0 date">Ult. Act. 00/00/00</p>
-      </div>
-    </div>
-    <div class="responsable">
-      <p class="responsable--name">Responsable: N/A</p>
-      <div class="costos ion-text-center">
-        <div class="date">
-          <p class="font-10 margin-0 grey">Calidad</p>
-          <p class="margin-0 bold">N/A</p>
-        </div>
-        <div class="total">
-          <p class="font-10 margin-0 grey">% EXPORTACION</p>
-          <p class="margin-0 bold">
-            <ion-icon color="default" name="remove"></ion-icon>&nbsp;
-            <span>0%</span>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <ion-item (click)="clickItem()" lines="none" [ngClass]="{ 'old': isOld}">
+    <ion-icon class="icon" color="success" name="card"></ion-icon>
+    <ion-label>
+      <div class="name">N/A</div>
+      <ion-row class="highlight">
+        <ion-col size="6">
+          <div class="title">Calidad</div>
+        </ion-col>
+        <ion-col size="6">
+          <div class="title">% Exportación</div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="highlight">
+        <ion-col size="6">
+          <div class="value">N/A</div>
+        </ion-col>
+        <ion-col size="6">
+          <div class="value">
+            <ion-icon [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;&nbsp;
+            <span>0 %</span>
+          </div>
+        </ion-col>
+      </ion-row>
+      <div class="date">Ult. Act. 00/00/0000</div>
+    </ion-label>
+  </ion-item>
 </ng-template>
 
 <!--  estimaciones de calidad

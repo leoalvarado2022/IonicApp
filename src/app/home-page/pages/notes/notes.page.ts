@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {CostCenter, Note} from '@primetec/primetec-angular';
-import {AlertController, ModalController} from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import {NotesFormComponent} from './notes-form/notes-form.component';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {AlertService} from '../../../shared/services/alert/alert.service';
 
 @Component({
   selector: 'app-notes',
@@ -29,7 +30,7 @@ export class NotesPage implements OnInit, OnDestroy {
     private router: Router,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private alertController: AlertController
+    private alertService: AlertService
   ) {
 
   }
@@ -124,28 +125,16 @@ export class NotesPage implements OnInit, OnDestroy {
    * deleteNoteConfirm
    */
   public deleteNoteConfirm = async (note: Note) => {
-    const alert = await this.alertController.create({
-      message: 'Desea borrar esta nota?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Si',
-          handler: async () => {
-            const newNote = Object.assign({}, note, {id: -note.id});
-            await this.storeNote(newNote);
-            await this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-          }
-        }
-      ]
-    });
+    const response = await this.alertService.confirmAlert('Desea borrar esta nota?');
 
-    await alert.present();
+    if (response) {
+      const newNote = Object.assign({}, note, {id: -note.id});
+      await this.storeNote(newNote);
+
+      setTimeout(() => {
+        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+      }, 2000);
+    }
   }
 
   /**

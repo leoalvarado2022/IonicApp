@@ -36,7 +36,7 @@ export class ContractDetailService {
    * getCostCenterDetail
    * @param id
    */
-  public getCostCenterDetail = (id: string) => {
+  public getCostCenterDetail = async (id: string) => {
     const url = this.httpService.buildUrl(this.getCostCenterUrl, id);
     return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()}).subscribe((success: any) => {
       const data = success.data;

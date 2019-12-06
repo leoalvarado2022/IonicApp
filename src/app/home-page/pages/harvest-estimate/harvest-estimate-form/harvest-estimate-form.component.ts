@@ -19,7 +19,8 @@ export class HarvestEstimateFormComponent implements OnInit {
   @Input() costCenter: CostCenter;
   @Input() harvestEstimate: HarvestEstimate;
 
-  public readonly displayFormat = 'YYYY/MM/DD';
+  public readonly dateFormat = 'DD/MM/YYYY';
+  public readonly maxDate = '2030';
   public harvestForm: FormGroup;
   public units: Array<any> = [];
   public loader = false;

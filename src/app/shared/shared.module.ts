@@ -16,6 +16,7 @@ import {QualityEstimateItemComponent} from '../home-page/pages/quality-estimate/
 import {NoteItemComponent} from '../home-page/pages/notes/note-item/note-item.component';
 import {ToastService} from './services/toast/toast.service';
 import {HttpService} from './services/http/http.service';
+import {AlertService} from './services/alert/alert.service';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {HttpService} from './services/http/http.service';
     SyncService,
     ToastService,
     NetworkService,
-    HttpService
+    HttpService,
+    AlertService
   ],
   exports: [
     CommonModule,

@@ -1,11 +1,8 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule} from '@angular/forms';
 import {RouterModule, Routes} from '@angular/router';
-
-import {IonicModule} from '@ionic/angular';
-
 import {MapaPage} from './mapa.page';
+import {SharedModule} from "../../../../shared/shared.module";
+import {AgmCoreModule} from "@agm/core";
 
 const routes: Routes = [
   {
@@ -16,10 +13,11 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule.forChild(routes)
+    SharedModule,
+    RouterModule.forChild(routes),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyCTFSo9E6Dro2ETWTbr_a_vUkVr9PQiM6I'
+    })
   ],
   declarations: [MapaPage]
 })

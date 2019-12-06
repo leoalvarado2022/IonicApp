@@ -1,4 +1,3 @@
-<ion-searchbar animated class="production" showCancelButton="never"></ion-searchbar>
-<ion-content>
+<ion-searchbar (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
-</ion-content>
+<agm-map class="map-size" [latitude]="lat" [longitude]="lng"></agm-map>

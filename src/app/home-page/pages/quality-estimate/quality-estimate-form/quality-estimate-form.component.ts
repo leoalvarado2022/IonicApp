@@ -134,7 +134,7 @@ export class QualityEstimateFormComponent implements OnInit {
 
       const newCaliber = this.formBuilder.group({
         id: [find ? find.id : 0, Validators.required],
-        quality: [find ? find.qualityEstimate : '', Validators.required],
+        quality: [find ? find.qualityEstimate : 0, Validators.required],
         caliber: [item.id, Validators.required],
         percentage: [find ? find.value : '', [
           Validators.required,
@@ -158,3 +158,4 @@ export class QualityEstimateFormComponent implements OnInit {
     });
   }
 }
+

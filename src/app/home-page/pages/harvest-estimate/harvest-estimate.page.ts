@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {AlertController, ModalController} from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
 import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {AlertService} from "../../../shared/services/alert/alert.service";
 
 @Component({
   selector: 'app-harvest-estimate',
@@ -23,7 +24,7 @@ export class HarvestEstimatePage implements OnInit {
     private router: Router,
     private modalController: ModalController,
     private contractDetailService: ContractDetailService,
-    private alertController: AlertController,
+    private alertService: AlertService,
     private httpService: HttpService,
     private loaderService: LoaderService
   ) {
@@ -115,36 +116,25 @@ export class HarvestEstimatePage implements OnInit {
    * @param harvestEstimate
    */
   public deleteHarvest = async (harvestEstimate: HarvestEstimate) => {
-    const alert = await this.alertController.create({
-      message: 'Desea borrar esta estimacion de cosecha?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Si',
-          handler: async () => {
-            const newHarvest = Object.assign({}, harvestEstimate, {
-              id: -harvestEstimate.id,
-              workHolidays: harvestEstimate ? 1 : 0
-            });
-            delete this.costCenter.active;
-            const data = {
-              costCenter: this.costCenter,
-              harvestEstimate: newHarvest
-            };
-            await this.storeEstimation(data);
-            await this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-          }
-        }
-      ]
-    });
+    const respuesta = await this.alertService.confirmAlert('Desea borrar esta estimacion de cosecha?');
 
-    await alert.present();
+    if (respuesta) {
+      console.log('deleteHarvest');
+      const newHarvest = Object.assign({}, harvestEstimate, {
+        id: -harvestEstimate.id,
+        workHolidays: harvestEstimate ? 1 : 0
+      });
+      delete this.costCenter.active;
+      const data = {
+        costCenter: this.costCenter,
+        harvestEstimate: newHarvest
+      };
+      await this.storeEstimation(data);
+      setTimeout(() => {
+        console.log('reload');
+        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+      }, 2000);
+    }
   }
 
   /**
@@ -152,6 +142,7 @@ export class HarvestEstimatePage implements OnInit {
    * @param data
    */
   private storeEstimation = async (data: any) => {
+    console.log('storeEstimation');
     await this.loaderService.startLoader('Borrando estimacion de calidad');
     this.contractDetailService.storeHarvest(data).subscribe(success => {
       this.loaderService.stopLoader();

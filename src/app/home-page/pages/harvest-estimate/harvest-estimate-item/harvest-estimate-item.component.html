@@ -10,7 +10,7 @@
             <div class="title">Fecha Inicio</div>
           </ion-col>
           <ion-col size="6">
-            <div class="title">{{ showUnitName() | uppercase }} Totales</div>
+            <div class="title">{{ showUnitCode() | uppercase }} Totales</div>
           </ion-col>
         </ion-row>
         <ion-row class="highlight">
@@ -20,7 +20,7 @@
           <ion-col size="6">
             <div class="value">
               <ion-icon [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;&nbsp;
-              {{ item.quantity | number:'1.0-0':'es-CL' }}
+              <span>{{ item.quantity | number:'1.0-0':'es-CL' }} {{ showUnitCode() | uppercase }}</span>
             </div>
           </ion-col>
         </ion-row>
@@ -79,7 +79,7 @@
           <div class="title">Fecha Inicio</div>
         </ion-col>
         <ion-col size="6">
-          <div class="title">KG Totales</div>
+          <div class="title">Totales</div>
         </ion-col>
       </ion-row>
       <ion-row class="highlight">
@@ -88,7 +88,7 @@
         </ion-col>
         <ion-col size="6">
           <div class="value">
-            <ion-icon color="default" name="remove"></ion-icon>&nbsp;
+            <ion-icon color="default" name="remove"></ion-icon>&nbsp;&nbsp;
             <span>0</span>
           </div>
         </ion-col>

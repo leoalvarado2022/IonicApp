@@ -2,10 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 import {CostCenter, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
-import {AlertController, ModalController} from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import {QualityEstimateFormComponent} from './quality-estimate-form/quality-estimate-form.component';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {AlertService} from '../../../shared/services/alert/alert.service';
 
 @Component({
   selector: 'app-quality-estimate',
@@ -24,7 +25,7 @@ export class QualityEstimatePage implements OnInit {
     private router: Router,
     private contractDetailService: ContractDetailService,
     private modalController: ModalController,
-    private alertController: AlertController,
+    private alertService: AlertService,
     private httpService: HttpService,
     private loaderService: LoaderService
   ) {
@@ -120,34 +121,21 @@ export class QualityEstimatePage implements OnInit {
    * @param qualityEstimate
    */
   public deleteQuality = async (qualityEstimate: QualityEstimate) => {
-    const alert = await this.alertController.create({
-      message: 'Desea borrar esta estimacion de calidad?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Si',
-          handler: async () => {
-            const newQuality = Object.assign({}, qualityEstimate, {id: -qualityEstimate.id});
-            delete this.costCenter.active;
-            const data = {
-              costCenter: this.costCenter,
-              quality: newQuality,
-              calibers: this.qualityEstimateDetail
-            };
-            await this.storeQuality(data);
-            await this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-          }
-        }
-      ]
-    });
+    const response = await this.alertService.confirmAlert('Desea borrar esta estimacion de calidad?');
 
-    await alert.present();
+    if (response) {
+      const newQuality = Object.assign({}, qualityEstimate, {id: -qualityEstimate.id});
+      delete this.costCenter.active;
+      const data = {
+        costCenter: this.costCenter,
+        quality: newQuality,
+        calibers: this.qualityEstimateDetail
+      };
+      await this.storeQuality(data);
+      setTimeout(() => {
+        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+      }, 2000);
+    }
   }
 
   /**

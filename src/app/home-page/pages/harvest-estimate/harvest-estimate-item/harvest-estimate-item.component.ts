@@ -54,7 +54,7 @@ export class HarvestEstimateItemComponent implements OnInit {
   /**
    * showUnitName
    */
-  public showUnitName = () => {
+  public showUnitCode = () => {
     const find = this.units.find(item => item.id === this.item.unit);
     return find ? find.code : 'N/A';
   }

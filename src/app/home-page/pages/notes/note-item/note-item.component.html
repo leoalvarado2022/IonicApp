@@ -1,16 +1,16 @@
 <ng-container *ngIf="item; else empty">
 
   <ion-item-sliding [disabled]="slideDisabled">
-    <ion-item (click)="itemClicked(item)" lines="none">
+    <ion-item lines="none">
       <ng-container *ngIf="getPhotoPath()">
-        <ion-thumbnail slot="start">
+        <ion-thumbnail slot="start" (click)="viewPicture()">
           <img [src]="getPhotoPath()">
         </ion-thumbnail>
       </ng-container>
       <ng-container slot="start" *ngIf="!getPhotoPath()">
         <ion-icon class="icon" name="mail" color="danger"></ion-icon>
       </ng-container>
-      <ion-label>
+      <ion-label (click)="itemClicked(item)">
         <h6 class="name">{{ item.responsibleName }}</h6>
         <div class="note">{{ item.note }}</div>
         <div class="date">Ult. Act. {{ item.registrationDate | customDate }}</div>

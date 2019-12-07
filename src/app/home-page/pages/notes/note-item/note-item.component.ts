@@ -1,5 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Note} from '@primetec/primetec-angular';
+import {ModalController} from '@ionic/angular';
+import {ImageViewerComponent} from '../../../../shared/components/image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-note-item',
@@ -13,7 +15,7 @@ export class NoteItemComponent implements OnInit {
   @Input() item: Note = null;
   @Input() slideDisabled = true;
 
-  constructor() {
+  constructor(private modalController: ModalController) {
 
   }
 
@@ -48,4 +50,20 @@ export class NoteItemComponent implements OnInit {
     this.deleteNote.emit(item);
   }
 
+  /**
+   * viewPicture
+   */
+  public viewPicture = async () => {
+    const modal = await this.modalController.create({
+      component: ImageViewerComponent,
+      componentProps: {
+        image: this.getPhotoPath()
+      },
+      backdropDismiss: false,
+      keyboardClose: false,
+      cssClass: 'full-screen-modal'
+    });
+
+    return await modal.present();
+  }
 }

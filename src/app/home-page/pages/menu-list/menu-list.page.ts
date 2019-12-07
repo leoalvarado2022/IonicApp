@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
 import {Store} from '@ngrx/store';
 import {StorageService} from '../../../shared/services/storage/storage.service';
@@ -11,17 +11,19 @@ import {NetworkService} from '../../../shared/services/network/network.service';
 import * as MenuAction from '../../../store/menu/menu.action';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from "../../../shared/services/loader/loader.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-menu-list',
   templateUrl: './menu-list.page.html',
   styleUrls: ['./menu-list.page.scss'],
 })
-export class MenuListPage implements OnInit {
+export class MenuListPage implements OnInit, OnDestroy {
 
   public userData = null;
   public menus: TabMenu[] = [];
   private isOnline: boolean;
+  private network$: Subscription;
 
   constructor(
     public store: Store<any>,
@@ -36,14 +38,20 @@ export class MenuListPage implements OnInit {
     private httpService: HttpService,
     private loaderService: LoaderService
   ) {
-    this.networkService.onNetworkChange().subscribe((status: boolean) => {
-      this.isOnline = status;
-    });
+
   }
 
   ngOnInit() {
+    this.network$ = this.networkService.onNetworkChange().subscribe((status: boolean) => {
+      this.isOnline = status;
+    });
+
     this.getUserData();
     this.loadMenus();
+  }
+
+  ngOnDestroy(): void {
+    this.network$.unsubscribe();
   }
 
   /**

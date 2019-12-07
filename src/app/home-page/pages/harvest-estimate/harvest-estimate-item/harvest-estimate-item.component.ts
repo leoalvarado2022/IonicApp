@@ -50,9 +50,8 @@ export class HarvestEstimateItemComponent implements OnInit {
     this.deleteHarvest.emit(item);
   }
 
-
   /**
-   * showUnitName
+   * showUnitCode
    */
   public showUnitCode = () => {
     const find = this.units.find(item => item.id === this.item.unit);

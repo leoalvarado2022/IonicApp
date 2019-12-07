@@ -14,7 +14,6 @@ export class NetworkService {
     private platform: Platform
   ) {
     this.platform.ready().then(() => {
-      this.initializeNetworkEvents();
       this.isOnline.next(navigator.onLine);
     });
   }
@@ -36,7 +35,7 @@ export class NetworkService {
   /**
    * initializeNetworkEvents
    */
-  private initializeNetworkEvents = () => {
+  public initializeNetworkEvents = () => {
     console.log('listen to online');
     window.addEventListener('online', async () => {
       console.log('back online');

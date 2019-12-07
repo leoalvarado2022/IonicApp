@@ -7,6 +7,7 @@ import {ContractDetailService} from '../../../shared/services/contract-detail/co
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-notes',
@@ -19,10 +20,9 @@ export class NotesPage implements OnInit, OnDestroy {
   public filteredNotes: Array<Note>;
   private notes: Array<Note>;
   private currentUrl: string;
-
-  private router$: any;
-  private costCenter$: any;
-  private notes$: any;
+  private router$: Subscription;
+  private costCenter$: Subscription;
+  private notes$: Subscription;
 
   constructor(
     private modalController: ModalController,

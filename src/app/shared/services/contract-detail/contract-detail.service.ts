@@ -5,6 +5,17 @@ import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, Prod
 import {BehaviorSubject} from 'rxjs';
 import {LoaderService} from '../loader/loader.service';
 import {HttpService} from "../http/http.service";
+import {catchError} from "rxjs/operators";
+
+interface ContractInterface {
+  costCenter: CostCenter;
+  productionContracts: Array<ProductContract>,
+  productionContractsDetails: Array<ProductContractDetail>,
+  harvestEstimate: Array<HarvestEstimate>,
+  qualityEstimate: Array<QualityEstimate>,
+  qualityEstimateDetail: Array<QualityDetail>,
+  notes: Array<Note>
+}
 
 @Injectable()
 export class ContractDetailService {
@@ -195,6 +206,19 @@ export class ContractDetailService {
     }
 
     return data;
+  }
+
+  /**
+   * test
+   * @param id
+   */
+  public test(id: string) {
+    const url = this.httpService.buildUrl(this.getCostCenterUrl, id);
+    return this.httpClient.post(url, this.httpService.buildBody(),
+      {headers: this.httpService.getHeaders()})
+      .pipe(
+        catchError(error => this.httpService.errorHandler(error))
+      );
   }
 
 }

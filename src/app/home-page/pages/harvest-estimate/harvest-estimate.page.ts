@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
@@ -7,18 +7,22 @@ import {ContractDetailService} from '../../../shared/services/contract-detail/co
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from "../../../shared/services/alert/alert.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-harvest-estimate',
   templateUrl: './harvest-estimate.page.html',
   styleUrls: ['./harvest-estimate.page.scss'],
 })
-export class HarvestEstimatePage implements OnInit {
+export class HarvestEstimatePage implements OnInit, OnDestroy {
 
-  public filteredHarvestEstimate: Array<HarvestEstimate>;
   private harvestEstimate: Array<HarvestEstimate>;
-  private currentUrl: string;
+  public filteredHarvestEstimate: Array<HarvestEstimate>;
   public costCenter: CostCenter;
+  private currentUrl: string;
+  private router$: Subscription;
+  private costCenter$: Subscription;
+  private harvestEstimate$: Subscription;
 
   constructor(
     private router: Router,
@@ -32,20 +36,26 @@ export class HarvestEstimatePage implements OnInit {
   }
 
   ngOnInit() {
-    this.router.events.subscribe((route) => {
+    this.router$ = this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
         this.currentUrl = route.url;
       }
     });
 
-    this.contractDetailService.getCostCenter().subscribe(value => {
+    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
       this.costCenter = value;
     });
 
-    this.contractDetailService.getHarvestEstimate().subscribe(value => {
+    this.harvestEstimate$ = this.contractDetailService.getHarvestEstimate().subscribe(value => {
       this.harvestEstimate = value;
       this.filteredHarvestEstimate = value;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.router$.unsubscribe();
+    this.costCenter$.unsubscribe();
+    this.harvestEstimate$.unsubscribe();
   }
 
   /**
@@ -119,7 +129,6 @@ export class HarvestEstimatePage implements OnInit {
     const respuesta = await this.alertService.confirmAlert('Desea borrar esta estimacion de cosecha?');
 
     if (respuesta) {
-      console.log('deleteHarvest');
       const newHarvest = Object.assign({}, harvestEstimate, {
         id: -harvestEstimate.id,
         workHolidays: harvestEstimate ? 1 : 0
@@ -131,7 +140,6 @@ export class HarvestEstimatePage implements OnInit {
       };
       await this.storeEstimation(data);
       setTimeout(() => {
-        console.log('reload');
         this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
       }, 2000);
     }
@@ -142,7 +150,6 @@ export class HarvestEstimatePage implements OnInit {
    * @param data
    */
   private storeEstimation = async (data: any) => {
-    console.log('storeEstimation');
     await this.loaderService.startLoader('Borrando estimacion de calidad');
     this.contractDetailService.storeHarvest(data).subscribe(success => {
       this.loaderService.stopLoader();

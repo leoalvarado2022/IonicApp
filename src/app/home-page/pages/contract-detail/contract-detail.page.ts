@@ -1,68 +1,62 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
-import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate, Unit} from '@primetec/primetec-angular';
+import {CostCenter, HarvestEstimate, Note, ProductContract, QualityDetail, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-contract-detail',
   templateUrl: './contract-detail.page.html',
   styleUrls: ['./contract-detail.page.scss'],
 })
-export class ContractDetailPage implements OnInit {
+export class ContractDetailPage implements OnInit, OnDestroy {
 
   public openSelected = false;
-  public selectedGraphics = false;
-  public costCenterListItem: CostCenterList = null;
-  public costCenter: CostCenter = null;
+  private costCenter: CostCenter = null;
   public productionContracts: Array<ProductContract> = [];
-  public productionContractsDetails: Array<ProductContractDetail> = [];
-  public harvestEstimate: Array<HarvestEstimate> = [];
-  public qualityEstimate: Array<QualityEstimate> = [];
-  public qualityEstimateDetail: Array<QualityDetail> = [];
-  public notes: Array<Note> = [];
   private units: Array<Unit> = [];
+  private costCenter$: Subscription;
+  private productionContracts$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
-    private contractDetailService: ContractDetailService,
+    public contractDetailService: ContractDetailService,
     private syncService: SyncService,
     private httpService: HttpService,
     private router: Router
   ) {
-    this.contractDetailService.getCostCenterListItem().subscribe(value => {
-      this.costCenterListItem = value;
-    });
 
-    this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
-    });
-
-    this.contractDetailService.getProductionContracts().subscribe(value => {
-      this.productionContracts = value;
-    });
-
-    this.contractDetailService.getHarvestEstimate().subscribe(value => {
-      this.harvestEstimate = value;
-    });
-
-    this.contractDetailService.getQualityEstimate().subscribe(value => {
-      this.qualityEstimate = value;
-    });
-
-    this.contractDetailService.getNotes().subscribe(value => {
-      this.notes = value;
-    });
   }
 
   ngOnInit(): void {
+    this.setSubscriptions();
+
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
       this.loadContractDetail(id);
       this.loadUnits();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.costCenter$.unsubscribe();
+    this.productionContracts$.unsubscribe();
+  }
+
+  /**
+   * setSubscriptions
+   */
+  private setSubscriptions = () => {
+    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
+      this.costCenter = value;
+    });
+
+    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => {
+      this.productionContracts = value;
+    });
   }
 
   /**

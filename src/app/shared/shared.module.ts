@@ -9,7 +9,6 @@ import {UserService} from './services/user/user.service';
 import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
 import {StorageService} from './services/storage/storage.service';
 import {SyncService} from './services/sync/sync.service';
-import {NetworkService} from './services/network/network.service';
 import {CustomDatePipe} from '../pipes/custom-date.pipe';
 import {HarvestEstimateItemComponent} from '../home-page/pages/harvest-estimate/harvest-estimate-item/harvest-estimate-item.component';
 import {QualityEstimateItemComponent} from '../home-page/pages/quality-estimate/quality-estimate-item/quality-estimate-item.component';
@@ -42,7 +41,6 @@ import {ImageViewerComponent} from './components/image-viewer/image-viewer.compo
     StorageService,
     SyncService,
     ToastService,
-    NetworkService,
     HttpService,
     AlertService,
     PhotoViewer

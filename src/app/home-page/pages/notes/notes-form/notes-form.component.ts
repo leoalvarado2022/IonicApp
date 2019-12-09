@@ -24,11 +24,11 @@ export class NotesFormComponent implements OnInit {
   public imageSrc = '';
   private userConnection: any;
   private commonOptions: CameraOptions = {
-    quality: 50,
+    quality: 100,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
-    targetWidth: 300,
-    targetHeight: 300,
+    targetWidth: 720,
+    targetHeight: 480,
     correctOrientation: true
   };
 

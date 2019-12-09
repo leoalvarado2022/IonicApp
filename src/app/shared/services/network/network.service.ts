@@ -14,39 +14,24 @@ export class NetworkService {
     private platform: Platform
   ) {
     this.platform.ready().then(() => {
-      this.initializeNetworkEvents();
       this.isOnline.next(navigator.onLine);
     });
   }
 
   /**
-   * getNetworkStatus
-   */
-  public getNetworkStatus = (): boolean => {
-    return this.isOnline.getValue();
-  }
-
-  /**
-   * onNetworkChange
-   */
-  public onNetworkChange = (): Observable<boolean> => {
-    return this.isOnline.asObservable();
-  }
-
-  /**
    * initializeNetworkEvents
    */
-  private initializeNetworkEvents = () => {
+  public initializeNetworkEvents = () => {
     console.log('listen to online');
-    window.addEventListener('online', async () => {
+    window.addEventListener('online', () => {
       console.log('back online');
-      await this.updateNetworkStatus(true);
+      this.updateNetworkStatus(true);
     });
 
     console.log('listen to offline');
-    window.addEventListener('offline', async () => {
+    window.addEventListener('offline', () => {
       console.log('went offline');
-      await this.updateNetworkStatus(false);
+      this.updateNetworkStatus(false);
     });
   }
 
@@ -57,6 +42,13 @@ export class NetworkService {
   private updateNetworkStatus = (status: boolean) => {
     this.isOnline.next(status);
     this.showAlert(status);
+  }
+
+  /**
+   * getNetWorkStatus
+   */
+  public getNetworkStatus = (): Observable<boolean> => {
+    return this.isOnline.asObservable();
   }
 
   /**

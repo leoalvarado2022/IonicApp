@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 import {CostCenter, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
@@ -7,19 +7,28 @@ import {QualityEstimateFormComponent} from './quality-estimate-form/quality-esti
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
+import {Subscription} from 'rxjs';
+import {NetworkService} from '../../../shared/services/network/network.service';
 
 @Component({
   selector: 'app-quality-estimate',
   templateUrl: './quality-estimate.page.html',
   styleUrls: ['./quality-estimate.page.scss'],
 })
-export class QualityEstimatePage implements OnInit {
+export class QualityEstimatePage implements OnInit, OnDestroy {
 
   public filteredQualityEstimate: Array<QualityEstimate>;
   private qualityEstimate: Array<QualityEstimate>;
   private qualityEstimateDetail: Array<QualityDetail>;
-  private costCenter: CostCenter;
+  public costCenter: CostCenter;
   private currentUrl: string;
+  public isOnline: boolean;
+
+  private isOnline$: Subscription;
+  private router$: Subscription;
+  private costCenter$: Subscription;
+  private qualityEstimate$: Subscription;
+  private qualityEstimateDetail$: Subscription;
 
   constructor(
     private router: Router,
@@ -27,28 +36,41 @@ export class QualityEstimatePage implements OnInit {
     private modalController: ModalController,
     private alertService: AlertService,
     private httpService: HttpService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private networkService: NetworkService
   ) {
-    this.router.events.subscribe((route) => {
-      if (route instanceof NavigationEnd) {
-        this.currentUrl = route.url;
-      }
+    this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
+      this.isOnline = status;
     });
   }
 
   ngOnInit() {
-    this.contractDetailService.getCostCenter().subscribe(value => {
+    this.router$ = this.router.events.subscribe((route) => {
+      if (route instanceof NavigationEnd) {
+        this.currentUrl = route.url;
+      }
+    });
+
+    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
       this.costCenter = value;
     });
 
-    this.contractDetailService.getQualityEstimate().subscribe(value => {
+    this.qualityEstimate$ = this.contractDetailService.getQualityEstimate().subscribe(value => {
       this.qualityEstimate = [...value];
       this.filteredQualityEstimate = [...value];
     });
 
-    this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
+    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
       this.qualityEstimateDetail = [...value];
     });
+  }
+
+  ngOnDestroy(): void {
+    this.isOnline$.unsubscribe();
+    this.router$.unsubscribe();
+    this.costCenter$.unsubscribe();
+    this.qualityEstimate$.unsubscribe();
+    this.qualityEstimateDetail$.unsubscribe();
   }
 
   /**
@@ -76,7 +98,9 @@ export class QualityEstimatePage implements OnInit {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+        this.reloadList().then(success => {
+          // TERMINO AQUI
+        });
       }
     });
 
@@ -132,9 +156,7 @@ export class QualityEstimatePage implements OnInit {
         calibers: this.qualityEstimateDetail
       };
       await this.storeQuality(data);
-      setTimeout(() => {
-        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-      }, 2000);
+      await this.reloadList();
     }
   }
 
@@ -142,13 +164,34 @@ export class QualityEstimatePage implements OnInit {
    * storeQuality
    * @param data
    */
-  private storeQuality = async (data: any) => {
-    await this.loaderService.startLoader('Borrando calidad');
-    this.contractDetailService.storeQuality(data).subscribe(success => {
-      this.loaderService.stopLoader();
-    }, error => {
-      this.loaderService.stopLoader();
-      this.httpService.errorHandler(error);
+  private storeQuality = (data: any) => {
+    return new Promise(async (resolve, reject) => {
+      await this.loaderService.startLoader('Borrando calidad');
+      this.contractDetailService.storeQuality(data).subscribe(success => {
+        this.loaderService.stopLoader();
+        resolve(true);
+      }, error => {
+        this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+        resolve(false);
+      });
     });
   }
+
+  /**
+   * reloadList
+   */
+  public reloadList = () => {
+    return new Promise(async (resolve, reject) => {
+      await this.loaderService.startLoader('Cargando estimaciones');
+      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(async success => {
+        await this.loaderService.stopLoader();
+        resolve(true);
+      }, async error => {
+        await this.loaderService.stopLoader();
+        resolve(false);
+      });
+    });
+  }
+
 }

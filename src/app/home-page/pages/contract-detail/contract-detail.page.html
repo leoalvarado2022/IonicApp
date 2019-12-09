@@ -16,7 +16,7 @@
 <ion-content>
 
   <div (click)="openSelected = !openSelected" [class.selected]="openSelected" class="header-content background-color--header">
-    <ng-container *ngIf="costCenterListItem">
+    <ng-container *ngIf="(contractDetailService.getCostCenterListItem() | async ) as costCenterListItem">
       <ion-row class="row">
         <ion-col size="12">
           <div class="white">{{ costCenterListItem.code }}</div>
@@ -78,12 +78,12 @@
     <ion-list-header>
       <ion-label>ESTIMACION DE COSECHA</ion-label>
     </ion-list-header>
-    <div *ngIf="harvestEstimate.length > 0">
+    <ng-container *ngIf="(contractDetailService.getHarvestEstimate() | async) as harvestEstimate; else emptyHarvest">
       <app-harvest-estimate-item (harvestSelected)="harvestPage($event)" [item]="harvestEstimate[0]"></app-harvest-estimate-item>
-    </div>
-    <div *ngIf="harvestEstimate.length === 0">
+    </ng-container>
+    <ng-template #emptyHarvest>
       <app-harvest-estimate-item (harvestSelected)="harvestPage($event)"></app-harvest-estimate-item>
-    </div>
+    </ng-template>
   </ion-list>
 
   <!-- ESTIMACION DE CALIDAD -->
@@ -91,12 +91,12 @@
     <ion-list-header>
       <ion-label>ESTIMACION DE CALIDAD</ion-label>
     </ion-list-header>
-    <ng-container *ngIf="qualityEstimate.length > 0">
+    <ng-container *ngIf="(contractDetailService.getQualityEstimate() | async) as qualityEstimate; else emptyQuality">
       <app-quality-estimate-item (itemSelected)="qualityPage($event)" [item]="qualityEstimate[0]"></app-quality-estimate-item>
     </ng-container>
-    <ng-container *ngIf="qualityEstimate.length === 0">
+    <ng-template #emptyQuality>
       <app-quality-estimate-item (itemSelected)="qualityPage($event)"></app-quality-estimate-item>
-    </ng-container>
+    </ng-template>
   </ion-list>
 
   <!--  NOTAS-->
@@ -104,19 +104,19 @@
     <ion-list-header>
       <ion-label>NOTA</ion-label>
     </ion-list-header>
-    <ng-container *ngIf="notes.length > 0">
-      <app-note-item (noteClicked)="noteListPage($event)" [item]="notes[0]"></app-note-item>
+    <ng-container *ngIf="(contractDetailService.getNotes() | async) as note; else emptyNote">
+      <app-note-item (noteClicked)="noteListPage($event)" [item]="note[0]"></app-note-item>
     </ng-container>
-    <ng-container *ngIf="notes.length === 0">
+    <ng-template #emptyNote>
       <app-note-item (noteClicked)="noteListPage($event)"></app-note-item>
-    </ng-container>
+    </ng-template>
   </ion-list>
 
   <!--  graficos-->
+  <!--
   <div [class.selected]="selectedGraphics" class="graphics">
-    <!--
     <div id="container"></div>
-    -->
   </div>
+  -->
 
 </ion-content>

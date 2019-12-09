@@ -85,9 +85,13 @@ export class HttpService {
           break;
         case 401:
         case 403:
-          this.toastService.errorToast(message);
+          const msg = error.error.error;
+          this.toastService.errorToast(msg);
           this.router.navigate(['/home-page']);
           break;
+        case 500:
+          this.toastService.errorToast('API Error');
+          break
         default:
           this.toastService.errorToast(message);
           break;

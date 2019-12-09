@@ -6,25 +6,24 @@ import {AuthGuard} from './guards/auth/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
+    loadChildren: () => import('./home/home.module').then(module => module.HomePageModule),
     canActivate: [LoggedGuard]
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule),
+    loadChildren: () => import('./home/home.module').then(module => module.HomePageModule),
     canActivate: [LoggedGuard]
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule),
+    loadChildren: () => import('./auth/auth.module').then(module => module.AuthPageModule),
     canActivate: [LoggedGuard]
   },
   {
     path: 'home-page',
-    loadChildren: () => import('./home-page/home-page.module').then(m => m.HomePagePageModule),
+    loadChildren: () => import('./home-page/home-page.module').then(module => module.HomePagePageModule),
     canActivate: [AuthGuard]
   },
-  {path: 'menu-list', loadChildren: './home-page/pages/menu-list/menu-list.module#MenuListPageModule'}
 ];
 
 @NgModule({

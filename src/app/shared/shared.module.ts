@@ -9,7 +9,6 @@ import {UserService} from './services/user/user.service';
 import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
 import {StorageService} from './services/storage/storage.service';
 import {SyncService} from './services/sync/sync.service';
-import {NetworkService} from './services/network/network.service';
 import {CustomDatePipe} from '../pipes/custom-date.pipe';
 import {HarvestEstimateItemComponent} from '../home-page/pages/harvest-estimate/harvest-estimate-item/harvest-estimate-item.component';
 import {QualityEstimateItemComponent} from '../home-page/pages/quality-estimate/quality-estimate-item/quality-estimate-item.component';
@@ -17,6 +16,8 @@ import {NoteItemComponent} from '../home-page/pages/notes/note-item/note-item.co
 import {ToastService} from './services/toast/toast.service';
 import {HttpService} from './services/http/http.service';
 import {AlertService} from './services/alert/alert.service';
+import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
+import {ImageViewerComponent} from './components/image-viewer/image-viewer.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {AlertService} from './services/alert/alert.service';
     CustomDatePipe,
     HarvestEstimateItemComponent,
     QualityEstimateItemComponent,
-    NoteItemComponent
+    NoteItemComponent,
+    ImageViewerComponent
   ],
   imports: [
     CommonModule,
@@ -39,9 +41,9 @@ import {AlertService} from './services/alert/alert.service';
     StorageService,
     SyncService,
     ToastService,
-    NetworkService,
     HttpService,
-    AlertService
+    AlertService,
+    PhotoViewer
   ],
   exports: [
     CommonModule,
@@ -53,7 +55,11 @@ import {AlertService} from './services/alert/alert.service';
     CustomDatePipe,
     HarvestEstimateItemComponent,
     QualityEstimateItemComponent,
-    NoteItemComponent
+    NoteItemComponent,
+    ImageViewerComponent
+  ],
+  entryComponents: [
+    ImageViewerComponent
   ]
 })
 export class SharedModule {

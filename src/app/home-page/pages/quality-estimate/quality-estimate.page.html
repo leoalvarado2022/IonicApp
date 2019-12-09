@@ -28,7 +28,7 @@
 
   <ng-container *ngIf="checkButton()">
     <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-      <ion-fab-button (click)="openForm()" color="success">
+      <ion-fab-button (click)="openForm()" [disabled]="!costCenter || !isOnline" color="success">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

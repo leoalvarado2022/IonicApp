@@ -8,6 +8,7 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from "../../../shared/services/alert/alert.service";
 import {Subscription} from "rxjs";
+import {NetworkService} from "../../../shared/services/network/network.service";
 
 @Component({
   selector: 'app-harvest-estimate',
@@ -20,6 +21,9 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
   public filteredHarvestEstimate: Array<HarvestEstimate>;
   public costCenter: CostCenter;
   private currentUrl: string;
+  public isOnline: boolean;
+
+  private isOnline$: Subscription
   private router$: Subscription;
   private costCenter$: Subscription;
   private harvestEstimate$: Subscription;
@@ -30,9 +34,12 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     private contractDetailService: ContractDetailService,
     private alertService: AlertService,
     private httpService: HttpService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private networkService: NetworkService
   ) {
-
+    this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
+      this.isOnline = status;
+    });
   }
 
   ngOnInit() {
@@ -53,6 +60,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.isOnline$.unsubscribe();
     this.router$.unsubscribe();
     this.costCenter$.unsubscribe();
     this.harvestEstimate$.unsubscribe();
@@ -82,7 +90,9 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+        this.reloadList().then(success => {
+          // TERMINO AQUI
+        });
       }
     });
 
@@ -138,10 +148,9 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
         costCenter: this.costCenter,
         harvestEstimate: newHarvest
       };
+
       await this.storeEstimation(data);
-      setTimeout(() => {
-        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-      }, 2000);
+      await this.reloadList();
     }
   }
 
@@ -149,13 +158,33 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    * storeEstimation
    * @param data
    */
-  private storeEstimation = async (data: any) => {
-    await this.loaderService.startLoader('Borrando estimacion de calidad');
-    this.contractDetailService.storeHarvest(data).subscribe(success => {
-      this.loaderService.stopLoader();
-    }, error => {
-      this.loaderService.stopLoader();
-      this.httpService.errorHandler(error);
+  private storeEstimation = (data: any) => {
+    return new Promise(async (resolve, reject) => {
+      await this.loaderService.startLoader('Borrando estimacion de calidad');
+      this.contractDetailService.storeHarvest(data).subscribe(async success => {
+        await this.loaderService.stopLoader();
+        resolve(true);
+      }, async error => {
+        await this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+        resolve(true);
+      });
+    });
+  }
+
+  /**
+   * reloadList
+   */
+  public reloadList = () => {
+    return new Promise(async (resolve, reject) => {
+      await this.loaderService.startLoader('Cargando estimaciones');
+      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(async success => {
+        await this.loaderService.stopLoader();
+        resolve(true)
+      }, async error => {
+        await this.loaderService.stopLoader();
+        resolve(false);
+      });
     });
   }
 

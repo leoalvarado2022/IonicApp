@@ -42,7 +42,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.network$ = this.networkService.onNetworkChange().subscribe((status: boolean) => {
+    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => {
       this.isOnline = status;
     });
 

@@ -5,6 +5,7 @@ import {CostCenter, HarvestEstimate, Note, ProductContract, QualityDetail, Unit}
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-contract-detail',
@@ -20,18 +21,28 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   private costCenter$: Subscription;
   private productionContracts$: Subscription;
 
+  private isOnline: boolean;
+  private isOnline$: Subscription;
+
   constructor(
     private route: ActivatedRoute,
     public contractDetailService: ContractDetailService,
     private syncService: SyncService,
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) {
 
   }
 
   ngOnInit(): void {
-    this.setSubscriptions();
+    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
+      this.costCenter = value;
+    });
+
+    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => {
+      this.productionContracts = value;
+    });
 
     const id = this.route.snapshot.paramMap.get('id');
 
@@ -47,19 +58,6 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   }
 
   /**
-   * setSubscriptions
-   */
-  private setSubscriptions = () => {
-    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
-    });
-
-    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => {
-      this.productionContracts = value;
-    });
-  }
-
-  /**
    * loadUnits
    */
   private loadUnits = async () => {
@@ -71,7 +69,12 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param id
    */
   private loadContractDetail = (id: string) => {
-    this.contractDetailService.getCostCenterDetail(id);
+    this.loaderService.startLoader('Cargando centro de costo');
+    this.contractDetailService.getCostCenterDetail(id).subscribe(async success => {
+      await this.loaderService.stopLoader();
+    }, async error => {
+      await this.loaderService.stopLoader();
+    });
   }
 
   /**

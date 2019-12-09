@@ -11,8 +11,8 @@ import {Router} from '@angular/router';
 })
 export class ListaPage implements OnInit {
 
-  public filteredCostCenters: CostCenterList[] = [];
-  private costCenters: CostCenterList[] = [];
+  public filteredCostCenters: Array<CostCenterList> = [];
+  private costCenters: Array<CostCenterList> = [];
 
   constructor(
     private syncService: SyncService,
@@ -22,8 +22,12 @@ export class ListaPage implements OnInit {
 
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.loadCostCenters();
+  }
+
+  ngOnInit() {
+
   }
 
   /**
@@ -33,7 +37,7 @@ export class ListaPage implements OnInit {
     this.costCenters = [];
     this.filteredCostCenters = [];
     this.costCenters = await this.syncService.getCostCenters();
-    this.filteredCostCenters = this.costCenters;
+    this.filteredCostCenters = [...this.costCenters];
   }
 
   /**

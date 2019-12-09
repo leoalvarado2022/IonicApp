@@ -8,6 +8,7 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
 import {Subscription} from 'rxjs';
+import {NetworkService} from '../../../shared/services/network/network.service';
 
 @Component({
   selector: 'app-notes',
@@ -20,6 +21,9 @@ export class NotesPage implements OnInit, OnDestroy {
   public filteredNotes: Array<Note>;
   private notes: Array<Note>;
   private currentUrl: string;
+  public isOnline: boolean;
+
+  public isOnline$: Subscription;
   private router$: Subscription;
   private costCenter$: Subscription;
   private notes$: Subscription;
@@ -30,9 +34,12 @@ export class NotesPage implements OnInit, OnDestroy {
     private router: Router,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private networkService: NetworkService
   ) {
-
+    this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
+      this.isOnline = status;
+    });
   }
 
   ngOnInit() {
@@ -53,6 +60,7 @@ export class NotesPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.isOnline$.unsubscribe();
     this.router$.unsubscribe();
     this.costCenter$.unsubscribe();
     this.notes$.unsubscribe();
@@ -114,7 +122,9 @@ export class NotesPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
+        this.reloadList().then(success => {
+          // TERMINADO
+        });
       }
     });
 
@@ -130,10 +140,7 @@ export class NotesPage implements OnInit, OnDestroy {
     if (response) {
       const newNote = Object.assign({}, note, {id: -note.id});
       await this.storeNote(newNote);
-
-      setTimeout(() => {
-        this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString());
-      }, 2000);
+      await this.reloadList();
     }
   }
 
@@ -141,13 +148,33 @@ export class NotesPage implements OnInit, OnDestroy {
    * storeNote
    * @param data
    */
-  private storeNote = async (data: any) => {
-    await this.loaderService.startLoader('Borrando nota');
-    this.contractDetailService.storeNote(data).subscribe(async success => {
-      await this.loaderService.stopLoader();
-    }, async error => {
-      await this.loaderService.stopLoader();
-      this.httpService.errorHandler(error);
+  private storeNote = (data: any) => {
+    return new Promise(async (resolve, reject) => {
+      await this.loaderService.startLoader('Borrando nota');
+      this.contractDetailService.storeNote(data).subscribe(async success => {
+        await this.loaderService.stopLoader();
+        resolve(true);
+      }, async error => {
+        await this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+        resolve(false);
+      });
+    });
+  }
+
+  /**
+   * reloadList
+   */
+  public reloadList = () => {
+    return new Promise(async (resolve, reject) => {
+      await this.loaderService.startLoader('Cargando estimaciones');
+      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(async success => {
+        await this.loaderService.stopLoader();
+        resolve(true);
+      }, async error => {
+        await this.loaderService.stopLoader();
+        resolve(false);
+      });
     });
   }
 

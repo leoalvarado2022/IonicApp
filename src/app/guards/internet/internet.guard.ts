@@ -7,12 +7,16 @@ import {NetworkService} from '../../shared/services/network/network.service';
 })
 export class InternetGuard implements CanActivate {
 
-  constructor(private networkService: NetworkService) {
+  private status: boolean;
 
+  constructor(private networkService: NetworkService) {
+    this.networkService.getNetworkStatus().subscribe(status => {
+      this.status = status;
+    });
   }
 
   canActivate(): boolean {
-    return this.networkService.getNetworkStatus();
+    return this.status;
   }
 
 }

@@ -2,19 +2,19 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '../auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, of} from 'rxjs';
 import {LoaderService} from '../loader/loader.service';
 import {HttpService} from "../http/http.service";
-import {catchError} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 
 interface ContractInterface {
   costCenter: CostCenter;
-  productionContracts: Array<ProductContract>,
-  productionContractsDetails: Array<ProductContractDetail>,
-  harvestEstimate: Array<HarvestEstimate>,
-  qualityEstimate: Array<QualityEstimate>,
-  qualityEstimateDetail: Array<QualityDetail>,
-  notes: Array<Note>
+  productionContracts: Array<ProductContract>;
+  productionContractsDetails: Array<ProductContractDetail>;
+  harvestEstimate: Array<HarvestEstimate>;
+  qualityEstimate: Array<QualityEstimate>;
+  qualityEstimateDetail: Array<QualityDetail>;
+  notes: Array<Note>;
 }
 
 @Injectable()
@@ -47,6 +47,7 @@ export class ContractDetailService {
    * getCostCenterDetail
    * @param id
    */
+  /*
   public getCostCenterDetail = async (id: string) => {
     const url = this.httpService.buildUrl(this.getCostCenterUrl, id);
     return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()}).subscribe((success: any) => {
@@ -80,6 +81,8 @@ export class ContractDetailService {
       this.httpService.errorHandler(error);
     });
   }
+
+  */
 
   /**
    *getCostCenter
@@ -209,16 +212,56 @@ export class ContractDetailService {
   }
 
   /**
-   * test
+   * getCostCenterDetail
    * @param id
    */
-  public test(id: string) {
+  public getCostCenterDetail = (id: string) => {
     const url = this.httpService.buildUrl(this.getCostCenterUrl, id);
-    return this.httpClient.post(url, this.httpService.buildBody(),
+    return this.httpClient.post<ContractInterface>(url, this.httpService.buildBody(),
       {headers: this.httpService.getHeaders()})
       .pipe(
-        catchError(error => this.httpService.errorHandler(error))
+        map(x => {
+          const data = x['data'];
+          const {
+            costCenter,
+            productionContracts,
+            productionContractsDetails,
+            harvestEstimate,
+            qualityEstimate,
+            qualityEstimateDetail,
+            notes
+          } = data;
+
+          this.costCenter.next(costCenter);
+          this.productionContracts.next(productionContracts);
+          this.productionContractsDetails.next(productionContractsDetails);
+          this.harvestEstimate.next(this.defineArrows(harvestEstimate, 'quantity'));
+          this.qualityEstimate.next(this.defineArrows(qualityEstimate, 'exportPercentage'));
+          this.qualityEstimateDetail.next(qualityEstimateDetail);
+          this.notes.next(notes);
+
+          return data;
+        }),
+        catchError(error => this.resolveCustomError(error))
       );
+  }
+
+  /**
+   * resolveCustomError
+   * @param error
+   */
+  private resolveCustomError = (error: any) => {
+    this.costCenter.next(null);
+    this.productionContracts.next([]);
+    this.productionContractsDetails.next([]);
+    this.harvestEstimate.next([]);
+    this.qualityEstimate.next([]);
+    this.qualityEstimateDetail.next([]);
+    this.notes.next([]);
+
+    this.httpService.errorHandler(error);
+
+    return of(null)
   }
 
 }

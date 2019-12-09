@@ -44,10 +44,8 @@ export class CompaniesPage implements OnInit {
    * loadCompanies
    */
   private loadCompanies = async () => {
-    this.loaderService.startLoader('Cargando empresass');
     this.companies = await this.syncService.getCompanies();
     this.selectedCompany = this.authService.getCompany();
-    this.loaderService.stopLoader();
   }
 
 }

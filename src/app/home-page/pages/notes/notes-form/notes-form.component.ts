@@ -27,8 +27,8 @@ export class NotesFormComponent implements OnInit {
     quality: 100,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
-    targetWidth: 720,
-    targetHeight: 480,
+    targetWidth: 1080,
+    targetHeight: 720,
     correctOrientation: true
   };
 

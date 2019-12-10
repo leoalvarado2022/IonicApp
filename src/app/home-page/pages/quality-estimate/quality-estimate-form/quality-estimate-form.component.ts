@@ -19,6 +19,12 @@ export class QualityEstimateFormComponent implements OnInit {
   @Input() qualityEstimate: QualityEstimate;
   @Input() qualityEstimateDetail: Array<QualityDetail>;
 
+  public readonly customActionSheetOptions: any = {
+    header: 'Calidades',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
   private costCenterListItem: CostCenterList;
   public qualityForm: FormGroup;
   public loader = false;
@@ -81,6 +87,10 @@ export class QualityEstimateFormComponent implements OnInit {
         costCenter: this.costCenter
       });
 
+      data.calibers = data.calibers.map(caliber => Object.assign({}, caliber, {
+        percentage: caliber.percentage === '' ? 0 : caliber.percentage
+      })).filter(caliber => caliber.percentage > 0)
+
       this.storeQuality(data);
     } else {
       this.showErrors = true;
@@ -105,7 +115,7 @@ export class QualityEstimateFormComponent implements OnInit {
 
     let accum = 0;
     for (const item of items.controls) {
-      const percentage = item.get('percentage').value;
+      const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
       if (percentage) {
         accum = accum + percentage;
       }
@@ -135,7 +145,6 @@ export class QualityEstimateFormComponent implements OnInit {
         quality: [find ? find.qualityEstimate : 0, Validators.required],
         caliber: [item.id, Validators.required],
         percentage: [find ? find.value : '', [
-          Validators.required,
           Validators.max(100)
         ]],
         temp: [1]
@@ -154,6 +163,23 @@ export class QualityEstimateFormComponent implements OnInit {
     }, error => {
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * getTotal
+   */
+  public getTotal = () => {
+    const items = this.qualityForm.get('calibers') as FormArray;
+
+    let accum = 0;
+    for (const item of items.controls) {
+      const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
+      if (percentage) {
+        accum = accum + percentage;
+      }
+    }
+
+    return accum;
   }
 }
 

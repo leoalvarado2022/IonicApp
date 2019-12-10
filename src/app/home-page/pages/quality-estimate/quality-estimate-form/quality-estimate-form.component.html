@@ -15,7 +15,7 @@
       <ng-container formGroupName="quality">
         <ion-item>
           <ion-label position="floating">Calidad</ion-label>
-          <ion-select cancelText="Cancelar" formControlName="quality" okText="Seleccionar">
+          <ion-select [interfaceOptions]="customActionSheetOptions" interface="action-sheet" cancelText="Cancelar" formControlName="quality">
             <ion-select-option *ngFor="let q of qualities" [value]="q.id">
               {{ q.name }}
             </ion-select-option>
@@ -38,22 +38,33 @@
       </ng-container>
 
       <ng-container formArrayName="calibers">
-        <ng-container *ngFor="let item of qualityForm.get('calibers')['controls']; let index = index" [formGroupName]="index.toString()">
-          <ion-item>
-            <ion-label position="floating">{{ getCaliberName(item) }}</ion-label>
-            <ion-input formControlName="percentage" placeholder="Ingresar el Porcentaje" type="number" clearInput></ion-input>
+        <ion-list>
+          <ion-list-header>
+            Datos Calibres
+          </ion-list-header>
+
+          <ng-container *ngFor="let item of qualityForm.get('calibers')['controls']; let index = index" [formGroupName]="index.toString()">
+            <ion-item>
+              <ion-label position="fixed">{{ getCaliberName(item) }}</ion-label>
+              <ion-input formControlName="percentage" placeholder="Ingresar el Porcentaje" type="number" clearInput></ion-input>
+            </ion-item>
             <ng-container *ngIf="item.get('percentage').hasError('required')">
               <span class="errorMsg">Ingrese el Porcentaje</span>
             </ng-container>
             <ng-container *ngIf="item.get('percentage').hasError('max')">
               <span class="errorMsg">El porcentaje debe ser menor a 100</span>
             </ng-container>
+          </ng-container>
+
+          <ion-item>
+            <ion-label position="fixed">Total</ion-label>
+            <ion-input readonly="true" [value]="getTotal()"></ion-input>
           </ion-item>
-        </ng-container>
+        </ion-list>
       </ng-container>
 
       <ng-container *ngIf="qualityForm.hasError('wrongPercentage')">
-        <span class="errorMsg">Los porcentajes deben sumar 100%</span>
+        <span class="errorMsg">El total debe sumar 100%</span>
       </ng-container>
 
       <br><br>

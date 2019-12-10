@@ -84,8 +84,8 @@ export class UserService {
    * @description guradar usuario
    * @param data
    */
-  setUserData = (data: any) => {
-    this.storageService.setRow('userData', data);
+  setUserData = async (data: any) => {
+    await this.storageService.setRow('userData', data);
   }
 
   /**

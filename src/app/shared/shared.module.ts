@@ -16,7 +16,6 @@ import {NoteItemComponent} from '../home-page/pages/notes/note-item/note-item.co
 import {ToastService} from './services/toast/toast.service';
 import {HttpService} from './services/http/http.service';
 import {AlertService} from './services/alert/alert.service';
-import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ImageViewerComponent} from './components/image-viewer/image-viewer.component';
 
 @NgModule({
@@ -42,8 +41,7 @@ import {ImageViewerComponent} from './components/image-viewer/image-viewer.compo
     SyncService,
     ToastService,
     HttpService,
-    AlertService,
-    PhotoViewer
+    AlertService
   ],
   exports: [
     CommonModule,

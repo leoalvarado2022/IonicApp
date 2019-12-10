@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
-import {NavigationEnd, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {StorageService} from '../../../shared/services/storage/storage.service';
 import {Store} from '@ngrx/store';
@@ -42,11 +42,7 @@ export class LoginPage implements OnInit {
       remember: ['false']
     });
 
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd && event.url === '/auth/login') {
-        this.checkRemember();
-      }
-    });
+    this.checkRemember();
   }
 
   /**
@@ -72,8 +68,7 @@ export class LoginPage implements OnInit {
       }
 
       if (login !== null) {
-        await this.userService.removeUserData();
-        this.userService.setUserData(login);
+        await this.userService.setUserData(login);
         this.store.dispatch(new MenuAction.AddProfile(login));
       }
 
@@ -147,21 +142,15 @@ export class LoginPage implements OnInit {
   }
 
   /**
-   * limpiarCache
-   */
-  public limpiarCache = async () => {
-    localStorage.clear();
-    await this.storage.clearAllRow();
-  }
-
-  /**
    * checkRemember
    */
   private checkRemember = async () => {
+    console.group('checkRemember');
     const remember = this.authService.getRememberStatus();
 
-    if (remember) {
+    if (remember === 'true') {
       const userData = await this.userService.getUserRemember();
+      console.log({userData});
 
       if (userData) {
         this.loginForm.patchValue({

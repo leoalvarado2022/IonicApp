@@ -98,7 +98,7 @@ export class LoginPage implements OnInit {
       }
     } catch (e) {
       console.log({e});
-      this.loaderService.startLoader();
+      this.loaderService.stopLoader();
     }
 
   }
@@ -145,12 +145,10 @@ export class LoginPage implements OnInit {
    * checkRemember
    */
   private checkRemember = async () => {
-    console.group('checkRemember');
     const remember = this.authService.getRememberStatus();
 
     if (remember === 'true') {
       const userData = await this.userService.getUserRemember();
-      console.log({userData});
 
       if (userData) {
         this.loginForm.patchValue({

@@ -185,7 +185,7 @@ export class ContractDetailService {
       const mappedData = data.map((item, index, arr) => {
         if (arr.length === 1) {
           return Object.assign({}, item, {
-            arrow: 'remove',
+            arrow: '',
             color: 'default'
           });
         } else if (arr.length > 1) {
@@ -198,7 +198,7 @@ export class ContractDetailService {
             });
           } else {
             return Object.assign({}, item, {
-              arrow: 'remove',
+              arrow: '',
               color: 'default'
             });
           }

@@ -19,7 +19,7 @@
         (click)="selectConnection(connection)"
         *ngFor="let connection of connections"
         [ngClass]="{'connection-active': connection.token === currentConnection.token, 'connection-inactive': connection.token !== currentConnection.token}">
-        <ion-icon name="switch" slot="start"></ion-icon>
+        <ion-icon name="switch" slot="start" [color]="connection.token === currentConnection.token ? 'success': 'danger'"></ion-icon>
         <ion-label>
           {{ connection.name }}
         </ion-label>

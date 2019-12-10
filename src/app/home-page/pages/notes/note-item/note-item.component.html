@@ -1,14 +1,14 @@
 <ng-container *ngIf="item; else empty">
 
   <ion-item-sliding [disabled]="slideDisabled">
-    <ion-item lines="none">
+    <ion-item class="note-item" lines="none">
       <ng-container *ngIf="getPhotoPath()">
         <ion-thumbnail slot="start" (click)="viewPicture()">
           <img [src]="getPhotoPath()">
         </ion-thumbnail>
       </ng-container>
       <ng-container slot="start" *ngIf="!getPhotoPath()">
-        <ion-icon class="icon" name="mail" color="danger"></ion-icon>
+        <ion-icon size="large" class="icon" name="mail" color="danger"></ion-icon>
       </ng-container>
       <ion-label (click)="itemClicked(item)">
         <h6 class="name">{{ item.responsibleName }}</h6>
@@ -23,34 +23,10 @@
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
-
-  <!--
-  RESPALDO
-  <div class="estimates-notas" (click)="itemClicked(item)">
-    <div class="name">
-      <div class="icon">
-        <ion-icon name="bookmark" color="danger"></ion-icon>
-      </div>
-      <div class="name--name">
-        <p class="mayu margin-0"><strong>NOTA</strong></p>
-        <p class="margin-0 date">Ult. Act. {{ item.registrationDate | customDate }}</p>
-      </div>
-    </div>
-    <div class="responsable">
-      <p class="responsable--name">
-        Responsable: {{ item.responsibleName }}
-      </p>
-      <div class="note-text font-10">
-        {{ item.note }}
-      </div>
-    </div>
-  </div>
-  -->
 </ng-container>
 
 <ng-template #empty>
-
-  <ion-item (click)="itemClicked(item)" lines="none">
+  <ion-item class="note-item" (click)="itemClicked(item)" lines="none">
     <ng-container *ngIf="getPhotoPath()">
       <ion-thumbnail slot="start">
         <img [src]="getPhotoPath()">
@@ -65,29 +41,4 @@
       <div class="date">Ult. Act. 00/00/0000</div>
     </ion-label>
   </ion-item>
-
-  <!--
-  RESPALDO
-  <div class="estimates-notas" (click)="itemClicked()">
-    <div class="name">
-      <div class="icon">
-        <ion-icon name="bookmark" color="danger"></ion-icon>
-      </div>
-      <div class="name--name">
-        <p class="mayu margin-0"><strong>NOTA</strong></p>
-        <p class="margin-0 date">Ult. Act. 00/00/0000</p>
-      </div>
-    </div>
-    <div class="responsable">
-      <p class="responsable--name">
-        Responsable: N/A
-      </p>
-      <div class="costos ion-text-center">
-        <div class="date">
-          <p class="font-10 margin-0 grey">N/A</p>
-        </div>
-      </div>
-    </div>
-  </div>
-  -->
 </ng-template>

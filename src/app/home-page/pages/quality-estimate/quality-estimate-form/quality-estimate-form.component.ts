@@ -19,6 +19,12 @@ export class QualityEstimateFormComponent implements OnInit {
   @Input() qualityEstimate: QualityEstimate;
   @Input() qualityEstimateDetail: Array<QualityDetail>;
 
+  public readonly customActionSheetOptions: any = {
+    header: 'Calidades',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
   private costCenterListItem: CostCenterList;
   public qualityForm: FormGroup;
   public loader = false;
@@ -41,9 +47,7 @@ export class QualityEstimateFormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.loader = true;
     this.userConnection = this.authService.getCompany();
-    this.calibers = await this.syncService.getCalibers();
 
     this.qualityForm = this.formBuilder.group({
       quality: this.formBuilder.group({
@@ -60,11 +64,7 @@ export class QualityEstimateFormComponent implements OnInit {
       calibers: this.formBuilder.array([])
     }, {validator: this.validateCalibers});
 
-    this.qualities = await this.syncService.getQualities();
-    this.filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
-
     this.loadCalibers();
-    this.loader = false;
   }
 
   /**
@@ -86,6 +86,10 @@ export class QualityEstimateFormComponent implements OnInit {
       const data = Object.assign({}, this.qualityForm.value, {
         costCenter: this.costCenter
       });
+
+      data.calibers = data.calibers.map(caliber => Object.assign({}, caliber, {
+        percentage: caliber.percentage === '' ? 0 : caliber.percentage
+      })).filter(caliber => caliber.percentage > 0)
 
       this.storeQuality(data);
     } else {
@@ -111,7 +115,7 @@ export class QualityEstimateFormComponent implements OnInit {
 
     let accum = 0;
     for (const item of items.controls) {
-      const percentage = item.get('percentage').value;
+      const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
       if (percentage) {
         accum = accum + percentage;
       }
@@ -123,7 +127,11 @@ export class QualityEstimateFormComponent implements OnInit {
   /**
    * loadCalibers
    */
-  private loadCalibers = () => {
+  private loadCalibers = async () => {
+    this.calibers = await this.syncService.getCalibers();
+    this.qualities = await this.syncService.getQualities();
+    this.filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
+
     const items = this.qualityForm.get('calibers') as FormArray;
 
     for (const item of this.filteredCalibers) {
@@ -137,7 +145,6 @@ export class QualityEstimateFormComponent implements OnInit {
         quality: [find ? find.qualityEstimate : 0, Validators.required],
         caliber: [item.id, Validators.required],
         percentage: [find ? find.value : '', [
-          Validators.required,
           Validators.max(100)
         ]],
         temp: [1]
@@ -156,6 +163,23 @@ export class QualityEstimateFormComponent implements OnInit {
     }, error => {
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * getTotal
+   */
+  public getTotal = () => {
+    const items = this.qualityForm.get('calibers') as FormArray;
+
+    let accum = 0;
+    for (const item of items.controls) {
+      const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
+      if (percentage) {
+        accum = accum + percentage;
+      }
+    }
+
+    return accum;
   }
 }
 

@@ -47,7 +47,7 @@ export class WelcomePage implements OnInit {
         }, {
           text: 'Si',
           handler: async () => {
-            await this.limpiarCache();
+            await this.cleanCache();
           }
         }
       ]
@@ -57,11 +57,23 @@ export class WelcomePage implements OnInit {
   }
 
   /**
-   * limpiarCache
+   * cleanCache
    */
-  public limpiarCache = async () => {
-    localStorage.clear();
-    await this.storage.clearAllRow();
+  public cleanCache = async () => {
+    const remember = localStorage.getItem('remember');
+
+    if (remember === 'true') {
+      const userRemember = await this.storage.getRow('userRemember');
+      localStorage.clear();
+      await this.storage.clearAllRow();
+      await this.storage.setRow('userRemember', userRemember)
+      localStorage.setItem('remember', 'true');
+    } else {
+      localStorage.clear();
+      await this.storage.clearAllRow();
+    }
+
     this.toastService.successToast('Datos eliminados');
   }
+
 }

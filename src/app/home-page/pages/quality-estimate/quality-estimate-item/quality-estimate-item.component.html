@@ -1,7 +1,6 @@
 <ng-container *ngIf="item; else empty">
-
   <ion-item-sliding [disabled]="slideDisabled">
-    <ion-item (click)="clickItem(item)" lines="none" [ngClass]="{ 'old': isOld}">
+    <ion-item class="quality" (click)="clickItem(item)" lines="none" [ngClass]="{ 'old': isOld}">
       <ion-icon class="icon" color="success" name="card"></ion-icon>
       <ion-label>
         <div class="name">{{ item.userName }}</div>
@@ -19,12 +18,12 @@
           </ion-col>
           <ion-col size="6">
             <div class="value">
-              <ion-icon [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;&nbsp;
+              <ion-icon size="large" [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
               <span>{{ item.exportPercentage }} %</span>
             </div>
           </ion-col>
         </ion-row>
-        <div class="date">Ult. Act. {{ item.registrationDate | customDate }}</div>
+        <div class="date">Ult. Act. {{ item.registrationDate | customDatetime }}</div>
       </ion-label>
     </ion-item>
 
@@ -34,37 +33,10 @@
       </ion-item-option>
     </ion-item-options>
   </ion-item-sliding>
-
-  <!--
-  <div class="quality-estimate">
-    <div (click)="showList()" class="name">
-      <div class="icon">
-        <ion-icon color="success" name="card"></ion-icon>
-      </div>
-    </div>
-    <div class="responsable">
-      <p class="responsable--name">Responsable: {{ item.userName }}</p>
-      <div class="costos ion-text-center">
-        <div class="date">
-          <p class="font-10 margin-0 grey">Calidad</p>
-          <p class="margin-0 bold">{{ item.qualityName }}</p>
-        </div>
-        <div class="total">
-          <p class="font-10 margin-0 grey">% EXPORTACION</p>
-          <p class="margin-0 bold">
-            <ion-icon [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
-            <span>{{ item.exportPercentage }} %</span>
-          </p>
-        </div>
-      </div>
-      <p class="responsable--name">Desplegar Gráficos</p>
-    </div>
-  </div>
-  -->
 </ng-container>
 
 <ng-template #empty>
-  <ion-item (click)="clickItem()" lines="none" [ngClass]="{ 'old': isOld}">
+  <ion-item class="quality" (click)="clickItem()" lines="none" [ngClass]="{ 'old': isOld}">
     <ion-icon class="icon" color="success" name="card"></ion-icon>
     <ion-label>
       <div class="name">N/A</div>
@@ -82,7 +54,6 @@
         </ion-col>
         <ion-col size="6">
           <div class="value">
-            <ion-icon color="default" name="remove"></ion-icon>&nbsp;
             <span>0 %</span>
           </div>
         </ion-col>
@@ -91,38 +62,3 @@
     </ion-label>
   </ion-item>
 </ng-template>
-
-<!--  estimaciones de calidad
-  <div class="estimates-calidad">
-    <div class="name" routerLink="/quality-estimate">
-      <div class="icon">
-        <ion-icon name="card" color="success"></ion-icon>
-      </div>
-      <div class="name--name">
-        <p class="mayu margin-0"><strong>Estimacion de Calidad</strong></p>
-        <p *ngIf="lastQuality" class="margin-0 date">Ult. Act. {{ lastQuality.registrationDate | customDate }}</p>
-        <p *ngIf="!lastQuality" class="margin-0 date">Ult. Act. No registra</p>
-      </div>
-    </div>
-    <div class="responsable">
-      <p *ngIf="lastQuality" class="responsable--name">Responsable: {{ lastQuality.userName }}</p>
-      <p *ngIf="!lastQuality" class="responsable--name">Responsable: Fernando Bravo</p>
-      <div class="costos ion-text-center">
-        <div class="date">
-          <p class="font-10 margin-0 grey">Calidad</p>
-          <p *ngIf="lastQuality" class="margin-0 bold">{{ lastQuality.qualityName }}</p>
-          <p *ngIf="!lastQuality" class="margin-0 bold">No registrado</p>
-        </div>
-        <div class="total">
-          <p class="font-10 margin-0 grey">% EXPORTACION</p>
-          <p class="margin-0 bold">
-            <ion-icon name="arrow-round-down" color="danger"></ion-icon>&nbsp;
-            <span *ngIf="lastQuality"> {{ lastQuality.exportPercentage }} %</span>
-            <span *ngIf="!lastQuality">0%</span>
-          </p>
-        </div>
-      </div>
-      <p class="responsable--name" (click)="openSelectedGraphics()">Desplegar Gráficos</p>
-    </div>
-  </div>
-  -->

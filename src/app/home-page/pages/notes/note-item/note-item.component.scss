@@ -64,7 +64,7 @@
 }
 
 .name {
-  text-align: left;
+  text-align: right;
   font-size: 10px;
   padding-left: 10px;
   color: var(--ion-color-medium-shade);
@@ -72,7 +72,7 @@
 }
 
 .date {
-  text-align: left;
+  text-align: right;
   font-size: 10px;
   padding-left: 10px;
   color: var(--ion-color-medium-shade);
@@ -82,7 +82,7 @@
 .note {
   padding-left: 10px;
   text-align: left;
-  font-size: 10px;
+  font-size: 14px;
   white-space: nowrap;
   width: 100%;
   overflow: hidden;

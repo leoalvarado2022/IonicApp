@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   app_name: 'FX10',
   api_url: 'http://localhost:5572',
-  appVersion: 'v1.0.23'
+  appVersion: 'v1.0.24'
 };
 
 /*

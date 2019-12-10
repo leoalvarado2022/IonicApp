@@ -37,13 +37,11 @@ export class HarvestEstimateFormComponent implements OnInit {
     private httpService: HttpService
   ) {
 
+
   }
 
-  async ngOnInit() {
-    this.loader = true;
-
+  ngOnInit() {
     this.userConnection = this.authService.getCompany();
-    this.units = await this.syncService.getUnits();
 
     this.harvestForm = this.formBuilder.group({
       id: [this.harvestEstimate ? this.harvestEstimate.id : 0, Validators.required],
@@ -56,7 +54,15 @@ export class HarvestEstimateFormComponent implements OnInit {
       startDate: [this.harvestEstimate ? moment(this.harvestEstimate.startDate).format('YYYY/MM/DD') : '', Validators.required],
       endDate: [this.harvestEstimate ? moment(this.harvestEstimate.endDate).format('YYYY/MM/DD') : '', Validators.required]
     });
-    this.loader = false;
+
+    this.loadUnits();
+  }
+
+  /**
+   * loadUnits
+   */
+  private loadUnits = async () => {
+    this.units = await this.syncService.getUnits();
   }
 
   /**
@@ -105,7 +111,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    * showUnitName
    */
   public showUnitName = () => {
-    const find = this.units.find(item => item.id === this.costCenter.id);
+    const find = this.units.find(item => item.id === this.costCenter.controlUnit);
     return find ? find.code : 'N/A';
   }
 }

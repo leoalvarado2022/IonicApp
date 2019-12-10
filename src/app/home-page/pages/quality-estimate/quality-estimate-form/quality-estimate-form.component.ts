@@ -41,9 +41,7 @@ export class QualityEstimateFormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.loader = true;
     this.userConnection = this.authService.getCompany();
-    this.calibers = await this.syncService.getCalibers();
 
     this.qualityForm = this.formBuilder.group({
       quality: this.formBuilder.group({
@@ -60,11 +58,7 @@ export class QualityEstimateFormComponent implements OnInit {
       calibers: this.formBuilder.array([])
     }, {validator: this.validateCalibers});
 
-    this.qualities = await this.syncService.getQualities();
-    this.filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
-
     this.loadCalibers();
-    this.loader = false;
   }
 
   /**
@@ -123,7 +117,11 @@ export class QualityEstimateFormComponent implements OnInit {
   /**
    * loadCalibers
    */
-  private loadCalibers = () => {
+  private loadCalibers = async () => {
+    this.calibers = await this.syncService.getCalibers();
+    this.qualities = await this.syncService.getQualities();
+    this.filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
+
     const items = this.qualityForm.get('calibers') as FormArray;
 
     for (const item of this.filteredCalibers) {

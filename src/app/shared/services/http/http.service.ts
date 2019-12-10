@@ -84,9 +84,11 @@ export class HttpService {
           this.toastService.errorToast(message);
           break;
         case 401:
+          this.toastService.errorToast('Su sesion ha caducado');
+          this.router.navigate(['/home-page']);
+          break;
         case 403:
-          const msg = error.error.error;
-          this.toastService.errorToast(msg);
+          this.toastService.errorToast('No tiene conexiones disponibles');
           this.router.navigate(['/home-page']);
           break;
         case 500:

@@ -12,18 +12,23 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-searchbar (ionChange)="searchQuality($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+<ion-searchbar (ionChange)="searchQuality($event.target.value)" (ionClear)="cancelSearch()" animated class="production"
+               showCancelButton="never"></ion-searchbar>
 
 <ion-content class="content">
 
   <ng-container *ngFor="let quality of filteredQualityEstimate; let index = index">
-    <app-quality-estimate-item
-      (itemSelected)="viewQuality(quality)"
-      (itemDelete)="deleteQuality(quality)"
-      [isOld]="index > 0 "
-      [slideDisabled]="false"
-      [item]="quality">
-    </app-quality-estimate-item>
+    <div class="card-sli">
+      <div class="card-sli-back">
+        <app-quality-estimate-item
+            (itemSelected)="viewQuality(quality)"
+            (itemDelete)="deleteQuality(quality)"
+            [isOld]="index > 0 "
+            [slideDisabled]="false"
+            [item]="quality">
+        </app-quality-estimate-item>
+      </div>
+    </div>
   </ng-container>
 
   <ng-container *ngIf="checkButton()">

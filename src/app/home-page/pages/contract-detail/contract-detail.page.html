@@ -8,6 +8,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <app-notifications></app-notifications>
+      <ion-icon name="globe" slot="icon-only" style="color:white;"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -21,11 +22,11 @@
         <ion-col size="12">
           <div class="white">{{ costCenterListItem.code }}</div>
         </ion-col>
-        <ion-col size="12">
-          <div class="white">{{ costCenterListItem.name }}</div>
+        <ion-col size="12" style="padding-bottom: 0;">
+          <div class="white" style="font-weight: bold;font-size: 20px;padding-left: 1rem;">{{ costCenterListItem.name }}</div>
         </ion-col>
-        <ion-col size="12">
-          <div class="white">{{ costCenterListItem.producerName }}</div>
+        <ion-col size="12" style="padding-top: 0;">
+          <div class="white" style="font-size: 14px;padding-left: 1rem;">{{ costCenterListItem.producerName }}</div>
         </ion-col>
         <ion-col size="12">
           <div class="white">{{ costCenterListItem.speciesName }} / {{ costCenterListItem.varietyName }}</div>
@@ -40,17 +41,17 @@
     </ng-container>
 
     <ng-container *ngFor="let contract of productionContracts; let index = index">
-      <div class="scroll-card">
+      <div class="scroll-card" [class.scroll-card-custom]="openSelected">
         <ng-container>
           <div class="card-text">
             <div class="card-text-one">
+              <p>{{ contract.totalQuantity }}</p>
               <p># {{ contract.documentNumber }}</p>
               <p>{{ contract.date| customDate }}</p>
               <p>{{ contract.responsibleName }}</p>
             </div>
-            <div class="card-text-two">
-              <p>{{ contract.totalQuantity }}</p>
-            </div>
+            <!--<div class="card-text-two">
+            </div>-->
           </div>
         </ng-container>
       </div>

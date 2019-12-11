@@ -1,5 +1,5 @@
 .note-item {
-  margin-bottom: 5px;
+  //margin-bottom: 5px;
 }
 
 .name {
@@ -30,4 +30,13 @@
 
 .icon {
   font-size: 40px;
+}
+
+ion-label{
+  margin: 0;
+  padding-bottom: 5px;
+}
+
+ion-item-sliding{
+  border-radius: 10px !important;
 }

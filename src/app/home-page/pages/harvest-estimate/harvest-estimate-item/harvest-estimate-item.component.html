@@ -13,13 +13,13 @@
           </ion-col>
         </ion-row>
         <ion-row class="highlight">
-          <ion-col size="6">
-            <div class="value">{{ item.startDate | customDate }}</div>
+          <ion-col size="6" class="ion-no-padding">
+            <div class="value totales">{{ item.startDate | customDate }}</div>
           </ion-col>
-          <ion-col size="6">
+          <ion-col size="6" class="ion-no-padding">
             <div class="value">
               <ion-icon size="large" [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
-              <span>{{ item.quantity | number:'1.0-0':'es-CL' }} {{ showUnitCode() | uppercase }}</span>
+              <span class="totales">{{ item.quantity | number:'1.0-0':'es-CL' }} {{ showUnitCode() | uppercase }}</span>
             </div>
           </ion-col>
         </ion-row>

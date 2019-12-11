@@ -167,7 +167,7 @@ export class NotesPage implements OnInit, OnDestroy {
    */
   public reloadList = () => {
     return new Promise(async (resolve, reject) => {
-      await this.loaderService.startLoader('Cargando estimaciones');
+      await this.loaderService.startLoader('Cargando notas');
       this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(async success => {
         await this.loaderService.stopLoader();
         resolve(true);

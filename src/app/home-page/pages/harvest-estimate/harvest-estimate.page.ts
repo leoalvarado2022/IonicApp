@@ -160,7 +160,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    */
   private storeEstimation = (data: any) => {
     return new Promise(async (resolve, reject) => {
-      await this.loaderService.startLoader('Borrando estimacion de calidad');
+      await this.loaderService.startLoader('Borrando estimacion de cosecha');
       this.contractDetailService.storeHarvest(data).subscribe(async success => {
         await this.loaderService.stopLoader();
         resolve(true);
@@ -177,7 +177,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    */
   public reloadList = () => {
     return new Promise(async (resolve, reject) => {
-      await this.loaderService.startLoader('Cargando estimaciones');
+      await this.loaderService.startLoader('Cargando estimaciones de cosecha');
       this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(async success => {
         await this.loaderService.stopLoader();
         resolve(true)

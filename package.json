@@ -1,6 +1,6 @@
 {
   "name": "fx11_movil",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -36,7 +36,6 @@
     "@ngrx/store-devtools": "^8.5.0",
     "@primetec/primetec-angular": "^0.0.14",
     "cordova-android": "^8.1.0",
-    "cordova-ios": "5.1.1",
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-camera": "^4.1.0",
     "cordova-sqlite-storage": "^3.4.0",
@@ -92,12 +91,10 @@
       "cordova-sqlite-storage": {},
       "cordova-plugin-camera": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      },
-      "com-sarriaroman-photoviewer": {}
+      }
     },
     "platforms": [
-      "android",
-      "ios"
+      "android"
     ]
   }
 }

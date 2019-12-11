@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import * as moment from "moment";
-import {DatePipe} from "@angular/common";
+import * as moment from 'moment';
+import {DatePipe} from '@angular/common';
 
 @Pipe({
   name: 'customDatetime'

@@ -1,3 +1,27 @@
 <ion-searchbar (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
-<agm-map class="map-size" [latitude]="lat" [longitude]="lng"></agm-map>
+<ng-container *ngIf="lat && lng">
+  <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="10">
+    <ng-container *ngFor="let costCenter of filteredCostCenters">
+      <ng-container *ngIf="costCenter.lat && costCenter.lng">
+        <agm-marker
+          [label]="'C'"
+          [title]="costCenter.code"
+          [latitude]="costCenter.lat"
+          [longitude]="costCenter.lng"
+          (markerClick)="selectedCostCenter = costCenter"
+        >
+          <agm-info-window
+            [isOpen]="selectedCostCenter === costCenter"
+            [latitude]="costCenter.lat"
+            [longitude]="costCenter.lng"
+          >
+            <p>{{ costCenter.code }}</p>
+            <p>{{ costCenter.name }}</p>
+            <p>{{ costCenter.producerName }}</p>
+          </agm-info-window>
+        </agm-marker>
+      </ng-container>
+    </ng-container>
+  </agm-map>
+</ng-container>

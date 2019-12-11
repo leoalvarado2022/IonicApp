@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
+import {GeolocationService} from '../../../../shared/services/geolocation/geolocation.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-mapa',
@@ -9,18 +11,36 @@ import {SyncService} from '../../../../shared/services/sync/sync.service';
 })
 export class MapaPage implements OnInit {
 
-  public readonly lat = -33.447487;
-  public readonly lng = -70.673676;
+  public lat: number;
+  public lng: number;
+  private loads = 0;
 
+  public selectedCostCenter: CostCenterList;
   public filteredCostCenters: CostCenterList[] = [];
   private costCenters: CostCenterList[] = [];
 
-  constructor(private syncService: SyncService) {
+  private position$: Subscription;
 
+  constructor(
+    private syncService: SyncService,
+    private geolocationService: GeolocationService
+  ) {
+    this.position$ = this.geolocationService.getCurrentPosition().subscribe(value => {
+      if (this.loads === 0) {
+        this.lat = value.lat;
+        this.lng = value.lng;
+      }
+
+      this.loads++;
+    });
   }
 
   ngOnInit() {
     this.loadCostCenters();
+  }
+
+  ionViewWillLeave() {
+    this.position$.unsubscribe();
   }
 
   /**
@@ -60,6 +80,5 @@ export class MapaPage implements OnInit {
   public cancelSearch = () => {
     this.filteredCostCenters = this.costCenters;
   }
-
 
 }

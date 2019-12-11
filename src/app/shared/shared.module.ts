@@ -17,7 +17,9 @@ import {ToastService} from './services/toast/toast.service';
 import {HttpService} from './services/http/http.service';
 import {AlertService} from './services/alert/alert.service';
 import {ImageViewerComponent} from './components/image-viewer/image-viewer.component';
-import {CustomDatetimePipe} from "./pipes/custom-datetime/custom-datetime.pipe";
+import {CustomDatetimePipe} from './pipes/custom-datetime/custom-datetime.pipe';
+import {GeolocationService} from './services/geolocation/geolocation.service';
+import {Geolocation} from '@ionic-native/geolocation/ngx';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,7 @@ import {CustomDatetimePipe} from "./pipes/custom-datetime/custom-datetime.pipe";
     FormsModule,
     IonicModule,
     HttpClientModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     UserService,
@@ -43,7 +45,9 @@ import {CustomDatetimePipe} from "./pipes/custom-datetime/custom-datetime.pipe";
     SyncService,
     ToastService,
     HttpService,
-    AlertService
+    AlertService,
+    GeolocationService,
+    Geolocation
   ],
   exports: [
     CommonModule,

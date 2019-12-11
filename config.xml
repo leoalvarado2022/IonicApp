@@ -59,6 +59,9 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
             <string>need photo library access to save pictures there</string>
         </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
+            <string>We use your location for full functionality of certain app features.</string>
+        </edit-config>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="29" src="resources/ios/icon/icon-small.png" width="29" />

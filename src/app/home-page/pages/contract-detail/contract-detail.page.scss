@@ -38,11 +38,22 @@ ion-content {
   display: table;
   width: 100%;
   padding: 0 25px 0 25px;
+  position: relative;
 
   .card-text-one, .card-text-two {
-    width: 50%;
+    width: 100%;
     display: table-cell;
     color: white;
+    p:nth-child(1){
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin-top: 15px !important;
+      margin-right: 15px;
+      padding: 10px;
+      background: var(--color-light-card-hard);
+      border-radius: 20px;
+    }
   }
 
   .card-text-one {
@@ -73,6 +84,21 @@ ion-content {
   overflow: hidden;
 }
 
+.scroll-card-custom {
+  padding: 3px 5px 3px 5px;
+  .card-text{
+    background-color: var(--color-searchbar-menu);
+    border-radius: 10px;
+    border: none !important;
+    .card-text-one {
+      padding: 12px 0;
+    }
+    p{
+      margin: 0;
+    }
+  }
+}
+
 .header-content.selected .scroll-card {
   max-height: 500px;
   transition: max-height 0.25s ease-in;
@@ -84,8 +110,9 @@ ion-content {
   text-align: center;
   background: white;
   padding: 10px 0;
-  margin-bottom: 10px;
-
+  margin-bottom: 5px;
+  border-radius: 0 0 12px 12px;
+  //box-shadow: 0 4px 16px rgba(0,0,0,.12);
   div {
     display: table-cell;
 
@@ -117,5 +144,12 @@ ion-content {
 
 
 .item-list {
-  margin: 0 0 5px;
+  margin: 0 5px 5px;
+  border-radius: 10px;
+  padding-bottom: 5px;
+  //box-shadow: 0 4px 16px rgba(0,0,0,.12)
+}
+
+ion-list-header{
+  min-height: 25px;
 }

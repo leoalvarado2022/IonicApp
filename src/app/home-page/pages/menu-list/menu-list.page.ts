@@ -78,6 +78,7 @@ export class MenuListPage implements OnInit, OnDestroy {
    */
   public checkDisabled = (menu: TabMenu) => {
     return !this.isOnline && !menu.offlineMenu;
+    // return true;
   }
 
   /**

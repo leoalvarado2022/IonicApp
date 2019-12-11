@@ -12,45 +12,41 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="content">
   <ion-refresher (ionRefresh)="reSync($event)" slot="fixed">
     <ion-refresher-content
-      pullingIcon="arrow-dropdown"
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
-      refreshingText="Refreshing...">
+        pullingIcon="arrow-dropdown"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid>
-    <ion-row>
-      <ng-container *ngIf="menus">
-        <ion-col *ngFor="let menu of menus; let i = index" size="6">
-          <div
-            (click)="navigate(menu)"
-            [ngClass]="{ 'border-separator-right': i % 2 === 0, 'border-separator-left': i % 2 !== 0, 'disabled': checkDisabled(menu) }"
-            class="ion-text-center card-menu">
-            <div>
-              <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
-              <p class="title-menu ion-text-capitalize">
-                {{ menu.caption }}
-              </p>
-            </div>
-          </div>
-        </ion-col>
+  <ng-container *ngIf="menus">
+    <div *ngFor="let menu of menus; let i = index" class="card-menu-item">
+      <div
+          (click)="navigate(menu)"
+          [ngClass]="{ 'disabled': checkDisabled(menu) }"
+          class="ion-text-center card-menu row-menu">
+        <div>
+          <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
+          <p class="title-menu ion-text-capitalize">
+            {{ menu.caption }}
+          </p>
+        </div>
+      </div>
+    </div>
 
-        <!--
-        <ion-col size="6" class="ion-text-center border-separator-right card-menu" routerLink="/production-contracts">
-          <div>
-            <img src="assets/imgs/contratacion.png" alt="">
-            <p class="title-menu">
-              Contratos de Producción
-            </p>
-          </div>
-        </ion-col>
-        -->
+    <!--
+    <ion-col size="6" class="ion-text-center border-separator-right card-menu" routerLink="/production-contracts">
+      <div>
+        <img src="assets/imgs/contratacion.png" alt="">
+        <p class="title-menu">
+          Contratos de Producción
+        </p>
+      </div>
+    </ion-col>
+    -->
 
-      </ng-container>
-    </ion-row>
-  </ion-grid>
+  </ng-container>
 </ion-content>

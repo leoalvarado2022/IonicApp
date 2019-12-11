@@ -29,8 +29,27 @@ ion-title {
 
 .title-menu {
   margin-top: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  white-space: nowrap;
 }
 
 .disabled {
   opacity: .5;
+}
+
+.row-menu {
+  background: white;
+  border-radius: 8px;
+  padding: 8px;
+  height: 115px;
+  width: 100%
+}
+
+.card-menu-item {
+  width: 48.5%;
+  display: inline-block;
+  vertical-align: top;
+  margin: 0.7%;
 }

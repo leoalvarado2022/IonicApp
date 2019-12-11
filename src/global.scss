@@ -191,3 +191,13 @@ ion-menu-button {
   border-radius: 50px;
   top: 0;
 }
+
+.card-sli{
+  padding: 5px 5px 0 5px;
+  border-radius: 10px;
+  .card-sli-back{
+    background-color: white;
+    border-radius: 10px;
+    //box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  }
+}

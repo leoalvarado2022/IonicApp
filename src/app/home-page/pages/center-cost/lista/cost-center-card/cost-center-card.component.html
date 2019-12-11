@@ -1,21 +1,29 @@
 <ng-container *ngIf="costCenter">
   <ion-card (click)="showDetails()" [disabled]="!isOnline" [routerDirection]="'forward'" button="true" class="cost-center-size">
     <ion-card-header>
-      <ion-card-subtitle>{{ costCenter.code }}</ion-card-subtitle>
+      <ion-card-subtitle><span class="code-const-center">{{ costCenter.code }}</span> <span class="ion-float-right"># {{ costCenter.contractDocumentNumber }}</span></ion-card-subtitle>
       <ion-card-title>{{ costCenter.name }}</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      <ion-row>
-        <ion-col size="12">{{ costCenter.producerName }}</ion-col>
-        <ion-col size="12">{{ costCenter.speciesName }} / {{ costCenter.varietyName }}</ion-col>
-        <ion-col size="12">Fecha Cosecha: {{ costCenter.harvestDate | customDate }}</ion-col>
-        <ion-col *ngIf="costCenter.contractResponsible" size="12">{{ costCenter.contractResponsible }}</ion-col>
-        <ng-container *ngIf="costCenter.contractDocumentNumber && costCenter.contractsNumber">
-          <ion-col size="6"># {{ costCenter.contractDocumentNumber }}</ion-col>
-          <ion-col size="6">Nº Contratos: {{ costCenter.contractsNumber }}</ion-col>
-        </ng-container>
-      </ion-row>
+      <div>
+        <p class="production-name">
+          {{ costCenter.producerName }}
+        </p>
+        <p>
+          {{ costCenter.speciesName }} <strong>/</strong> {{ costCenter.varietyName }}
+        </p>
+        <p class="production-name" *ngIf="costCenter.contractResponsible" >
+          {{ costCenter.contractResponsible }}
+        </p>
+        <div class="bottom-info">
+          <span class="bottom__date">Fecha Cosecha: {{ costCenter.harvestDate | customDate }}</span>
+          <span class="bottom__icon">
+            <ion-icon color="success" name="clipboard"></ion-icon>&nbsp;<span>{{ costCenter.contractsNumber }}</span>
+          </span>
+        </div>
+
+      </div>
     </ion-card-content>
   </ion-card>
 </ng-container>

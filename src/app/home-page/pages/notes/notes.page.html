@@ -12,16 +12,21 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-searchbar (ionChange)="searchNote($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+<ion-searchbar (ionChange)="searchNote($event.target.value)" (ionClear)="cancelSearch()" animated class="production"
+               showCancelButton="never"></ion-searchbar>
 
-<ion-content>
+<ion-content class="content">
   <ng-container *ngFor="let item of filteredNotes">
-    <app-note-item
-      (deleteNote)="deleteNoteConfirm($event)"
-      (noteClicked)="viewNote(item)"
-      [item]="item"
-      [slideDisabled]="false"
-    ></app-note-item>
+    <div class="card-sli">
+      <div class="card-sli-back">
+        <app-note-item
+            (deleteNote)="deleteNoteConfirm($event)"
+            (noteClicked)="viewNote(item)"
+            [item]="item"
+            [slideDisabled]="false"
+        ></app-note-item>
+      </div>
+    </div>
   </ng-container>
 
   <ng-container *ngIf="checkButton()">

@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from '../../../shared/services/storage/storage.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {AlertController} from '@ionic/angular';
+import {AlertController, Platform} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
+import {DetectPlatformService} from '../../../shared/services/detect-platform/detect-platform.service';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 
 @Component({
   selector: 'app-welcome',
@@ -11,16 +13,25 @@ import {environment} from '../../../../environments/environment';
 })
 export class WelcomePage implements OnInit {
 
+  uuid: any;
+
   constructor(
     private storage: StorageService,
     private alertController: AlertController,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private detectPlatform: DetectPlatformService,
+    private platform: Platform,
+    private uniqueDeviceID: UniqueDeviceID
   ) {
 
   }
 
   ngOnInit() {
-
+    this.platform.ready().then(() => {
+      this.uniqueDeviceID.get()
+        .then((uuid: any) => this.uuid = uuid)
+        .catch((error: any) => console.log(error));
+    });
   }
 
   /**

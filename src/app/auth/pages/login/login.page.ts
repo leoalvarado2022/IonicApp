@@ -10,6 +10,8 @@ import * as MenuAction from '../../../store/menu/menu.action';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {Platform} from '@ionic/angular';
+
 
 @Component({
   selector: 'app-login',

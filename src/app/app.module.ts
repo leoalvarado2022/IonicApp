@@ -24,6 +24,7 @@ import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
 import {NetworkService} from './shared/services/network/network.service';
+import {UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -61,7 +62,8 @@ const NGRX_IMPORTS = [
     Camera,
     LoaderService,
     AuthService,
-    NetworkService
+    NetworkService,
+    UniqueDeviceID
   ],
   bootstrap: [AppComponent]
 })

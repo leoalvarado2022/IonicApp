@@ -4,7 +4,7 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertController, Platform} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
 import {DetectPlatformService} from '../../../shared/services/detect-platform/detect-platform.service';
-import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
+import {UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
 
 @Component({
   selector: 'app-welcome',
@@ -13,7 +13,7 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id/ngx';
 })
 export class WelcomePage implements OnInit {
 
-  uuid: any;
+  public uuid: string;
 
   constructor(
     private storage: StorageService,
@@ -28,9 +28,9 @@ export class WelcomePage implements OnInit {
 
   ngOnInit() {
     this.platform.ready().then(() => {
-      this.uniqueDeviceID.get()
-        .then((uuid: any) => this.uuid = uuid)
-        .catch((error: any) => console.log(error));
+      this.uniqueDeviceID.get().then((uuid: string) => {
+        this.uuid = uuid;
+      }).catch((error: any) => this.toastService.errorToast('Cordova requerido'));
     });
   }
 

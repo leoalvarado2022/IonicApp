@@ -12,8 +12,13 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-searchbar (ionChange)="searchQuality($event.target.value)" (ionClear)="cancelSearch()" animated class="production"
-               showCancelButton="never"></ion-searchbar>
+<ion-searchbar
+  (ionChange)="searchQuality($event.target.value)"
+  (ionClear)="cancelSearch()"
+  animated
+  class="production"
+  showCancelButton="never">
+</ion-searchbar>
 
 <ion-content class="content">
 
@@ -25,7 +30,9 @@
             (itemDelete)="deleteQuality(quality)"
             [isOld]="index > 0 "
             [slideDisabled]="false"
-            [item]="quality">
+            [item]="quality"
+            [details]="getItemDetails(quality.id)"
+        >
         </app-quality-estimate-item>
       </div>
     </div>

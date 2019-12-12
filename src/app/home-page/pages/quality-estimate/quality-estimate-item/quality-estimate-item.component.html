@@ -27,6 +27,28 @@
       </ion-label>
     </ion-item>
 
+    <ng-container *ngIf="!showChart">
+      <ion-item lines="none" (click)="openChart()" [ngClass]="{ 'old': isOld}">
+        <ion-icon slot="start" name="analytics"></ion-icon>
+        <ion-label>
+          Desplegar Grafico
+        </ion-label>
+      </ion-item>
+    </ng-container>
+
+    <ng-container *ngIf="showChart">
+      <ion-item lines="none" (click)="showChart = false" [ngClass]="{ 'old': isOld}">
+        <ion-icon slot="start" name="analytics"></ion-icon>
+        <ion-label>
+          Ocultar Grafico
+        </ion-label>
+      </ion-item>
+    </ng-container>
+
+    <ng-container *ngIf="showChart">
+      <div echarts [options]="this.chartData" class="chart" [ngClass]="{ 'old': isOld}"></div>
+    </ng-container>
+
     <ion-item-options side="start">
       <ion-item-option color="danger" (click)="deleteItem(item)">
         <ion-icon name="trash"></ion-icon>

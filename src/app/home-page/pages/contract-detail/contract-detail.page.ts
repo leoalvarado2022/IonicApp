@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
-import {CostCenter, HarvestEstimate, Note, ProductContract, QualityDetail, Unit} from '@primetec/primetec-angular';
+import {CostCenter, HarvestEstimate, Note, ProductContract, QualityDetail, QualityEstimate, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
@@ -15,14 +15,14 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 export class ContractDetailPage implements OnInit, OnDestroy {
 
   public openSelected = false;
-  private costCenter: CostCenter = null;
   public productionContracts: Array<ProductContract> = [];
+  private costCenter: CostCenter = null;
   private units: Array<Unit> = [];
+  private qualityEstimateDetail: Array<QualityDetail>;
+
   private costCenter$: Subscription;
   private productionContracts$: Subscription;
-
-  private isOnline: boolean;
-  private isOnline$: Subscription;
+  private qualityEstimateDetail$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,6 +44,10 @@ export class ContractDetailPage implements OnInit, OnDestroy {
       this.productionContracts = value;
     });
 
+    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
+      this.qualityEstimateDetail = value;
+    });
+
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
@@ -55,6 +59,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.costCenter$.unsubscribe();
     this.productionContracts$.unsubscribe();
+    this.qualityEstimateDetail$.unsubscribe();
   }
 
   /**
@@ -100,6 +105,18 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   }
 
   /**
+   * getItemDetails
+   * @param id
+   */
+  public getItemDetails = (quality: QualityEstimate) => {
+    if (quality) {
+      return this.qualityEstimateDetail.filter(item => item.qualityEstimate === quality.id);
+    }
+
+    return [];
+  }
+
+  /**
    * goToList
    * @param note
    */
@@ -119,7 +136,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * qualityPage
    * @param item
    */
-  public qualityPage = (item: QualityDetail) => {
+  public qualityPage = (item: QualityEstimate) => {
     this.router.navigate(['/home-page/quality-estimate']);
   }
 }

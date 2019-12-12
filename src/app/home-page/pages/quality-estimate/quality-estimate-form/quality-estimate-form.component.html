@@ -14,8 +14,8 @@
     <form [formGroup]="qualityForm">
       <ng-container formGroupName="quality">
         <ion-item>
-          <ion-label position="floating">Calidad</ion-label>
-          <ion-select [interfaceOptions]="customActionSheetOptions" interface="action-sheet" cancelText="Cancelar" formControlName="quality">
+          <ion-label position="fixed">Calidad</ion-label>
+          <ion-select [interfaceOptions]="customActionSheetOptions" interface="action-sheet" cancelText="Cancelar" formControlName="quality" [selectedText]="getSelectedQuality()">
             <ion-select-option *ngFor="let q of qualities" [value]="q.id">
               {{ q.name }}
             </ion-select-option>

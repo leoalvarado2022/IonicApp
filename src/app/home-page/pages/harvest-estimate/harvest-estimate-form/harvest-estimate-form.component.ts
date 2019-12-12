@@ -18,6 +18,8 @@ export class HarvestEstimateFormComponent implements OnInit {
 
   @Input() costCenter: CostCenter;
   @Input() harvestEstimate: HarvestEstimate;
+  @Input() isView: boolean;
+  @Input() previous: HarvestEstimate;
 
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
@@ -43,17 +45,39 @@ export class HarvestEstimateFormComponent implements OnInit {
   ngOnInit() {
     this.userConnection = this.authService.getCompany();
 
-    this.harvestForm = this.formBuilder.group({
-      id: [this.harvestEstimate ? this.harvestEstimate.id : 0, Validators.required],
-      costCenter: [this.costCenter.id],
-      user: [this.userConnection.user, Validators.required],
-      unit: [this.costCenter.controlUnit, Validators.required],
-      quantity: [this.harvestEstimate ? this.harvestEstimate.quantity : '', Validators.required],
-      dailyAmount: [this.harvestEstimate ? this.harvestEstimate.dailyAmount : '', Validators.required],
-      workHolidays: [this.harvestEstimate ? this.harvestEstimate.workHolidays ? 1 : 0 : 0, Validators.required],
-      startDate: [this.harvestEstimate ? moment(this.harvestEstimate.startDate).format('YYYY/MM/DD') : '', Validators.required],
-      endDate: [this.harvestEstimate ? moment(this.harvestEstimate.endDate).format('YYYY/MM/DD') : '', Validators.required]
-    });
+    if (this.isView) {
+      this.harvestForm = this.formBuilder.group({
+        id: [this.harvestEstimate.id, Validators.required],
+        costCenter: [this.costCenter.id],
+        user: [this.userConnection.user, Validators.required],
+        unit: [this.costCenter.controlUnit, Validators.required],
+        quantity: [this.harvestEstimate.quantity, Validators.required],
+        dailyAmount: [this.harvestEstimate.dailyAmount, Validators.required],
+        workHolidays: [this.harvestEstimate.workHolidays, Validators.required],
+        startDate: [moment(this.harvestEstimate.startDate).format('YYYY/MM/DD'), Validators.required],
+        endDate: [moment(this.harvestEstimate.endDate).format('YYYY/MM/DD'), Validators.required]
+      });
+    } else {
+
+      let costCenterDate = this.costCenter.year + '-' + this.costCenter.harvestMonth + '-' + this.costCenter.harvestDay;
+      if (moment(costCenterDate).isValid()) {
+        costCenterDate = moment(costCenterDate).format('YYYY/MM/DD');
+      } else {
+        this.toastService.warningToast('Fecha de cosecha invalida' + costCenterDate);
+      }
+
+      this.harvestForm = this.formBuilder.group({
+        id: [0, Validators.required],
+        costCenter: [this.costCenter.id],
+        user: [this.userConnection.user, Validators.required],
+        unit: [this.costCenter.controlUnit, Validators.required],
+        quantity: [this.previous ? this.previous.quantity : '', Validators.required],
+        dailyAmount: [this.previous ? this.previous.dailyAmount : '', Validators.required],
+        workHolidays: [this.previous ? this.previous.workHolidays ? 1 : 0 : 0, Validators.required],
+        startDate: [this.previous ? moment(this.previous.startDate).format('YYYY/MM/DD') : costCenterDate, Validators.required],
+        endDate: [this.previous ? moment(this.previous.endDate).format('YYYY/MM/DD') : '', Validators.required]
+      });
+    }
 
     this.loadUnits();
   }

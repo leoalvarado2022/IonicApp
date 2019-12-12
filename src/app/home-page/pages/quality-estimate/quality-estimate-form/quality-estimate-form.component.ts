@@ -18,6 +18,8 @@ export class QualityEstimateFormComponent implements OnInit {
   @Input() costCenter: CostCenter;
   @Input() qualityEstimate: QualityEstimate;
   @Input() qualityEstimateDetail: Array<QualityDetail>;
+  @Input() isView: boolean;
+  @Input() previous: QualityEstimate;
 
   public readonly customActionSheetOptions: any = {
     header: 'Calidades',
@@ -46,23 +48,40 @@ export class QualityEstimateFormComponent implements OnInit {
 
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.userConnection = this.authService.getCompany();
 
-    this.qualityForm = this.formBuilder.group({
-      quality: this.formBuilder.group({
-        id: [this.qualityEstimate ? this.qualityEstimate.id : 0, Validators.required],
-        costCenter: [this.costCenter.id, Validators.required],
-        user: [this.userConnection.user, Validators.required],
-        quality: [this.qualityEstimate ? this.qualityEstimate.quality : '', Validators.required],
-        exportPercentage: [this.qualityEstimate ? this.qualityEstimate.exportPercentage : '', [
-          Validators.required,
-          Validators.max(100)
-        ]],
-        temp: [1]
-      }),
-      calibers: this.formBuilder.array([])
-    }, {validator: this.validateCalibers});
+    if (this.isView) {
+      this.qualityForm = this.formBuilder.group({
+        quality: this.formBuilder.group({
+          id: [this.qualityEstimate.id, Validators.required],
+          costCenter: [this.costCenter.id, Validators.required],
+          user: [this.userConnection.user, Validators.required],
+          quality: [this.qualityEstimate.quality, Validators.required],
+          exportPercentage: [this.qualityEstimate.exportPercentage, [
+            Validators.required,
+            Validators.max(100)
+          ]],
+          temp: [1]
+        }),
+        calibers: this.formBuilder.array([])
+      }, {validator: this.validateCalibers});
+    } else {
+      this.qualityForm = this.formBuilder.group({
+        quality: this.formBuilder.group({
+          id: [0, Validators.required],
+          costCenter: [this.costCenter.id, Validators.required],
+          user: [this.userConnection.user, Validators.required],
+          quality: [this.previous ? this.previous.quality : '', Validators.required],
+          exportPercentage: [this.previous ? this.previous.exportPercentage : '', [
+            Validators.required,
+            Validators.max(100)
+          ]],
+          temp: [1]
+        }),
+        calibers: this.formBuilder.array([])
+      }, {validator: this.validateCalibers});
+    }
 
     this.loadCalibers();
   }
@@ -181,5 +200,19 @@ export class QualityEstimateFormComponent implements OnInit {
 
     return accum;
   }
+
+  /**
+   * getSelectedQuality
+   */
+  public getSelectedQuality = () => {
+    if (this.qualities) {
+      const id = this.qualityForm.get('quality.quality').value;
+      const find = this.qualities.find(item => item.id === id);
+      return find ? find.name : '';
+    }
+
+    return '';
+  }
+
 }
 

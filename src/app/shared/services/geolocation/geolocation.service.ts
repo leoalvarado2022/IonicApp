@@ -38,9 +38,9 @@ export class GeolocationService {
     });
 
     this.geolocation.watchPosition(this.positionOptions).subscribe((data: any) => {
-      console.log('watchPosition', data);
-
-      // this.updatePosition(data.coords.latitude, data.coords.longitude);
+      if (data) {
+        this.updatePosition(data.coords.latitude, data.coords.longitude);
+      }
     });
   }
 

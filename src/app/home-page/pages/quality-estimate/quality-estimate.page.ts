@@ -89,7 +89,9 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
       componentProps: {
         costCenter: this.costCenter,
         qualityEstimate,
-        qualityEstimateDetail: qualityEstimate ? this.qualityEstimateDetail.filter(item => item.qualityEstimate === qualityEstimate.id) : []
+        qualityEstimateDetail: qualityEstimate ? this.qualityEstimateDetail.filter(item => item.qualityEstimate === qualityEstimate.id) : [],
+        isView: qualityEstimate !== null,
+        previous: this.qualityEstimate.length > 0 ? this.qualityEstimate[0] : null
       },
       backdropDismiss: false,
       keyboardClose: false,

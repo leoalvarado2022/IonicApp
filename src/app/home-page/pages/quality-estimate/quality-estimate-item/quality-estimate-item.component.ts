@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {QualityEstimate} from '@primetec/primetec-angular';
+import {QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
+import {SyncService} from '../../../../shared/services/sync/sync.service';
 
 interface Arrows extends QualityEstimate {
   arrow: string;
@@ -14,12 +15,17 @@ interface Arrows extends QualityEstimate {
 export class QualityEstimateItemComponent implements OnInit {
 
   @Input() item: Arrows = null;
+  @Input() details: Array<QualityDetail> = [];
   @Input() isOld = false;
   @Input() slideDisabled = true;
-  @Output() itemSelected: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
-  @Output() itemDelete: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
+  @Output() itemSelected: EventEmitter<QualityEstimate | null> = new EventEmitter<QualityEstimate | null>();
+  @Output() itemDelete: EventEmitter<QualityEstimate | null> = new EventEmitter<QualityEstimate | null>();
 
-  constructor() {
+  private calibers: Array<any>;
+  public chartData: any;
+  public showChart = false;
+
+  constructor(private syncService: SyncService) {
 
   }
 
@@ -41,5 +47,34 @@ export class QualityEstimateItemComponent implements OnInit {
    */
   public deleteItem = (item: Arrows) => {
     this.itemDelete.emit(item);
+  }
+
+  /**
+   * openChart
+   */
+  public openChart = async () => {
+    this.calibers = await this.syncService.getCalibers();
+
+    const yAxis = {
+      type: 'value',
+    };
+
+    const xAxis = {
+      type: 'category',
+      data: this.calibers.map(item => item.name)
+    }
+
+    const series = [{
+      data: this.details.map(item => item.value),
+      type: 'line'
+    }];
+
+    this.chartData = {
+      yAxis,
+      xAxis,
+      series
+    };
+
+    this.showChart = true;
   }
 }

@@ -194,4 +194,11 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * getItemDetails
+   * @param id
+   */
+  public getItemDetails = (id: number) => {
+    return this.qualityEstimateDetail.filter(item => item.qualityEstimate === id);
+  }
 }

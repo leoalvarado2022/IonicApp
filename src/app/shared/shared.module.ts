@@ -20,6 +20,7 @@ import {ImageViewerComponent} from './components/image-viewer/image-viewer.compo
 import {CustomDatetimePipe} from './pipes/custom-datetime/custom-datetime.pipe';
 import {GeolocationService} from './services/geolocation/geolocation.service';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {NgxEchartsModule} from 'ngx-echarts';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {Geolocation} from '@ionic-native/geolocation/ngx';
     FormsModule,
     IonicModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxEchartsModule
   ],
   providers: [
     UserService,

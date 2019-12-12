@@ -81,7 +81,9 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
       component: HarvestEstimateFormComponent,
       componentProps: {
         costCenter: this.costCenter,
-        harvestEstimate
+        harvestEstimate,
+        isView: harvestEstimate !== null,
+        previous: this.harvestEstimate.length > 0 ? this.harvestEstimate[0] : null
       },
       backdropDismiss: false,
       keyboardClose: false,

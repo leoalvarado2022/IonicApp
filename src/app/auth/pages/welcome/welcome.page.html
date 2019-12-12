@@ -2,7 +2,11 @@
   <div class="title-header">
     <img (click)="confirmClean()" alt="Primetec" src="assets/imgs/logo.png">
     <h3 class="ion-text-left" style="margin-bottom: 0;">Bienvenido a FX11</h3>
-    <p style="margin: 0;" *ngIf="this.detectPlatform.hasCordova">{{uuid}}</p>
+    <ng-container *ngIf="uuid">
+      <p style="margin: 0;">
+        {{uuid}}
+      </p>
+    </ng-container>
   </div>
   <div class="ion-text-center">
     {{ getVersion() }}

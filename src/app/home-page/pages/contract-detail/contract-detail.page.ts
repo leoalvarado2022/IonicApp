@@ -10,6 +10,7 @@ import {GeolocationService} from '../../../shared/services/geolocation/geolocati
 import {UserService} from '../../../shared/services/user/user.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
+import * as MenuAction from '../../../store/menu/menu.action';
 
 @Component({
   selector: 'app-contract-detail',
@@ -184,13 +185,31 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public updateGelocation = (data: any) => {
     this.geolocationClass = true;
-    this.contractDetailService.updateGelocationCostCenter(data).subscribe(() => {
-      this.toastService.successToast('Localización actualizada.')
+    this.contractDetailService.updateGelocationCostCenter(data).subscribe(async () => {
+      await this.syncData();
+      this.toastService.successToast('Localización actualizada.');
       this.geolocationClass = false;
     }, error => {
-      this.toastService.errorToast('No se ha cambiado la localización')
+      this.toastService.errorToast('No se ha cambiado la localización');
       this.httpService.errorHandler(error);
       this.geolocationClass = false;
     });
   };
+
+  /**
+   * syncData
+   * @param username
+   */
+  private syncData = async () => {
+
+    const user = await this.userService.getUserData();
+    const username = user.user.username;
+
+    this.syncService.syncData(username).subscribe(async (success: any) => {
+      await this.syncService.storeSync(success.data);
+    }, async error => {
+      this.httpService.errorHandler(error);
+    });
+  };
+
 }

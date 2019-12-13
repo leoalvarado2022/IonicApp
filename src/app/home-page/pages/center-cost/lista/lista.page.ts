@@ -22,12 +22,12 @@ export class ListaPage implements OnInit {
 
   }
 
-  ionViewWillEnter() {
-    this.loadCostCenters();
-  }
-
   ngOnInit() {
 
+  }
+
+  ionViewDidEnter() {
+    this.loadCostCenters();
   }
 
   /**

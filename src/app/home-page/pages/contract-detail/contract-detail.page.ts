@@ -6,6 +6,11 @@ import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {GeolocationService} from '../../../shared/services/geolocation/geolocation.service';
+import {UserService} from '../../../shared/services/user/user.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
+import {AlertService} from '../../../shared/services/alert/alert.service';
+import * as MenuAction from '../../../store/menu/menu.action';
 
 @Component({
   selector: 'app-contract-detail',
@@ -15,6 +20,7 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 export class ContractDetailPage implements OnInit, OnDestroy {
 
   public openSelected = false;
+  public geolocationClass = false;
   public productionContracts: Array<ProductContract> = [];
   private costCenter: CostCenter = null;
   private units: Array<Unit> = [];
@@ -23,6 +29,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   private costCenter$: Subscription;
   private productionContracts$: Subscription;
   private qualityEstimateDetail$: Subscription;
+  private geolocationService$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,7 +37,11 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     private syncService: SyncService,
     private httpService: HttpService,
     private router: Router,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private geolocationService: GeolocationService,
+    private userService: UserService,
+    private toastService: ToastService,
+    public alertService: AlertService
   ) {
 
   }
@@ -67,7 +78,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   private loadUnits = async () => {
     this.units = await this.syncService.getUnits();
-  }
+  };
 
   /**
    * loadContractDetail
@@ -80,14 +91,14 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }, async error => {
       await this.loaderService.stopLoader();
     });
-  }
+  };
 
   /**
    * getTotal
    */
   public getTotal = () => {
     return this.productionContracts.reduce((accumulator, contract) => accumulator + contract.totalQuantity, 0);
-  }
+  };
 
   /**
    * showUnitName
@@ -102,7 +113,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     return 'N/A';
-  }
+  };
 
   /**
    * getItemDetails
@@ -114,7 +125,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     return [];
-  }
+  };
 
   /**
    * goToList
@@ -122,7 +133,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public noteListPage = (note: Note = null) => {
     this.router.navigate(['/home-page/notes']);
-  }
+  };
 
   /**
    * harvestPage
@@ -130,7 +141,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public harvestPage = (item: HarvestEstimate) => {
     this.router.navigate(['/home-page/harvest-estimate']);
-  }
+  };
 
   /**
    * qualityPage
@@ -138,5 +149,67 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public qualityPage = (item: QualityEstimate) => {
     this.router.navigate(['/home-page/quality-estimate']);
-  }
+  };
+
+  /**
+   * @description actualizacion de la geolocation al centro de costo
+   */
+  public myGeolocation = async () => {
+
+    const alert = await this.alertService.confirmAlert('Desea actualizar la ubicacion del CC de costo con su ubicacion actual?');
+
+    if (!alert) {
+      return;
+    }
+
+    const user = await this.userService.getUserData();
+
+    this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe(async (data) => {
+
+      const object = {
+        lat: data.lat,
+        lng: data.lng,
+        id_user: user.user.id,
+        id_cost_center: this.costCenter.id,
+      };
+      this.updateGelocation(object);
+
+    });
+
+    this.geolocationService$.unsubscribe();
+  };
+
+  /**
+   * @description actualizar localizacion
+   * @param data
+   */
+  public updateGelocation = (data: any) => {
+    this.geolocationClass = true;
+    this.contractDetailService.updateGelocationCostCenter(data).subscribe(async () => {
+      await this.syncData();
+      this.toastService.successToast('Localización actualizada.');
+      this.geolocationClass = false;
+    }, error => {
+      this.toastService.errorToast('No se ha cambiado la localización');
+      this.httpService.errorHandler(error);
+      this.geolocationClass = false;
+    });
+  };
+
+  /**
+   * syncData
+   * @param username
+   */
+  private syncData = async () => {
+
+    const user = await this.userService.getUserData();
+    const username = user.user.username;
+
+    this.syncService.syncData(username).subscribe(async (success: any) => {
+      await this.syncService.storeSync(success.data);
+    }, async error => {
+      this.httpService.errorHandler(error);
+    });
+  };
+
 }

@@ -51,13 +51,13 @@ export class GeolocationService {
    */
   private updatePosition = (lat: number, lng: number) => {
     this.currentPosition.next({lat, lng});
-  }
+  };
 
   /**
    * getCurrentPosition
    */
   public getCurrentPosition = () => {
     return this.currentPosition.asObservable();
-  }
+  };
 
 }

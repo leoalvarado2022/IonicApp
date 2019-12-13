@@ -1,10 +1,12 @@
-<!--
-<section *ngIf="isLoading" class="bg">
-  <div id="logo">
-    <img src="assets/imgs/logo.png">
+<section  class="bg" *ngIf="isLoading">
+
+  <div class="loader-mensaje">
+    <div class="loader"></div>
+    <div class="loader-text">
+      Cargando Cargando Cargando Cargando Cargando
+    </div>
   </div>
-  <div id="message">
-    {{ loaderService.getLoaderMessage() }}
-  </div>
+
 </section>
--->
+
+

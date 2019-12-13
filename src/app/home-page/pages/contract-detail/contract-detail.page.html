@@ -8,7 +8,7 @@
     </ion-title>
     <ion-buttons slot="end">
       <app-notifications></app-notifications>
-      <ion-icon name="globe" slot="icon-only" style="color:white;"></ion-icon>
+      <ion-icon name="globe" slot="icon-only" [class.geolocation]="geolocationClass" style="color:white;" (click)="myGeolocation()"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>

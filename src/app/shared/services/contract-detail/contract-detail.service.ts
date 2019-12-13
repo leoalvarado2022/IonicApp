@@ -24,6 +24,7 @@ export class ContractDetailService {
   private readonly storeHarvestUrl = 'costcenter/store/harvest';
   private readonly storeQualityUrl = 'costcenter/store/quality';
   private readonly storeNoteUrl = 'costcenter/store/note';
+  private readonly storeCostCenterGeolocation = 'costcenter/store/geolocation-user';
 
   private costCenterListItem: BehaviorSubject<CostCenterList> = new BehaviorSubject<CostCenterList>(null);
   private costCenter: BehaviorSubject<CostCenter> = new BehaviorSubject<CostCenter>(null);
@@ -174,6 +175,12 @@ export class ContractDetailService {
     const url = this.httpService.buildUrl(this.storeNoteUrl);
     return this.httpClient.post(url, this.httpService.buildBody({note: data}), {headers: this.httpService.getHeaders()});
   }
+
+
+  public updateGelocationCostCenter = (data: any) => {
+    const url = this.httpService.buildUrl(this.storeCostCenterGeolocation);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+  };
 
   /**
    * defineArrows

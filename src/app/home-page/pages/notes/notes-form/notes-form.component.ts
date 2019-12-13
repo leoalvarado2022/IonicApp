@@ -52,8 +52,8 @@ export class NotesFormComponent implements OnInit {
       id: [this.note ? this.note.id : 0, Validators.required],
       costCenter: [this.costCenter.id, Validators.required],
       user: [this.userConnection.user, Validators.required],
-      note: [this.note ? this.note.note : '', Validators.required],
-      image: [this.note ? this.note.image : '', Validators.required]
+      note: [{value: this.note ? this.note.note : '', disabled: !!this.note}, Validators.required],
+      image: [{value: this.note ? this.note.image : '', disabled: !!this.note}, Validators.required]
     });
 
     this.imageSrc = this.note ? 'data:image/jpeg;base64,' + this.note.image : '';

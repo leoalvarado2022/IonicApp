@@ -50,15 +50,14 @@ export class QualityEstimateFormComponent implements OnInit {
 
   ngOnInit() {
     this.userConnection = this.authService.getCompany();
-
     if (this.isView) {
       this.qualityForm = this.formBuilder.group({
         quality: this.formBuilder.group({
           id: [this.qualityEstimate.id, Validators.required],
           costCenter: [this.costCenter.id, Validators.required],
           user: [this.userConnection.user, Validators.required],
-          quality: [this.qualityEstimate.quality, Validators.required],
-          exportPercentage: [this.qualityEstimate.exportPercentage, [
+          quality: [{value: this.qualityEstimate.quality, disabled: true}, Validators.required],
+          exportPercentage: [{value: this.qualityEstimate.exportPercentage, disabled: true}, [
             Validators.required,
             Validators.max(100)
           ]],
@@ -163,7 +162,7 @@ export class QualityEstimateFormComponent implements OnInit {
         id: [find ? find.id : 0, Validators.required],
         quality: [find ? find.qualityEstimate : 0, Validators.required],
         caliber: [item.id, Validators.required],
-        percentage: [find ? find.value : '', [
+        percentage: [{value: find ? find.value : '', disabled: this.isView}, [
           Validators.max(100)
         ]],
         temp: [1]

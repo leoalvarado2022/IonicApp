@@ -51,11 +51,11 @@ export class HarvestEstimateFormComponent implements OnInit {
         costCenter: [this.costCenter.id],
         user: [this.userConnection.user, Validators.required],
         unit: [this.costCenter.controlUnit, Validators.required],
-        quantity: [this.harvestEstimate.quantity, Validators.required],
-        dailyAmount: [this.harvestEstimate.dailyAmount, Validators.required],
-        workHolidays: [this.harvestEstimate.workHolidays, Validators.required],
-        startDate: [moment(this.harvestEstimate.startDate).format('YYYY/MM/DD'), Validators.required],
-        endDate: [moment(this.harvestEstimate.endDate).format('YYYY/MM/DD'), Validators.required]
+        quantity: [{value: this.harvestEstimate.quantity, disabled: true}, Validators.required],
+        dailyAmount: [{value: this.harvestEstimate.dailyAmount, disabled: true}, Validators.required],
+        workHolidays: [{value: this.harvestEstimate.workHolidays ? 1 : 0, disabled: true}, Validators.required],
+        startDate: [{value: moment(this.harvestEstimate.startDate).format('YYYY/MM/DD'), disabled: true}, Validators.required],
+        endDate: [{value: moment(this.harvestEstimate.endDate).format('YYYY/MM/DD'), disabled: true}, Validators.required]
       });
     } else {
 

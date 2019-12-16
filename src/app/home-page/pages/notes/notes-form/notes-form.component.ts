@@ -8,6 +8,7 @@ import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {DetectPlatformService} from '../../../../shared/services/detect-platform/detect-platform.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
+import {LoaderService} from "../../../../shared/services/loader/loader.service";
 
 @Component({
   selector: 'app-notes-form',
@@ -41,6 +42,7 @@ export class NotesFormComponent implements OnInit {
     private toastService: ToastService,
     private camera: Camera,
     public detectPlatformService: DetectPlatformService,
+    private loaderService: LoaderService
   ) {
 
   }
@@ -119,9 +121,12 @@ export class NotesFormComponent implements OnInit {
    * @param data
    */
   private storeNote = (data: any) => {
+    this.loaderService.startLoader('Guardando nota');
     this.contractDetailService.storeNote(data).subscribe(success => {
+      this.loaderService.stopLoader();
       this.closeModal(true);
     }, error => {
+      this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
   }

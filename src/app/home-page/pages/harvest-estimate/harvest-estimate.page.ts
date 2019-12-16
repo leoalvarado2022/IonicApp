@@ -161,13 +161,13 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    * @param data
    */
   private storeEstimation = (data: any) => {
-    return new Promise(async (resolve, reject) => {
-      await this.loaderService.startLoader('Borrando estimacion de cosecha');
-      this.contractDetailService.storeHarvest(data).subscribe(async success => {
-        await this.loaderService.stopLoader();
+    return new Promise((resolve, reject) => {
+      this.loaderService.startLoader('Borrando estimacion de cosecha');
+      this.contractDetailService.storeHarvest(data).subscribe(success => {
+        this.loaderService.stopLoader();
         resolve(true);
-      }, async error => {
-        await this.loaderService.stopLoader();
+      }, error => {
+        this.loaderService.stopLoader();
         this.httpService.errorHandler(error);
         resolve(true);
       });
@@ -178,13 +178,13 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    * reloadList
    */
   public reloadList = () => {
-    return new Promise(async (resolve, reject) => {
-      await this.loaderService.startLoader('Cargando estimaciones de cosecha');
-      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(async success => {
-        await this.loaderService.stopLoader();
+    return new Promise((resolve, reject) => {
+      this.loaderService.startLoader('Cargando estimaciones de cosecha');
+      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(success => {
+        this.loaderService.stopLoader();
         resolve(true)
-      }, async error => {
-        await this.loaderService.stopLoader();
+      }, error => {
+        this.loaderService.stopLoader();
         resolve(false);
       });
     });

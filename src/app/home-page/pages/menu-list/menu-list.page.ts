@@ -78,7 +78,6 @@ export class MenuListPage implements OnInit, OnDestroy {
    */
   public checkDisabled = (menu: TabMenu) => {
     return !this.isOnline && !menu.offlineMenu;
-    // return true;
   }
 
   /**
@@ -104,6 +103,7 @@ export class MenuListPage implements OnInit, OnDestroy {
    */
   private syncData = async () => {
     if (this.userData) {
+      this.loaderService.startLoader('Sincronizando...');
       const {user} = this.userData;
       const username = user.username;
 
@@ -111,7 +111,9 @@ export class MenuListPage implements OnInit, OnDestroy {
         await this.syncService.storeSync(success.data);
         await this.loadMenus();
         await this.getUserData();
+        this.loaderService.stopLoader();
       }, async error => {
+        this.loaderService.stopLoader();
         this.httpService.errorHandler(error);
       });
     }

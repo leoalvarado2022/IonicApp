@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {GeolocationService} from '../shared/services/geolocation/geolocation.service';
 
 @Component({
   selector: 'app-home-page',
@@ -8,7 +7,7 @@ import {GeolocationService} from '../shared/services/geolocation/geolocation.ser
 })
 export class HomePagePage implements OnInit {
 
-  constructor(private geolocationService: GeolocationService) {
+  constructor() {
 
   }
 

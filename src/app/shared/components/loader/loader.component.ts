@@ -10,7 +10,7 @@ import {LoadingController} from '@ionic/angular';
 export class LoaderComponent {
 
   public isLoading: boolean;
-  private loader = null;
+  private loader;
 
   constructor(
     private loaderService: LoaderService,

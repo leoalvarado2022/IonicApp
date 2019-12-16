@@ -10,8 +10,6 @@ import * as MenuAction from '../../../store/menu/menu.action';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {Platform} from '@ionic/angular';
-
 
 @Component({
   selector: 'app-login',
@@ -21,6 +19,9 @@ import {Platform} from '@ionic/angular';
 export class LoginPage implements OnInit {
 
   public loginForm: FormGroup;
+
+  public innerWidth: number;
+  public innerHeight: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,6 +44,9 @@ export class LoginPage implements OnInit {
       password: ['', Validators.required],
       remember: ['false']
     });
+
+    this.innerWidth = window.innerWidth;
+    this.innerHeight = window.innerHeight;
 
     this.checkRemember();
   }

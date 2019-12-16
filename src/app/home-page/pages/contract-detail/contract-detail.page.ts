@@ -10,7 +10,6 @@ import {GeolocationService} from '../../../shared/services/geolocation/geolocati
 import {UserService} from '../../../shared/services/user/user.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
-import * as MenuAction from '../../../store/menu/menu.action';
 
 @Component({
   selector: 'app-contract-detail',
@@ -85,11 +84,11 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param id
    */
   private loadContractDetail = (id: string) => {
-    this.loaderService.startLoader('Cargando centro de costo');
-    this.contractDetailService.getCostCenterDetail(id).subscribe(async success => {
-      await this.loaderService.stopLoader();
-    }, async error => {
-      await this.loaderService.stopLoader();
+    this.loaderService.startLoader('Cargando detalles...');
+    this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
     });
   };
 
@@ -155,7 +154,6 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @description actualizacion de la geolocation al centro de costo
    */
   public myGeolocation = async () => {
-
     const alert = await this.alertService.confirmAlert('Desea actualizar la ubicacion del CC de costo con su ubicacion actual?');
 
     if (!alert) {
@@ -163,17 +161,15 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     const user = await this.userService.getUserData();
-
     this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe(async (data) => {
-
       const object = {
         lat: data.lat,
         lng: data.lng,
         id_user: user.user.id,
         id_cost_center: this.costCenter.id,
       };
-      this.updateGelocation(object);
 
+      this.updateGelocation(object);
     });
 
     this.geolocationService$.unsubscribe();
@@ -185,11 +181,14 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public updateGelocation = (data: any) => {
     this.geolocationClass = true;
+    this.loaderService.startLoader('Actualizando posicion');
     this.contractDetailService.updateGelocationCostCenter(data).subscribe(async () => {
       await this.syncData();
-      this.toastService.successToast('Localización actualizada.');
+      this.loaderService.stopLoader();
+      this.toastService.successToast('posicion actualizada.');
       this.geolocationClass = false;
     }, error => {
+      this.loaderService.stopLoader();
       this.toastService.errorToast('No se ha cambiado la localización');
       this.httpService.errorHandler(error);
       this.geolocationClass = false;

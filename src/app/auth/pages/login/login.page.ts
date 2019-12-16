@@ -56,7 +56,6 @@ export class LoginPage implements OnInit {
    */
   public onSubmit = async () => {
     try {
-
       const data = Object.assign({}, this.loginForm.value);
       data.username = data.username.toLowerCase();
       const login = await this.login(data);
@@ -104,25 +103,19 @@ export class LoginPage implements OnInit {
       }
     } catch (e) {
       console.log({e});
-      this.loaderService.stopLoader();
     }
 
   }
 
   /**
-   *
+   * addPin
    * @param login add PIN
    */
   public addPin = (login: any) => {
-
     this.toastService.warningToast(login.message);
-
     this.loginForm.reset();
-
     this.authService.setToken(login.token);
-
     this.router.navigate(['auth/pin']);
-
   }
 
   /**

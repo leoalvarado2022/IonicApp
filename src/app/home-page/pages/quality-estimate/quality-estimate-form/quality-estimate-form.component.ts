@@ -7,6 +7,7 @@ import {ContractDetailService} from '../../../../shared/services/contract-detail
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
+import {LoaderService} from "../../../../shared/services/loader/loader.service";
 
 @Component({
   selector: 'app-quality-estimate-form',
@@ -43,7 +44,8 @@ export class QualityEstimateFormComponent implements OnInit {
     private contractDetailService: ContractDetailService,
     private syncService: SyncService,
     private toastService: ToastService,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private loaderService: LoaderService
   ) {
 
   }
@@ -176,9 +178,12 @@ export class QualityEstimateFormComponent implements OnInit {
    * @param data
    */
   private storeQuality(data: any) {
+    this.loaderService.startLoader('Guardando estimacion...');
     this.contractDetailService.storeQuality(data).subscribe(success => {
+      this.loaderService.stopLoader();
       this.closeModal(true);
     }, error => {
+      this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
   }

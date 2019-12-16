@@ -3,6 +3,7 @@ import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import {Router} from '@angular/router';
+import {LoaderService} from "../../../../shared/services/loader/loader.service";
 
 @Component({
   selector: 'app-lista',
@@ -17,7 +18,8 @@ export class ListaPage implements OnInit {
   constructor(
     private syncService: SyncService,
     private contractDetailService: ContractDetailService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) {
 
   }
@@ -34,10 +36,12 @@ export class ListaPage implements OnInit {
    * loadCostCenters
    */
   public loadCostCenters = async () => {
+    this.loaderService.startLoader('Cargando centros de costo...');
     this.costCenters = [];
     this.filteredCostCenters = [];
     this.costCenters = await this.syncService.getCostCenters();
     this.filteredCostCenters = [...this.costCenters];
+    this.loaderService.stopLoader();
   }
 
   /**

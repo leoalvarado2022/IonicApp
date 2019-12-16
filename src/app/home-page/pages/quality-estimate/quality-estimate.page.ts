@@ -167,8 +167,8 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    * @param data
    */
   private storeQuality = (data: any) => {
-    return new Promise(async (resolve, reject) => {
-      await this.loaderService.startLoader('Borrando estimacion de calidad');
+    return new Promise((resolve, reject) => {
+      this.loaderService.startLoader('Borrando estimacion de calidad');
       this.contractDetailService.storeQuality(data).subscribe(success => {
         this.loaderService.stopLoader();
         resolve(true);
@@ -184,13 +184,13 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    * reloadList
    */
   public reloadList = () => {
-    return new Promise(async (resolve, reject) => {
-      await this.loaderService.startLoader('Cargando estimaciones de calidad');
-      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(async success => {
-        await this.loaderService.stopLoader();
+    return new Promise((resolve, reject) => {
+      this.loaderService.startLoader('Cargando estimaciones de calidad');
+      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(success => {
+        this.loaderService.stopLoader();
         resolve(true);
-      }, async error => {
-        await this.loaderService.stopLoader();
+      }, error => {
+        this.loaderService.stopLoader();
         resolve(false);
       });
     });

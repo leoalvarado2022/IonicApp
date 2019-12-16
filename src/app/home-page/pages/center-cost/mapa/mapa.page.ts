@@ -3,6 +3,7 @@ import {CostCenterList} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {GeolocationService} from '../../../../shared/services/geolocation/geolocation.service';
 import {Subscription} from 'rxjs';
+import {LoaderService} from "../../../../shared/services/loader/loader.service";
 
 @Component({
   selector: 'app-mapa',
@@ -23,7 +24,8 @@ export class MapaPage implements OnInit {
 
   constructor(
     private syncService: SyncService,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private loaderService: LoaderService
   ) {
     this.position$ = this.geolocationService.getCurrentPosition().subscribe(value => {
       if (this.loads === 0) {
@@ -47,10 +49,12 @@ export class MapaPage implements OnInit {
    * loadCostCenters
    */
   public loadCostCenters = async () => {
+    this.loaderService.startLoader('Cargando centros de costo...');
     this.costCenters = [];
     this.filteredCostCenters = [];
     this.costCenters = await this.syncService.getCostCenters();
     this.filteredCostCenters = this.costCenters;
+    this.loaderService.stopLoader();
   }
 
   /**

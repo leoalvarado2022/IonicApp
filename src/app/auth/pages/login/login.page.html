@@ -23,7 +23,14 @@
         </ion-input>
       </ion-item>
 
-      <br/><br/>
+      <br/>
+      <ion-button
+        [disabled]="loginForm.invalid"
+        color="danger"
+        expand="block"
+        type="submit">
+        Iniciar Sesión
+      </ion-button>
 
       <ng-container *ngIf="innerHeight < 600">
         <ion-row>
@@ -54,14 +61,6 @@
           </ion-button>
         </div>
       </ng-container>
-
-      <ion-button
-        [disabled]="loginForm.invalid"
-        color="danger"
-        expand="block"
-        type="submit">
-        Iniciar Sesión
-      </ion-button>
     </form>
   </div>
 </ion-content>

@@ -3,8 +3,7 @@ import {StorageService} from '../../../shared/services/storage/storage.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertController, Platform} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
-import {DetectPlatformService} from '../../../shared/services/detect-platform/detect-platform.service';
-import {UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
+import {Device} from '@ionic-native/device/ngx';
 
 @Component({
   selector: 'app-welcome',
@@ -13,25 +12,18 @@ import {UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
 })
 export class WelcomePage implements OnInit {
 
-  public uuid: string;
-
   constructor(
     private storage: StorageService,
     private alertController: AlertController,
     private toastService: ToastService,
-    private detectPlatform: DetectPlatformService,
     private platform: Platform,
-    private uniqueDeviceID: UniqueDeviceID,
+    private device: Device
   ) {
 
   }
 
   ngOnInit() {
-    this.platform.ready().then(() => {
-      this.uniqueDeviceID.get().then((uuid: string) => {
-        this.uuid = uuid;
-      }).catch((error: any) => this.toastService.errorToast('Cordova requerido'));
-    });
+
   }
 
   /**
@@ -77,7 +69,7 @@ export class WelcomePage implements OnInit {
       const userRemember = await this.storage.getRow('userRemember');
       localStorage.clear();
       await this.storage.clearAllRow();
-      await this.storage.setRow('userRemember', userRemember)
+      await this.storage.setRow('userRemember', userRemember);
       localStorage.setItem('remember', 'true');
     } else {
       localStorage.clear();
@@ -91,8 +83,8 @@ export class WelcomePage implements OnInit {
    * getUUIDLast8
    */
   public getUUIDLast8 = () => {
-    if (this.uuid) {
-      return this.uuid.substring(this.uuid.length - 8);
+    if (this.device.uuid) {
+      return this.device.uuid.substring(this.device.uuid.length - 8);
     }
 
     return '';
@@ -102,10 +94,10 @@ export class WelcomePage implements OnInit {
    * showFullUUID
    */
   public showFullUUID = async () => {
-    if (this.uuid) {
+    if (this.device.uuid) {
       const alert = await this.alertController.create({
         header: 'NC',
-        message: this.uuid,
+        message: this.device.uuid,
         buttons: ['OK']
       });
 
@@ -113,4 +105,22 @@ export class WelcomePage implements OnInit {
     }
   }
 
+  /**
+   * showDeviceData
+   */
+  public showDeviceData = async () => {
+    const alert = await this.alertController.create({
+      header: 'Device',
+      message: `
+        <p>Manufacturer: ${this.device.manufacturer}</p>
+        <p>Model: ${this.device.model}</p>
+        <p>Platform: ${this.device.platform}</p>
+        <p>Version: ${this.device.version}</p>
+        <p>Cordova: ${this.device.cordova}</p>
+      `,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
 }

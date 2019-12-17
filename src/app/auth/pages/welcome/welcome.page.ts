@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from '../../../shared/services/storage/storage.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {AlertController, Platform} from '@ionic/angular';
+import {AlertController} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
 import {Device} from '@ionic-native/device/ngx';
 
@@ -16,8 +16,7 @@ export class WelcomePage implements OnInit {
     private storage: StorageService,
     private alertController: AlertController,
     private toastService: ToastService,
-    private platform: Platform,
-    private device: Device
+    public device: Device
   ) {
 
   }

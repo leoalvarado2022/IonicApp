@@ -2,13 +2,13 @@
   <ion-toolbar>
     <ng-container *ngIf="device.cordova">
       <ion-buttons slot="start">
-        <ion-button class="button-text-color" (click)="showDeviceData()">{{ getVersion() }}</ion-button>
+        <ion-button fill="clear" class="button-text-color" (click)="showDeviceData()">{{ getVersion() }}</ion-button>
       </ion-buttons>
     </ng-container>
     <ion-title>&nbsp;</ion-title>
     <ion-buttons slot="end">
       <ng-container *ngIf="device.uuid">
-        <ion-button (click)="showFullUUID()" class="button-text-color">
+        <ion-button fill="clear" (click)="showFullUUID()" class="button-text-color">
           NC {{ getUUIDLast8() }}
         </ion-button>
       </ng-container>

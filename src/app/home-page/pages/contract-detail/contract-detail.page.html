@@ -8,20 +8,25 @@
     </ion-title>
     <ion-buttons slot="end">
       <app-notifications></app-notifications>
-      <ion-icon name="globe" slot="icon-only" [class.geolocation]="geolocationClass" style="color:white;" (click)="myGeolocation()"></ion-icon>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <!--  header-->
 <ion-content>
-
   <div (click)="openSelected = !openSelected" [class.selected]="openSelected" class="header-content background-color--header">
     <ng-container *ngIf="(contractDetailService.getCostCenterListItem() | async ) as costCenterListItem">
-      <ion-row class="row">
-        <ion-col size="12">
+      <ion-row>
+        <ion-col size="10">
           <div class="white">{{ costCenterListItem.code }}</div>
         </ion-col>
+        <ion-col size="2">
+          <ion-button fill="clear" size="small" (click)="myGeolocation()">
+            <ion-icon name="globe" slot="icon-only" [class.geolocation]="geolocationClass" style="color:white;"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="row">
         <ion-col size="12" style="padding-bottom: 0;">
           <div class="white" style="font-weight: bold;font-size: 20px;padding-left: 1rem;">{{ costCenterListItem.name }}</div>
         </ion-col>

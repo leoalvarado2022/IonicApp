@@ -14,8 +14,8 @@ interface Position {
 export class GeolocationService {
 
   // Ubicacion por defecto santiago
-  private lat = -33.4718999;
-  private lng = -70.9100202;
+  private lat = -33.4724728;
+  private lng = -70.9100195;
 
   private currentPosition: BehaviorSubject<Position> = new BehaviorSubject<Position>({
     lat: this.lat,

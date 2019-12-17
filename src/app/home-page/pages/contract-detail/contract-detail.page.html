@@ -98,7 +98,12 @@
       <ion-label>ESTIMACION DE CALIDAD</ion-label>
     </ion-list-header>
     <ng-container *ngIf="(contractDetailService.getQualityEstimate() | async) as qualityEstimate; else emptyQuality">
-      <app-quality-estimate-item (itemSelected)="qualityPage($event)" [item]="qualityEstimate[0]" [details]="getItemDetails(qualityEstimate[0])"></app-quality-estimate-item>
+      <app-quality-estimate-item
+        (itemSelected)="qualityPage($event)"
+        [costCenter]="costCenter"
+        [item]="qualityEstimate[0]"
+        [details]="getItemDetails(qualityEstimate[0])">
+      </app-quality-estimate-item>
     </ng-container>
     <ng-template #emptyQuality>
       <app-quality-estimate-item (itemSelected)="qualityPage($event)"></app-quality-estimate-item>

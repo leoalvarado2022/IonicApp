@@ -56,11 +56,14 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     });
 
     this.qualityEstimate$ = this.contractDetailService.getQualityEstimate().subscribe(value => {
+      console.log('getQualityEstimate', value);
+
       this.qualityEstimate = [...value];
       this.filteredQualityEstimate = [...value];
     });
 
     this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
+      console.log('getQualityEstimateDetail', value);
       this.qualityEstimateDetail = [...value];
     });
   }

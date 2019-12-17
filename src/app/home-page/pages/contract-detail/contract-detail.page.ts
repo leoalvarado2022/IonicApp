@@ -21,7 +21,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   public openSelected = false;
   public geolocationClass = false;
   public productionContracts: Array<ProductContract> = [];
-  private costCenter: CostCenter = null;
+  public costCenter: CostCenter = null;
   private units: Array<Unit> = [];
   private qualityEstimateDetail: Array<QualityDetail>;
 

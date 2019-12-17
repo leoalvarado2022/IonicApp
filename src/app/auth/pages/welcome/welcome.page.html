@@ -1,16 +1,25 @@
 <ion-header>
+  <ion-toolbar>
+    <ng-container *ngIf="device.cordova">
+      <ion-buttons slot="start">
+        <ion-button fill="clear" class="button-text-color" (click)="showDeviceData()">{{ getVersion() }}</ion-button>
+      </ion-buttons>
+    </ng-container>
+    <ion-title>&nbsp;</ion-title>
+    <ion-buttons slot="end">
+      <ng-container *ngIf="device.uuid">
+        <ion-button fill="clear" (click)="showFullUUID()" class="button-text-color">
+          NC {{ getUUIDLast8() }}
+        </ion-button>
+      </ng-container>
+    </ion-buttons>
+  </ion-toolbar>
+
   <div class="title-header">
     <img (click)="confirmClean()" alt="Primetec" src="assets/imgs/logo.png">
     <h3 class="ion-text-left" style="margin-bottom: 0;">Bienvenido a FX11</h3>
-    <ng-container *ngIf="uuid">
-      <p style="margin: 0;">
-        {{uuid}}
-      </p>
-    </ng-container>
   </div>
-  <div class="ion-text-center">
-    {{ getVersion() }}
-  </div>
+
 </ion-header>
 
 <ion-content scrollX="false" scrollY="false">

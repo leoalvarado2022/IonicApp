@@ -21,6 +21,8 @@ import {CustomDatetimePipe} from './pipes/custom-datetime/custom-datetime.pipe';
 import {GeolocationService} from './services/geolocation/geolocation.service';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {NgxEchartsModule} from 'ngx-echarts';
+import {File} from '@ionic-native/file/ngx';
+import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import {NgxEchartsModule} from 'ngx-echarts';
     HttpService,
     AlertService,
     GeolocationService,
-    Geolocation
+    Geolocation,
+    File,
+    PreviewAnyFile
   ],
   exports: [
     CommonModule,

@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Note} from '@primetec/primetec-angular';
 import {ModalController} from '@ionic/angular';
-import {ImageViewerComponent} from '../../../../shared/components/image-viewer/image-viewer.component';
+import {File} from '@ionic-native/file/ngx';
+import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 
 @Component({
   selector: 'app-note-item',
@@ -15,7 +16,11 @@ export class NoteItemComponent implements OnInit {
   @Input() item: Note = null;
   @Input() slideDisabled = true;
 
-  constructor(private modalController: ModalController) {
+  constructor(
+    private modalController: ModalController,
+    private file: File,
+    private previewAnyFile: PreviewAnyFile
+  ) {
 
   }
 
@@ -54,16 +59,59 @@ export class NoteItemComponent implements OnInit {
    * viewPicture
    */
   public viewPicture = async () => {
-    const modal = await this.modalController.create({
-      component: ImageViewerComponent,
-      componentProps: {
-        image: this.getPhotoPath()
-      },
-      backdropDismiss: false,
-      keyboardClose: false,
-      cssClass: 'full-screen-modal'
-    });
+    if (this.getPhotoPath()) {
+      const fileName = `${this.item.id}.jpeg`;
+      const dirName = this.file.tempDirectory;
+      const filePath = dirName + '/' + fileName;
+      const mimeType = 'image/jpeg';
 
-    return await modal.present();
+      const resp = await this.createFile(dirName, fileName, mimeType);
+
+      if (resp) {
+        console.log(filePath);
+        this.previewAnyFile.preview(filePath)
+          .then((res: any) => console.log(res))
+          .catch((error: any) => console.error(error));
+      } else {
+        console.log('no resp');
+      }
+    }
+  }
+
+  /**
+   * createFile
+   * @param dirName
+   * @param fileName
+   * @param mimeType
+   */
+  private createFile = (dirName: string, fileName: string, mimeType: string) => {
+    return new Promise(resolve => {
+      this.file.createFile(dirName, fileName, true).then((data) => {
+
+        const byteCharacters = atob(this.item.image);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], {type: mimeType});
+
+        if (blob) {
+          this.file.writeExistingFile(dirName, fileName, blob).then((response) => {
+            resolve(true);
+          }, error => {
+            console.log('writeExistingFile', error);
+            resolve(false);
+          });
+        } else {
+          console.log('no blob');
+          resolve(false);
+        }
+      }, error => {
+        console.log('createFile', error);
+        resolve(false);
+      });
+    });
   }
 }

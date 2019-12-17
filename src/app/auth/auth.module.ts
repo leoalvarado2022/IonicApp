@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthPage} from './auth.page';
 import {SharedModule} from '../shared/shared.module';
+import {Device} from '@ionic-native/device/ngx';
 
 const routes: Routes = [
   {
@@ -33,6 +34,9 @@ const routes: Routes = [
   ],
   declarations: [
     AuthPage
+  ],
+  providers: [
+    Device
   ]
 })
 export class AuthPageModule {

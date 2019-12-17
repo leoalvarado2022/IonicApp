@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
+import {CostCenter, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 
 interface Arrows extends QualityEstimate {
@@ -14,6 +14,7 @@ interface Arrows extends QualityEstimate {
 })
 export class QualityEstimateItemComponent implements OnInit {
 
+  @Input() costCenter: CostCenter;
   @Input() item: Arrows = null;
   @Input() details: Array<QualityDetail> = [];
   @Input() isOld = false;
@@ -54,19 +55,22 @@ export class QualityEstimateItemComponent implements OnInit {
    */
   public openChart = async () => {
     this.calibers = await this.syncService.getCalibers();
+    const filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
+
+    console.log('details', this.details);
+
+    const xAxis = {
+      type: 'category',
+      data: filteredCalibers.map(item => item.name)
+    }
 
     const yAxis = {
       type: 'value',
     };
 
-    const xAxis = {
-      type: 'category',
-      data: this.calibers.map(item => item.name)
-    }
-
     const series = [{
       data: this.details.map(item => item.value),
-      type: 'line'
+      type: 'bar'
     }];
 
     this.chartData = {

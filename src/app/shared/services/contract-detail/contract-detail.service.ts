@@ -45,47 +45,6 @@ export class ContractDetailService {
   }
 
   /**
-   * getCostCenterDetail
-   * @param id
-   */
-  /*
-  public getCostCenterDetail = async (id: string) => {
-    const url = this.httpService.buildUrl(this.getCostCenterUrl, id);
-    return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()}).subscribe((success: any) => {
-      const data = success.data;
-      const {
-        costCenter,
-        productionContracts,
-        productionContractsDetails,
-        harvestEstimate,
-        qualityEstimate,
-        qualityEstimateDetail,
-        notes
-      } = data;
-
-      this.costCenter.next(costCenter);
-      this.productionContracts.next(productionContracts);
-      this.productionContractsDetails.next(productionContractsDetails);
-      this.harvestEstimate.next(this.defineArrows(harvestEstimate, 'quantity'));
-      this.qualityEstimate.next(this.defineArrows(qualityEstimate, 'exportPercentage'));
-      this.qualityEstimateDetail.next(qualityEstimateDetail);
-      this.notes.next(notes);
-    }, error => {
-      this.costCenter.next(null);
-      this.productionContracts.next([]);
-      this.productionContractsDetails.next([]);
-      this.harvestEstimate.next([]);
-      this.qualityEstimate.next([]);
-      this.qualityEstimateDetail.next([]);
-      this.notes.next([]);
-
-      this.httpService.errorHandler(error);
-    });
-  }
-
-  */
-
-  /**
    *getCostCenter
    */
   public getCostCenter = () => {

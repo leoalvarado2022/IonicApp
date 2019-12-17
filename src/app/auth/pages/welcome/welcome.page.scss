@@ -2,6 +2,10 @@ ion-toolbar {
   --background: var(--color-login-header);
 }
 
+.button-text-color {
+  color: white;
+}
+
 ion-header {
   --background: var(--color-login-header);
   background: var(--color-login-header);
@@ -9,7 +13,7 @@ ion-header {
   color: white;
 
   .title-header {
-    margin-top: 50px;
+    margin-top: 5px;
     background: var(--color-login-header);
     text-align: center !important;
 

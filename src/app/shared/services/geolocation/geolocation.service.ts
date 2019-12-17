@@ -14,8 +14,8 @@ interface Position {
 export class GeolocationService {
 
   // Ubicacion por defecto santiago
-  private lat = -33.4718999;
-  private lng = -70.9100202;
+  private lat = -33.4724728;
+  private lng = -70.9100195;
 
   private currentPosition: BehaviorSubject<Position> = new BehaviorSubject<Position>({
     lat: this.lat,
@@ -32,7 +32,11 @@ export class GeolocationService {
     private toastService: ToastService
   ) {
     this.geolocation.getCurrentPosition(this.positionOptions).then((data: any) => {
-      this.updatePosition(data.coords.latitude, data.coords.longitude);
+      if (data) {
+        this.updatePosition(data.coords.latitude, data.coords.longitude);
+      } else {
+        console.log('bad coords', data);
+      }
     }).catch((error) => {
       this.toastService.errorToast('El dispositivo no puede acceder a su ubicación');
     });
@@ -40,6 +44,8 @@ export class GeolocationService {
     this.geolocation.watchPosition(this.positionOptions).subscribe((data: any) => {
       if (data) {
         this.updatePosition(data.coords.latitude, data.coords.longitude);
+      } else {
+        console.log('bad coords', data);
       }
     });
   }

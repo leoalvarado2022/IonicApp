@@ -21,7 +21,7 @@ export class WelcomePage implements OnInit {
     private toastService: ToastService,
     private detectPlatform: DetectPlatformService,
     private platform: Platform,
-    private uniqueDeviceID: UniqueDeviceID
+    private uniqueDeviceID: UniqueDeviceID,
   ) {
 
   }
@@ -85,6 +85,32 @@ export class WelcomePage implements OnInit {
     }
 
     this.toastService.successToast('Datos eliminados');
+  }
+
+  /**
+   * getUUIDLast8
+   */
+  public getUUIDLast8 = () => {
+    if (this.uuid) {
+      return this.uuid.substring(this.uuid.length - 8);
+    }
+
+    return '';
+  }
+
+  /**
+   * showFullUUID
+   */
+  public showFullUUID = async () => {
+    if (this.uuid) {
+      const alert = await this.alertController.create({
+        header: 'NC',
+        message: this.uuid,
+        buttons: ['OK']
+      });
+
+      await alert.present();
+    }
   }
 
 }

@@ -44,7 +44,8 @@ ion-content {
     width: 100%;
     display: table-cell;
     color: white;
-    p:nth-child(1){
+
+    p:nth-child(1) {
       position: absolute;
       top: 0;
       right: 0;
@@ -86,14 +87,17 @@ ion-content {
 
 .scroll-card-custom {
   padding: 3px 5px 3px 5px;
-  .card-text{
+
+  .card-text {
     background-color: var(--color-searchbar-menu);
     border-radius: 10px;
     border: none !important;
+
     .card-text-one {
       padding: 12px 0;
     }
-    p{
+
+    p {
       margin: 0;
     }
   }
@@ -150,11 +154,15 @@ ion-content {
   //box-shadow: 0 4px 16px rgba(0,0,0,.12)
 }
 
-ion-list-header{
+ion-list-header {
   min-height: 25px;
 }
 
 
-.geolocation{
+.geolocation {
   color: #2fff2f !important;
+}
+
+.no-geolocation {
+  color: var(--ion-color-danger) !important;
 }

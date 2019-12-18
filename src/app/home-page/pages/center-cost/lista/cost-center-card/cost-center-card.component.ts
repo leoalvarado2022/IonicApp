@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {NetworkService} from '../../../../../shared/services/network/network.service';
-import {Subscription} from "rxjs";
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-cost-center-card',

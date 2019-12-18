@@ -93,7 +93,7 @@ export class HttpService {
           break;
         case 500:
           this.toastService.errorToast('API Error');
-          break
+          break;
         default:
           this.toastService.errorToast(message);
           break;

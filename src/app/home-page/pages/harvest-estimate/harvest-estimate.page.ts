@@ -6,9 +6,9 @@ import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {AlertService} from "../../../shared/services/alert/alert.service";
-import {Subscription} from "rxjs";
-import {NetworkService} from "../../../shared/services/network/network.service";
+import {AlertService} from '../../../shared/services/alert/alert.service';
+import {Subscription} from 'rxjs';
+import {NetworkService} from '../../../shared/services/network/network.service';
 
 @Component({
   selector: 'app-harvest-estimate',
@@ -23,7 +23,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
   private currentUrl: string;
   public isOnline: boolean;
 
-  private isOnline$: Subscription
+  private isOnline$: Subscription;
   private router$: Subscription;
   private costCenter$: Subscription;
   private harvestEstimate$: Subscription;
@@ -182,7 +182,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
       this.loaderService.startLoader('Cargando estimaciones de cosecha');
       this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(success => {
         this.loaderService.stopLoader();
-        resolve(true)
+        resolve(true);
       }, error => {
         this.loaderService.stopLoader();
         resolve(false);

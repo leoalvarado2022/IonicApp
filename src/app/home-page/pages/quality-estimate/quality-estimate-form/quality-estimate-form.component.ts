@@ -7,7 +7,7 @@ import {ContractDetailService} from '../../../../shared/services/contract-detail
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
-import {LoaderService} from "../../../../shared/services/loader/loader.service";
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-quality-estimate-form',
@@ -109,7 +109,7 @@ export class QualityEstimateFormComponent implements OnInit {
 
       data.calibers = data.calibers.map(caliber => Object.assign({}, caliber, {
         percentage: caliber.percentage === '' ? 0 : caliber.percentage
-      })).filter(caliber => caliber.percentage > 0)
+      })).filter(caliber => caliber.percentage > 0);
 
       this.storeQuality(data);
     } else {

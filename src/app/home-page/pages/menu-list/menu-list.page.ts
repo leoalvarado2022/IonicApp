@@ -10,8 +10,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NetworkService} from '../../../shared/services/network/network.service';
 import * as MenuAction from '../../../store/menu/menu.action';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {LoaderService} from "../../../shared/services/loader/loader.service";
-import {Subscription} from "rxjs";
+import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-menu-list',

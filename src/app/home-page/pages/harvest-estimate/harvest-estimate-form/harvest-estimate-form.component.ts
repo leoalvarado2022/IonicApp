@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
-import {LoaderService} from "../../../../shared/services/loader/loader.service";
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-harvest-estimate-form',

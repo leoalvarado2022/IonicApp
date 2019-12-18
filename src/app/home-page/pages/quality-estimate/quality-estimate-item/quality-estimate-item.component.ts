@@ -60,7 +60,7 @@ export class QualityEstimateItemComponent implements OnInit {
     const xAxis = {
       type: 'category',
       data: filteredCalibers.map(item => item.name)
-    }
+    };
 
     const yAxis = {
       type: 'value',

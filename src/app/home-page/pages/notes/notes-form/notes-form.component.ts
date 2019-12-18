@@ -8,7 +8,7 @@ import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {DetectPlatformService} from '../../../../shared/services/detect-platform/detect-platform.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
-import {LoaderService} from "../../../../shared/services/loader/loader.service";
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-notes-form',

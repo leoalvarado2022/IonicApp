@@ -1,3 +1,18 @@
 .errorMsg {
   color: red;
+  padding-left: 15px;
+}
+
+ion-item {
+  ion-label {
+    min-width: 50%;
+  }
+
+  ion-input {
+    text-align: right;
+  }
+}
+
+.total-padding {
+  --padding-end: 37px;
 }

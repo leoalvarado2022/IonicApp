@@ -57,8 +57,6 @@ export class QualityEstimateItemComponent implements OnInit {
     this.calibers = await this.syncService.getCalibers();
     const filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
 
-    console.log('details', this.details);
-
     const xAxis = {
       type: 'category',
       data: filteredCalibers.map(item => item.name)

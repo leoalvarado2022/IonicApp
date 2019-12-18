@@ -11,7 +11,7 @@
 
 <ion-content>
   <form [formGroup]="noteForm">
-    <ng-container *ngIf="!note">
+    <ng-container *ngIf="!note && detectPlatformService.hasCordova">
       <ion-item>
         <ion-button (click)="openCamera()" slot="start">
           <ion-icon name="camera" slot="icon-only"></ion-icon>

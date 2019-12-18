@@ -8,7 +8,7 @@
     <div class="profile ion-text-center">
       <div>
         <ion-avatar class="ion-no-margin" style="margin: 0 auto !important;">
-          <img [src]="profile?.avatar || 'assets/imgs/user.png'">
+          <img [src]="getAvatar() || 'assets/imgs/user.png'">
         </ion-avatar>
       </div>
       <p class="nameProfile">

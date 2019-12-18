@@ -3,10 +3,18 @@
 <ion-content>
 
   <ng-container *ngIf="filteredCostCenters.length > 0; else skeleton">
+    <ion-virtual-scroll [items]="filteredCostCenters">
+      <app-cost-center-card *virtualItem="let item; let itemBounds = bounds;" (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
+    </ion-virtual-scroll>
+  </ng-container>
+
+  <!--
+  <ng-container *ngIf="filteredCostCenters.length > 0; else skeleton">
     <ng-container *ngFor="let item of filteredCostCenters">
       <app-cost-center-card (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
     </ng-container>
   </ng-container>
+  -->
 
   <ng-template #skeleton>
     <ion-list>

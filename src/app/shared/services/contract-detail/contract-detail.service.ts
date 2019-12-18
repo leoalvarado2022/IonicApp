@@ -187,7 +187,7 @@ export class ContractDetailService {
       {headers: this.httpService.getHeaders()})
       .pipe(
         map(x => {
-          const data = x.data;
+          const data = x["data"];
           const {
             costCenter,
             productionContracts,

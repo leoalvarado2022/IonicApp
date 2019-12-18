@@ -23,6 +23,7 @@ import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {NgxEchartsModule} from 'ngx-echarts';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
+import {CameraService} from './services/camera/camera.service';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
     GeolocationService,
     Geolocation,
     File,
-    PreviewAnyFile
+    PreviewAnyFile,
+    CameraService
   ],
   exports: [
     CommonModule,

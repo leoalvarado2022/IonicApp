@@ -10,8 +10,10 @@ export class DetectPlatformService {
   public isIos = false;
   public hasCordova = false;
 
-  constructor(private device: Device,
-              private platform: Platform) {
+  constructor(
+    private device: Device,
+    private platform: Platform
+  ) {
     this.isIos = this.detectPlatform();
     this.hasCordova = this.checkCordova();
   }

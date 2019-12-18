@@ -13,11 +13,11 @@
         <p>
           {{ costCenter.speciesName }} <strong>/</strong> {{ costCenter.varietyName }}
         </p>
-        <p class="production-name" *ngIf="costCenter.contractResponsible" >
+        <p class="production-name" *ngIf="costCenter.contractResponsible">
           {{ costCenter.contractResponsible }}
         </p>
         <div class="bottom-info">
-          <span class="bottom__date">Fecha Cosecha: {{ costCenter.harvestDate | customDate }}</span>
+          <span class="bottom__date">Fecha Inicio Cosecha: {{ costCenter.harvestDate | customDate }}</span>
           <span class="bottom__icon">
             <ion-icon color="success" name="clipboard"></ion-icon>&nbsp;<span>{{ costCenter.contractsNumber }}</span>
           </span>

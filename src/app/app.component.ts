@@ -11,7 +11,7 @@ import {DetectPlatformService} from './shared/services/detect-platform/detect-pl
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  providers: [StorageService,DetectPlatformService]
+  providers: [StorageService, DetectPlatformService]
 })
 export class AppComponent {
 
@@ -28,7 +28,7 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       if (this.detectPlatform.isIos) {
-        this.statusBar.styleDefault()
+        this.statusBar.styleDefault();
       } else {
         this.statusBar.overlaysWebView(false);
       }

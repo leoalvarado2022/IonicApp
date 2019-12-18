@@ -56,14 +56,11 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     });
 
     this.qualityEstimate$ = this.contractDetailService.getQualityEstimate().subscribe(value => {
-      console.log('getQualityEstimate', value);
-
       this.qualityEstimate = [...value];
       this.filteredQualityEstimate = [...value];
     });
 
     this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
-      console.log('getQualityEstimateDetail', value);
       this.qualityEstimateDetail = [...value];
     });
   }
@@ -157,9 +154,9 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
       delete this.costCenter.active;
       const data = {
         costCenter: this.costCenter,
-        quality: newQuality,
-        calibers: this.qualityEstimateDetail
+        quality: newQuality
       };
+
       await this.storeQuality(data);
       await this.reloadList();
     }

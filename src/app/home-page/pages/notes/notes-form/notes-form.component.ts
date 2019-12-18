@@ -5,10 +5,10 @@ import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
-import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {DetectPlatformService} from '../../../../shared/services/detect-platform/detect-platform.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
-import {LoaderService} from "../../../../shared/services/loader/loader.service";
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {CameraService} from '../../../../shared/services/camera/camera.service';
 
 @Component({
   selector: 'app-notes-form',
@@ -24,14 +24,6 @@ export class NotesFormComponent implements OnInit {
   public showErrors = false;
   public imageSrc = '';
   private userConnection: any;
-  private commonOptions: CameraOptions = {
-    quality: 100,
-    encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE,
-    targetWidth: 1080,
-    targetHeight: 720,
-    correctOrientation: true
-  };
 
   constructor(
     private modalController: ModalController,
@@ -40,9 +32,9 @@ export class NotesFormComponent implements OnInit {
     private httpService: HttpService,
     private contractDetailService: ContractDetailService,
     private toastService: ToastService,
-    private camera: Camera,
     public detectPlatformService: DetectPlatformService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private cameraService: CameraService
   ) {
 
   }
@@ -84,39 +76,6 @@ export class NotesFormComponent implements OnInit {
   }
 
   /**
-   * openCamera
-   */
-  public openCamera = () => {
-    if (this.detectPlatformService.hasCordova) {
-      const options: CameraOptions = Object.assign({}, this.commonOptions, {
-        saveToPhotoAlbum: true,
-        destinationType: this.camera.DestinationType.DATA_URL,
-        sourceType: this.camera.PictureSourceType.CAMERA
-      });
-
-      this.getImage(options);
-    } else {
-      this.toastService.warningToast('Cordova requerido');
-    }
-  }
-
-  /**
-   * openGallery
-   */
-  public openGallery = () => {
-    if (this.detectPlatformService.hasCordova) {
-      const options: CameraOptions = Object.assign({}, this.commonOptions, {
-        destinationType: this.camera.DestinationType.DATA_URL,
-        sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
-      });
-
-      this.getImage(options);
-    } else {
-      this.toastService.warningToast('Cordova requerido');
-    }
-  }
-
-  /**
    * storeNote
    * @param data
    */
@@ -132,22 +91,40 @@ export class NotesFormComponent implements OnInit {
   }
 
   /**
-   * getImage
-   * @param options
+   * openCamera
    */
-  private getImage = (options) => {
-    this.camera.getPicture(options).then((image) => {
-      const imageUrl = image;
-      this.imageSrc = `data:image/jpeg;base64,${image}`;
+  public openCamera = async () => {
+    const image = await this.cameraService.openCamera();
 
-      this.noteForm.patchValue({
-        image: imageUrl
-      });
+    if (image) {
+      this.getImage(image);
+    }
+  }
 
-      this.noteForm.updateValueAndValidity();
-    }, error => {
-      this.toastService.warningToast(error);
+  /**
+   * openGallery
+   */
+  public openGallery = async () => {
+    const image = await this.cameraService.openGallery();
+
+    if (image) {
+      this.getImage(image);
+    }
+  }
+
+  /**
+   * getImage
+   * @param image
+   */
+  private getImage = (image: string) => {
+    const imageUrl = image;
+    this.imageSrc = `data:image/jpeg;base64,${image}`;
+
+    this.noteForm.patchValue({
+      image: imageUrl
     });
+
+    this.noteForm.updateValueAndValidity();
   }
 
 }

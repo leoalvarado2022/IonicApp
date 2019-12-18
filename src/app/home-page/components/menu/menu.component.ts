@@ -101,4 +101,15 @@ export class MenuComponent implements OnInit {
       this.companies = [];
     }
   }
+
+  /**
+   * getAvatar
+   */
+  public getAvatar = () => {
+    if (this.profile && this.profile.avatar) {
+      return `data:image/jpeg;base64,${this.profile.avatar}`;
+    }
+
+    return null;
+  }
 }

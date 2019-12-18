@@ -10,10 +10,9 @@ import {Store} from '@ngrx/store';
 import * as MenuAction from '../../../store/menu/menu.action';
 import {ModalController} from '@ionic/angular';
 import {ChangePasswordComponent} from './change-password/change-password.component';
-import {DetectPlatformService} from '../../../shared/services/detect-platform/detect-platform.service';
-
-import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {CameraService} from "../../../shared/services/camera/camera.service";
+import {Device} from '@ionic-native/device/ngx';
 
 @Component({
   selector: 'app-profile',
@@ -28,6 +27,8 @@ export class ProfilePage implements OnInit {
   public registerForm: FormGroup;
   public avatarPreview: any = null;
 
+  private rutValue: string;
+
   constructor(
     private userService: UserService,
     private formBuilder: FormBuilder,
@@ -36,10 +37,10 @@ export class ProfilePage implements OnInit {
     private router: Router,
     private store: Store<any>,
     private modalController: ModalController,
-    public detectPlatformService: DetectPlatformService,
+    public device: Device,
     private authService: AuthService,
-    public camera: Camera,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private cameraService: CameraService
   ) {
     this.initForm();
   }
@@ -48,18 +49,20 @@ export class ProfilePage implements OnInit {
     this.data = await this.userService.getUserData();
     if (this.data.user) {
       this.profile = this.data.user;
-      this.avatarPreview = this.data.user.avatar;
+      this.avatarPreview = `data:image/jpeg;base64,${this.data.user.avatar}`;
       this.initForm(this.data.user);
     }
   }
 
   initForm = (data?) => {
+    this.rutValue = data && data !== null ? data.rut : null;
+
     this.registerForm = this.formBuilder.group({
       nombre: [data && data !== null ? data.name : null, Validators.required],
       avatar: [data && data !== null ? data.avatar : null],
       apellido_paterno: [data && data !== null ? data.lastName : null, Validators.required],
       apellido_materno: [data && data !== null ? data.surName : null, Validators.required],
-      rut: [data && data !== null ? data.rut : null, [
+      rut: [{value: data && data !== null ? data.rut : null, disabled: true}, [
         Validators.required,
         ValidateRut
       ]],
@@ -84,39 +87,14 @@ export class ProfilePage implements OnInit {
    * onSubmit
    */
   public async onSubmit() {
-
     const list = {
       password: '',
       token: this.authService.getToken(),
     };
     const data = Object.assign(list, this.registerForm.value);
+    data.rut = this.rutValue;
 
     await this.update(data);
-  }
-
-  /**
-   * onFileChange
-   * @param event
-   */
-  public onFileChange(event: any) {
-    if (event.target.files && event.target.files.length) {
-      this.avatarPreview = null;
-      const reader = new FileReader();
-      const file = event.target.files[0];
-
-      const size = (file.size / 1024) / 1024;
-      if (size >= 4) {
-        this.toastService.warningToast('La imagen supera el limite. No puede ser mayor 4MB');
-        return;
-      }
-
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const result = String(reader.result).split(',')[1];
-        this.avatarPreview = `data:image/png;base64,${result}`;
-        this.registerForm.controls.avatar.patchValue(this.avatarPreview);
-      };
-    }
   }
 
   /**
@@ -128,40 +106,6 @@ export class ProfilePage implements OnInit {
       cssClass: 'change-modal-password'
     });
     return await modal.present();
-  }
-
-  /**
-   * onFileCamera
-   * @param event
-   */
-  public onFileCamera = async (sourceType: any, uri: any) => {
-    const options: CameraOptions = {
-      quality: 50,
-      destinationType: uri,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      saveToPhotoAlbum: true,
-      targetWidth: 300,
-      targetHeight: 300,
-      correctOrientation: true,
-      sourceType
-    };
-
-    this.loaderService.startLoader();
-
-    this.camera.getPicture(options).then((imageData) => {
-      // imageData is either a base64 encoded string or a file URI
-      // If it's base64 (DATA_URL):
-
-      const image = `data:image/jpeg;base64,${imageData}`;
-      this.avatarPreview = image;
-      this.registerForm.controls.avatar.patchValue(image);
-      this.loaderService.stopLoader();
-
-    }, (err) => {
-      // Handle error
-      this.loaderService.stopLoader();
-    });
   }
 
   /**
@@ -200,4 +144,40 @@ export class ProfilePage implements OnInit {
     });
   }
 
+  /**
+   * openCamera
+   */
+  public openCamera = async () => {
+    const image = await this.cameraService.openCamera();
+
+    if (image) {
+      this.getImage(image);
+    }
+  }
+
+  /**
+   * openGallery
+   */
+  public openGallery = async () => {
+    const image = await this.cameraService.openGallery();
+
+    if (image) {
+      this.getImage(image);
+    }
+  }
+
+  /**
+   * getImage
+   * @param image
+   */
+  private getImage = (image: string) => {
+    const imageUrl = image;
+    this.avatarPreview = `data:image/jpeg;base64,${image}`;
+
+    this.registerForm.patchValue({
+      avatar: imageUrl
+    });
+
+    this.registerForm.updateValueAndValidity();
+  }
 }

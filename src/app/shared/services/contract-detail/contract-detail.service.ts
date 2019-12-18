@@ -4,8 +4,8 @@ import {HttpClient} from '@angular/common/http';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, ProductContractDetail, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {BehaviorSubject, of} from 'rxjs';
 import {LoaderService} from '../loader/loader.service';
-import {HttpService} from "../http/http.service";
-import {catchError, map} from "rxjs/operators";
+import {HttpService} from '../http/http.service';
+import {catchError, map} from 'rxjs/operators';
 
 interface ContractInterface {
   costCenter: CostCenter;
@@ -139,7 +139,7 @@ export class ContractDetailService {
   public updateGelocationCostCenter = (data: any) => {
     const url = this.httpService.buildUrl(this.storeCostCenterGeolocation);
     return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * defineArrows
@@ -187,7 +187,7 @@ export class ContractDetailService {
       {headers: this.httpService.getHeaders()})
       .pipe(
         map(x => {
-          const data = x['data'];
+          const data = x["data"];
           const {
             costCenter,
             productionContracts,
@@ -227,7 +227,7 @@ export class ContractDetailService {
 
     this.httpService.errorHandler(error);
 
-    return of(null)
+    return of(null);
   }
 
 }

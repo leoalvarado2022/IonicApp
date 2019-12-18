@@ -6,7 +6,7 @@ import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Router} from '@angular/router';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {LoaderService} from "../../../shared/services/loader/loader.service";
+import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-connections',

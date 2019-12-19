@@ -29,7 +29,7 @@
 
     <ion-item>
       <ion-label position="floating">Nota</ion-label>
-      <ion-textarea rows="20" cols="20" formControlName="note" placeholder="Escriba la nota..."></ion-textarea>
+      <ion-textarea rows="5" cols="5" formControlName="note" placeholder="Escriba la nota..."></ion-textarea>
       <ng-container *ngIf="showErrors && noteForm.get('note').hasError('required')">
         <span class="errorMsg">Ingrese la nota</span>
       </ng-container>

@@ -46,11 +46,11 @@ export class NotesFormComponent implements OnInit {
       id: [this.note ? this.note.id : 0, Validators.required],
       costCenter: [this.costCenter.id, Validators.required],
       user: [this.userConnection.user, Validators.required],
-      note: [{value: this.note ? this.note.note : '', disabled: !!this.note}, Validators.required],
-      image: [{value: this.note ? this.note.image : '', disabled: !!this.note}, Validators.required]
+      note: [{value: this.note ? this.note.note : '', disabled: !!this.note}],
+      image: [{value: this.note ? this.note.image : '', disabled: !!this.note}]
     });
 
-    this.imageSrc = this.note ? 'data:image/jpeg;base64,' + this.note.image : '';
+    this.imageSrc = this.note && this.note.image ? 'data:image/jpeg;base64,' + this.note.image : '';
   }
 
   /**
@@ -65,13 +65,14 @@ export class NotesFormComponent implements OnInit {
    * submit
    */
   public submit = () => {
-    if (this.noteForm.valid) {
+    if (this.noteForm.get('note').value || this.noteForm.get('image').value) {
+
       this.showErrors = false;
       const note = Object.assign({}, this.noteForm.value);
 
       this.storeNote(note);
     } else {
-      this.showErrors = true;
+      this.toastService.warningToast('Debe ingresar la nota o la imagen');
     }
   }
 

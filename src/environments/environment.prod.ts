@@ -2,6 +2,6 @@ export const environment = {
   production: true,
   app_name: 'FX10',
   api_url: 'https://fx11apiqa.primetec.cl',
-  appVersion: 'v1.0.31',
+  appVersion: 'v1.0.32',
   tz: 'America/Santiago'
 };

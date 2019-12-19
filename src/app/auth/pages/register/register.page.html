@@ -1,146 +1,92 @@
 <ion-content>
   <br>
-  <div class="pd-default">
+  <div *ngIf="device.cordova">
+    <ion-avatar class="ion-no-margin" style="margin: 0 auto !important">
+      <img [src]="avatarPreview || 'assets/imgs/user.png'">
+    </ion-avatar>
+  </div>
 
-    <div *ngIf="!detectPlatformService.hasCordova">
-      <input #avatar (change)="onFileChange($event)" accept="image/png,image/gif,image/jpeg" hidden
-             type="file"/>
-      <ion-avatar (click)="avatar.click()" class="ion-no-margin" style="margin: 0 auto !important;">
-        <img
-          [src]="avatarPreview || 'assets/imgs/user.png'">
-      </ion-avatar>
-    </div>
+  <br><br><br>
+  <ng-container *ngIf="device.cordova">
+    <ion-item>
+      <ion-button (click)="openCamera()" slot="start">
+        <ion-icon name="camera" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-label>&nbsp;</ion-label>
+      <ion-button (click)="openGallery()" slot="end">
+        <ion-icon name="image" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ng-container>
 
-    <div *ngIf="detectPlatformService.hasCordova">
-      <ion-avatar class="ion-no-margin" style="margin: 0 auto !important;">
-        <img
-          [src]="avatarPreview || 'assets/imgs/user.png'">
-      </ion-avatar>
-    </div>
-
-    <div *ngIf="!detectPlatformService.isIos && detectPlatformService.hasCordova;">
-      <ion-row>
-        <ion-col class="cameras" size="6">
-          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.CAMERA, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
-                      style="margin: 0 auto !important;">
-            <ion-icon name="camera"></ion-icon>
-          </ion-avatar>
-        </ion-col>
-        <ion-col class="cameras" size="6">
-          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.PHOTOLIBRARY, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
-                      style="margin: 0 auto !important;">
-            <ion-icon name="image"></ion-icon>
-          </ion-avatar>
-        </ion-col>
-      </ion-row>
-    </div>
-
-    <div *ngIf="detectPlatformService.isIos && detectPlatformService.hasCordova;">
-      <ion-row>
-        <ion-col class="cameras" size="6">
-          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.CAMERA, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
-                      style="margin: 0 auto !important;">
-            <ion-icon name="camera"></ion-icon>
-          </ion-avatar>
-        </ion-col>
-        <ion-col class="cameras" size="6">
-          <ion-avatar (click)="onFileCamera(camera.PictureSourceType.PHOTOLIBRARY, camera.DestinationType.DATA_URL)" class="avatar-camera ion-no-margin"
-                      style="margin: 0 auto !important;">
-            <ion-icon name="image"></ion-icon>
-          </ion-avatar>
-        </ion-col>
-      </ion-row>
-    </div>
-
+  <div>
     <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
       <ion-item>
         <ion-label position="floating">Rut</ion-label>
         <ion-input (keyup)="formatIdentifier($event.target.value)" formControlName="rut" tabindex="0"></ion-input>
+        <ng-container *ngIf="registerForm.get('rut').dirty && registerForm.get('rut').errors">
+          <span style="color: red" *ngIf="registerForm.get('rut').hasError('required')">El rut es requerido.</span>
+          <span style="color: red" *ngIf="registerForm.get('rut').hasError('validRut')">El rut es inválido.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.rut.dirty && registerForm.hasError('required', 'rut')"
-           style="color: red">
-        El rut es requerido.
-      </div>
-      <div *ngIf="registerForm.controls.rut.dirty && registerForm.hasError('validRut', 'rut')"
-           style="color: red">
-        El rut es inválido
-      </div>
+
       <ion-item>
         <ion-label position="floating">Nombres</ion-label>
         <ion-input formControlName="names" tabindex="1"></ion-input>
+        <ng-container *ngIf="registerForm.get('names').dirty && registerForm.get('names').errors">
+          <span style="color: red" *ngIf="registerForm.get('names').hasError('required')">Los nombres son requeridos.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.names.dirty && registerForm.hasError('required', 'names')"
-           style="color: red">
-        Los nombres
-        son requeridos.
-      </div>
+
       <ion-item>
         <ion-label position="floating">Apellido Paterno</ion-label>
-        <ion-input formControlName="lastName"
-                   tabindex="2"></ion-input>
+        <ion-input formControlName="lastName" tabindex="2"></ion-input>
+        <ng-container *ngIf="registerForm.get('lastName').dirty && registerForm.get('lastName').errors">
+          <span style="color: red" *ngIf="registerForm.get('lastName').hasError('required')">El apellido parterno es requerido.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.lastName.dirty && registerForm.hasError('required', 'lastName')"
-           style="color: red">
-        El apellido parterno
-        es requerido.
-      </div>
+
       <ion-item>
         <ion-label position="floating">Apellido Materno</ion-label>
-        <ion-input class="input-text" formControlName="surName"
-                   tabindex="3"></ion-input>
+        <ion-input class="input-text" formControlName="surName" tabindex="3"></ion-input>
+        <ng-container *ngIf="registerForm.get('surName').dirty && registerForm.get('surName').errors">
+          <span style="color: red" *ngIf="registerForm.get('surName').hasError('required')">El apellido materno es requerido.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.surName.dirty && registerForm.hasError('required', 'surName')"
-           style="color: red">
-        El apellido materno es
-        requerido.
-      </div>
+
       <ion-item>
         <ion-label position="floating">Email</ion-label>
-        <ion-input formControlName="email" tabindex="4"
-                   type="email"></ion-input>
+        <ion-input formControlName="email" tabindex="4" type="email"></ion-input>
+        <ng-container *ngIf="registerForm.get('email').dirty && registerForm.get('email').errors">
+          <span style="color: red" *ngIf="registerForm.get('email').hasError('required')">El correo es requerido.</span>
+          <span style="color: red" *ngIf="registerForm.get('email').hasError('email')">Ingrese un email valido.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.email.dirty && registerForm.hasError('required', 'email')"
-           style="color: red">El
-        correo es requerido.
-      </div>
-      <div *ngIf="registerForm.controls.email.dirty && registerForm.hasError('email', 'email')"
-           style="color: red">
-        Ingrese un
-        email valido
-      </div>
+
       <ion-item>
         <ion-label position="floating">Telefono</ion-label>
-        <ion-input formControlName="phone" tabindex="5"
-                   type="tel"></ion-input>
+        <ion-input formControlName="phone" tabindex="5" type="tel"></ion-input>
+        <ng-container *ngIf="registerForm.get('phone').dirty && registerForm.get('phone').errors">
+          <span style="color: red" *ngIf="registerForm.get('phone').hasError('required')">El telefono es requerido.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.phone.dirty && registerForm.hasError('required', 'phone')"
-           style="color: red">
-        El
-        telefono es requerido.
-      </div>
+
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
         <ion-input formControlName="password" type="password"></ion-input>
+        <ng-container *ngIf="registerForm.get('password').dirty && registerForm.get('password').errors">
+          <span style="color: red" *ngIf="registerForm.get('password').hasError('required')">La contraseña es requerida.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.password.dirty && registerForm.hasError('required', 'password')"
-           style="color: red">
-        La
-        contraseña es requerida.
-      </div>
+
       <ion-item>
         <ion-label position="floating">Confirmar Contraseña</ion-label>
-        <ion-input formControlName="confirm"
-                   tabindex="7" type="password"></ion-input>
+        <ion-input formControlName="confirm" tabindex="7" type="password"></ion-input>
+        <ng-container *ngIf="registerForm.get('confirm').dirty && registerForm.get('confirm').errors">
+          <span style="color: red" *ngIf="registerForm.get('confirm').hasError('required')">Debe confirmar la contraseña.</span>
+          <span style="color: red" *ngIf="registerForm.get('confirm').hasError('notSame')">Las contraseñas no son iguales.</span>
+        </ng-container>
       </ion-item>
-      <div *ngIf="registerForm.controls.confirm.dirty && registerForm.hasError('required', 'confirm')"
-           style="color: red">
-        Debe
-        confirmar la contraseña
-      </div>
-      <div *ngIf="registerForm.controls.confirm.dirty && registerForm.hasError('notSame')"
-           style="color: red">Las
-        contraseñas no son iguales
-      </div>
 
       <br>
       <ion-radio-group formControlName="access">
@@ -159,13 +105,11 @@
         </ion-item>
       </ion-radio-group>
 
-      <div *ngIf="registerForm.controls.access.dirty && registerForm.hasError('required', 'access')"
-           style="color: red">
-        Debe seleccionar una opción
-      </div>
+      <ng-container *ngIf="registerForm.get('access').errors">
+        <span style="color: red" *ngIf="registerForm.get('access').hasError('required')">Debe seleccionar una opción.</span>
+      </ng-container>
 
       <br><br>
-
       <ion-button
         [disabled]="registerForm.invalid"
         color="danger"
@@ -174,6 +118,6 @@
         Registrar
       </ion-button>
     </form>
-
   </div>
+
 </ion-content>

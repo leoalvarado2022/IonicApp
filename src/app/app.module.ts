@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {RouteReuseStrategy} from '@angular/router';
-import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
+import {IonicModule} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AppComponent} from './app.component';
@@ -46,14 +45,16 @@ const NGRX_IMPORTS = [
   imports: [
     BrowserModule,
     AppRoutingModule,
+    IonicModule.forRoot({
+      swipeBackEnabled: false
+    }),
     IonicStorageModule.forRoot(),
-    IonicModule.forRoot(),
     SharedModule,
     HttpClientModule,
     ...NGRX_IMPORTS
   ],
   providers: [
-    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+    // {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     StatusBar,
     SplashScreen,
     AppVersion,

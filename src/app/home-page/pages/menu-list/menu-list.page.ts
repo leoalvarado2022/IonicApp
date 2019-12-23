@@ -58,8 +58,12 @@ export class MenuListPage implements OnInit, OnDestroy {
    * reSync
    * @param event
    */
-  public reSync = async (event: any) => {
-    await this.syncData();
+  public reSync = async (event) => {
+    const data = await this.syncData();
+    await this.syncService.storeSync(data);
+    await this.loadMenus();
+    await this.getUserData();
+
     event.target.complete();
   }
 
@@ -101,22 +105,20 @@ export class MenuListPage implements OnInit, OnDestroy {
    * syncData
    * @param username
    */
-  private syncData = async () => {
-    if (this.userData) {
-      this.loaderService.startLoader('Sincronizando...');
-      const {user} = this.userData;
-      const username = user.username;
+  private syncData = (): Promise<any> => {
+    return new Promise<any>(resolve => {
+      if (this.userData) {
+        const {user} = this.userData;
+        const username = user.username;
 
-      this.syncService.syncData(username).subscribe(async (success: any) => {
-        await this.syncService.storeSync(success.data);
-        await this.loadMenus();
-        await this.getUserData();
-        this.loaderService.stopLoader();
-      }, async error => {
-        this.loaderService.stopLoader();
-        this.httpService.errorHandler(error);
-      });
-    }
+        this.syncService.syncData(username).subscribe((success: any) => {
+          resolve(success.data);
+        }, async error => {
+          this.httpService.errorHandler(error);
+          resolve(null);
+        });
+      }
+    });
   }
 
 }

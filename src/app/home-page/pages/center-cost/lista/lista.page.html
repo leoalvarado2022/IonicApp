@@ -2,25 +2,15 @@
 
 <ion-content>
 
-  <ng-container *ngIf="filteredCostCenters.length > 0; else skeleton">
+  <ng-container *ngIf="!isLoading; else skeleton">
     <ion-virtual-scroll [items]="filteredCostCenters">
-      <app-cost-center-card *virtualItem="let item; let itemBounds = bounds;" (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
+      <app-cost-center-card *virtualItem="let item" (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
     </ion-virtual-scroll>
   </ng-container>
 
-  <!--
-  <ng-container *ngIf="filteredCostCenters.length > 0; else skeleton">
-    <ng-container *ngFor="let item of filteredCostCenters">
-      <app-cost-center-card (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
-    </ng-container>
-  </ng-container>
-  -->
 
   <ng-template #skeleton>
     <ion-list>
-      <ion-list-header>
-        <ion-skeleton-text animated style="width: 20%"></ion-skeleton-text>
-      </ion-list-header>
       <ion-item *ngFor="let item of [1,2,3,4,5]">
         <ion-thumbnail slot="start">
           <ion-skeleton-text animated></ion-skeleton-text>
@@ -39,14 +29,5 @@
       </ion-item>
     </ion-list>
   </ng-template>
-
-  <!--
-  NO FUNCIONA EN IOS
-  <ion-virtual-scroll [items]="filteredCostCenters" approxItemHeight="275px" [trackBy]="trackByfn">
-    <ng-container *virtualItem="let item">
-      <app-cost-center-card [costCenter]="item"></app-cost-center-card>
-    </ng-container>
-  </ion-virtual-scroll>
-  -->
 
 </ion-content>

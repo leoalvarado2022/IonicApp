@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Trabajadores</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoading">
+    <ion-list>
+      <ion-item *ngFor="let item of [1,2,3,4,5]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && quadrille">
+    <!--
+    <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reload($event)">
+      <ion-refresher-content
+        pullingIcon="arrow-dropdown"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="Cargando trabajadores...">
+      </ion-refresher-content>
+    </ion-refresher>
+    -->
+
+    <h2 class="ion-text-center">
+      {{ quadrille.name }}
+      <ion-badge color="primary">{{ filteredWorkers.length }}</ion-badge>
+    </h2>
+
+    <ng-container *ngIf="filteredWorkers.length > 0">
+      <ion-list>
+        <ion-virtual-scroll [items]="filteredWorkers">
+          <ion-item *virtualItem="let worker">
+            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-label>
+              <h3 class="ion-text-wrap">{{ worker.name }}</h3>
+              <p>{{ worker.identifier }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-virtual-scroll>
+      </ion-list>
+    </ng-container>
+  </ng-container>
+
+</ion-content>

@@ -8,11 +8,11 @@
         </ion-thumbnail>
       </ng-container>
       <ng-container slot="start" *ngIf="!getPhotoPath()">
-        <ion-icon size="large" class="icon" name="mail" color="danger"></ion-icon>
+        <ion-icon class="icon" name="mail" color="danger"></ion-icon>
       </ng-container>
       <ion-label (click)="itemClicked(item)">
         <h6 class="name">{{ item.responsibleName }}</h6>
-        <div class="note">{{ item.note }}</div>
+        <div class="note">{{ item.note || 'Sin mensaje' }}</div>
         <div class="date">Ult. Act. {{ item.registrationDate | customDate }}</div>
       </ion-label>
     </ion-item>

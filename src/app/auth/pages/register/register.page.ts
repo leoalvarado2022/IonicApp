@@ -6,11 +6,10 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
-import {DetectPlatformService} from '../../../shared/services/detect-platform/detect-platform.service';
 import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
-
-import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {Device} from '@ionic-native/device/ngx';
+import {CameraService} from '../../../shared/services/camera/camera.service';
 
 @Component({
   selector: 'app-register',
@@ -28,10 +27,10 @@ export class RegisterPage implements OnInit {
     private loaderService: LoaderService,
     private toastService: ToastService,
     private router: Router,
-    public detectPlatformService: DetectPlatformService,
     private authService: AuthService,
-    public camera: Camera,
-    private httpService: HttpService
+    private httpService: HttpService,
+    public device: Device,
+    private cameraService: CameraService
   ) {
 
   }
@@ -70,32 +69,6 @@ export class RegisterPage implements OnInit {
   }
 
   /**
-   * onFileChange
-   * @param event
-   */
-  public onFileChange(event: any) {
-    if (event.target.files && event.target.files.length) {
-      this.avatarPreview = null;
-      const reader = new FileReader();
-      const file = event.target.files[0];
-
-      // console.log(file);
-      const size = (file.size / 1024) / 1024;
-      if (size >= 1.2) {
-        this.toastService.warningToast('La imagen supera el limite. No puede ser mayor 1.2MB');
-        return;
-      }
-
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const result = String(reader.result).split(',')[1];
-        this.avatarPreview = `data:image/png;base64,${result}`;
-        this.registerForm.controls.avatar.patchValue(this.avatarPreview);
-      };
-    }
-  }
-
-  /**
    * formatIdentifier
    * @param identifier
    */
@@ -112,45 +85,6 @@ export class RegisterPage implements OnInit {
     }
 
     return rut;
-  }
-
-  /**
-   * onFileCamera
-   * @param event
-   */
-  public onFileCamera = async (sourceType: any, uri: any) => {
-    if (this.detectPlatformService.hasCordova) {
-      const options: CameraOptions = {
-        quality: 50,
-        destinationType: uri,
-        encodingType: this.camera.EncodingType.JPEG,
-        mediaType: this.camera.MediaType.PICTURE,
-        saveToPhotoAlbum: true,
-        targetWidth: 300,
-        targetHeight: 300,
-        correctOrientation: true,
-        sourceType
-      };
-
-      this.loaderService.startLoader();
-
-      this.camera.getPicture(options).then((imageData) => {
-        // imageData is either a base64 encoded string or a file URI
-        // If it's base64 (DATA_URL):
-        // console.log(imageData);
-
-        const image = `data:image/jpeg;base64,${imageData}`;
-        this.avatarPreview = image;
-        this.registerForm.controls.avatar.patchValue(this.avatarPreview);
-        this.loaderService.stopLoader();
-
-      }, (err) => {
-        // Handle error
-        this.loaderService.stopLoader();
-      });
-    } else {
-      this.toastService.warningToast('Cordova requerido');
-    }
   }
 
   /**
@@ -173,4 +107,42 @@ export class RegisterPage implements OnInit {
       });
     });
   }
+
+  /**
+   * openCamera
+   */
+  public openCamera = async () => {
+    const image = await this.cameraService.openCamera();
+
+    if (image) {
+      this.getImage(image);
+    }
+  }
+
+  /**
+   * openGallery
+   */
+  public openGallery = async () => {
+    const image = await this.cameraService.openGallery();
+
+    if (image) {
+      this.getImage(image);
+    }
+  }
+
+  /**
+   * getImage
+   * @param image
+   */
+  private getImage = (image: string) => {
+    const imageUrl = image;
+    this.avatarPreview = `data:image/jpeg;base64,${image}`;
+
+    this.registerForm.patchValue({
+      avatar: imageUrl
+    });
+
+    this.registerForm.updateValueAndValidity();
+  }
+
 }

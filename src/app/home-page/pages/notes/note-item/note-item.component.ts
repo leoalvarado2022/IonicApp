@@ -3,6 +3,7 @@ import {Note} from '@primetec/primetec-angular';
 import {ModalController} from '@ionic/angular';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
+import {Device} from '@ionic-native/device/ngx';
 
 @Component({
   selector: 'app-note-item',
@@ -19,7 +20,8 @@ export class NoteItemComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private file: File,
-    private previewAnyFile: PreviewAnyFile
+    private previewAnyFile: PreviewAnyFile,
+    private device: Device
   ) {
 
   }
@@ -32,7 +34,7 @@ export class NoteItemComponent implements OnInit {
    * getPhotoPath
    */
   public getPhotoPath = () => {
-    if (this.item) {
+    if (this.item && this.item.image) {
       return 'data:image/jpeg;base64,' + this.item.image;
     }
 
@@ -59,7 +61,7 @@ export class NoteItemComponent implements OnInit {
    * viewPicture
    */
   public viewPicture = async () => {
-    if (this.getPhotoPath()) {
+    if (this.getPhotoPath() && this.device.cordova) {
       const fileName = `${this.item.id}.jpeg`;
       const dirName = this.file.tempDirectory;
       const filePath = dirName + '/' + fileName;
@@ -114,4 +116,5 @@ export class NoteItemComponent implements OnInit {
       });
     });
   }
+
 }

@@ -13,12 +13,12 @@
 </ion-header>
 
 <ion-content class="content">
-  <ion-refresher (ionRefresh)="reSync($event)" slot="fixed">
+  <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reSync($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
       pullingText="Pull to refresh"
       refreshingSpinner="circles"
-      refreshingText="Refreshing...">
+      refreshingText="Sincronizando...">
     </ion-refresher-content>
   </ion-refresher>
 
@@ -36,17 +36,6 @@
         </div>
       </div>
     </div>
-
-    <!--
-    <ion-col size="6" class="ion-text-center border-separator-right card-menu" routerLink="/production-contracts">
-      <div>
-        <img src="assets/imgs/contratacion.png" alt="">
-        <p class="title-menu">
-          Contratos de Producción
-        </p>
-      </div>
-    </ion-col>
-    -->
 
   </ng-container>
 </ion-content>

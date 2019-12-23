@@ -46,8 +46,15 @@ const routes: Routes = [
         path: 'notes',
         loadChildren: () => import('./pages/notes/notes.module').then(module => module.NotesPageModule)
       },
+      {
+        path: 'tarja_cuadrillas',
+        loadChildren: () => import('./pages/rem-quadrille/rem-quadrille.module').then(module => module.RemQuadrillePageModule)
+      },
+      {
+        path: 'rem-workers',
+        loadChildren: () => import('./pages/rem-workers/rem-workers.module').then(module => module.RemWorkersPageModule)
+      }
     ]
-
   },
 ];
 

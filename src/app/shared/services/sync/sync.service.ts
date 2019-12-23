@@ -34,7 +34,17 @@ export class SyncService {
    */
   public storeSync = async (data) => {
     if (data) {
-      const {companies, costCenters, menus, units, qualities, calibers} = data;
+      const {
+        companies,
+        costCenters,
+        menus,
+        units,
+        qualities,
+        calibers,
+        cfgAccess,
+        quadrilles,
+        workers
+      } = data;
 
       if (!this.authService.getCompany() && companies) {
         this.authService.setCompany(companies[0]);
@@ -46,6 +56,9 @@ export class SyncService {
       await this.setUnits(units);
       await this.setQualities(qualities);
       await this.setCalibers(calibers);
+      await this.setAccess(cfgAccess);
+      await this.setQuadrilles(quadrilles);
+      await this.setWorkers(workers);
     }
   }
 
@@ -137,4 +150,48 @@ export class SyncService {
     return await this.storageService.getRow('calibers');
   }
 
+  /**
+   * setAccess
+   * @param cfgAccess
+   */
+  private setAccess = async (cfgAccess: Array<any>) => {
+    await this.storageService.setRow('cfgAccess', cfgAccess);
+  }
+
+  /**
+   * getAccess
+   */
+  public getAccess = async () => {
+    return await this.storageService.getRow('cfgAccess');
+  }
+
+  /**
+   * setQuadrilles
+   * @param quadrilles
+   */
+  private setQuadrilles = async (quadrilles: Array<any>) => {
+    await this.storageService.setRow('quadrilles', quadrilles);
+  }
+
+  /**
+   * getQuadrilles
+   */
+  public getQuadrilles = async () => {
+    return await this.storageService.getRow('quadrilles');
+  }
+
+  /**
+   * setWorkers
+   * @param workers
+   */
+  private setWorkers = async (workers: Array<any>) => {
+    await this.storageService.setRow('workers', workers);
+  }
+
+  /**
+   * getWorkers
+   */
+  public getWorkers = async () => {
+    return await this.storageService.getRow('workers');
+  }
 }

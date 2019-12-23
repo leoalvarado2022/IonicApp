@@ -11,7 +11,7 @@ import * as MenuAction from '../../../store/menu/menu.action';
 import {ModalController} from '@ionic/angular';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {CameraService} from "../../../shared/services/camera/camera.service";
+import {CameraService} from '../../../shared/services/camera/camera.service';
 import {Device} from '@ionic-native/device/ngx';
 
 @Component({

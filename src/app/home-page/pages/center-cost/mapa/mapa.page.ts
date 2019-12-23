@@ -17,21 +17,20 @@ export class MapaPage implements OnInit {
   public filteredCostCenters: CostCenterList[] = [];
   private costCenters: CostCenterList[] = [];
 
-
   constructor(
     private syncService: SyncService,
     private loaderService: LoaderService
   ) {
-    if (navigator) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        this.lng = pos.coords.longitude;
-        this.lat = pos.coords.latitude;
-      });
-    }
+
+  }
+
+  ionViewWillEnter() {
+    this.loadCurrentPosition();
+    this.loadCostCenters();
   }
 
   ngOnInit() {
-    this.loadCostCenters();
+
   }
 
   /**
@@ -72,6 +71,18 @@ export class MapaPage implements OnInit {
    */
   public cancelSearch = () => {
     this.filteredCostCenters = this.costCenters;
+  }
+
+  /**
+   * loadCurrentPosition
+   */
+  public loadCurrentPosition = () => {
+    if (navigator) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        this.lng = pos.coords.longitude;
+        this.lat = pos.coords.latitude;
+      });
+    }
   }
 
 }

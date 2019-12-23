@@ -41,7 +41,7 @@ export class ListaPage implements OnInit {
    */
   public loadCostCenters = async () => {
     const costCenters = await this.syncService.getCostCenters();
-    this.costCenters = [...costCenters]
+    this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
   }
 

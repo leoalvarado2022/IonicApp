@@ -9,10 +9,10 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class RemWorkersPage implements OnInit {
 
-  private quadrille: any;
-  private isLoading = false;
   private workers: Array<any> = [];
   public filteredWorkers: Array<any> = [];
+  public quadrille: any;
+  public isLoading = false;
 
   constructor(
     private syncService: SyncService,

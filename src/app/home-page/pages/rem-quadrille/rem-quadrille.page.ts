@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../shared/services/sync/sync.service';
-import {Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-rem-quadrille',
@@ -11,7 +11,7 @@ export class RemQuadrillePage implements OnInit {
 
   private quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
-  private isLoading = false;
+  public isLoading = false;
 
   constructor(
     private syncService: SyncService,

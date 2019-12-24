@@ -65,7 +65,7 @@ export class HarvestEstimateFormComponent implements OnInit {
       if (moment(costCenterDate).isValid()) {
         costCenterDate = moment(costCenterDate).format('YYYY/MM/DD');
       } else {
-        this.toastService.warningToast('Fecha de cosecha invalida' + costCenterDate);
+        this.toastService.warningToast('Fecha de cosecha invalida: ' + costCenterDate);
       }
 
       this.harvestForm = this.formBuilder.group({

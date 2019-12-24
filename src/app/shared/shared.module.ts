@@ -18,12 +18,12 @@ import {HttpService} from './services/http/http.service';
 import {AlertService} from './services/alert/alert.service';
 import {ImageViewerComponent} from './components/image-viewer/image-viewer.component';
 import {CustomDatetimePipe} from './pipes/custom-datetime/custom-datetime.pipe';
-import {GeolocationService} from './services/geolocation/geolocation.service';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {NgxEchartsModule} from 'ngx-echarts';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {CameraService} from './services/camera/camera.service';
+import {GeolocationService} from "./services/geolocation/geolocation.service";
 
 @NgModule({
   declarations: [
@@ -51,11 +51,11 @@ import {CameraService} from './services/camera/camera.service';
     ToastService,
     HttpService,
     AlertService,
-    GeolocationService,
-    Geolocation,
     File,
     PreviewAnyFile,
-    CameraService
+    CameraService,
+    Geolocation,
+    GeolocationService
   ],
   exports: [
     CommonModule,

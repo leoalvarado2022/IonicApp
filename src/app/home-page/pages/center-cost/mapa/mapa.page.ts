@@ -1,14 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {GeolocationService} from "../../../../shared/services/geolocation/geolocation.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-mapa',
   templateUrl: './mapa.page.html',
   styleUrls: ['./mapa.page.scss'],
 })
-export class MapaPage implements OnInit {
+export class MapaPage implements OnInit, OnDestroy {
 
   public lat: number;
   public lng: number;
@@ -17,20 +19,30 @@ export class MapaPage implements OnInit {
   public filteredCostCenters: CostCenterList[] = [];
   private costCenters: CostCenterList[] = [];
 
+  private position$: Subscription;
+
   constructor(
     private syncService: SyncService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private geolocationService: GeolocationService
   ) {
 
   }
 
   ionViewWillEnter() {
-    this.loadCurrentPosition();
     this.loadCostCenters();
   }
 
   ngOnInit() {
 
+  }
+
+  ngOnDestroy(): void {
+    this.position$.unsubscribe();
+  }
+
+  ionViewDidEnter() {
+    this.loadCurrentPosition();
   }
 
   /**
@@ -77,12 +89,10 @@ export class MapaPage implements OnInit {
    * loadCurrentPosition
    */
   public loadCurrentPosition = () => {
-    if (navigator) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        this.lng = pos.coords.longitude;
-        this.lat = pos.coords.latitude;
-      });
-    }
+    this.position$ = this.geolocationService.getCurrentPosition().subscribe(position => {
+      this.lat = position.lat;
+      this.lng = position.lng;
+    });
   }
 
 }

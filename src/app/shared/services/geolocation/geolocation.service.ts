@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {ToastService} from '../toast/toast.service';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {BehaviorSubject} from 'rxjs';
+import {filter} from 'rxjs/operators';
 
 interface Position {
   lat: number;
@@ -16,6 +16,7 @@ export class GeolocationService {
   // Ubicacion por defecto santiago
   private lat = -33.4724728;
   private lng = -70.9100195;
+  private positionHistory: Array<{ lat: number, lng: number }> = [];
 
   private currentPosition: BehaviorSubject<Position> = new BehaviorSubject<Position>({
     lat: this.lat,
@@ -24,30 +25,17 @@ export class GeolocationService {
 
   private readonly positionOptions = {
     enableHighAccuracy: true,
-    timeout: 60 * 1000
+    timeout: 5000
   };
 
-  constructor(
-    private geolocation: Geolocation,
-    private toastService: ToastService
-  ) {
+  constructor(private geolocation: Geolocation) {
     this.geolocation.getCurrentPosition(this.positionOptions).then((data: any) => {
-      if (data) {
-        this.updatePosition(data.coords.latitude, data.coords.longitude);
-      } else {
-        console.log('bad coords', data);
-      }
-    }).catch((error) => {
-      this.toastService.errorToast('El dispositivo no puede acceder a su ubicación');
+      this.updatePosition(data.coords.latitude, data.coords.longitude);
+    }).catch(error => {
+      console.log('getCurrentPosition', error);
     });
 
-    this.geolocation.watchPosition(this.positionOptions).subscribe((data: any) => {
-      if (data) {
-        this.updatePosition(data.coords.latitude, data.coords.longitude);
-      } else {
-        console.log('bad coords', data);
-      }
-    });
+    this.startTracker();
   }
 
   /**
@@ -66,4 +54,28 @@ export class GeolocationService {
     return this.currentPosition.asObservable();
   }
 
+  /**
+   * startTracker
+   */
+  private startTracker = () => {
+    this.geolocation.watchPosition().pipe(
+      filter(p => p.coords !== undefined)
+    ).subscribe(position => {
+      this.positionHistory.push({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      })
+
+      this.updatePosition(position.coords.latitude, position.coords.longitude);
+    }, error => {
+      console.log({error});
+    });
+  }
+
+  /**
+   * showHistory
+   */
+  public showHistory = () => {
+    return this.positionHistory;
+  }
 }

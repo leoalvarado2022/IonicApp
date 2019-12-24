@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {IonicModule} from '@ionic/angular';
+import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AppComponent} from './app.component';
@@ -23,6 +23,7 @@ import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
 import {NetworkService} from './shared/services/network/network.service';
+import {RouteReuseStrategy} from '@angular/router';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -54,7 +55,7 @@ const NGRX_IMPORTS = [
     ...NGRX_IMPORTS
   ],
   providers: [
-    // {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     StatusBar,
     SplashScreen,
     AppVersion,

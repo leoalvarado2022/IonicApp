@@ -24,6 +24,8 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   public costCenter: CostCenter = null;
   private units: Array<Unit> = [];
   private qualityEstimateDetail: Array<QualityDetail>;
+  private lat: number;
+  private lng: number;
 
   private costCenter$: Subscription;
   private productionContracts$: Subscription;
@@ -70,6 +72,14 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     this.costCenter$.unsubscribe();
     this.productionContracts$.unsubscribe();
     this.qualityEstimateDetail$.unsubscribe();
+    this.geolocationService$.unsubscribe();
+  }
+
+  ionViewDidEnter() {
+    this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe((data) => {
+      this.lat = data.lat;
+      this.lng = data.lng;
+    });
   }
 
   /**
@@ -84,7 +94,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param id
    */
   private loadContractDetail = (id: string) => {
-    this.loaderService.startLoader('Cargando detalles...');
+    this.loaderService.startLoader();
     this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
       this.loaderService.stopLoader();
     }, error => {
@@ -105,10 +115,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   public showUnitName = () => {
     if (this.costCenter) {
       const find = this.units.find(item => item.id === this.costCenter.controlUnit);
-
-      if (find) {
-        return find.code;
-      }
+      return find ? find.code : 'N/A';
     }
 
     return 'N/A';
@@ -161,18 +168,14 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     const user = await this.userService.getUserData();
-    this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe(async (data) => {
-      const object = {
-        lat: data.lat,
-        lng: data.lng,
-        id_user: user.user.id,
-        id_cost_center: this.costCenter.id,
-      };
-
-      this.updateGelocation(object);
-    });
-
-    this.geolocationService$.unsubscribe();
+    const object = {
+      lat: this.lat,
+      lng: this.lng,
+      id_user: user.user.id,
+      id_cost_center: this.costCenter.id,
+    };
+    await this.updateGelocation(object);
+    await this.syncData();
   }
 
   /**
@@ -180,18 +183,21 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param data
    */
   public updateGelocation = (data: any) => {
-    this.geolocationClass = true;
-    this.loaderService.startLoader('Actualizando posicion');
-    this.contractDetailService.updateGelocationCostCenter(data).subscribe(async () => {
-      await this.syncData();
-      this.loaderService.stopLoader();
-      this.toastService.successToast('posicion actualizada.');
-      this.geolocationClass = false;
-    }, error => {
-      this.loaderService.stopLoader();
-      this.toastService.errorToast('No se ha cambiado la localización');
-      this.httpService.errorHandler(error);
-      this.geolocationClass = false;
+    return new Promise(resolve => {
+      this.geolocationClass = true;
+      this.loaderService.startLoader('Actualizando posicion');
+      this.contractDetailService.updateGelocationCostCenter(data).subscribe(() => {
+        this.loaderService.stopLoader();
+        this.toastService.successToast('posicion actualizada.');
+        this.geolocationClass = false;
+        resolve(true);
+      }, error => {
+        this.loaderService.stopLoader();
+        this.toastService.errorToast('No se ha cambiado la localización');
+        this.httpService.errorHandler(error);
+        this.geolocationClass = false;
+        resolve(false);
+      });
     });
   }
 
@@ -200,7 +206,6 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param username
    */
   private syncData = async () => {
-
     const user = await this.userService.getUserData();
     const username = user.user.username;
 

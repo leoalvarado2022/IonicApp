@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from '../../../shared/services/storage/storage.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {AlertController} from '@ionic/angular';
+import {AlertController, Platform} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
 import {Device} from '@ionic-native/device/ngx';
+import {iosDeviceNames} from "../../../../environments/ios-device-names";
 
 @Component({
   selector: 'app-welcome',
@@ -12,12 +13,20 @@ import {Device} from '@ionic-native/device/ngx';
 })
 export class WelcomePage implements OnInit {
 
+  public showCordovaFeatures = false;
+  private isIos = false;
+
   constructor(
     private storage: StorageService,
     private alertController: AlertController,
     private toastService: ToastService,
-    public device: Device
+    public device: Device,
+    private platform: Platform
   ) {
+    this.platform.ready().then(() => {
+      this.showCordovaFeatures = this.platform.is('cordova');
+      this.isIos = this.platform.is('ios');
+    });
 
   }
 
@@ -108,11 +117,13 @@ export class WelcomePage implements OnInit {
    * showDeviceData
    */
   public showDeviceData = async () => {
+    const model = this.isIos ? iosDeviceNames[this.device.model] : this.device.model;
+
     const alert = await this.alertController.create({
       header: 'Device',
       message: `
         <p>Manufacturer: ${this.device.manufacturer}</p>
-        <p>Model: ${this.device.model}</p>
+        <p>Model: ${model}</p>
         <p>Platform: ${this.device.platform}</p>
         <p>Version: ${this.device.version}</p>
         <p>Cordova: ${this.device.cordova}</p>

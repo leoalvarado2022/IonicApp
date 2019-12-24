@@ -4,12 +4,12 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {StorageService} from '../../../shared/services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../../store/menu/menu.action';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {Platform} from "@ionic/angular";
 
 @Component({
   selector: 'app-login',
@@ -19,7 +19,6 @@ import {HttpService} from '../../../shared/services/http/http.service';
 export class LoginPage implements OnInit {
 
   public loginForm: FormGroup;
-
   public innerWidth: number;
   public innerHeight: number;
 
@@ -28,7 +27,6 @@ export class LoginPage implements OnInit {
     private loaderService: LoaderService,
     private authService: AuthService,
     private router: Router,
-    private storage: StorageService,
     private toastService: ToastService,
     private store: Store<any>,
     private syncService: SyncService,
@@ -39,6 +37,7 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required],

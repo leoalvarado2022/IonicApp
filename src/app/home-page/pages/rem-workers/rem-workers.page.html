@@ -13,39 +13,16 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="isLoading">
-    <ion-list>
-      <ion-item *ngFor="let item of [1,2,3,4,5]">
-        <ion-avatar slot="start">
-          <ion-skeleton-text animated></ion-skeleton-text>
-        </ion-avatar>
-        <ion-label>
-          <h3>
-            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-          </h3>
-          <p>
-            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-          </p>
-          <p>
-            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-          </p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-  </ng-container>
+  <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reload($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Cargando...">
+    </ion-refresher-content>
+  </ion-refresher>
 
-  <ng-container *ngIf="!isLoading && quadrille">
-    <!--
-    <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reload($event)">
-      <ion-refresher-content
-        pullingIcon="arrow-dropdown"
-        pullingText="Pull to refresh"
-        refreshingSpinner="circles"
-        refreshingText="Cargando trabajadores...">
-      </ion-refresher-content>
-    </ion-refresher>
-    -->
-
+  <ng-container *ngIf="quadrille">
     <h2 class="ion-text-center">
       {{ quadrille.name }}
       <ion-badge color="primary">{{ filteredWorkers.length }}</ion-badge>

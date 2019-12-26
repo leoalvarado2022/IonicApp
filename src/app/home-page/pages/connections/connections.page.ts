@@ -49,17 +49,6 @@ export class ConnectionsPage implements OnInit {
   }
 
   /**
-   * loadConnections
-   */
-  private loadConnections = async () => {
-    this.loaderService.startLoader('Cargando conexiones...');
-    this.userData = await this.userService.getUserData();
-    this.currentConnection = await this.authService.getConnection();
-    this.connections = this.userData.connections;
-    this.loaderService.stopLoader();
-  }
-
-  /**
    * syncMobile
    */
   private syncMobile = (): Promise<any> => {
@@ -79,5 +68,16 @@ export class ConnectionsPage implements OnInit {
         reject('error');
       }
     });
+  }
+
+  /**
+   * loadConnections
+   */
+  private loadConnections = async () => {
+    this.loaderService.startLoader('Cargando conexiones...');
+    this.userData = await this.userService.getUserData();
+    this.currentConnection = await this.authService.getConnection();
+    this.connections = this.userData.connections;
+    this.loaderService.stopLoader();
   }
 }

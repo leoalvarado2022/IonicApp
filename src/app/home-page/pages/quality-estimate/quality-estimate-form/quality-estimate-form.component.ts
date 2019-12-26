@@ -61,7 +61,8 @@ export class QualityEstimateFormComponent implements OnInit {
           quality: [{value: this.qualityEstimate.quality, disabled: true}, Validators.required],
           exportPercentage: [{value: this.qualityEstimate.exportPercentage, disabled: true}, [
             Validators.required,
-            Validators.max(100)
+            Validators.max(100),
+            Validators.min(0)
           ]],
           temp: [1]
         }),
@@ -76,7 +77,8 @@ export class QualityEstimateFormComponent implements OnInit {
           quality: [this.previous ? this.previous.quality : '', Validators.required],
           exportPercentage: [this.previous ? this.previous.exportPercentage : '', [
             Validators.required,
-            Validators.max(100)
+            Validators.max(100),
+            Validators.min(0)
           ]],
           temp: [1]
         }),
@@ -165,7 +167,8 @@ export class QualityEstimateFormComponent implements OnInit {
         quality: [find ? find.qualityEstimate : 0, Validators.required],
         caliber: [item.id, Validators.required],
         percentage: [{value: find ? find.value : '', disabled: this.isView}, [
-          Validators.max(100)
+          Validators.max(100),
+          Validators.min(0)
         ]],
         temp: [1]
       });
@@ -197,7 +200,7 @@ export class QualityEstimateFormComponent implements OnInit {
     let accum = 0;
     for (const item of items.controls) {
       const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
-      if (percentage) {
+      if (percentage && percentage > 0) {
         accum = accum + percentage;
       }
     }

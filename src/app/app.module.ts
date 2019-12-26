@@ -24,6 +24,7 @@ import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
 import {NetworkService} from './shared/services/network/network.service';
 import {RouteReuseStrategy} from '@angular/router';
+import {SyncService} from './shared/services/sync/sync.service';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -63,7 +64,8 @@ const NGRX_IMPORTS = [
     Camera,
     LoaderService,
     AuthService,
-    NetworkService
+    NetworkService,
+    SyncService
   ],
   bootstrap: [AppComponent]
 })

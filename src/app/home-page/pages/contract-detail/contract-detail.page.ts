@@ -48,17 +48,9 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
-    });
-
-    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => {
-      this.productionContracts = value;
-    });
-
-    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
-      this.qualityEstimateDetail = value;
-    });
+    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => this.costCenter = value);
+    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => this.productionContracts = value);
+    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => this.qualityEstimateDetail = value);
 
     const id = this.route.snapshot.paramMap.get('id');
 

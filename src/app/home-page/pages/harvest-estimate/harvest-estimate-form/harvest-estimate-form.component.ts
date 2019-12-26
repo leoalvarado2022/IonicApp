@@ -113,10 +113,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (this.harvestForm.valid) {
       this.showErrors = false;
       const estimation = Object.assign({}, this.harvestForm.value);
-
       estimation.startDate = moment.utc(this.cleanDate(estimation.startDate)).format('YYYY-MM-DD');
       estimation.endDate = moment.utc(this.cleanDate(estimation.endDate)).format('YYYY-MM-DD');
-
       delete this.costCenter.active;
       const data = {
         costCenter: this.costCenter,
@@ -178,6 +176,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     } = this.harvestForm.value;
 
     if (quantity && dailyAmount) {
+      /*
       console.log('calculateEndDate empezo');
       console.log({
         quantity,
@@ -185,6 +184,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         workHolidays,
         startDate
       });
+      */
 
       const days = Math.ceil((quantity > 0 ? quantity : 1) / (dailyAmount > 0 ? dailyAmount : 1));
       const holidays = [];
@@ -204,13 +204,14 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         }
       }
 
-      console.log('result', momentDate.format(this.dateFormat));
       this.harvestForm.patchValue({
         endDate: momentDate.format(this.dateFormat)
       })
 
       this.harvestForm.updateValueAndValidity();
-      console.log('calculateEndDate termino');
+      /**
+       console.log('calculateEndDate termino');
+       */
     }
   }
 
@@ -218,7 +219,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    * cleanDate
    * @param date
    */
-  private cleanDate(date: string) {
+  private cleanDate = (date: string) => {
     if (date.includes('T')) {
       return date.split('T')[0];
     }

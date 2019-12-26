@@ -8,7 +8,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {UserService} from './services/user/user.service';
 import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
 import {StorageService} from './services/storage/storage.service';
-import {SyncService} from './services/sync/sync.service';
 import {CustomDatePipe} from './pipes/custom-date/custom-date.pipe';
 import {HarvestEstimateItemComponent} from '../home-page/pages/harvest-estimate/harvest-estimate-item/harvest-estimate-item.component';
 import {QualityEstimateItemComponent} from '../home-page/pages/quality-estimate/quality-estimate-item/quality-estimate-item.component';
@@ -47,7 +46,6 @@ import {GeolocationService} from "./services/geolocation/geolocation.service";
     UserService,
     DetectPlatformService,
     StorageService,
-    SyncService,
     ToastService,
     HttpService,
     AlertService,

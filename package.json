@@ -1,6 +1,6 @@
 {
   "name": "fx11_movil",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -107,8 +107,7 @@
       "cordova-plugin-preview-any-file": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "android"
     ]
   }
 }

@@ -179,7 +179,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    */
   public reloadList = () => {
     return new Promise((resolve, reject) => {
-      this.loaderService.startLoader('Cargando estimaciones de cosecha');
+      this.loaderService.startLoader();
       this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(success => {
         this.loaderService.stopLoader();
         resolve(true);

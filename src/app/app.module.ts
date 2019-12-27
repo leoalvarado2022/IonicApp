@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {RouteReuseStrategy} from '@angular/router';
 import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
@@ -24,6 +23,8 @@ import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
 import {NetworkService} from './shared/services/network/network.service';
+import {RouteReuseStrategy} from '@angular/router';
+import {SyncService} from './shared/services/sync/sync.service';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -46,8 +47,10 @@ const NGRX_IMPORTS = [
   imports: [
     BrowserModule,
     AppRoutingModule,
+    IonicModule.forRoot({
+      swipeBackEnabled: false
+    }),
     IonicStorageModule.forRoot(),
-    IonicModule.forRoot(),
     SharedModule,
     HttpClientModule,
     ...NGRX_IMPORTS
@@ -61,7 +64,8 @@ const NGRX_IMPORTS = [
     Camera,
     LoaderService,
     AuthService,
-    NetworkService
+    NetworkService,
+    SyncService
   ],
   bootstrap: [AppComponent]
 })

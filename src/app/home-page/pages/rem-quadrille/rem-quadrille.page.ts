@@ -11,7 +11,7 @@ export class RemQuadrillePage implements OnInit {
 
   private quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
-  public isLoading = false;
+  public workers: Array<any> = [];
 
   constructor(
     private syncService: SyncService,
@@ -20,17 +20,8 @@ export class RemQuadrillePage implements OnInit {
 
   }
 
-  ionViewWillEnter() {
-    this.isLoading = true;
-    this.loadQuadrilles();
-  }
-
-  ionViewDidEnter() {
-    this.isLoading = false;
-  }
-
   ngOnInit() {
-
+    this.loadQuadrilles();
   }
 
   /**
@@ -38,8 +29,10 @@ export class RemQuadrillePage implements OnInit {
    */
   private loadQuadrilles = async () => {
     const quadrilles = await this.syncService.getQuadrilles();
+    const workers = await this.syncService.getWorkers();
     this.quadrilles = [...quadrilles];
     this.filteredQuadrilles = [...quadrilles];
+    this.workers = [...workers];
   }
 
   /**
@@ -58,4 +51,15 @@ export class RemQuadrillePage implements OnInit {
     this.router.navigate(['/home-page/rem-workers', quadrille.id]);
   }
 
+  /**
+   * getQuadrilleWorkers
+   * @param id
+   */
+  public getQuadrilleWorkers = (id: any) => {
+    if (this.workers) {
+      return this.workers.filter(item => item.quadrille === id).length;
+    }
+
+    return 0;
+  }
 }

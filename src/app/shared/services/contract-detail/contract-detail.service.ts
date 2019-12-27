@@ -34,6 +34,7 @@ export class ContractDetailService {
   private qualityEstimate: BehaviorSubject<Array<QualityEstimate>> = new BehaviorSubject<Array<QualityEstimate>>([]);
   private qualityEstimateDetail: BehaviorSubject<Array<QualityDetail>> = new BehaviorSubject<Array<QualityDetail>>([]);
   private notes: BehaviorSubject<Array<Note>> = new BehaviorSubject<Array<Note>>([]);
+  private holidays: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>([]);
 
   constructor(
     private authService: AuthService,
@@ -106,6 +107,13 @@ export class ContractDetailService {
    */
   public getCostCenterListItem = () => {
     return this.costCenterListItem.asObservable();
+  }
+
+  /**
+   * getHolidays
+   */
+  public getHolidays = () => {
+    return this.holidays.asObservable();
   }
 
   /**
@@ -195,7 +203,8 @@ export class ContractDetailService {
             harvestEstimate,
             qualityEstimate,
             qualityEstimateDetail,
-            notes
+            notes,
+            holidays
           } = data;
 
           this.costCenter.next(costCenter);
@@ -205,6 +214,7 @@ export class ContractDetailService {
           this.qualityEstimate.next(this.defineArrows(qualityEstimate, 'exportPercentage'));
           this.qualityEstimateDetail.next(qualityEstimateDetail);
           this.notes.next(notes);
+          this.holidays.next(holidays);
 
           return data;
         }),
@@ -224,6 +234,7 @@ export class ContractDetailService {
     this.qualityEstimate.next([]);
     this.qualityEstimateDetail.next([]);
     this.notes.next([]);
+    this.holidays.next([]);
 
     this.httpService.errorHandler(error);
 

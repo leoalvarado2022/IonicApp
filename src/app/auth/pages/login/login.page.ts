@@ -4,12 +4,12 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {StorageService} from '../../../shared/services/storage/storage.service';
 import {Store} from '@ngrx/store';
 import * as MenuAction from '../../../store/menu/menu.action';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {Company, Connection} from "@primetec/primetec-angular";
 
 @Component({
   selector: 'app-login',
@@ -19,7 +19,6 @@ import {HttpService} from '../../../shared/services/http/http.service';
 export class LoginPage implements OnInit {
 
   public loginForm: FormGroup;
-
   public innerWidth: number;
   public innerHeight: number;
 
@@ -28,7 +27,6 @@ export class LoginPage implements OnInit {
     private loaderService: LoaderService,
     private authService: AuthService,
     private router: Router,
-    private storage: StorageService,
     private toastService: ToastService,
     private store: Store<any>,
     private syncService: SyncService,
@@ -81,20 +79,13 @@ export class LoginPage implements OnInit {
         this.addPin(login);
       } else {
         if (login !== null) {
-          if (login.connections) {
-            const defaultConnection = login.connections.find(item => item.default);
-
-            if (defaultConnection) {
-              this.authService.setConnection(defaultConnection);
-            } else {
-              this.authService.setConnection(login.connections[0]);
-            }
-          }
+          this.setDefaultConnection(login.connections);
 
           this.authService.setLoggedIn();
           this.authService.setToken(login.token);
           this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
             await this.syncService.storeSync(success.data);
+            this.setDefaultCompany(success.data.companies);
             this.makeLogin();
           }, error => {
             this.httpService.errorHandler(error);
@@ -173,7 +164,6 @@ export class LoginPage implements OnInit {
 
         this.loaderService.stopLoader();
         resolve(success);
-
       }, error => {
         this.loaderService.stopLoader();
         const name = error.error.name;
@@ -188,4 +178,31 @@ export class LoginPage implements OnInit {
       });
     });
   }
+
+  /**
+   * setDefaultConnection
+   * @param connections
+   */
+  private setDefaultConnection = (connections: Array<Connection> = []) => {
+    if (connections.length > 0) {
+      const defaultConnection = connections.find(item => item.default);
+
+      if (defaultConnection) {
+        this.authService.setConnection(defaultConnection);
+      } else {
+        this.authService.setConnection(connections[0]);
+      }
+    }
+  }
+
+  /**
+   * setDefaultCompany
+   * @param companies
+   */
+  private setDefaultCompany = (companies: Array<Company> = []) => {
+    if (companies.length > 0) {
+      this.authService.setCompany(companies[0]);
+    }
+  }
+
 }

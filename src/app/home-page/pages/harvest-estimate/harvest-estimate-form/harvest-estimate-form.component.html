@@ -16,7 +16,7 @@
         <ion-label position="floating">
           Cantidad {{ showUnitName() | uppercase }}
         </ion-label>
-        <ion-input formControlName="quantity" placeholder="Ingresar Cantidad" type="number" clearInput></ion-input>
+        <ion-input (ionChange)="calculateEndDate()" formControlName="quantity" placeholder="Ingresar Cantidad" type="number" clearInput></ion-input>
         <ng-container *ngIf="showErrors && harvestForm.get('quantity').hasError('required')">
           <span class="errorMsg">Ingrese Cantidad</span>
         </ng-container>
@@ -26,26 +26,26 @@
         <ion-label position="floating">
           Cantidad Diaria {{ showUnitName() | uppercase }}
         </ion-label>
-        <ion-input formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number" clearInput></ion-input>
+        <ion-input (ionChange)="calculateEndDate()" formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number" clearInput></ion-input>
         <ng-container *ngIf="showErrors && harvestForm.get('dailyAmount').hasError('required')">
           <span class="errorMsg">Ingrese cantidad diaria</span>
         </ng-container>
       </ion-item>
 
       <ion-list>
-        <ion-radio-group formGroupName="workHolidays">
+        <ion-radio-group>
           <ion-list-header>
             <ion-label>Trabaja Festivos ?</ion-label>
           </ion-list-header>
 
           <ion-item>
             <ion-label>Si</ion-label>
-            <ion-radio [checked]="harvestForm.get('workHolidays').value === 1" slot="start" value="1"></ion-radio>
+            <ion-radio [disabled]="isView" (ionSelect)="workHolidaysEvent($event.detail.value)" slot="start" value="1" [checked]="harvestForm.get('workHolidays').value === 1"></ion-radio>
           </ion-item>
 
           <ion-item>
             <ion-label>No</ion-label>
-            <ion-radio [checked]="harvestForm.get('workHolidays').value === 0" slot="start" value="0"></ion-radio>
+            <ion-radio [disabled]="isView" (ionSelect)="workHolidaysEvent($event.detail.value)" slot="start" value="0" [checked]="harvestForm.get('workHolidays').value === 0"></ion-radio>
           </ion-item>
 
           <ng-container *ngIf=" showErrors && harvestForm.get('workHolidays').hasError('required')">
@@ -56,7 +56,7 @@
 
       <ion-item>
         <ion-label position="floating">Fecha Inicio</ion-label>
-        <ion-datetime [max]="maxDate" [pickerFormat]="dateFormat" [displayFormat]="dateFormat" formControlName="startDate" placeholder="Ingresar Fecha Inicio"></ion-datetime>
+        <ion-datetime (ionChange)="calculateEndDate()" [max]="maxDate" [pickerFormat]="dateFormat" [displayFormat]="dateFormat" formControlName="startDate" placeholder="Ingresar Fecha Inicio"></ion-datetime>
         <ng-container *ngIf="showErrors && harvestForm.get('startDate').hasError('required')">
           <span class="errorMsg">Ingrese fecha inicio</span>
         </ng-container>
@@ -64,10 +64,7 @@
 
       <ion-item>
         <ion-label position="floating">Fecha Fin</ion-label>
-        <ion-datetime [max]="maxDate" [pickerFormat]="dateFormat" [displayFormat]="dateFormat" formControlName="endDate" placeholder="Ingresar Fecha Fin"></ion-datetime>
-        <ng-container *ngIf="showErrors && harvestForm.get('startDate').hasError('required')">
-          <span class="errorMsg">Ingrese fecha fin</span>
-        </ng-container>
+        <ion-input disabled="true" [value]=" harvestForm.get('endDate').value"></ion-input>
       </ion-item>
 
       <br><br>

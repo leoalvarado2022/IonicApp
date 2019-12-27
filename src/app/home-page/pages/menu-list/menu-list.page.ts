@@ -21,8 +21,10 @@ import {Subscription} from 'rxjs';
 export class MenuListPage implements OnInit, OnDestroy {
 
   public userData = null;
-  public menus: TabMenu[] = [];
+  public menus: Array<TabMenu> = [];
   private isOnline: boolean;
+
+  private menus$: Subscription;
   private network$: Subscription;
 
   constructor(
@@ -42,15 +44,14 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => {
-      this.isOnline = status;
-    });
+    this.syncService.getTabMenus().subscribe(menus => this.menus = [...menus]);
+    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
 
     this.getUserData();
-    this.loadMenus();
   }
 
   ngOnDestroy(): void {
+    this.menus$.unsubscribe()
     this.network$.unsubscribe();
   }
 
@@ -61,9 +62,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   public reSync = async (event) => {
     const data = await this.syncData();
     await this.syncService.storeSync(data);
-    await this.loadMenus();
     await this.getUserData();
-
     event.target.complete();
   }
 
@@ -91,14 +90,6 @@ export class MenuListPage implements OnInit, OnDestroy {
     const data = await this.userService.getUserData();
     this.store.dispatch(new MenuAction.AddProfile(data));
     this.userData = data;
-  }
-
-  /**
-   * loadMenus
-   */
-  private loadMenus = async () => {
-    const menus = await this.syncService.getMenus();
-    this.menus = menus;
   }
 
   /**

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ng-container *ngIf="device.cordova">
+    <ng-container *ngIf="showCordovaFeatures">
       <ion-buttons slot="start">
         <ion-button fill="clear" class="button-text-color" (click)="showDeviceData()">{{ getVersion() }}</ion-button>
       </ion-buttons>
@@ -9,7 +9,7 @@
     <ion-buttons slot="end">
       <ng-container *ngIf="device.uuid">
         <ion-button fill="clear" (click)="showFullUUID()" class="button-text-color">
-          NC {{ getUUIDLast8() }}
+          NC: {{ getUUIDLast8() }}
         </ion-button>
       </ng-container>
     </ion-buttons>

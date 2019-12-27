@@ -3,6 +3,7 @@ import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import {Router} from '@angular/router';
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-lista',
@@ -18,18 +19,14 @@ export class ListaPage implements OnInit {
   constructor(
     private syncService: SyncService,
     private contractDetailService: ContractDetailService,
+    private loaderService: LoaderService,
     private router: Router
   ) {
 
   }
 
   ionViewWillEnter() {
-    this.isLoading = true;
     this.loadCostCenters();
-  }
-
-  ionViewDidEnter() {
-    this.isLoading = false;
   }
 
   ngOnInit() {
@@ -40,9 +37,11 @@ export class ListaPage implements OnInit {
    * loadCostCenters
    */
   public loadCostCenters = async () => {
+    this.loaderService.startLoader();
     const costCenters = await this.syncService.getCostCenters();
     this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
+    this.loaderService.stopLoader();
   }
 
   /**

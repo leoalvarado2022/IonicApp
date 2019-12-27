@@ -1,6 +1,6 @@
 {
   "name": "fx11_movil",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.801.2",
-    "@angular-devkit/build-angular": "~0.803.20",
+    "@angular-devkit/build-angular": "^0.803.21",
     "@angular-devkit/core": "~8.1.2",
     "@angular-devkit/schematics": "~8.1.2",
     "@angular/cli": "~8.3.20",
@@ -107,8 +107,7 @@
       "cordova-plugin-preview-any-file": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "android"
     ]
   }
 }

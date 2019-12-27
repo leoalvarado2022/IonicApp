@@ -2,12 +2,15 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import {iosDeviceNames} from './ios-device-names';
+
 export const environment = {
   production: false,
   app_name: 'FX10',
-  api_url: 'https://fx11apiqa.primetec.cl',
-  appVersion: 'v1.0.32',
-  tz: 'America/Santiago'
+  api_url: 'http://localhost:5572',
+  appVersion: 'v1.0.33',
+  tz: 'America/Santiago',
+  iosDeviceNames
 };
 
 /*

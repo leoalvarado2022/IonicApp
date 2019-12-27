@@ -8,7 +8,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {UserService} from './services/user/user.service';
 import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
 import {StorageService} from './services/storage/storage.service';
-import {SyncService} from './services/sync/sync.service';
 import {CustomDatePipe} from './pipes/custom-date/custom-date.pipe';
 import {HarvestEstimateItemComponent} from '../home-page/pages/harvest-estimate/harvest-estimate-item/harvest-estimate-item.component';
 import {QualityEstimateItemComponent} from '../home-page/pages/quality-estimate/quality-estimate-item/quality-estimate-item.component';
@@ -18,12 +17,12 @@ import {HttpService} from './services/http/http.service';
 import {AlertService} from './services/alert/alert.service';
 import {ImageViewerComponent} from './components/image-viewer/image-viewer.component';
 import {CustomDatetimePipe} from './pipes/custom-datetime/custom-datetime.pipe';
-import {GeolocationService} from './services/geolocation/geolocation.service';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {NgxEchartsModule} from 'ngx-echarts';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {CameraService} from './services/camera/camera.service';
+import {GeolocationService} from "./services/geolocation/geolocation.service";
 
 @NgModule({
   declarations: [
@@ -47,15 +46,14 @@ import {CameraService} from './services/camera/camera.service';
     UserService,
     DetectPlatformService,
     StorageService,
-    SyncService,
     ToastService,
     HttpService,
     AlertService,
-    GeolocationService,
-    Geolocation,
     File,
     PreviewAnyFile,
-    CameraService
+    CameraService,
+    Geolocation,
+    GeolocationService
   ],
   exports: [
     CommonModule,

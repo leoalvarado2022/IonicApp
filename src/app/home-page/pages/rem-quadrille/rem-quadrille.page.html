@@ -13,63 +13,38 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="isLoading">
+  <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reload($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Cargando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <h2 class="ion-text-center">
+    Tus Cuadrillas
+
+    <ion-badge color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+  </h2>
+
+  <ng-container *ngIf="filteredQuadrilles.length > 0">
     <ion-list>
-      <ion-item *ngFor="let item of [1,2,3,4,5]">
-        <ion-avatar slot="start">
-          <ion-skeleton-text animated></ion-skeleton-text>
-        </ion-avatar>
-        <ion-label>
-          <h3>
-            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-          </h3>
-          <p>
-            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
-          </p>
-          <p>
-            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-          </p>
-        </ion-label>
-      </ion-item>
+      <ion-virtual-scroll [items]="filteredQuadrilles">
+        <ion-item *virtualItem="let quadrille" detail="true" (click)="goToWorkers(quadrille)">
+          <ion-icon name="clipboard" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ quadrille.name }}</h2>
+            <p>{{ quadrille.responsibleName }}</p>
+            <p>
+              <ion-badge color="primary">
+                {{ getQuadrilleWorkers(quadrille.id) }} Personas
+              </ion-badge>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-virtual-scroll>
     </ion-list>
-  </ng-container>
-
-  <ng-container *ngIf="!isLoading">
-    <!--
-    <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reload($event)">
-      <ion-refresher-content
-        pullingIcon="arrow-dropdown"
-        pullingText="Pull to refresh"
-        refreshingSpinner="circles"
-        refreshingText="Cargando cuadrillas...">
-      </ion-refresher-content>
-    </ion-refresher>
-    -->
-
-    <h2 class="ion-text-center">
-      Tus Cuadrillas
-
-      <ion-badge color="primary">{{ filteredQuadrilles.length }}</ion-badge>
-    </h2>
-
-    <ng-container *ngIf="filteredQuadrilles.length > 0">
-      <ion-list>
-        <ion-virtual-scroll [items]="filteredQuadrilles">
-          <ion-item *virtualItem="let quadrille" detail="true" (click)="goToWorkers(quadrille)">
-            <ion-icon name="clipboard" slot="start"></ion-icon>
-            <ion-label>
-              <h2>{{ quadrille.name }}</h2>
-              <p>{{ quadrille.responsibleName }}</p>
-              <p>
-                <ion-badge color="primary">
-                  0 Personas
-                </ion-badge>
-              </p>
-            </ion-label>
-          </ion-item>
-        </ion-virtual-scroll>
-      </ion-list>
-    </ng-container>
   </ng-container>
 
 </ion-content>

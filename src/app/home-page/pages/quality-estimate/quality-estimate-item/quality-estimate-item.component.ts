@@ -55,23 +55,46 @@ export class QualityEstimateItemComponent implements OnInit {
    */
   public openChart = async () => {
     this.calibers = await this.syncService.getCalibers();
-    const filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
+    const validCalibres = this.details.map(item => item.qualityName);
+    const filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species && validCalibres.includes(item.name.trim()));
 
     const xAxis = {
       type: 'category',
-      data: filteredCalibers.map(item => item.name)
+      data: filteredCalibers.map(item => item.code)
     };
 
     const yAxis = {
       type: 'value',
+      min: 0,
+      max: 100
     };
 
     const series = [{
       data: this.details.map(item => item.value),
-      type: 'bar'
+      type: 'bar',
+      name: '%'
     }];
 
     this.chartData = {
+      title: {
+        text: 'Estimacion de Calidad',
+        subtext: 'Porcentajes Calibres',
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: (params) => {
+          const code = params[0].name;
+          const caliber = this.calibers.find(item => item.code === code);
+          return caliber ? caliber.name : 'N/A';
+        }
+      },
+      label: {
+        show: true,
+        formatter: '{c}{a}'
+      },
       yAxis,
       xAxis,
       series

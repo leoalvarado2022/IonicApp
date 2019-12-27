@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ActivatedRoute} from '@angular/router';
+import {LoaderService} from "../../../shared/services/loader/loader.service";
 
 @Component({
   selector: 'app-rem-workers',
@@ -12,21 +13,13 @@ export class RemWorkersPage implements OnInit {
   private workers: Array<any> = [];
   public filteredWorkers: Array<any> = [];
   public quadrille: any;
-  public isLoading = false;
 
   constructor(
     private syncService: SyncService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private loaderService: LoaderService
   ) {
 
-  }
-
-  ionViewWillEnter() {
-    this.isLoading = true;
-  }
-
-  ionViewDidEnter() {
-    this.isLoading = false;
   }
 
   ngOnInit() {
@@ -38,6 +31,7 @@ export class RemWorkersPage implements OnInit {
    * loadWorkers
    */
   private loadWorkers = async (id: string) => {
+    this.loaderService.startLoader();
     const quadrilles = await this.syncService.getQuadrilles();
     const allWorkers = await this.syncService.getWorkers();
 
@@ -47,6 +41,17 @@ export class RemWorkersPage implements OnInit {
       this.workers = [...workers];
       this.filteredWorkers = [...workers];
     }
+
+    this.loaderService.stopLoader();
   }
 
+  /**
+   * reload
+   * @param event
+   */
+  public reload = async (event) => {
+    const id = this.route.snapshot.paramMap.get('id');
+    await this.loadWorkers(id);
+    event.target.complete();
+  }
 }

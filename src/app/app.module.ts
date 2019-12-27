@@ -25,6 +25,8 @@ import {registerLocaleData} from '@angular/common';
 import {NetworkService} from './shared/services/network/network.service';
 import {RouteReuseStrategy} from '@angular/router';
 import {SyncService} from './shared/services/sync/sync.service';
+import {FileOpener} from '@ionic-native/file-opener/ngx';
+
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -65,7 +67,8 @@ const NGRX_IMPORTS = [
     LoaderService,
     AuthService,
     NetworkService,
-    SyncService
+    SyncService,
+    FileOpener
   ],
   bootstrap: [AppComponent]
 })

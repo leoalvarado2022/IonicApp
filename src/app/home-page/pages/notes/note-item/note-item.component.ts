@@ -4,6 +4,10 @@ import {ModalController, Platform} from '@ionic/angular';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {Device} from '@ionic-native/device/ngx';
+import {FileOpener} from '@ionic-native/file-opener/ngx';
+
+declare var window;
+
 
 @Component({
   selector: 'app-note-item',
@@ -23,12 +27,13 @@ export class NoteItemComponent implements OnInit {
     private file: File,
     private previewAnyFile: PreviewAnyFile,
     private device: Device,
-    private _platform: Platform
+    private _platform: Platform,
+    private fileOpener: FileOpener
   ) {
     _platform.ready().then(() => {
 
       this.iOs = _platform.is('ios');
-    })
+    });
   }
 
   ngOnInit() {
@@ -44,7 +49,7 @@ export class NoteItemComponent implements OnInit {
     }
 
     return null;
-  }
+  };
 
   /**
    * itemClicked
@@ -52,7 +57,7 @@ export class NoteItemComponent implements OnInit {
    */
   public itemClicked = (item: Note = null) => {
     this.noteClicked.emit(item);
-  }
+  };
 
   /**
    * deleteItem
@@ -60,7 +65,7 @@ export class NoteItemComponent implements OnInit {
    */
   public deleteItem = (item: Note) => {
     this.deleteNote.emit(item);
-  }
+  };
 
   /**
    * viewPicture
@@ -68,25 +73,33 @@ export class NoteItemComponent implements OnInit {
   public viewPicture = async () => {
     if (this.getPhotoPath() && this.device.cordova) {
       const fileName = `${this.item.id}.jpeg`;
-      const dirName = this.iOs ? this.file.tempDirectory : this.file.externalDataDirectory;
-
+      const dirName = this.iOs ? this.file.tempDirectory : this.file.externalApplicationStorageDirectory;
       // console.log(this.iOs);
-
       const filePath = dirName + '/' + fileName;
       const mimeType = 'image/jpeg';
 
       const resp = await this.createFile(dirName, fileName, mimeType);
 
       if (resp) {
-        console.log(filePath);
-        this.previewAnyFile.preview(filePath)
-          .then((res: any) => console.log(res))
-          .catch((error: any) => console.error(error));
+        // console.log(filePath);
+        if (this.iOs) {
+          this.previewAnyFile.preview(filePath)
+            .then((res: any) => console.log(res))
+            .catch((error: any) => console.error(error));
+        } else {
+          // this.previewAnyFile.preview('content:///storage/emulated/0/Android/data/cl.primetec.fx11/Download/82.jpeg')
+          this.fileOpener.open(filePath, mimeType)
+            .then((success) => {
+              console.log('File is opened');
+              console.log(success);
+            })
+            .catch(e => console.log('Error opening file', e));
+        }
       } else {
         console.log('no resp');
       }
     }
-  }
+  };
 
   /**
    * createFile
@@ -123,6 +136,6 @@ export class NoteItemComponent implements OnInit {
         resolve(false);
       });
     });
-  }
+  };
 
 }

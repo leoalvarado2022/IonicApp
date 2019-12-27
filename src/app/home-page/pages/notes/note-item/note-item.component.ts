@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Note} from '@primetec/primetec-angular';
-import {ModalController} from '@ionic/angular';
+import {ModalController, Platform} from '@ionic/angular';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {Device} from '@ionic-native/device/ngx';
@@ -16,14 +16,19 @@ export class NoteItemComponent implements OnInit {
   @Output() deleteNote: EventEmitter<Note | null> = new EventEmitter<Note | null>();
   @Input() item: Note = null;
   @Input() slideDisabled = true;
+  iOs: boolean;
 
   constructor(
     private modalController: ModalController,
     private file: File,
     private previewAnyFile: PreviewAnyFile,
-    private device: Device
+    private device: Device,
+    private _platform: Platform
   ) {
+    _platform.ready().then(() => {
 
+      this.iOs = _platform.is('ios');
+    })
   }
 
   ngOnInit() {
@@ -63,7 +68,10 @@ export class NoteItemComponent implements OnInit {
   public viewPicture = async () => {
     if (this.getPhotoPath() && this.device.cordova) {
       const fileName = `${this.item.id}.jpeg`;
-      const dirName = this.file.tempDirectory;
+      const dirName = this.iOs ? this.file.tempDirectory : this.file.externalDataDirectory;
+
+      // console.log(this.iOs);
+
       const filePath = dirName + '/' + fileName;
       const mimeType = 'image/jpeg';
 

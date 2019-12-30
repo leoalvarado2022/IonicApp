@@ -55,13 +55,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-      this.loaderService.startLoader();
-      this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
-        console.log('sale');
-      }, error => {
-        console.log('sale');
-        this.loaderService.stopLoader();
-      });
+      this.loadContractDetail(id);
     }
 
     this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => this.costCenter = value);
@@ -92,16 +86,12 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param id
    */
   private loadContractDetail = (id: string) => {
-    /*
-    this.loaderService.startLoader('MOSTRANGO ALGo Pos');
+    this.loaderService.startLoader();
     this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
-      console.log('sale');
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
-      console.log('sale');
     });
-    */
   }
 
   /**

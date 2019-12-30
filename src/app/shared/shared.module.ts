@@ -22,7 +22,6 @@ import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {CameraService} from './services/camera/camera.service';
 import {RutPipe} from './pipes/rut/rut.pipe';
-import {LoaderService} from './services/loader/loader.service';
 import {SyncService} from './services/sync/sync.service';
 
 @NgModule({
@@ -54,7 +53,6 @@ import {SyncService} from './services/sync/sync.service';
     File,
     PreviewAnyFile,
     CameraService,
-    LoaderService,
     SyncService,
   ],
   exports: [

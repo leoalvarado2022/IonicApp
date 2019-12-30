@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
 import {Store} from '@ngrx/store';
 import {StorageService} from '../../../shared/services/storage/storage.service';
@@ -18,7 +18,7 @@ import {Subscription} from 'rxjs';
   templateUrl: './menu-list.page.html',
   styleUrls: ['./menu-list.page.scss'],
 })
-export class MenuListPage implements OnInit, OnDestroy {
+export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
 
   public userData = null;
   public menus: Array<TabMenu> = [];
@@ -42,29 +42,29 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   }
 
-  ionViewWillEnter() {
-    this.menus = [];
-  }
-
-  ionViewDidEnter() {
-    this.init();
-  }
-
   ngOnInit() {
+    this.menus = [];
     this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
   }
 
-  private async init() {
+  ngAfterViewInit(): void {
+    this.init();
+  }
+
+  ngOnDestroy(): void {
+    this.network$.unsubscribe();
+  }
+
+  /**
+   * init
+   */
+  private init = async () => {
     const menus = await this.syncService.getMenus();
     this.menus = [...menus]
 
     const userData = await this.userService.getUserData()
     this.store.dispatch(new MenuAction.AddProfile(userData));
     this.userData = userData;
-  }
-
-  ngOnDestroy(): void {
-    this.network$.unsubscribe();
   }
 
   /**
@@ -113,7 +113,7 @@ export class MenuListPage implements OnInit, OnDestroy {
       if (this.userData) {
         const {user} = this.userData;
         const username = user.username;
-
+        
         this.syncService.syncData(username).subscribe((success: any) => {
           resolve(success.data);
         }, async error => {

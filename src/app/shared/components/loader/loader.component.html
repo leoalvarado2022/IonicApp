@@ -1,4 +1,4 @@
-<section class="bg" *ngIf="(loaderService.getLoaderStatus() | async)">
+<section class="bg" *ngIf="isLoading">
   <div class="loader-mensaje">
     <div class="loader"></div>
     <div class="loader-text">

@@ -22,20 +22,18 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ng-container *ngIf="menus">
-    <div *ngFor="let menu of menus; let i = index" class="card-menu-item">
-      <div
-        (click)="navigate(menu)"
-        [ngClass]="{ 'disabled': checkDisabled(menu) }"
-        class="ion-text-center card-menu row-menu">
-        <div>
-          <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
-          <p class="title-menu ion-text-capitalize">
-            {{ menu.caption }}
-          </p>
-        </div>
+  <div *ngFor="let menu of menus; let i = index" class="card-menu-item">
+    <div
+      (click)="navigate(menu)"
+      [ngClass]="{ 'disabled': checkDisabled(menu) }"
+      class="ion-text-center card-menu row-menu">
+      <div>
+        <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
+        <p class="title-menu ion-text-capitalize">
+          {{ menu.caption }}
+        </p>
       </div>
     </div>
+  </div>
 
-  </ng-container>
 </ion-content>

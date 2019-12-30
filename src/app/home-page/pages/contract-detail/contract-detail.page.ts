@@ -47,17 +47,30 @@ export class ContractDetailPage implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit(): void {
-    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => this.costCenter = value);
-    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => this.productionContracts = value);
-    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => this.qualityEstimateDetail = value);
+  ionViewWillEnter() {
+    this.loadUnits();
+  }
 
+  ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-      this.loadContractDetail(id);
-      this.loadUnits();
+      this.loaderService.startLoader();
+      this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
+        console.log('sale');
+      }, error => {
+        console.log('sale');
+        this.loaderService.stopLoader();
+      });
     }
+
+    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => this.costCenter = value);
+    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => this.productionContracts = value);
+    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => this.qualityEstimateDetail = value);
+    this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe(data => {
+      this.lat = data.lat;
+      this.lng = data.lng;
+    });
   }
 
   ngOnDestroy(): void {
@@ -65,13 +78,6 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     this.productionContracts$.unsubscribe();
     this.qualityEstimateDetail$.unsubscribe();
     this.geolocationService$.unsubscribe();
-  }
-
-  ionViewDidEnter() {
-    this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe((data) => {
-      this.lat = data.lat;
-      this.lng = data.lng;
-    });
   }
 
   /**
@@ -86,12 +92,16 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param id
    */
   private loadContractDetail = (id: string) => {
-    this.loaderService.startLoader();
+    /*
+    this.loaderService.startLoader('MOSTRANGO ALGo Pos');
     this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
+      console.log('sale');
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
+      console.log('sale');
     });
+    */
   }
 
   /**
@@ -167,7 +177,11 @@ export class ContractDetailPage implements OnInit, OnDestroy {
       id_cost_center: this.costCenter.id,
     };
     await this.updateGelocation(object);
-    await this.syncData();
+
+    const id = this.route.snapshot.paramMap.get('id');
+    await this.loadContractDetail(id);
+    const data = await this.syncData();
+    await this.syncService.storeSync(data);
   }
 
   /**
@@ -197,14 +211,17 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * syncData
    * @param username
    */
-  private syncData = async () => {
-    const user = await this.userService.getUserData();
-    const username = user.user.username;
+  private syncData = () => {
+    return new Promise(async resolve => {
+      const user = await this.userService.getUserData();
+      const username = user.user.username;
 
-    this.syncService.syncData(username).subscribe(async (success: any) => {
-      await this.syncService.storeSync(success.data);
-    }, async error => {
-      this.httpService.errorHandler(error);
+      this.syncService.syncData(username).subscribe(async (success: any) => {
+        resolve(success.data);
+      }, async error => {
+        resolve(null);
+        this.httpService.errorHandler(error);
+      });
     });
   }
 

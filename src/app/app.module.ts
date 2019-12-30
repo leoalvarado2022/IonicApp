@@ -8,7 +8,6 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {IonicStorageModule} from '@ionic/storage';
 import {LoaderComponent} from './shared/components/loader/loader.component';
-import {LoaderService} from './shared/services/loader/loader.service';
 import {AuthService} from './shared/services/auth/auth.service';
 import {HttpClientModule} from '@angular/common/http';
 import {Device} from '@ionic-native/device/ngx';
@@ -24,9 +23,10 @@ import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
 import {NetworkService} from './shared/services/network/network.service';
 import {RouteReuseStrategy} from '@angular/router';
+import {Geolocation} from '@ionic-native/geolocation/ngx';
+import {GeolocationService} from './shared/services/geolocation/geolocation.service';
 import {SyncService} from './shared/services/sync/sync.service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
-
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -64,9 +64,10 @@ const NGRX_IMPORTS = [
     AppVersion,
     Device,
     Camera,
-    LoaderService,
     AuthService,
     NetworkService,
+    Geolocation,
+    GeolocationService,
     SyncService,
     FileOpener
   ],

@@ -21,9 +21,11 @@
           <div class="white">{{ costCenterListItem.code }}</div>
         </ion-col>
         <ion-col size="2">
-          <ion-button fill="clear" size="small" (click)="myGeolocation()">
-            <ion-icon name="globe" slot="icon-only" [ngClass]="{ 'geolocation': costCenterListItem.lat && costCenterListItem.lng, 'no-geolocation': !costCenterListItem.lat || !costCenterListItem.lng }" style="color:white;"></ion-icon>
-          </ion-button>
+          <ng-container *ngIf="costCenter">
+            <ion-button fill="clear" size="small" (click)="myGeolocation()">
+              <ion-icon name="globe" slot="icon-only" [ngClass]="{ 'geolocation': costCenter.latitude && costCenter.longitude, 'no-geolocation': !costCenter.latitude || !costCenter.longitude }" style="color:white;"></ion-icon>
+            </ion-button>
+          </ng-container>
         </ion-col>
       </ion-row>
       <ion-row class="row">

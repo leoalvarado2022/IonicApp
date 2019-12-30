@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
@@ -10,11 +10,10 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
   templateUrl: './lista.page.html',
   styleUrls: ['./lista.page.scss'],
 })
-export class ListaPage implements OnInit {
+export class ListaPage implements OnInit, AfterViewInit {
 
   public filteredCostCenters: Array<CostCenterList> = [];
   private costCenters: Array<CostCenterList> = [];
-  public isLoading = false;
 
   constructor(
     private syncService: SyncService,
@@ -25,23 +24,37 @@ export class ListaPage implements OnInit {
 
   }
 
-  ionViewWillEnter() {
-    this.loadCostCenters();
-  }
-
   ngOnInit() {
 
+  }
+
+  ngAfterViewInit(): void {
+    this.loadCostCenters();
   }
 
   /**
    * loadCostCenters
    */
-  public loadCostCenters = async () => {
-    this.loaderService.startLoader();
+  public loadCostCenters = () => {
+    this.loaderService.startLoader('probando...');
+    console.log('esperando ');
+    this.syncService.getCostCenters().then((costCenters) => {
+
+      setTimeout(() => {
+        this.costCenters = [...costCenters];
+        this.filteredCostCenters = [...costCenters];
+        this.loaderService.stopLoader();
+      }, 5000);
+
+    });
+
+    /*
+    this.loaderService.startLoader('probando...');
     const costCenters = await this.syncService.getCostCenters();
     this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
     this.loaderService.stopLoader();
+    */
   }
 
   /**

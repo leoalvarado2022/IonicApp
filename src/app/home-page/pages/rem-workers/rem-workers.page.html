@@ -25,7 +25,7 @@
   <ng-container *ngIf="quadrille">
     <h2 class="ion-text-center">
       {{ quadrille.name }}
-      <ion-badge color="primary">{{ filteredWorkers.length }}</ion-badge>
+      <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
     </h2>
 
     <ng-container *ngIf="filteredWorkers.length > 0">
@@ -34,9 +34,10 @@
           <ion-item *virtualItem="let worker">
             <ion-icon name="contact" slot="start"></ion-icon>
             <ion-label>
-              <h3 class="ion-text-wrap">{{ worker.name }}</h3>
-              <p>{{ worker.identifier }}</p>
+              <h3 class="label-padding">{{ worker.name }}</h3>
+              <p class="label-padding">{{ worker.identifier | rut }}</p>
             </ion-label>
+            <ion-badge color="primary">A</ion-badge>
           </ion-item>
         </ion-virtual-scroll>
       </ion-list>

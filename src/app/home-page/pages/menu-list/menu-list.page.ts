@@ -24,14 +24,13 @@ export class MenuListPage implements OnInit, OnDestroy {
   public menus: Array<TabMenu> = [];
   private isOnline: boolean;
 
-  private menus$: Subscription;
   private network$: Subscription;
 
   constructor(
     public store: Store<any>,
     private storage: StorageService,
     private userService: UserService,
-    private syncService: SyncService,
+    public syncService: SyncService,
     private authService: AuthService,
     private toastService: ToastService,
     private router: Router,
@@ -43,15 +42,28 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
-    this.syncService.getTabMenus().subscribe(menus => this.menus = [...menus]);
-    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
+  ionViewWillEnter() {
+    this.menus = [];
+  }
 
-    this.getUserData();
+  ionViewDidEnter() {
+    this.init();
+  }
+
+  ngOnInit() {
+    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
+  }
+
+  private async init() {
+    const menus = await this.syncService.getMenus();
+    this.menus = [...menus]
+
+    const userData = await this.userService.getUserData()
+    this.store.dispatch(new MenuAction.AddProfile(userData));
+    this.userData = userData;
   }
 
   ngOnDestroy(): void {
-    this.menus$.unsubscribe()
     this.network$.unsubscribe();
   }
 

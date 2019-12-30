@@ -6,11 +6,12 @@ ion-title {
   color: white;
 }
 
-/* Custom Skeleton Line Height and Margin */
-.custom-skeleton ion-skeleton-text {
-  line-height: 13px;
+.label-padding {
+  padding-top: 8px;
+  font-size: 18px;
 }
 
-.custom-skeleton ion-skeleton-text:last-child {
-  margin-bottom: 5px;
+.quadrille-badge {
+  --padding-top: 5px;
+  font-size: 1em;
 }

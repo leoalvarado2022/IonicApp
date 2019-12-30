@@ -25,7 +25,7 @@
   <h2 class="ion-text-center">
     Tus Cuadrillas
 
-    <ion-badge color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+    <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
   </h2>
 
   <ng-container *ngIf="filteredQuadrilles.length > 0">
@@ -35,8 +35,8 @@
           <ion-icon name="clipboard" slot="start"></ion-icon>
           <ion-label>
             <h2>{{ quadrille.name }}</h2>
-            <p>{{ quadrille.responsibleName }}</p>
-            <p>
+            <p class="label-padding">{{ quadrille.responsibleName }}</p>
+            <p class="label-padding">
               <ion-badge color="primary">
                 {{ getQuadrilleWorkers(quadrille.id) }} Personas
               </ion-badge>

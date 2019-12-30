@@ -17,12 +17,13 @@ import {HttpService} from './services/http/http.service';
 import {AlertService} from './services/alert/alert.service';
 import {ImageViewerComponent} from './components/image-viewer/image-viewer.component';
 import {CustomDatetimePipe} from './pipes/custom-datetime/custom-datetime.pipe';
-import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {NgxEchartsModule} from 'ngx-echarts';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {CameraService} from './services/camera/camera.service';
-import {GeolocationService} from "./services/geolocation/geolocation.service";
+import {RutPipe} from './pipes/rut/rut.pipe';
+import {LoaderService} from './services/loader/loader.service';
+import {SyncService} from './services/sync/sync.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import {GeolocationService} from "./services/geolocation/geolocation.service";
     QualityEstimateItemComponent,
     NoteItemComponent,
     ImageViewerComponent,
-    CustomDatetimePipe
+    CustomDatetimePipe,
+    RutPipe
   ],
   imports: [
     CommonModule,
@@ -52,8 +54,8 @@ import {GeolocationService} from "./services/geolocation/geolocation.service";
     File,
     PreviewAnyFile,
     CameraService,
-    Geolocation,
-    GeolocationService
+    LoaderService,
+    SyncService,
   ],
   exports: [
     CommonModule,
@@ -67,7 +69,8 @@ import {GeolocationService} from "./services/geolocation/geolocation.service";
     QualityEstimateItemComponent,
     NoteItemComponent,
     ImageViewerComponent,
-    CustomDatetimePipe
+    CustomDatetimePipe,
+    RutPipe
   ],
   entryComponents: [
     ImageViewerComponent

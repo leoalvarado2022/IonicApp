@@ -10,11 +10,12 @@ import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {Subscription} from "rxjs";
+import {debounceTime} from "rxjs/operators";
 
 @Component({
   selector: 'app-harvest-estimate-form',
   templateUrl: './harvest-estimate-form.component.html',
-  styleUrls: ['./harvest-estimate-form.component.scss'],
+  styleUrls: ['./harvest-estimate-form.component.scss']
 })
 export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
@@ -83,7 +84,14 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         startDate: [this.previous ? moment.utc(this.previous.startDate).format(this.dateFormat) : costCenterDate, Validators.required],
         endDate: [this.previous ? moment.utc(this.previous.endDate).format('DD/MM/YYYY') : '', Validators.required]
       });
+
+      this.harvestForm.valueChanges.pipe(
+        debounceTime(1000),
+      ).subscribe((data) => {
+        this.calculateEndDate();
+      });
     }
+
 
     this.loadUnits();
   }
@@ -176,19 +184,9 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     } = this.harvestForm.value;
 
     if (quantity && dailyAmount) {
-      /*
-      console.log('calculateEndDate empezo');
-      console.log({
-        quantity,
-        dailyAmount,
-        workHolidays,
-        startDate
-      });
-      */
-
       const days = Math.ceil((quantity > 0 ? quantity : 1) / (dailyAmount > 0 ? dailyAmount : 1));
       const holidays = [];
-      let daysAdded = 0;
+      let daysAdded = 1;
       let momentDate = moment.utc(startDate);
 
       if (workHolidays === 0) {
@@ -197,21 +195,13 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         })
       }
 
-      while (daysAdded < days) {
-        momentDate = momentDate.add(1, 'days');
-        if (momentDate.weekday() > 0 && !holidays.includes(momentDate.format(this.dateFormat))) {
-          daysAdded++
-        }
-      }
+      momentDate = this.computeEndDate(days, daysAdded, momentDate, holidays);
 
       this.harvestForm.patchValue({
         endDate: momentDate.format(this.dateFormat)
       })
 
       this.harvestForm.updateValueAndValidity();
-      /**
-       console.log('calculateEndDate termino');
-       */
     }
   }
 
@@ -225,6 +215,25 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
 
     return date;
+  }
+
+  /**
+   * computeEndDate
+   * @param workingDays
+   * @param daysAdded
+   * @param momentDate
+   */
+  private computeEndDate = (workingDays: number = 1, daysAdded: number = 1, momentDate: any, holidays: Array<any> = []) => {
+    if (workingDays > daysAdded) {
+      if (momentDate.weekday() > 0 && !holidays.includes(momentDate.format(this.dateFormat))) {
+        daysAdded++;
+      }
+
+      momentDate = momentDate.add(1, 'days');
+      return this.computeEndDate(workingDays, daysAdded, momentDate, holidays);
+    }
+
+    return momentDate;
   }
 
 }

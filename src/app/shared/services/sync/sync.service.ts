@@ -4,8 +4,6 @@ import {HttpClient} from '@angular/common/http';
 import {StorageService} from '../storage/storage.service';
 import {Company, CostCenterList, TabMenu} from '@primetec/primetec-angular';
 import {HttpService} from '../http/http.service';
-import {BehaviorSubject} from 'rxjs';
-import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +11,6 @@ import {map} from 'rxjs/operators';
 export class SyncService {
 
   private readonly syncUrl = 'sync/mobile';
-  private tabMenus: BehaviorSubject<Array<TabMenu>> = new BehaviorSubject<Array<TabMenu>>([]);
 
   constructor(
     private authService: AuthService,
@@ -30,19 +27,7 @@ export class SyncService {
    */
   public syncData = (username: string) => {
     const url = this.httpService.buildUrl(this.syncUrl);
-    return this.httpClient.post(url, this.httpService.buildBody({username}), {headers: this.httpService.getHeaders()})
-      .pipe(
-        map(x => {
-          const data = x['data'];
-
-          if (data) {
-            console.log('pasa por aqui');
-            this.tabMenus.next(data.menus);
-          }
-
-          return x;
-        })
-      );
+    return this.httpClient.post(url, this.httpService.buildBody({username}), {headers: this.httpService.getHeaders()});
   }
 
   /**
@@ -63,10 +48,6 @@ export class SyncService {
         workers
       } = data;
 
-      if (!this.authService.getCompany() && companies) {
-        this.authService.setCompany(companies[0]);
-      }
-
       await this.setCompanies(companies);
       await this.setCostCenters(costCenters);
       await this.setMenus(menus);
@@ -77,13 +58,6 @@ export class SyncService {
       await this.setQuadrilles(quadrilles);
       await this.setWorkers(workers);
     }
-  }
-
-  /**
-   * getTabMenus
-   */
-  public getTabMenus = () => {
-    return this.tabMenus.asObservable();
   }
 
   /**
@@ -220,3 +194,5 @@ export class SyncService {
   }
 
 }
+
+

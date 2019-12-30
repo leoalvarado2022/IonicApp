@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ActivatedRoute} from '@angular/router';
-import {LoaderService} from "../../../shared/services/loader/loader.service";
+import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-rem-workers',

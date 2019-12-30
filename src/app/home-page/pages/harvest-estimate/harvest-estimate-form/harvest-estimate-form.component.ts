@@ -68,7 +68,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     } else {
       let costCenterDate = this.costCenter.year + '-' + this.costCenter.harvestMonth + '-' + this.costCenter.harvestDay;
       if (moment(costCenterDate).isValid()) {
-        costCenterDate = moment.utc(costCenterDate).format(this.dateFormat);
+        costCenterDate = moment(costCenterDate).format('YYYY-MM-DD');
       } else {
         this.toastService.warningToast('Fecha de cosecha invalida: ' + costCenterDate);
       }
@@ -81,8 +81,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         quantity: [this.previous ? this.previous.quantity : '', Validators.required],
         dailyAmount: [this.previous ? this.previous.dailyAmount : '', Validators.required],
         workHolidays: [this.previous ? this.previous.workHolidays ? 1 : 0 : 0, Validators.required],
-        startDate: [this.previous ? moment.utc(this.previous.startDate).format(this.dateFormat) : costCenterDate, Validators.required],
-        endDate: [this.previous ? moment.utc(this.previous.endDate).format('DD/MM/YYYY') : '', Validators.required]
+        startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : costCenterDate, Validators.required],
+        endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required]
       });
 
       this.harvestForm.valueChanges.pipe(
@@ -121,8 +121,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (this.harvestForm.valid) {
       this.showErrors = false;
       const estimation = Object.assign({}, this.harvestForm.value);
-      estimation.startDate = moment.utc(this.cleanDate(estimation.startDate)).format('YYYY-MM-DD');
-      estimation.endDate = moment.utc(this.cleanDate(estimation.endDate)).format('YYYY-MM-DD');
+      estimation.endDate = moment(estimation.endDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
+
       delete this.costCenter.active;
       const data = {
         costCenter: this.costCenter,
@@ -168,14 +168,12 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     });
 
     this.harvestForm.updateValueAndValidity();
-
-    this.calculateEndDate();
   }
 
   /**
    * calculateEndDate
    */
-  public calculateEndDate = () => {
+  private calculateEndDate = () => {
     const {
       quantity,
       dailyAmount,

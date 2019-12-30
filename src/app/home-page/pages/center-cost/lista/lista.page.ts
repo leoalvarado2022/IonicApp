@@ -14,7 +14,6 @@ export class ListaPage implements OnInit {
 
   public filteredCostCenters: Array<CostCenterList> = [];
   private costCenters: Array<CostCenterList> = [];
-  public isLoading = false;
 
   constructor(
     private syncService: SyncService,
@@ -25,12 +24,8 @@ export class ListaPage implements OnInit {
 
   }
 
-  ionViewWillEnter() {
-    this.loadCostCenters();
-  }
-
   ngOnInit() {
-
+    this.loadCostCenters();
   }
 
   /**

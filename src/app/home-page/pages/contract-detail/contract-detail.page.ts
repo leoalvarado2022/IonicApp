@@ -48,15 +48,22 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    const id = this.route.snapshot.paramMap.get('id');
-
-    if (id) {
-      this.loadContractDetail(id);
-      this.loadUnits();
-    }
+    this.loadUnits();
   }
 
   ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.loaderService.startLoader();
+      this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
+        console.log('sale');
+      }, error => {
+        console.log('sale');
+        this.loaderService.stopLoader();
+      });
+    }
+
     this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => this.costCenter = value);
     this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => this.productionContracts = value);
     this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => this.qualityEstimateDetail = value);
@@ -85,12 +92,16 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param id
    */
   private loadContractDetail = (id: string) => {
-    this.loaderService.startLoader();
+    /*
+    this.loaderService.startLoader('MOSTRANGO ALGo Pos');
     this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
+      console.log('sale');
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
+      console.log('sale');
     });
+    */
   }
 
   /**

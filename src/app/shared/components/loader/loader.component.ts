@@ -12,7 +12,7 @@ export class LoaderComponent implements OnInit, OnDestroy {
   public isLoading = false;
   private loading$: Subscription;
 
-  constructor(private loaderService: LoaderService) {
+  constructor(public loaderService: LoaderService) {
 
   }
 

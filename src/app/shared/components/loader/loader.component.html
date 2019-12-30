@@ -1,8 +1,10 @@
-<section class="bg" *ngIf="isLoading">
-  <div class="loader-mensaje">
-    <div class="loader"></div>
-    <div class="loader-text">
-      {{ this.loaderService.getMessage() }}
+<ng-container *ngIf="isLoading">
+  <section class="bg">
+    <div class="loader-mensaje">
+      <div class="loader"></div>
+      <div class="loader-text">
+        {{ this.loaderService.getMessage() }}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+</ng-container>

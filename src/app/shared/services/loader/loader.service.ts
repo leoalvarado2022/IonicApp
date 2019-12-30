@@ -7,7 +7,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 export class LoaderService {
 
   private isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private message: string;
+  private message = 'Cargando...';
 
   constructor() {
 

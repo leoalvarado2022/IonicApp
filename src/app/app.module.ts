@@ -27,6 +27,7 @@ import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {GeolocationService} from './shared/services/geolocation/geolocation.service';
 import {SyncService} from './shared/services/sync/sync.service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
+import {LoaderService} from "./shared/services/loader/loader.service";
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -64,6 +65,7 @@ const NGRX_IMPORTS = [
     AppVersion,
     Device,
     Camera,
+    LoaderService,
     AuthService,
     NetworkService,
     Geolocation,

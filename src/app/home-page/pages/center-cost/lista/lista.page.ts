@@ -35,25 +35,20 @@ export class ListaPage implements OnInit, AfterViewInit {
   /**
    * loadCostCenters
    */
-  public loadCostCenters = () => {
-    this.loaderService.startLoader('probando...');
-    console.log('esperando ');
-    this.syncService.getCostCenters().then((costCenters) => {
-
-      setTimeout(() => {
-        this.costCenters = [...costCenters];
-        this.filteredCostCenters = [...costCenters];
-        this.loaderService.stopLoader();
-      }, 5000);
-
-    });
-
-    /*
-    this.loaderService.startLoader('probando...');
+  public loadCostCenters = async () => {
+    this.loaderService.startLoader();
     const costCenters = await this.syncService.getCostCenters();
     this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
     this.loaderService.stopLoader();
+
+    /*
+    this.loaderService.startLoader();
+    this.syncService.getCostCenters().then((costCenters) => {
+      this.costCenters = [...costCenters];
+      this.filteredCostCenters = [...costCenters];
+      this.loaderService.stopLoader();
+    });
     */
   }
 

@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {HarvestEstimatePage} from './harvest-estimate.page';
 import {SharedModule} from '../../../shared/shared.module';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
+import {NgxMaskModule} from "ngx-mask";
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    NgxMaskModule
   ],
   declarations: [
     HarvestEstimatePage,

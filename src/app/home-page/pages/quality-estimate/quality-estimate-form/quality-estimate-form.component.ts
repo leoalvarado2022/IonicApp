@@ -30,8 +30,7 @@ export class QualityEstimateFormComponent implements OnInit {
 
   private costCenterListItem: CostCenterList;
   public qualityForm: FormGroup;
-  public loader = false;
-  public showErrors = false;
+  public isSaving = false;
   private userConnection: any;
   private calibers: Array<any>;
   public qualities: Array<any>;
@@ -101,8 +100,8 @@ export class QualityEstimateFormComponent implements OnInit {
    * submit
    */
   public submit = () => {
-    if (this.qualityForm.valid) {
-      this.showErrors = false;
+    if (this.qualityForm.valid && !this.isSaving) {
+      this.isSaving = true;
       delete this.costCenter.active;
 
       const data = Object.assign({}, this.qualityForm.value, {
@@ -115,7 +114,7 @@ export class QualityEstimateFormComponent implements OnInit {
 
       this.storeQuality(data);
     } else {
-      this.showErrors = true;
+      this.isSaving = false;
     }
   }
 
@@ -183,9 +182,11 @@ export class QualityEstimateFormComponent implements OnInit {
   private storeQuality(data: any) {
     this.loaderService.startLoader('Guardando estimacion...');
     this.contractDetailService.storeQuality(data).subscribe(success => {
+      this.isSaving = false;
       this.loaderService.stopLoader();
       this.closeModal(true);
     }, error => {
+      this.isSaving = false;
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });

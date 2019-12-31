@@ -28,7 +28,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public readonly maxDate = '2030';
   public harvestForm: FormGroup;
   public units: Array<any> = [];
-  public showErrors = false;
+  public isSaving = false;
   private userConnection: any;
   public holidays: Array<any> = [];
 
@@ -118,8 +118,10 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    * submit
    */
   public submit = () => {
-    if (this.harvestForm.valid) {
-      this.showErrors = false;
+    if (this.harvestForm.valid && !this.isSaving) {
+      console.log('form valido');
+
+      this.isSaving = true;
       const estimation = Object.assign({}, this.harvestForm.value);
       estimation.endDate = moment(estimation.endDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
       estimation.quantity = this.cleanParseNumber(estimation.quantity);
@@ -133,7 +135,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
       this.storeEstimation(data);
     } else {
-      this.showErrors = true;
+      this.isSaving = false;
     }
   }
 
@@ -145,9 +147,11 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     this.loaderService.startLoader('Guardando estimacion...');
     this.contractDetailService.storeHarvest(data).subscribe(success => {
       this.loaderService.stopLoader();
+      this.isSaving = false;
       this.closeModal(true);
     }, error => {
       this.loaderService.stopLoader();
+      this.isSaving = false;
       this.httpService.errorHandler(error);
     });
   }

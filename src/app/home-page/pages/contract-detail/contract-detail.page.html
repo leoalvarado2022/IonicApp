@@ -52,7 +52,7 @@
         <ng-container>
           <div class="card-text">
             <div class="card-text-one">
-              <p>{{ contract.totalQuantity }}</p>
+              <p>{{ contract.totalQuantity }} {{ showUnitName() | uppercase }}</p>
               <p># {{ contract.documentNumber }}</p>
               <p>{{ contract.date| customDate }}</p>
               <p>{{ contract.responsibleName }}</p>

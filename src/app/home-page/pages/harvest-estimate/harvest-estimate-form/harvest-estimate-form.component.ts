@@ -66,13 +66,6 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY'), Validators.required]
       });
     } else {
-      let costCenterDate = this.costCenter.year + '-' + this.costCenter.harvestMonth + '-' + this.costCenter.harvestDay;
-      if (moment(costCenterDate).isValid()) {
-        costCenterDate = moment(costCenterDate).format('YYYY-MM-DD');
-      } else {
-        this.toastService.warningToast('Fecha de cosecha invalida: ' + costCenterDate);
-      }
-
       this.harvestForm = this.formBuilder.group({
         id: [0, Validators.required],
         costCenter: [this.costCenter.id],
@@ -81,7 +74,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         quantity: [this.previous ? this.previous.quantity : '', Validators.required],
         dailyAmount: [this.previous ? this.previous.dailyAmount : '', Validators.required],
         workHolidays: [this.previous ? this.previous.workHolidays ? 1 : 0 : 0, Validators.required],
-        startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : costCenterDate, Validators.required],
+        startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : this.costCenter.harvestDate, Validators.required],
         endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required]
       });
 

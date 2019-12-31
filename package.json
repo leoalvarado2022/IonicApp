@@ -38,7 +38,7 @@
     "@ngrx/effects": "^8.5.0",
     "@ngrx/store": "^8.5.0",
     "@ngrx/store-devtools": "^8.5.0",
-    "@primetec/primetec-angular": "^0.0.15",
+    "@primetec/primetec-angular": "^0.0.16",
     "cordova-android": "^8.1.0",
     "cordova-ios": "5.1.1",
     "cordova-plugin-app-version": "^0.1.9",

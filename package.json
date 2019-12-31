@@ -1,6 +1,6 @@
 {
   "name": "fx11_movil",
-  "version": "1.0.34",
+  "version": "1.0.35",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -38,7 +38,7 @@
     "@ngrx/effects": "^8.5.0",
     "@ngrx/store": "^8.5.0",
     "@ngrx/store-devtools": "^8.5.0",
-    "@primetec/primetec-angular": "^0.0.15",
+    "@primetec/primetec-angular": "^0.0.16",
     "cordova-android": "^8.1.0",
     "cordova-ios": "5.1.1",
     "cordova-plugin-app-version": "^0.1.9",
@@ -52,6 +52,7 @@
     "echarts": "^4.5.0",
     "moment": "^2.24.0",
     "ngx-echarts": "^4.2.2",
+    "ngx-mask": "^8.1.7",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"

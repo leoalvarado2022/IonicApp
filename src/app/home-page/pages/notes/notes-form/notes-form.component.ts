@@ -21,8 +21,8 @@ export class NotesFormComponent implements OnInit {
   @Input() note: Note = null;
 
   public noteForm: FormGroup;
-  public showErrors = false;
   public imageSrc = '';
+  public isSaving = false;
   private userConnection: any;
 
   constructor(
@@ -65,13 +65,13 @@ export class NotesFormComponent implements OnInit {
    * submit
    */
   public submit = () => {
-    if (this.noteForm.get('note').value || this.noteForm.get('image').value) {
+    if ((this.noteForm.get('note').value || this.noteForm.get('image').value) && !this.isSaving) {
 
-      this.showErrors = false;
       const note = Object.assign({}, this.noteForm.value);
-
+      this.isSaving = true;
       this.storeNote(note);
     } else {
+      this.isSaving = false;
       this.toastService.warningToast('Debe ingresar la nota o la imagen');
     }
   }
@@ -83,9 +83,11 @@ export class NotesFormComponent implements OnInit {
   private storeNote = (data: any) => {
     this.loaderService.startLoader('Guardando nota');
     this.contractDetailService.storeNote(data).subscribe(success => {
+      this.isSaving = false;
       this.loaderService.stopLoader();
       this.closeModal(true);
     }, error => {
+      this.isSaving = false;
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });

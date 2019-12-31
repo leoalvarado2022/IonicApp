@@ -28,8 +28,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public readonly maxDate = '2030';
   public harvestForm: FormGroup;
   public units: Array<any> = [];
-  public loader = false;
-  public showErrors = false;
+  public isSaving = false;
   private userConnection: any;
   public holidays: Array<any> = [];
 
@@ -55,33 +54,34 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
     if (this.isView) {
       this.harvestForm = this.formBuilder.group({
-        id: [this.harvestEstimate.id, Validators.required],
+        id: [this.harvestEstimate.id],
         costCenter: [this.costCenter.id],
-        user: [this.userConnection.user, Validators.required],
-        unit: [this.costCenter.controlUnit, Validators.required],
-        quantity: [{value: this.harvestEstimate.quantity, disabled: true}, Validators.required],
-        dailyAmount: [{value: this.harvestEstimate.dailyAmount, disabled: true}, Validators.required],
-        workHolidays: [{value: this.harvestEstimate.workHolidays ? 1 : 0, disabled: true}, Validators.required],
-        startDate: [{value: moment.utc(this.harvestEstimate.startDate).format('YYYY-MM-DD'), disabled: true}, Validators.required],
-        endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY'), Validators.required]
+        user: [this.userConnection.user],
+        unit: [this.costCenter.controlUnit],
+        quantity: [{value: this.harvestEstimate.quantity, disabled: true}],
+        dailyAmount: [{value: this.harvestEstimate.dailyAmount, disabled: true}],
+        workHolidays: [{value: this.harvestEstimate.workHolidays ? 1 : 0, disabled: true}],
+        startDate: [{value: moment.utc(this.harvestEstimate.startDate).format('YYYY-MM-DD'), disabled: true}],
+        endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY')]
       });
     } else {
-      let costCenterDate = this.costCenter.year + '-' + this.costCenter.harvestMonth + '-' + this.costCenter.harvestDay;
-      if (moment(costCenterDate).isValid()) {
-        costCenterDate = moment(costCenterDate).format('YYYY-MM-DD');
-      } else {
-        this.toastService.warningToast('Fecha de cosecha invalida: ' + costCenterDate);
-      }
-
       this.harvestForm = this.formBuilder.group({
         id: [0, Validators.required],
         costCenter: [this.costCenter.id],
         user: [this.userConnection.user, Validators.required],
         unit: [this.costCenter.controlUnit, Validators.required],
-        quantity: [this.previous ? this.previous.quantity : '', Validators.required],
-        dailyAmount: [this.previous ? this.previous.dailyAmount : '', Validators.required],
+        quantity: [this.previous ? this.previous.quantity : '', [
+          Validators.required,
+          Validators.pattern(/^([0-9.])+$/),
+          Validators.min(1)
+        ]],
+        dailyAmount: [this.previous ? this.previous.dailyAmount : '', [
+          Validators.required,
+          Validators.pattern(/^([0-9.])+$/),
+          Validators.min(1)
+        ]],
         workHolidays: [this.previous ? this.previous.workHolidays ? 1 : 0 : 0, Validators.required],
-        startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : costCenterDate, Validators.required],
+        startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : this.costCenter.harvestDate, Validators.required],
         endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required]
       });
 
@@ -118,10 +118,14 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    * submit
    */
   public submit = () => {
-    if (this.harvestForm.valid) {
-      this.showErrors = false;
+    if (this.harvestForm.valid && !this.isSaving) {
+      console.log('form valido');
+
+      this.isSaving = true;
       const estimation = Object.assign({}, this.harvestForm.value);
       estimation.endDate = moment(estimation.endDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
+      estimation.quantity = this.cleanParseNumber(estimation.quantity);
+      estimation.dailyAmount = this.cleanParseNumber(estimation.dailyAmount);
 
       delete this.costCenter.active;
       const data = {
@@ -131,7 +135,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
       this.storeEstimation(data);
     } else {
-      this.showErrors = true;
+      this.isSaving = false;
     }
   }
 
@@ -143,9 +147,11 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     this.loaderService.startLoader('Guardando estimacion...');
     this.contractDetailService.storeHarvest(data).subscribe(success => {
       this.loaderService.stopLoader();
+      this.isSaving = false;
       this.closeModal(true);
     }, error => {
       this.loaderService.stopLoader();
+      this.isSaving = false;
       this.httpService.errorHandler(error);
     });
   }
@@ -182,7 +188,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     } = this.harvestForm.value;
 
     if (quantity && dailyAmount) {
-      const days = Math.ceil((quantity > 0 ? quantity : 1) / (dailyAmount > 0 ? dailyAmount : 1));
+      const days = Math.ceil((this.cleanParseNumber(quantity) > 0 ? this.cleanParseNumber(quantity) : 1) / (this.cleanParseNumber(dailyAmount) > 0 ? this.cleanParseNumber(dailyAmount) : 1));
       const holidays = [];
       let daysAdded = 1;
       let momentDate = moment.utc(startDate);
@@ -222,7 +228,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    * @param momentDate
    */
   private computeEndDate = (workingDays: number = 1, daysAdded: number = 1, momentDate: any, holidays: Array<any> = []) => {
-    if (workingDays > daysAdded) {
+    if (workingDays > daysAdded && daysAdded < 60) {
       if (momentDate.weekday() > 0 && !holidays.includes(momentDate.format(this.dateFormat))) {
         daysAdded++;
       }
@@ -232,6 +238,14 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
 
     return momentDate;
+  }
+
+  /**
+   * cleanParseNumber
+   * @param number
+   */
+  private cleanParseNumber = (number: string): number => {
+    return parseInt(String(number).replace('.', ''));
   }
 
 }

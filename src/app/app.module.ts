@@ -27,7 +27,8 @@ import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {GeolocationService} from './shared/services/geolocation/geolocation.service';
 import {SyncService} from './shared/services/sync/sync.service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
-import {LoaderService} from "./shared/services/loader/loader.service";
+import {LoaderService} from './shared/services/loader/loader.service';
+import {IConfig, NgxMaskModule} from 'ngx-mask';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -40,6 +41,11 @@ const NGRX_IMPORTS = [
     maxAge: 25
   })
 ];
+
+const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
+  thousandSeparator: '.',
+  decimalMarker: ','
+};
 
 @NgModule({
   declarations: [
@@ -54,6 +60,7 @@ const NGRX_IMPORTS = [
       swipeBackEnabled: false
     }),
     IonicStorageModule.forRoot(),
+    NgxMaskModule.forRoot(ngxMaskOptions),
     SharedModule,
     HttpClientModule,
     ...NGRX_IMPORTS

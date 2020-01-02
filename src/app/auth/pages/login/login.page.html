@@ -32,11 +32,11 @@
         Iniciar Sesión
       </ion-button>
 
-      <ng-container *ngIf="innerHeight < 600">
+      <ng-container *ngIf="innerWidth < 575">
         <ion-row>
           <ion-col>
             <ion-item lines="none">
-              <ion-checkbox slot="start" formControlName="remember"></ion-checkbox>
+              <ion-checkbox slot="start" formControlName="remember" [checked]="loginForm.get('remember').value"></ion-checkbox>
               <ion-label>Recordarme</ion-label>
             </ion-item>
           </ion-col>
@@ -49,7 +49,7 @@
         </ion-row>
       </ng-container>
 
-      <ng-container *ngIf="innerHeight > 600">
+      <ng-container *ngIf="innerWidth > 575">
         <div class="ion-text-left recordarme">
           <ion-checkbox [checked]="false" color="primary" formControlName="remember" id="remember" name='remember'></ion-checkbox>
           <span>Recordarme</span>

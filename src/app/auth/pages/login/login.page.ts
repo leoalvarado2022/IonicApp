@@ -2,14 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Store} from '@ngrx/store';
-import * as MenuAction from '../../../store/menu/menu.action';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Company, Connection} from "@primetec/primetec-angular";
+import {StoreService} from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-login',
@@ -31,7 +31,8 @@ export class LoginPage implements OnInit {
     private store: Store<any>,
     private syncService: SyncService,
     private userService: UserService,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private storeService: StoreService
   ) {
 
   }
@@ -40,11 +41,17 @@ export class LoginPage implements OnInit {
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required],
-      remember: ['false']
+      remember: [false]
     });
 
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
+
+    this.router.events.subscribe((e) => {
+      if (e instanceof NavigationEnd) {
+        this.checkRemember();
+      }
+    });
 
     this.checkRemember();
   }
@@ -59,20 +66,17 @@ export class LoginPage implements OnInit {
       const login = await this.login(data);
 
       // recordar usuario
-      if (data.remember === true) {
-        this.authService.setRemember();
-        this.userService.setUserRemember(data);
-      }
-
-      // no recordar usuario
-      if (data.remember === false) {
-        this.authService.removeRemember();
-        await this.userService.removeUserRemember();
+      if (data.remember) {
+        this.storeService.setRemember(true);
+        this.storeService.setRememberData(data);
+      } else {
+        this.storeService.setRemember(false);
+        this.storeService.removeRememberData();
       }
 
       if (login !== null) {
-        await this.userService.setUserData(login);
-        this.store.dispatch(new MenuAction.AddProfile(login));
+        this.storeService.setUserConnections(login.connections);
+        this.storeService.setToken(login.token);
       }
 
       if (login && login.code === 1) {
@@ -134,17 +138,15 @@ export class LoginPage implements OnInit {
   /**
    * checkRemember
    */
-  private checkRemember = async () => {
-    const remember = this.authService.getRememberStatus();
+  private checkRemember = () => {
+    if (this.storeService.getRemember()) {
+      const rememberData = this.storeService.getRememberData();
 
-    if (remember === 'true') {
-      const userData = await this.userService.getUserRemember();
-
-      if (userData) {
+      if (rememberData) {
         this.loginForm.patchValue({
-          username: userData.username,
-          password: userData.password,
-          remember: ['true']
+          username: rememberData.username,
+          password: rememberData.password,
+          remember: [true]
         });
 
         this.loginForm.updateValueAndValidity();

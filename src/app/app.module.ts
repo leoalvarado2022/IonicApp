@@ -29,6 +29,7 @@ import {SyncService} from './shared/services/sync/sync.service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {LoaderService} from './shared/services/loader/loader.service';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
+import {StoreService} from "./shared/services/store/store.service";
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
@@ -78,7 +79,7 @@ const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
     Geolocation,
     GeolocationService,
     SyncService,
-    FileOpener
+    StoreService
   ],
   bootstrap: [AppComponent]
 })

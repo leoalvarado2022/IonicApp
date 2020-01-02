@@ -24,6 +24,7 @@ export class ContractDetailService {
   private readonly storeHarvestUrl = 'costcenter/store/harvest';
   private readonly storeQualityUrl = 'costcenter/store/quality';
   private readonly storeNoteUrl = 'costcenter/store/note';
+  private readonly getNoteImageUrl = 'costcenter/note/image';
   private readonly storeCostCenterGeolocation = 'costcenter/store/geolocation-user';
 
   private costCenterListItem: BehaviorSubject<CostCenterList> = new BehaviorSubject<CostCenterList>(null);
@@ -239,6 +240,15 @@ export class ContractDetailService {
     this.httpService.errorHandler(error);
 
     return of(null);
+  }
+
+  /**
+   * getNoteImage
+   * @param id
+   */
+  public getNoteImage = (id: string) => {
+    const url = this.httpService.buildUrl(this.getNoteImageUrl, id);
+    return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()});
   }
 
 }

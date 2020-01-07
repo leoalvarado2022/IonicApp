@@ -50,7 +50,24 @@ export class NotesFormComponent implements OnInit {
       image: [{value: this.note ? this.note.image : '', disabled: !!this.note}]
     });
 
-    this.imageSrc = this.note && this.note.image ? 'data:image/jpeg;base64,' + this.note.image : '';
+    // this.imageSrc = this.note && this.note.image ? 'data:image/jpeg;base64,' + this.note.image : '';
+    this.loadBigImage();
+  }
+
+  /**
+   * loadBigImage
+   */
+  private loadBigImage = () => {
+    if (this.note) {
+      this.loaderService.startLoader();
+      this.contractDetailService.getNoteImage(this.note.id.toString()).subscribe((success: any) => {
+        this.imageSrc = 'data:image/jpeg;base64,' + success.image;
+        this.loaderService.stopLoader();
+      }, error => {
+        this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+      });
+    }
   }
 
   /**

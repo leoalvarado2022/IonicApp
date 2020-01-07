@@ -83,11 +83,14 @@ export class LoginPage implements OnInit {
 
           this.authService.setLoggedIn();
           this.authService.setToken(login.token);
+          this.loaderService.startLoader();
           this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
             await this.syncService.storeSync(success.data);
+            this.loaderService.stopLoader();
             this.setDefaultCompany(success.data.companies);
             this.makeLogin();
           }, error => {
+            this.loaderService.stopLoader();
             this.httpService.errorHandler(error);
           });
         }

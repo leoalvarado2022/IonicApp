@@ -4,7 +4,7 @@ export const environment = {
   production: true,
   app_name: 'FX10',
   api_url: 'https://fx11apiqa.primetec.cl',
-  appVersion: 'v1.0.37',
+  appVersion: 'v1.0.38',
   tz: 'America/Santiago',
   iosDeviceNames
 };

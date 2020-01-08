@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterContentInit, Component, Input, OnInit} from '@angular/core';
 import {CostCenter, Note} from '@primetec/primetec-angular';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
@@ -15,7 +15,7 @@ import {CameraService} from '../../../../shared/services/camera/camera.service';
   templateUrl: './notes-form.component.html',
   styleUrls: ['./notes-form.component.scss'],
 })
-export class NotesFormComponent implements OnInit, AfterViewInit {
+export class NotesFormComponent implements OnInit, AfterContentInit {
 
   @Input() costCenter: CostCenter;
   @Input() note: Note = null;
@@ -54,7 +54,7 @@ export class NotesFormComponent implements OnInit, AfterViewInit {
     // this.imageSrc = this.note && this.note.image ? 'data:image/jpeg;base64,' + this.note.image : '';
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     this.loadBigImage();
   }
 

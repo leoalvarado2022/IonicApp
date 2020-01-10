@@ -29,15 +29,22 @@
     </h2>
 
     <ng-container *ngIf="filteredWorkers.length > 0">
-      <ion-list>
+      <ion-list lines="none">
         <ion-virtual-scroll [items]="filteredWorkers">
-          <ion-item *virtualItem="let worker">
+          <ion-item *virtualItem="let worker" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
             <ion-icon name="contact" slot="start"></ion-icon>
             <ion-label>
               <h3 class="label-padding">{{ worker.name }}</h3>
-              <p class="label-padding">{{ worker.identifier | rut }}</p>
+              <div class="label-padding">
+
+                <div class="ion-text-left">
+                  {{ worker.identifier | rut }}
+                </div>
+                <div class="ion-text-right">
+                  <ion-badge color="primary">{{ worker.quadrilleStatus }}</ion-badge>
+                </div>
+              </div>
             </ion-label>
-            <ion-badge color="primary">A</ion-badge>
           </ion-item>
         </ion-virtual-scroll>
       </ion-list>
@@ -45,3 +52,13 @@
   </ng-container>
 
 </ion-content>
+
+<ion-footer>
+  <ion-row *ngIf="selectedWorkers.length > 0">
+    <ion-col>
+      <ion-button (click)="selectQuadrille();" color="warning" expand="block">
+        Traspasar {{ selectedWorkers.length }}
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

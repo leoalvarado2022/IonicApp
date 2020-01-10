@@ -15,3 +15,8 @@ ion-title {
   --padding-top: 5px;
   font-size: 1em;
 }
+
+.workerSelected {
+  --background: var(--ion-color-medium);
+  --color: var(--ion-color-light);
+}

@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {RemWorkersPage} from './rem-workers.page';
 import {SharedModule} from '../../../shared/shared.module';
+import {WorkersService} from './services/workers.service';
 
 const routes: Routes = [
   {
@@ -16,7 +17,10 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [RemWorkersPage]
+  declarations: [RemWorkersPage],
+  providers: [
+    WorkersService
+  ]
 })
 export class RemWorkersPageModule {
 

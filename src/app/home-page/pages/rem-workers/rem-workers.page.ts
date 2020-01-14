@@ -23,9 +23,9 @@ export class RemWorkersPage implements OnInit {
 
   private workers: Array<any> = [];
   private quadrilles: Array<any> = [];
-  private filteredWorkers: Array<any> = [];
-  private quadrille: any;
-  private selectedWorkers: Array<any> = [];
+  public filteredWorkers: Array<any> = [];
+  public quadrille: any;
+  public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
   private userData = null;
 

@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {RemQuadrillePage} from './rem-quadrille.page';
 import {SharedModule} from '../../../shared/shared.module';
+import {QuadrilleService} from './services/quadrille/quadrille.service';
 
 const routes: Routes = [
   {
@@ -16,7 +17,10 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [RemQuadrillePage]
+  declarations: [RemQuadrillePage],
+  providers: [
+    QuadrilleService
+  ]
 })
 export class RemQuadrillePageModule {
 }

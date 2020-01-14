@@ -30,6 +30,9 @@ export class RemQuadrillePage implements OnInit {
   private loadQuadrilles = async () => {
     const quadrilles = await this.syncService.getQuadrilles();
     const workers = await this.syncService.getWorkers();
+
+    console.log({quadrilles, workers});
+
     this.quadrilles = [...quadrilles];
     this.filteredQuadrilles = [...quadrilles];
     this.workers = [...workers];

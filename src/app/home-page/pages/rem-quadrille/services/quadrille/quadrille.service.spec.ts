@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WorkersService } from './workers.service';
+import { QuadrilleService } from './quadrille.service';
 
-describe('WorkersService', () => {
+describe('QuadrilleService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: WorkersService = TestBed.get(WorkersService);
+    const service: QuadrilleService = TestBed.get(QuadrilleService);
     expect(service).toBeTruthy();
   });
 });

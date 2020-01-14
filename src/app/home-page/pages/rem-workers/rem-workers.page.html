@@ -41,7 +41,17 @@
                   {{ worker.identifier | rut }}
                 </div>
                 <div class="ion-text-right">
-                  <ion-badge color="primary">{{ worker.quadrilleStatus }}</ion-badge>
+                  <ng-container *ngIf="worker.quadrilleToApprove > 0">
+                    <ion-badge *ngIf="worker.quadrilleStatus === 'POR APROBAR' && worker.quadrille === quadrille.id" color="warning">
+                      Traspasando
+                    </ion-badge>
+                    <ion-badge *ngIf="worker.quadrilleStatus === 'POR APROBAR' && worker.quadrille !== quadrille.id" color="warning">
+                      Por Aprobar
+                    </ion-badge>
+                  </ng-container>
+                  <ng-container *ngIf="worker.quadrilleToApprove === 0">
+                    <ion-badge color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
+                  </ng-container>
                 </div>
               </div>
             </ion-label>
@@ -54,11 +64,35 @@
 </ion-content>
 
 <ion-footer>
-  <ion-row *ngIf="selectedWorkers.length > 0">
-    <ion-col>
-      <ion-button (click)="selectQuadrille();" color="warning" expand="block">
-        Traspasar {{ selectedWorkers.length }}
-      </ion-button>
-    </ion-col>
-  </ion-row>
+  <ng-container *ngIf="selectedWorkers.length > 0">
+    <ion-row>
+      <ng-container *ngIf="selectedWorkers[0].quadrilleToApprove === 0">
+        <ion-col>
+          <ng-container *ngIf="selectedWorkers[0].quadrilleStatus === ''">
+            <ion-button (click)="selectQuadrille();" color="warning" expand="block">
+              Traspasar {{ selectedWorkers.length }}
+            </ion-button>
+          </ng-container>
+          <ng-container *ngIf="selectedWorkers[0].quadrilleStatus === 'rechazado'">
+            <ion-button (click)="acceptRejectWorkers()" color="success" expand="block">
+              Aprobar {{ selectedWorkers.length }}
+            </ion-button>
+          </ng-container>
+        </ion-col>
+      </ng-container>
+
+      <ng-container *ngIf="selectedWorkers[0].quadrilleToApprove > 0">
+        <ion-col>
+          <ion-button (click)="acceptWorkers();" color="success" expand="block">
+            Aprobar {{ selectedWorkers.length }}
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="rejectWorkers();" color="danger" expand="block">
+            Rechazar {{ selectedWorkers.length }}
+          </ion-button>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+  </ng-container>
 </ion-footer>

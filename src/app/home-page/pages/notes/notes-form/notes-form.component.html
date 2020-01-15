@@ -23,6 +23,10 @@
       </ion-item>
     </ng-container>
 
+    <div class="loadingImg" *ngIf="loadingImg">
+      Cargando Imagen...
+    </div>
+
     <div *ngIf="imageSrc">
       <ion-img [src]="imageSrc"></ion-img>
     </div>

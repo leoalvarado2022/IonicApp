@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
+import {CostCenter, EntityList, HarvestEstimate, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
@@ -24,10 +24,25 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   @Input() isView: boolean;
   @Input() previous: HarvestEstimate;
 
+  public readonly processPlantAction: any = {
+    header: 'Plantas de Proceso',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
+  public readonly destinationAction: any = {
+    header: 'Destinos',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
   public harvestForm: FormGroup;
-  public units: Array<any> = [];
+  public units: Array<Unit> = [];
+  public processPlants: Array<EntityList> = [];
+  public destinations: Array<any> = [];
+
   public isSaving = false;
   private userConnection: any;
   public holidays: Array<any> = [];
@@ -62,7 +77,9 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         dailyAmount: [{value: this.harvestEstimate.dailyAmount, disabled: true}],
         workHolidays: [{value: this.harvestEstimate.workHolidays ? 1 : 0, disabled: true}],
         startDate: [{value: moment.utc(this.harvestEstimate.startDate).format('YYYY-MM-DD'), disabled: true}],
-        endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY')]
+        endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY')],
+        processPlant: [{value: this.harvestEstimate ? this.harvestEstimate.processPlant : '', disabled: true}, Validators.required],
+        destination: [{value: this.harvestEstimate ? this.harvestEstimate.destination : '', disabled: true}, Validators.required]
       });
     } else {
       this.harvestForm = this.formBuilder.group({
@@ -82,7 +99,9 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         ]],
         workHolidays: [this.previous ? this.previous.workHolidays ? 1 : 0 : 0, Validators.required],
         startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : this.costCenter.harvestDate, Validators.required],
-        endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required]
+        endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required],
+        processPlant: [this.previous ? this.previous.processPlant : '', Validators.required],
+        destination: [this.previous ? this.previous.destination : '', Validators.required]
       });
 
       this.harvestForm.valueChanges.pipe(
@@ -93,7 +112,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
 
 
-    this.loadUnits();
+    this.loadData();
   }
 
   ngOnDestroy(): void {
@@ -101,10 +120,15 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * loadUnits
+   * loadData
    */
-  private loadUnits = async () => {
+  private loadData = async () => {
     this.units = await this.syncService.getUnits();
+    this.processPlants = await this.syncService.getProcessPlants();
+    this.destinations = await this.syncService.getDestinations();
+
+    this.preSelectProcessPlant();
+    this.preSelectDestination();
   }
 
   /**
@@ -119,7 +143,6 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   public submit = () => {
     if (this.harvestForm.valid && !this.isSaving) {
-      console.log('form valido');
 
       this.isSaving = true;
       const estimation = Object.assign({}, this.harvestForm.value);
@@ -246,6 +269,58 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   private cleanParseNumber = (number: string): number => {
     return parseInt(String(number).replace('.', ''));
+  }
+
+  /**
+   * getSelectedProcessPlant
+   */
+  public getSelectedProcessPlant = () => {
+    if (this.processPlants) {
+      const id = this.harvestForm.get('processPlant').value;
+      const find = this.processPlants.find(item => item.id === id);
+      return find ? find.name : '';
+    }
+
+    return '';
+  }
+
+  /**
+   * getSelectedDestination
+   */
+  public getSelectedDestination = () => {
+    if (this.destinations) {
+      const id = this.harvestForm.get('destination').value;
+      const find = this.destinations.find(item => item["id"] === id);
+      return find ? find["name"] : '';
+    }
+
+    return '';
+  }
+
+  /**
+   * preSelectProcessPlant
+   */
+  private preSelectProcessPlant = () => {
+    if (this.processPlants.length === 1) {
+      this.harvestForm.patchValue({
+        processPlant: this.processPlants[0].id
+      })
+
+      this.harvestForm.updateValueAndValidity();
+    }
+  }
+
+  /**
+   * preSelectDestination
+   */
+  private preSelectDestination = () => {
+    if (this.destinations.length === 1) {
+      this.harvestForm.patchValue({
+        destination: this.destinations[0].id
+      })
+
+      this.harvestForm.updateValueAndValidity();
+    }
   }
 
 }

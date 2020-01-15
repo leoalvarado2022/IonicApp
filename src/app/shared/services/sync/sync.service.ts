@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {AuthService} from '../auth/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {StorageService} from '../storage/storage.service';
-import {Company, CostCenterList, TabMenu} from '@primetec/primetec-angular';
+import {Caliber, CfgAccess, Company, CostCenterList, EntityList, Generic, Quadrille, TabMenu, Unit} from '@primetec/primetec-angular';
 import {HttpService} from '../http/http.service';
 
 @Injectable({
@@ -45,7 +45,9 @@ export class SyncService {
         calibers,
         cfgAccess,
         quadrilles,
-        workers
+        workers,
+        processPlants,
+        destinations
       } = data;
 
       await this.setCompanies(companies);
@@ -57,6 +59,8 @@ export class SyncService {
       await this.setAccess(cfgAccess);
       await this.setQuadrilles(quadrilles);
       await this.setWorkers(workers);
+      await this.setProcessPlants(processPlants);
+      await this.setDestinations(destinations);
     }
   }
 
@@ -107,7 +111,7 @@ export class SyncService {
    * setUnits
    * @param units
    */
-  public setUnits = async (units: Array<any>) => {
+  public setUnits = async (units: Array<Unit>) => {
     await this.storageService.setRow('units', units);
   }
 
@@ -122,7 +126,7 @@ export class SyncService {
    * setQualities
    * @param menus
    */
-  public setQualities = async (qualities: Array<any>) => {
+  public setQualities = async (qualities: Array<Generic>) => {
     await this.storageService.setRow('qualities', qualities);
   }
 
@@ -137,7 +141,7 @@ export class SyncService {
    * setCalibers
    * @param calibers
    */
-  public setCalibers = async (calibers: Array<any>) => {
+  public setCalibers = async (calibers: Array<Caliber>) => {
     await this.storageService.setRow('calibers', calibers);
   }
 
@@ -152,7 +156,7 @@ export class SyncService {
    * setAccess
    * @param cfgAccess
    */
-  private setAccess = async (cfgAccess: Array<any>) => {
+  private setAccess = async (cfgAccess: Array<CfgAccess>) => {
     await this.storageService.setRow('cfgAccess', cfgAccess);
   }
 
@@ -167,7 +171,7 @@ export class SyncService {
    * setQuadrilles
    * @param quadrilles
    */
-  private setQuadrilles = async (quadrilles: Array<any>) => {
+  private setQuadrilles = async (quadrilles: Array<Quadrille>) => {
     await this.storageService.setRow('quadrilles', quadrilles);
   }
 
@@ -183,6 +187,7 @@ export class SyncService {
    * @param workers
    */
   private setWorkers = async (workers: Array<any>) => {
+    console.log({workers});
     await this.storageService.setRow('workers', workers);
   }
 
@@ -191,6 +196,36 @@ export class SyncService {
    */
   public getWorkers = async () => {
     return await this.storageService.getRow('workers');
+  }
+
+  /**
+   * setProcessPlants
+   * @param processPlants
+   */
+  private setProcessPlants = async (processPlants: Array<EntityList>) => {
+    await this.storageService.setRow('processPlants', processPlants);
+  }
+
+  /**
+   * getProcessPlants
+   */
+  public getProcessPlants = async () => {
+    return await this.storageService.getRow('processPlants');
+  }
+
+  /**
+   * setDestinations
+   * @param destinations
+   */
+  private setDestinations = async (destinations: Array<Generic>) => {
+    await this.storageService.setRow('destinations', destinations);
+  }
+
+  /**
+   * getDestinations
+   */
+  public getDestinations = async () => {
+    return await this.storageService.getRow('destinations');
   }
 
 }

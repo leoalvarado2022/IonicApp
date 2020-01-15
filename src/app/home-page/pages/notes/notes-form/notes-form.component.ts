@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterContentInit, Component, Input, OnInit} from '@angular/core';
 import {CostCenter, Note} from '@primetec/primetec-angular';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
@@ -15,7 +15,7 @@ import {CameraService} from '../../../../shared/services/camera/camera.service';
   templateUrl: './notes-form.component.html',
   styleUrls: ['./notes-form.component.scss'],
 })
-export class NotesFormComponent implements OnInit {
+export class NotesFormComponent implements OnInit, AfterContentInit {
 
   @Input() costCenter: CostCenter;
   @Input() note: Note = null;
@@ -24,6 +24,7 @@ export class NotesFormComponent implements OnInit {
   public imageSrc = '';
   public isSaving = false;
   private userConnection: any;
+  public loadingImg = false;
 
   constructor(
     private modalController: ModalController,
@@ -50,7 +51,27 @@ export class NotesFormComponent implements OnInit {
       image: [{value: this.note ? this.note.image : '', disabled: !!this.note}]
     });
 
-    this.imageSrc = this.note && this.note.image ? 'data:image/jpeg;base64,' + this.note.image : '';
+    // this.imageSrc = this.note && this.note.image ? 'data:image/jpeg;base64,' + this.note.image : '';
+  }
+
+  ngAfterContentInit(): void {
+    this.loadBigImage();
+  }
+
+  /**
+   * loadBigImage
+   */
+  private loadBigImage = () => {
+    if (this.note && this.note.image) {
+      this.loadingImg = true;
+      this.contractDetailService.getNoteImage(this.note.id.toString()).subscribe((success: any) => {
+        this.imageSrc = 'data:image/jpeg;base64,' + success.image;
+        this.loadingImg = false;
+      }, error => {
+        this.loadingImg = false;
+        this.httpService.errorHandler(error);
+      });
+    }
   }
 
   /**

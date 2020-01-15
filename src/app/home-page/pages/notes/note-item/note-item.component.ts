@@ -5,9 +5,7 @@ import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {Device} from '@ionic-native/device/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
-
-declare var window;
-
+import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 
 @Component({
   selector: 'app-note-item',
@@ -20,19 +18,20 @@ export class NoteItemComponent implements OnInit {
   @Output() deleteNote: EventEmitter<Note | null> = new EventEmitter<Note | null>();
   @Input() item: Note = null;
   @Input() slideDisabled = true;
-  iOs: boolean;
+
+  public iOs: boolean;
 
   constructor(
     private modalController: ModalController,
     private file: File,
     private previewAnyFile: PreviewAnyFile,
     private device: Device,
-    private _platform: Platform,
-    private fileOpener: FileOpener
+    private platform: Platform,
+    private fileOpener: FileOpener,
+    private contractDetailService: ContractDetailService
   ) {
-    _platform.ready().then(() => {
-
-      this.iOs = _platform.is('ios');
+    this.platform.ready().then(() => {
+      this.iOs = this.platform.is('ios');
     });
   }
 
@@ -72,22 +71,21 @@ export class NoteItemComponent implements OnInit {
    */
   public viewPicture = async () => {
     if (this.getPhotoPath() && this.device.cordova) {
+      const bigImage = await this.getNoteImage(this.item.id);
+
       const fileName = `${this.item.id}.jpeg`;
       const dirName = this.iOs ? this.file.tempDirectory : this.file.externalApplicationStorageDirectory;
-      // console.log(this.iOs);
       const filePath = dirName + '/' + fileName;
       const mimeType = 'image/jpeg';
 
-      const resp = await this.createFile(dirName, fileName, mimeType);
+      const resp = await this.createFile(dirName, fileName, mimeType, bigImage);
 
       if (resp) {
-        // console.log(filePath);
         if (this.iOs) {
           this.previewAnyFile.preview(filePath)
             .then((res: any) => console.log(res))
             .catch((error: any) => console.error(error));
         } else {
-          // this.previewAnyFile.preview('content:///storage/emulated/0/Android/data/cl.primetec.fx11/Download/82.jpeg')
           this.fileOpener.open(filePath, mimeType)
             .then((success) => {
               console.log('File is opened');
@@ -107,11 +105,11 @@ export class NoteItemComponent implements OnInit {
    * @param fileName
    * @param mimeType
    */
-  private createFile = (dirName: string, fileName: string, mimeType: string) => {
+  private createFile = (dirName: string, fileName: string, mimeType: string, base64: string) => {
     return new Promise(resolve => {
       this.file.createFile(dirName, fileName, true).then((data) => {
 
-        const byteCharacters = atob(this.item.image);
+        const byteCharacters = atob(base64);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
           byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -137,5 +135,19 @@ export class NoteItemComponent implements OnInit {
       });
     });
   };
+
+  /**
+   * getNoteImage
+   * @param id
+   */
+  private getNoteImage = (id: number): Promise<string | null> => {
+    return new Promise<string | null>(resolve => {
+      this.contractDetailService.getNoteImage(id.toString()).subscribe((success: any) => {
+        resolve(success.image);
+      }, error => {
+        resolve(null);
+      });
+    });
+  }
 
 }

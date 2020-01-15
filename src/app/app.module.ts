@@ -26,10 +26,9 @@ import {RouteReuseStrategy} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {GeolocationService} from './shared/services/geolocation/geolocation.service';
 import {SyncService} from './shared/services/sync/sync.service';
-import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {LoaderService} from './shared/services/loader/loader.service';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
-import {StoreService} from "./shared/services/store/store.service";
+import {StoreService} from './shared/services/store/store.service';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 

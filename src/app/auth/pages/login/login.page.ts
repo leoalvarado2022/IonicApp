@@ -77,16 +77,11 @@ export class LoginPage implements OnInit {
         this.addPin(login);
       } else {
         if (login !== null) {
-          this.storeService.setToken(login.token);
-          this.storeService.setLoginStatus(true);
+          this.storeService.setUser(login.user);
           this.storeService.setUserConnections(login.connections);
+          this.storeService.setToken(login.token);
           this.storeService.setDefaultConnection(login.connections);
-
-          this.loaderService.startLoader();
-          const dataSynced = await this.syncData(login.user.username);
-          await this.syncService.storeSync(dataSynced);
-          this.storeService.setActiveCompany(dataSynced.data.companies[0]);
-          this.loaderService.stopLoader();
+          this.storeService.setLoginStatus(true);
           this.makeLogin();
         }
       }
@@ -94,21 +89,6 @@ export class LoginPage implements OnInit {
       console.log({e});
     }
 
-  }
-
-  /**
-   * syncData
-   * @param username
-   */
-  private syncData = (username: string): Promise<any> => {
-    return new Promise<any>(resolve => {
-      this.syncService.syncData(username).subscribe(async (success: any) => {
-        resolve(success.data);
-      }, error => {
-        resolve(null);
-        this.httpService.errorHandler(error);
-      });
-    });
   }
 
   /**

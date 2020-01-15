@@ -6,8 +6,5 @@ export enum StoreActions {
   SetUserActiveConnection = 'SET_USER_ACTIVE_CONNECTION',
   SetLoginStatus = 'SET_LOGIN_STATUS',
   SetUserActiveCompany = 'SET_USER_ACTIVE_COMPANY',
-
-  SetUser = 'SET_USER',
-  GetUser = 'GET_USER',
-  RemoveUser = 'REMOVE_USER'
+  SetUser = 'SET_USER'
 }

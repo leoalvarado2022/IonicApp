@@ -3,6 +3,7 @@ import {environment} from '../../../../environments/environment';
 import {HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ToastService} from '../toast/toast.service';
+import {StoreService} from '../store/store.service';
 
 @Injectable()
 export class HttpService {
@@ -11,6 +12,7 @@ export class HttpService {
 
   constructor(
     private router: Router,
+    private storeService: StoreService,
     private toastService: ToastService
   ) {
 
@@ -30,7 +32,7 @@ export class HttpService {
    * @return HttpHeaders
    */
   public getHeaders = (): HttpHeaders => {
-    const token = localStorage.getItem('token');
+    const token = this.storeService.getToken();
 
     return new HttpHeaders({
       Authorization: token !== null ? 'Bearer ' + token : '',

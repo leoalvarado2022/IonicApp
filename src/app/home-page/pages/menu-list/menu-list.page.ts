@@ -12,6 +12,7 @@ import * as MenuAction from '../../../store/menu/menu.action';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {Subscription} from 'rxjs';
+import {StoreService} from "../../../shared/services/store/store.service";
 
 @Component({
   selector: 'app-menu-list',
@@ -37,13 +38,14 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
     private networkService: NetworkService,
     private activatedRoute: ActivatedRoute,
     private httpService: HttpService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
-    this.menus = [];
+    this.makeSync();
     this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
   }
 
@@ -53,6 +55,16 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.network$.unsubscribe();
+  }
+
+  /**
+   * makeSync
+   */
+  private makeSync = async () => {
+    this.loaderService.startLoader();
+    const dataSynced = await this.syncData();
+    await this.syncService.storeSync(dataSynced);
+    this.loaderService.stopLoader();
   }
 
   /**
@@ -110,11 +122,10 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
    */
   private syncData = (): Promise<any> => {
     return new Promise<any>(resolve => {
-      if (this.userData) {
-        const {user} = this.userData;
-        const username = user.username;
-        
-        this.syncService.syncData(username).subscribe((success: any) => {
+      const user = this.storeService.getUser();
+
+      if (user) {
+        this.syncService.syncData(user.username).subscribe((success: any) => {
           resolve(success.data);
         }, async error => {
           this.httpService.errorHandler(error);

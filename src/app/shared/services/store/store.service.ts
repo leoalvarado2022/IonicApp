@@ -26,13 +26,16 @@ export class StoreService extends ObservableStore<StoreInterface> {
     }
 
     return {
-      isLogged: false,
-      remember: false,
-      rememberData: null,
-      userActiveConnection: null,
-      userConnections: [],
-      userToken: null,
-      userActiveCompany: null
+      auth: {
+        isLogged: false,
+        remember: false,
+        rememberData: null,
+        userActiveCompany: null,
+        userActiveConnection: null,
+        userConnections: null,
+        userToken: '',
+        userData: null
+      }
     };
   }
 
@@ -50,14 +53,15 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param remember
    */
   public setRemember = (remember: boolean): void => {
-    this.setState({remember}, StoreActions.SetRemember);
+    const auth = {...this.getState().auth, remember};
+    this.setState({auth}, StoreActions.SetRemember);
   }
 
   /**
    * getRemember
    */
   public getRemember = (): boolean => {
-    return this.getState().remember;
+    return this.getState().auth.remember;
   }
 
   /**
@@ -65,21 +69,23 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param rememberData
    */
   public setRememberData = (rememberData: RememberData): void => {
-    this.setState({rememberData}, StoreActions.SetRememberData);
+    const auth = {...this.getState().auth, rememberData};
+    this.setState({auth}, StoreActions.SetRememberData);
   }
 
   /**
    * getRememberData
    */
   public getRememberData = (): RememberData => {
-    return this.getState().rememberData;
+    return this.getState().auth.rememberData;
   }
 
   /**
    * removeRememberData
    */
   public removeRememberData = (): void => {
-    this.setState({rememberData: null}, StoreActions.SetRememberData);
+    const auth = {...this.getState().auth, rememberData: null};
+    this.setState({auth}, StoreActions.SetRememberData);
   }
 
   /**
@@ -87,14 +93,15 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param token
    */
   public setToken = (userToken: string): void => {
-    this.setState({userToken}, StoreActions.SetUserToken);
+    const auth = {...this.getState().auth, userToken};
+    this.setState({auth}, StoreActions.SetUserToken);
   }
 
   /**
    * getToken
    */
   public getToken = (): string => {
-    return this.getState().userToken;
+    return this.getState().auth.userToken;
   }
 
   /**
@@ -102,14 +109,15 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param userConnections
    */
   public setUserConnections = (userConnections: Array<Connection>): void => {
-    this.setState({userConnections}, StoreActions.SetUserConnections);
+    const auth = {...this.getState().auth, userConnections};
+    this.setState({auth}, StoreActions.SetUserConnections);
   }
 
   /**
    * getUserConnections
    */
   public getUserConnections = (): Array<Connection> => {
-    return this.getState().userConnections;
+    return this.getState().auth.userConnections;
   }
 
   /**
@@ -117,7 +125,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param activeConnection
    */
   public setActiveConnection = (activeConnection: Connection) => {
-    this.setState({userActiveConnection: activeConnection}, StoreActions.SetUserActiveConnection);
+    const auth = {...this.getState().auth, userActiveConnection: activeConnection};
+    this.setState({auth}, StoreActions.SetUserActiveConnection);
   }
 
   /**
@@ -140,8 +149,16 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * setLoginStatus
    * @param status
    */
-  public setLoginStatus = (status: boolean) => {
-    this.setState({isLogged: status}, StoreActions.SetLoginStatus);
+  public setLoginStatus = (status: boolean): void => {
+    const auth = {...this.getState().auth, isLogged: status};
+    this.setState({auth}, StoreActions.SetLoginStatus);
+  }
+
+  /**
+   * getLoginStatus
+   */
+  public getLoginStatus = (): boolean => {
+    return this.getState().auth.isLogged;
   }
 
   /**
@@ -149,7 +166,23 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param company
    */
   public setActiveCompany = (company: Company) => {
-    this.setState({userActiveCompany: company}, StoreActions.SetUserActiveCompany);
+    const auth = {...this.getState().auth, userActiveCompany: company};
+    this.setState({auth}, StoreActions.SetUserActiveCompany);
+  }
+
+  /**
+   * setUser
+   */
+  public setUser = (user: any) => {
+    const auth = {...this.getState().auth, userData: user};
+    this.setState({auth}, StoreActions.SetUser);
+  }
+
+  /**
+   * getUser
+   */
+  public getUser = () => {
+    return this.getState().auth.userData;
   }
 
 }

@@ -48,7 +48,7 @@ export class MenuComponent implements OnInit {
   }
 
   /**
-   *closeMenu
+   * closeMenu
    */
   public closeMenu = () => {
     this.menu.close('menu');
@@ -59,7 +59,7 @@ export class MenuComponent implements OnInit {
    */
   public close = () => {
     this.closeMenu();
-    this.authService.closeSesion();
+    // this.authService.closeSesion();
   }
 
   /**

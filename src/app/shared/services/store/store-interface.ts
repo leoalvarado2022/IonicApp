@@ -1,4 +1,4 @@
-import {Connection} from '@primetec/primetec-angular';
+import {Company, Connection} from '@primetec/primetec-angular';
 
 export interface StoreInterface {
   remember: boolean;
@@ -7,6 +7,7 @@ export interface StoreInterface {
   userToken: string;
   userConnections: Array<Connection>;
   userActiveConnection: Connection;
+  userActiveCompany: Company;
 }
 
 export interface RememberData {

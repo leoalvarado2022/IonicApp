@@ -8,7 +8,6 @@ import {Store} from '@ngrx/store';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {Company, Connection} from "@primetec/primetec-angular";
 import {StoreService} from 'src/app/shared/services/store/store.service';
 
 @Component({
@@ -74,29 +73,21 @@ export class LoginPage implements OnInit {
         this.storeService.removeRememberData();
       }
 
-      if (login !== null) {
-        this.storeService.setUserConnections(login.connections);
-        this.storeService.setToken(login.token);
-      }
-
       if (login && login.code === 1) {
         this.addPin(login);
       } else {
         if (login !== null) {
-          this.setDefaultConnection(login.connections);
+          this.storeService.setToken(login.token);
+          this.storeService.setLoginStatus(true);
+          this.storeService.setUserConnections(login.connections);
+          this.storeService.setDefaultConnection(login.connections);
 
-          this.authService.setLoggedIn();
-          this.authService.setToken(login.token);
           this.loaderService.startLoader();
-          this.syncService.syncData(login.user.username).subscribe(async (success: any) => {
-            await this.syncService.storeSync(success.data);
-            this.loaderService.stopLoader();
-            this.setDefaultCompany(success.data.companies);
-            this.makeLogin();
-          }, error => {
-            this.loaderService.stopLoader();
-            this.httpService.errorHandler(error);
-          });
+          const dataSynced = await this.syncData(login.user.username);
+          await this.syncService.storeSync(dataSynced);
+          this.storeService.setActiveCompany(dataSynced.data.companies[0]);
+          this.loaderService.stopLoader();
+          this.makeLogin();
         }
       }
     } catch (e) {
@@ -106,13 +97,28 @@ export class LoginPage implements OnInit {
   }
 
   /**
+   * syncData
+   * @param username
+   */
+  private syncData = (username: string): Promise<any> => {
+    return new Promise<any>(resolve => {
+      this.syncService.syncData(username).subscribe(async (success: any) => {
+        resolve(success.data);
+      }, error => {
+        resolve(null);
+        this.httpService.errorHandler(error);
+      });
+    });
+  }
+
+  /**
    * addPin
    * @param login add PIN
    */
   public addPin = (login: any) => {
     this.toastService.warningToast(login.message);
     this.loginForm.reset();
-    this.authService.setToken(login.token);
+    this.storeService.setToken(login.token);
     this.router.navigate(['auth/pin']);
   }
 
@@ -182,32 +188,6 @@ export class LoginPage implements OnInit {
         }
       });
     });
-  }
-
-  /**
-   * setDefaultConnection
-   * @param connections
-   */
-  private setDefaultConnection = (connections: Array<Connection> = []) => {
-    if (connections.length > 0) {
-      const defaultConnection = connections.find(item => item.default);
-
-      if (defaultConnection) {
-        this.authService.setConnection(defaultConnection);
-      } else {
-        this.authService.setConnection(connections[0]);
-      }
-    }
-  }
-
-  /**
-   * setDefaultCompany
-   * @param companies
-   */
-  private setDefaultCompany = (companies: Array<Company> = []) => {
-    if (companies.length > 0) {
-      this.authService.setCompany(companies[0]);
-    }
   }
 
 }

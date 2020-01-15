@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
 import {RememberData, StoreInterface} from './store-interface';
 import {StoreActions} from './actions';
-import {Connection} from '@primetec/primetec-angular';
+import {Company, Connection} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +31,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       rememberData: null,
       userActiveConnection: null,
       userConnections: [],
-      userToken: null
+      userToken: null,
+      userActiveCompany: null
     };
   }
 
@@ -82,6 +83,21 @@ export class StoreService extends ObservableStore<StoreInterface> {
   }
 
   /**
+   * setToken
+   * @param token
+   */
+  public setToken = (userToken: string): void => {
+    this.setState({userToken}, StoreActions.SetUserToken);
+  }
+
+  /**
+   * getToken
+   */
+  public getToken = (): string => {
+    return this.getState().userToken;
+  }
+
+  /**
    * setUserConnections
    * @param userConnections
    */
@@ -97,17 +113,43 @@ export class StoreService extends ObservableStore<StoreInterface> {
   }
 
   /**
-   * setToken
-   * @param token
+   * setActiveConnection
+   * @param activeConnection
    */
-  public setToken = (userToken: string): void => {
-    this.setState({userToken}, StoreActions.SetUserToken);
+  public setActiveConnection = (activeConnection: Connection) => {
+    this.setState({userActiveConnection: activeConnection}, StoreActions.SetUserActiveConnection);
   }
 
   /**
-   * getToken
+   * setDefaultConnection
+   * @param connections
    */
-  public getToken = (): string => {
-    return this.getState().userToken;
+  public setDefaultConnection = (connections: Array<Connection> = []) => {
+    if (connections.length > 0) {
+      const defaultConnection = connections.find(item => item.default);
+
+      if (defaultConnection) {
+        this.setActiveConnection(defaultConnection);
+      } else {
+        this.setActiveConnection(connections[0]);
+      }
+    }
   }
+
+  /**
+   * setLoginStatus
+   * @param status
+   */
+  public setLoginStatus = (status: boolean) => {
+    this.setState({isLogged: status}, StoreActions.SetLoginStatus);
+  }
+
+  /**
+   * setActiveCompany
+   * @param company
+   */
+  public setActiveCompany = (company: Company) => {
+    this.setState({userActiveCompany: company}, StoreActions.SetUserActiveCompany);
+  }
+
 }

@@ -9,7 +9,7 @@ import * as MenuAction from '../../../store/menu/menu.action';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {Company, Connection} from "@primetec/primetec-angular";
+import {Company, Connection} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-login',

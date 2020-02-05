@@ -1,6 +1,6 @@
 {
   "name": "fx11_movil",
-  "version": "1.0.39",
+  "version": "1.0.41",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -113,7 +113,8 @@
       }
     },
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

@@ -60,12 +60,17 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
    */
   private init = async () => {
     const menus = await this.syncService.getMenus();
-    this.menus = [...menus]
 
-    const userData = await this.userService.getUserData()
-    this.store.dispatch(new MenuAction.AddProfile(userData));
-    this.userData = userData;
+    if (menus) {
+      this.menus = [...menus]
+      const userData = await this.userService.getUserData()
+      this.store.dispatch(new MenuAction.AddProfile(userData));
+      this.userData = userData;
+    } else {
+      this.menus = [];
+    }
   }
+
 
   /**
    * reSync
@@ -113,7 +118,7 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
       if (this.userData) {
         const {user} = this.userData;
         const username = user.username;
-        
+
         this.syncService.syncData(username).subscribe((success: any) => {
           resolve(success.data);
         }, async error => {

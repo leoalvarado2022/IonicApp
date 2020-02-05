@@ -8,7 +8,7 @@ export const environment = {
   production: false,
   app_name: 'FX10',
   api_url: 'http://localhost:5572',
-  appVersion: 'v1.0.39',
+  appVersion: 'v1.0.41',
   tz: 'America/Santiago',
   iosDeviceNames
 };

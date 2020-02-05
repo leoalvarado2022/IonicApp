@@ -38,18 +38,16 @@ export class ListaPage implements OnInit, AfterViewInit {
   public loadCostCenters = async () => {
     this.loaderService.startLoader();
     const costCenters = await this.syncService.getCostCenters();
-    this.costCenters = [...costCenters];
-    this.filteredCostCenters = [...costCenters];
-    this.loaderService.stopLoader();
 
-    /*
-    this.loaderService.startLoader();
-    this.syncService.getCostCenters().then((costCenters) => {
+    if (costCenters) {
       this.costCenters = [...costCenters];
       this.filteredCostCenters = [...costCenters];
-      this.loaderService.stopLoader();
-    });
-    */
+    } else {
+      this.costCenters = [];
+      this.filteredCostCenters = [];
+    }
+
+    this.loaderService.stopLoader();
   }
 
   /**

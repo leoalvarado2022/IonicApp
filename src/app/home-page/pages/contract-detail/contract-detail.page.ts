@@ -10,6 +10,7 @@ import {GeolocationService} from '../../../shared/services/geolocation/geolocati
 import {UserService} from '../../../shared/services/user/user.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-contract-detail',
@@ -20,16 +21,13 @@ export class ContractDetailPage implements OnInit, OnDestroy {
 
   public openSelected = false;
   public geolocationClass = false;
+
   public productionContracts: Array<ProductContract> = [];
   public costCenter: CostCenter = null;
   private units: Array<Unit> = [];
   private qualityEstimateDetail: Array<QualityDetail>;
   private lat: number;
   private lng: number;
-
-  private costCenter$: Subscription;
-  private productionContracts$: Subscription;
-  private qualityEstimateDetail$: Subscription;
   private geolocationService$: Subscription;
 
   constructor(
@@ -42,43 +40,40 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     private geolocationService: GeolocationService,
     private userService: UserService,
     private toastService: ToastService,
-    public alertService: AlertService
+    public alertService: AlertService,
+    private storeService: StoreService
   ) {
 
   }
 
-  ionViewWillEnter() {
-    this.loadUnits();
-  }
-
   ngOnInit(): void {
+    this.loadUnits();
     const id = this.route.snapshot.paramMap.get('id');
+
 
     if (id) {
       this.loadContractDetail(id);
     }
 
-    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => this.costCenter = value);
-    this.productionContracts$ = this.contractDetailService.getProductionContracts().subscribe(value => this.productionContracts = value);
-    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => this.qualityEstimateDetail = value);
     this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe(data => {
       this.lat = data.lat;
       this.lng = data.lng;
     });
+
+    this.storeService.stateChanged.subscribe(data => {
+      console.log('data', data);
+    });
   }
 
   ngOnDestroy(): void {
-    this.costCenter$.unsubscribe();
-    this.productionContracts$.unsubscribe();
-    this.qualityEstimateDetail$.unsubscribe();
     this.geolocationService$.unsubscribe();
   }
 
   /**
    * loadUnits
    */
-  private loadUnits = async () => {
-    this.units = await this.syncService.getUnits();
+  private loadUnits = (): void => {
+    this.units = this.storeService.getUnits();
   }
 
   /**
@@ -87,7 +82,9 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   private loadContractDetail = (id: string) => {
     this.loaderService.startLoader();
-    this.contractDetailService.getCostCenterDetail(id).subscribe(success => {
+    this.contractDetailService.getCostCenterDetail(id).subscribe((success: any) => {
+      const data = success.data;
+      this.storeService.setContractData(data);
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();

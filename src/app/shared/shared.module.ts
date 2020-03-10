@@ -23,7 +23,7 @@ import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {CameraService} from './services/camera/camera.service';
 import {RutPipe} from './pipes/rut/rut.pipe';
 import {SyncService} from './services/sync/sync.service';
-import {FileOpener} from "@ionic-native/file-opener/ngx";
+import {FileOpener} from '@ionic-native/file-opener/ngx';
 
 @NgModule({
   declarations: [

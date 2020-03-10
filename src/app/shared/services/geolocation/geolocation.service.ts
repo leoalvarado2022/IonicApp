@@ -64,7 +64,7 @@ export class GeolocationService {
       this.positionHistory.push({
         lat: position.coords.latitude,
         lng: position.coords.longitude
-      })
+      });
 
       this.updatePosition(position.coords.latitude, position.coords.longitude);
     }, error => {

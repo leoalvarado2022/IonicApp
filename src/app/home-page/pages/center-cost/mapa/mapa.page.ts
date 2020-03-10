@@ -2,8 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {GeolocationService} from "../../../../shared/services/geolocation/geolocation.service";
-import {Subscription} from "rxjs";
+import {GeolocationService} from '../../../../shared/services/geolocation/geolocation.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-mapa',

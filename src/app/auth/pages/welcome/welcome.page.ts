@@ -4,7 +4,7 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertController, Platform} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
 import {Device} from '@ionic-native/device/ngx';
-import {iosDeviceNames} from "../../../../environments/ios-device-names";
+import {iosDeviceNames} from '../../../../environments/ios-device-names';
 
 @Component({
   selector: 'app-welcome',

@@ -6,16 +6,7 @@ import {BehaviorSubject, of} from 'rxjs';
 import {LoaderService} from '../loader/loader.service';
 import {HttpService} from '../http/http.service';
 import {catchError, map} from 'rxjs/operators';
-
-interface ContractInterface {
-  costCenter: CostCenter;
-  productionContracts: Array<ProductContract>;
-  productionContractsDetails: Array<ProductContractDetail>;
-  harvestEstimate: Array<HarvestEstimate>;
-  qualityEstimate: Array<QualityEstimate>;
-  qualityEstimateDetail: Array<QualityDetail>;
-  notes: Array<Note>;
-}
+import {ContractInterface} from '../store/store-interface';
 
 @Injectable()
 export class ContractDetailService {

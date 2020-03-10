@@ -1,8 +1,26 @@
 import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
-import {RememberData, StoreInterface, Sync} from './store-interface';
+import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
-import {Caliber, CfgAccess, Company, Connection, CostCenterList, EntityList, Generic, Quadrille, TabMenu, Unit} from '@primetec/primetec-angular';
+import {
+  Caliber,
+  CfgAccess,
+  Company,
+  Connection,
+  CostCenter,
+  CostCenterList,
+  EntityList,
+  Generic,
+  HarvestEstimate,
+  Note,
+  ProductContract,
+  ProductContractDetail,
+  Quadrille,
+  QualityDetail,
+  QualityEstimate,
+  TabMenu,
+  Unit
+} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +66,16 @@ export class StoreService extends ObservableStore<StoreInterface> {
         workers: [],
         processPlants: [],
         destinations: []
+      },
+      contract: {
+        costCenter: null,
+        productionContracts: [],
+        productionContractsDetails: [],
+        harvestEstimate: [],
+        qualityEstimate: [],
+        qualityEstimateDetail: [],
+        notes: [],
+        holidays: []
       }
     };
   }
@@ -190,6 +218,13 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public removeRememberData = (): void => {
     const auth = {...this.getState().auth, rememberData: null};
     this.setState({auth}, StoreActions.SetRememberData);
+  }
+
+  /**
+   * getUserConnections
+   */
+  public getUserConnections = (): Array<Connection> => {
+    return this.getState().auth.userConnections;
   }
 
   /**
@@ -458,19 +493,176 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * ================================================================================================================
    */
 
-  // PENDING TO REVIEW
-  // ================================================================================================================
-  // ================================================================================================================
-  // ================================================================================================================
-  // ================================================================================================================
-  // ================================================================================================================
-
+  /**
+   * CONTRACT STATE METHODS
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   */
 
   /**
-   * getUserConnections
+   * setCostCenter
+   * @param costCenter
    */
-  public getUserConnections = (): Array<Connection> => {
-    return this.getState().auth.userConnections;
+  public setCostCenter = (costCenter: CostCenter): void => {
+    const contract = {...this.getState().contract, costCenter};
+    this.setState({contract}, StoreActions.SetCostCenter);
   }
+
+  /**
+   * getCostCenter
+   */
+  public getCostCenter = (): CostCenter => {
+    return this.getState().contract.costCenter;
+  }
+
+  /**
+   * setProductionContracts
+   * @param productionContracts
+   */
+  public setProductionContracts = (productionContracts: Array<ProductContract>): void => {
+    const contract = {...this.getState().contract, productionContracts};
+    this.setState({contract}, StoreActions.SetProductionContracts);
+  }
+
+  /**
+   * getProductionContracts
+   */
+  public getProductionContracts = (): Array<ProductContract> => {
+    return this.getState().contract.productionContracts;
+  }
+
+  /**
+   * setProductionContractsDetails
+   * @param productionContractsDetails
+   */
+  public setProductionContractsDetails = (productionContractsDetails: Array<ProductContractDetail>): void => {
+    const contract = {...this.getState().contract, productionContractsDetails};
+    this.setState({contract}, StoreActions.SetProductionContractsDetails);
+  }
+
+  /**
+   * getProductionContractsDetails
+   */
+  public getProductionContractsDetails = (): Array<ProductContractDetail> => {
+    return this.getState().contract.productionContractsDetails;
+  }
+
+  /**
+   * setHarvestEstimate
+   * @param harvestEstimate
+   */
+  public setHarvestEstimate = (harvestEstimate: Array<HarvestEstimate>): void => {
+    const contract = {...this.getState().contract, harvestEstimate};
+    this.setState({contract}, StoreActions.SetHarvestEstimate);
+  }
+
+  /**
+   * getHarvestEstimate
+   */
+  public getHarvestEstimate = (): Array<HarvestEstimate> => {
+    return this.getState().contract.harvestEstimate;
+  }
+
+  /**
+   * setQualityEstimate
+   * @param qualityEstimate
+   */
+  public setQualityEstimate = (qualityEstimate: Array<QualityEstimate>): void => {
+    const contract = {...this.getState().contract, qualityEstimate};
+    this.setState({contract}, StoreActions.SetQualityEstimate);
+  }
+
+  /**
+   * getQualityEstimate
+   */
+  public getQualityEstimate = (): Array<QualityEstimate> => {
+    return this.getState().contract.qualityEstimate;
+  }
+
+  /**
+   * setQualityEstimateDetail
+   * @param qualityEstimateDetail
+   */
+  public setQualityEstimateDetail = (qualityEstimateDetail: Array<QualityDetail>): void => {
+    const contract = {...this.getState().contract, qualityEstimateDetail};
+    this.setState({contract}, StoreActions.SetQualityEstimateDetail);
+  }
+
+  /**
+   * getQualityEstimateDetail
+   */
+  public getQualityEstimateDetail = (): Array<QualityDetail> => {
+    return this.getState().contract.qualityEstimateDetail;
+  }
+
+  /**
+   * setNotes
+   * @param notes
+   */
+  public setNotes = (notes: Array<Note>): void => {
+    const contract = {...this.getState().contract, notes};
+    this.setState({contract}, StoreActions.SetNotes);
+  }
+
+  /**
+   * getNotes
+   */
+  public getNotes = (): Array<Note> => {
+    return this.getState().contract.notes;
+  }
+
+  /**
+   * setHolidays
+   * @param holidays
+   */
+  public setHolidays = (holidays: Array<any>): void => {
+    const contract = {...this.getState().contract, holidays};
+    this.setState({contract}, StoreActions.SetHolidays);
+  }
+
+  /**
+   * getHolidays
+   */
+  public getHolidays = (): Array<any> => {
+    return this.getState().contract.holidays;
+  }
+
+  /**
+   * setContractData
+   * @param data
+   */
+  public setContractData = (data: ContractInterface) => {
+    const {
+      costCenter,
+      productionContracts,
+      productionContractsDetails,
+      harvestEstimate,
+      qualityEstimate,
+      qualityEstimateDetail,
+      notes,
+      holidays
+    } = data;
+
+    this.setCostCenter(costCenter);
+    this.setProductionContracts(productionContracts);
+    this.setProductionContractsDetails(productionContractsDetails);
+    this.setHarvestEstimate(harvestEstimate);
+    this.setQualityEstimate(qualityEstimate);
+    this.setQualityEstimateDetail(qualityEstimateDetail);
+    this.setNotes(notes);
+    this.setHolidays(holidays);
+  }
+
+  /**
+   * END OF CONTRACT STATE METHODS
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   */
 
 }

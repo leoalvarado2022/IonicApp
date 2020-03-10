@@ -7,12 +7,12 @@ import {Router} from '@angular/router';
 import {AuthService} from '../../../shared/services/auth/auth.service';
 import {ValidateRut} from '@primetec/primetec-angular';
 import {Store} from '@ngrx/store';
-import * as MenuAction from '../../../store/menu/menu.action';
 import {ModalController} from '@ionic/angular';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {CameraService} from '../../../shared/services/camera/camera.service';
 import {Device} from '@ionic-native/device/ngx';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-profile',
@@ -22,12 +22,9 @@ import {Device} from '@ionic-native/device/ngx';
 export class ProfilePage implements OnInit {
 
   public profile: any = null;
-  public data: any = null;
-
-  public registerForm: FormGroup;
   public avatarPreview: any = null;
-
   private rutValue: string;
+  public registerForm: FormGroup;
 
   constructor(
     private userService: UserService,
@@ -40,61 +37,55 @@ export class ProfilePage implements OnInit {
     public device: Device,
     private authService: AuthService,
     private httpService: HttpService,
-    private cameraService: CameraService
+    private cameraService: CameraService,
+    private storeService: StoreService
   ) {
-    this.initForm();
+
   }
 
-  async ngOnInit() {
-    this.data = await this.userService.getUserData();
-    if (this.data.user) {
-      this.profile = this.data.user;
-      this.avatarPreview = `data:image/jpeg;base64,${this.data.user.avatar}`;
-      this.initForm(this.data.user);
-    }
-  }
-
-  initForm = (data?) => {
-    this.rutValue = data && data !== null ? data.rut : null;
+  ngOnInit() {
+    this.loadUserData();
 
     this.registerForm = this.formBuilder.group({
-      nombre: [data && data !== null ? data.name : null, Validators.required],
-      avatar: [data && data !== null ? data.avatar : null],
-      apellido_paterno: [data && data !== null ? data.lastName : null, Validators.required],
-      apellido_materno: [data && data !== null ? data.surName : null, Validators.required],
-      rut: [{value: data && data !== null ? data.rut : null, disabled: true}, [
+      id: [this.profile.id, Validators.required],
+      nombre: [this.profile.name, Validators.required],
+      avatar: [this.profile.avatar],
+      apellido_paterno: [this.profile.lastName, Validators.required],
+      apellido_materno: [this.profile.surName, Validators.required],
+      rut: [{value: this.profile.rut, disabled: true}, [
         Validators.required,
         ValidateRut
       ]],
-      telefono: [data && data !== null ? data.phone : null, [
-        Validators.required,
-        // Validators.pattern('^(([+569])([0-9]{11}))$')
-      ]
-      ],
-      email: [data && data !== null ? data.email : null, [
+      telefono: [this.profile.phone, Validators.required],
+      email: [this.profile.email, [
         Validators.required,
         Validators.email
       ]],
-      acceso: [data && data !== null ? data.access.toString() : null, Validators.required],
+      acceso: [this.profile.access.toString(), Validators.required],
     });
+  }
 
-    /**
-     * avatar: [data && data !== null ? null : null],
-     */
+  /**
+   * loadUserData
+   */
+  private loadUserData = (): void => {
+    this.profile = this.storeService.getUser();
+    this.avatarPreview = `data:image/jpeg;base64,${this.profile.avatar}`;
+    this.rutValue = this.profile.rut;
   }
 
   /**
    * onSubmit
    */
-  public async onSubmit() {
+  public onSubmit() {
     const list = {
       password: '',
-      token: this.authService.getToken(),
+      token: this.storeService.getToken(),
     };
     const data = Object.assign(list, this.registerForm.value);
-    data.rut = this.rutValue;
 
-    await this.update(data);
+    data.rut = this.rutValue;
+    this.update(data);
   }
 
   /**
@@ -112,35 +103,24 @@ export class ProfilePage implements OnInit {
    * update
    * @param data
    */
-  private async update(data): Promise<any> {
+  private update = (data): void => {
+    this.loaderService.startLoader();
+    this.userService.updateUser(data).subscribe(success => {
 
-    await this.loaderService.startLoader();
+      this.profile.access = data.acceso;
+      this.profile.surName = data.apellido_materno;
+      this.profile.lastName = data.apellido_paterno;
+      this.profile.name = data.nombre;
+      this.profile.phone = data.telefono;
+      this.profile.avatar = data.avatar;
 
-    return new Promise((resolve, reject) => {
-      this.userService.updateUser(data).subscribe(success => {
+      this.storeService.setUser(this.profile);
 
-        if (this.data.user) {
-          this.data.user.access = data.acceso;
-          this.data.user.surName = data.apellido_materno;
-          this.data.user.lastName = data.apellido_paterno;
-          this.data.user.name = data.nombre;
-          this.data.user.phone = data.telefono;
-          this.data.user.avatar = data.avatar;
-        }
-
-        this.userService.setUserData(this.data);
-        this.store.dispatch(new MenuAction.AddProfile(this.data));
-        this.ngOnInit();
-
-        // this.toastService.successToast('Se actualizo el usuario correctamente, inicia sesión');
-        this.router.navigate(['home-page']);
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        this.httpService.errorHandler(error);
-        resolve(false);
-      });
+      this.loaderService.stopLoader();
+      this.router.navigate(['home-page']);
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
     });
   }
 

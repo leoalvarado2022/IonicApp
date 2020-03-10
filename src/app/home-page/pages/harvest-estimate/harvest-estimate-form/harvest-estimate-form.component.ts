@@ -9,8 +9,8 @@ import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {Subscription} from "rxjs";
-import {debounceTime} from "rxjs/operators";
+import {Subscription} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
 
 @Component({
   selector: 'app-harvest-estimate-form',
@@ -213,20 +213,20 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (quantity && dailyAmount) {
       const days = Math.ceil((this.cleanParseNumber(quantity) > 0 ? this.cleanParseNumber(quantity) : 1) / (this.cleanParseNumber(dailyAmount) > 0 ? this.cleanParseNumber(dailyAmount) : 1));
       const holidays = [];
-      let daysAdded = 1;
+      const daysAdded = 1;
       let momentDate = moment.utc(startDate);
 
       if (workHolidays === 0) {
         this.holidays.forEach(holiday => {
           holidays.push(moment.utc(holiday.fecha).format(this.dateFormat));
-        })
+        });
       }
 
       momentDate = this.computeEndDate(days, daysAdded, momentDate, holidays);
 
       this.harvestForm.patchValue({
         endDate: momentDate.format(this.dateFormat)
-      })
+      });
 
       this.harvestForm.updateValueAndValidity();
     }
@@ -290,8 +290,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public getSelectedDestination = () => {
     if (this.destinations) {
       const id = this.harvestForm.get('destination').value;
-      const find = this.destinations.find(item => item["id"] === id);
-      return find ? find["name"] : '';
+      const find = this.destinations.find(item => item['id'] === id);
+      return find ? find['name'] : '';
     }
 
     return '';
@@ -304,7 +304,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (this.processPlants.length === 1) {
       this.harvestForm.patchValue({
         processPlant: this.processPlants[0].id
-      })
+      });
 
       this.harvestForm.updateValueAndValidity();
     }
@@ -317,7 +317,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (this.destinations.length === 1) {
       this.harvestForm.patchValue({
         destination: this.destinations[0].id
-      })
+      });
 
       this.harvestForm.updateValueAndValidity();
     }

@@ -1,8 +1,26 @@
-import {Caliber, CfgAccess, Company, Connection, CostCenterList, EntityList, Generic, Quadrille, TabMenu, Unit} from '@primetec/primetec-angular';
+import {
+  Caliber,
+  CfgAccess,
+  Company,
+  Connection,
+  CostCenter,
+  CostCenterList,
+  EntityList,
+  Generic,
+  HarvestEstimate,
+  Note,
+  ProductContract,
+  ProductContractDetail,
+  Quadrille, QualityDetail,
+  QualityEstimate,
+  TabMenu,
+  Unit
+} from '@primetec/primetec-angular';
 
 export interface StoreInterface {
   auth: Auth;
   sync: Sync;
+  contract: ContractInterface;
 }
 
 export interface Auth {
@@ -33,4 +51,15 @@ export interface Sync {
   workers: Array<any>;
   processPlants: Array<EntityList>;
   destinations: Array<Generic>;
+}
+
+export interface ContractInterface {
+  costCenter: CostCenter;
+  productionContracts: Array<ProductContract>;
+  productionContractsDetails: Array<ProductContractDetail>;
+  harvestEstimate: Array<HarvestEstimate>;
+  qualityEstimate: Array<QualityEstimate>;
+  qualityEstimateDetail: Array<QualityDetail>;
+  notes: Array<Note>;
+  holidays: Array<any>;
 }

@@ -7,6 +7,7 @@ import {UserService} from '../../../../shared/services/user/user.service';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
 import {HttpService} from '../../../../shared/services/http/http.service';
+import {StoreService} from '../../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-change-password',
@@ -15,7 +16,7 @@ import {HttpService} from '../../../../shared/services/http/http.service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-  passwordForm: FormGroup;
+  public passwordForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -24,16 +25,13 @@ export class ChangePasswordComponent implements OnInit {
     private loaderService: LoaderService,
     private toastService: ToastService,
     private modalController: ModalController,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
-    this.initForm();
-  }
-
-  initForm = () => {
     this.passwordForm = this.formBuilder.group({
       password: ['', Validators.required],
       confirm: ['', Validators.required],
@@ -43,10 +41,10 @@ export class ChangePasswordComponent implements OnInit {
   /**
    * @description actualizar usuario
    */
-  onSubmit = async () => {
-    const user = await this.userService.getUserRemember();
+  onSubmit = () => {
+    const user = this.storeService.getRememberData();
     const password = user.password;
-    const token = this.authService.getToken();
+    const token = this.storeService.getToken();
 
     const custom = {
       token,
@@ -57,37 +55,31 @@ export class ChangePasswordComponent implements OnInit {
 
     const data = Object.assign({}, custom);
 
-    await this.update(data, user);
-  }
-
-  modalClose = () => {
-    this.modalController.dismiss();
+    this.update(data, user);
   }
 
   /**
    * create
    * @param data
    */
-  private async update(data: any, userRemember: any): Promise<any> {
+  private update = (data: any, userRemember: any): void => {
+    this.loaderService.startLoader();
 
-    await this.loaderService.startLoader();
+    this.userService.updatePassword(data).subscribe(success => {
 
-    return new Promise((resolve, reject) => {
-      this.userService.updatePassword(data).subscribe(success => {
-
-        this.modalController.dismiss();
-
-        userRemember.password = data.newPassword;
-        this.userService.setUserRemember(userRemember);
-        this.toastService.successToast('Se actualizo la contraseña correctamente');
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        this.httpService.errorHandler(error);
-        resolve(false);
-      });
+      userRemember.password = data.newPassword;
+      this.storeService.setRememberData(userRemember);
+      this.toastService.successToast('Se actualizo la contraseña correctamente');
+      this.modalClose();
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
     });
+  }
+
+  modalClose = () => {
+    this.modalController.dismiss();
   }
 
 }

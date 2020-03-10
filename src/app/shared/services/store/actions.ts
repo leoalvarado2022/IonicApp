@@ -6,5 +6,16 @@ export enum StoreActions {
   SetUserActiveConnection = 'SET_USER_ACTIVE_CONNECTION',
   SetLoginStatus = 'SET_LOGIN_STATUS',
   SetUserActiveCompany = 'SET_USER_ACTIVE_COMPANY',
-  SetUser = 'SET_USER'
+  SetUser = 'SET_USER',
+  SetCompanies = 'SET_COMPANIES',
+  SetCostCenters = 'SET_COST_CENTERS',
+  SetMenus = 'SET_MENUS',
+  SetUnits = 'SET_UNITS',
+  SetQualities = 'SET_QUALITIES',
+  SetCalibers = 'SET_CALIBERS',
+  SetAccess = 'SET_ACCESS',
+  SetQuadrilles = 'SET_QUADRILLES',
+  SetWorkers = 'SET_WORKERS',
+  SetProcessPlants = 'SET_PROCESS_PLANTS',
+  SetDestinations = 'SET_DESTINATIONS'
 }

@@ -46,7 +46,7 @@ export class HttpService {
    * @param data
    */
   public buildBody = (data: any = null) => {
-    const connection = JSON.parse(localStorage.getItem('connection'));
+    const connection = this.storeService.getActiveConnection();
 
     if (data) {
       return Object.assign({}, data, {

@@ -5,6 +5,7 @@ import {AuthService} from '../../../shared/services/auth/auth.service';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Company, Connection} from '@primetec/primetec-angular';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-menu',
@@ -15,27 +16,35 @@ export class MenuComponent implements OnInit {
 
   public name: string;
   public profile: any = null;
-  public connections: Connection[] = [];
-  public companies: Company[] = [];
+  public connections: Array<Connection> = [];
+  public companies: Array<Company> = [];
 
   constructor(
     private menu: MenuController,
     private authService: AuthService,
     private userService: UserService,
     private syncService: SyncService,
-    private router: Router
+    private router: Router,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
-    this.userService.getMenuProfiles().subscribe((menuProfile: any) => {
-      if (menuProfile.data && menuProfile.data.user) {
-        this.profile = menuProfile.data.user;
-      }
-    });
+    this.loadData();
+  }
 
-    this.reloadData();
+  /**
+   *
+   */
+  private loadData = (): void => {
+    const user = this.storeService.getUser();
+    const connections = this.storeService.getUserConnections();
+    const companies = this.storeService.getCompanies();
+
+    this.profile = user;
+    this.connections = [...connections];
+    this.companies = [...companies];
   }
 
   /**
@@ -59,47 +68,16 @@ export class MenuComponent implements OnInit {
    */
   public close = () => {
     this.closeMenu();
-    // this.authService.closeSesion();
+    this.storeService.logout();
+    this.router.navigate(['auth/login']);
   }
 
   /**
    * menuReload
    * @param event
    */
-  public menuReload = async (event: any) => {
-    await this.reloadData();
-  }
-
-  /**
-   * reloadData
-   */
-  private reloadData = async () => {
-    await this.loadConnections();
-    await this.loadCompanies();
-  }
-
-  /**
-   * loadConnections
-   */
-  private loadConnections = async () => {
-    const user = await this.userService.getUserData();
-    if (user && user.connections) {
-      this.connections = [...user.connections];
-    } else {
-      this.connections = [];
-    }
-  }
-
-  /**
-   * loadCompanies
-   */
-  private loadCompanies = async () => {
-    const data = await this.syncService.getCompanies();
-    if (data) {
-      this.companies = [...data];
-    } else {
-      this.companies = [];
-    }
+  public menuReload = (event: any) => {
+    this.loadData();
   }
 
   /**

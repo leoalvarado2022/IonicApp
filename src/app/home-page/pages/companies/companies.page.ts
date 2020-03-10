@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Company} from '@primetec/primetec-angular';
 import {AuthService} from '../../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-companies',
@@ -12,14 +12,14 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 })
 export class CompaniesPage implements OnInit {
 
-  public companies: Company[] = [];
+  public companies: Array<Company> = [];
   public selectedCompany: Company = null;
 
   constructor(
-    private syncService: SyncService,
     private authService: AuthService,
     private loaderService: LoaderService,
-    private router: Router
+    private router: Router,
+    private storeService: StoreService
   ) {
 
   }
@@ -34,7 +34,7 @@ export class CompaniesPage implements OnInit {
    */
   public selectCompany = (company: Company) => {
     if (company.id !== this.selectedCompany.id) {
-      this.authService.setCompany(company);
+      this.storeService.setActiveCompany(company);
       this.loadCompanies();
       this.router.navigate(['home-page']);
     }
@@ -43,10 +43,12 @@ export class CompaniesPage implements OnInit {
   /**
    * loadCompanies
    */
-  private loadCompanies = async () => {
+  private loadCompanies = () => {
     this.loaderService.startLoader('Cargando empresas...');
-    this.companies = await this.syncService.getCompanies();
-    this.selectedCompany = this.authService.getCompany();
+    const companies = this.storeService.getCompanies();
+    const company = this.storeService.getActiveCompany();
+    this.companies = [...companies];
+    this.selectedCompany = company;
     this.loaderService.stopLoader();
   }
 

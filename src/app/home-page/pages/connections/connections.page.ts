@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../../shared/services/user/user.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
-import {Company, Connection} from '@primetec/primetec-angular';
+import {Connection} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Router} from '@angular/router';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-connections',
@@ -15,7 +16,7 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 })
 export class ConnectionsPage implements OnInit {
 
-  public connections: Connection[] = [];
+  public connections: Array<Connection> = [];
   public currentConnection: Connection = null;
   private userData = null;
 
@@ -26,7 +27,8 @@ export class ConnectionsPage implements OnInit {
     private toastService: ToastService,
     private router: Router,
     private httpService: HttpService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private storeService: StoreService
   ) {
 
   }
@@ -39,60 +41,39 @@ export class ConnectionsPage implements OnInit {
    * selectConnection
    * @param connection
    */
-  public selectConnection = async (connection: Connection) => {
+  public selectConnection = (connection: Connection): void => {
     if (connection.token !== this.currentConnection.token) {
-      this.authService.setConnection(connection);
-      const data = await this.syncMobile();
-
-      if (data) {
-        this.setDefaultCompany(data.companies);
-        this.syncService.storeSync(data);
-        await this.loadConnections();
-        this.router.navigate(['home-page']);
-      }
+      this.storeService.setActiveConnection(connection);
+      this.syncMobile();
     }
   }
 
   /**
    * syncMobile
    */
-  private syncMobile = (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      if (this.userData) {
-        this.loaderService.startLoader('Sincronizando...');
-        this.syncService.syncData(this.userData.user.username).subscribe((success: any) => {
-          this.loaderService.stopLoader();
-          resolve(success.data);
-        }, error => {
-          this.loaderService.stopLoader();
-          this.httpService.errorHandler(error);
-          resolve(null);
-        });
-      } else {
-        resolve(null);
-      }
+  private syncMobile = () => {
+    this.loaderService.startLoader('Sincronizando...');
+    this.syncService.syncData(this.userData.username).subscribe((success: any) => {
+      const data = success.data;
+      this.storeService.setSyncedData(data);
+      this.loadConnections();
+      this.router.navigate(['home-page']);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
     });
   }
 
   /**
    * loadConnections
    */
-  private loadConnections = async () => {
+  private loadConnections = (): void => {
     this.loaderService.startLoader('Cargando conexiones...');
-    this.userData = await this.userService.getUserData();
-    this.currentConnection = await this.authService.getConnection();
-    this.connections = this.userData.connections;
+    this.userData = this.storeService.getUser();
+    this.currentConnection = this.storeService.getActiveConnection();
+    this.connections = this.storeService.getUserConnections();
     this.loaderService.stopLoader();
-  }
-
-  /**
-   * setDefaultCompany
-   * @param companies
-   */
-  private setDefaultCompany = (companies: Array<Company> = []) => {
-    if (companies.length > 0) {
-      this.authService.setCompany(companies[0]);
-    }
   }
 
 }

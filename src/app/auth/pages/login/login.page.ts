@@ -80,7 +80,6 @@ export class LoginPage implements OnInit {
           this.storeService.setUser(login.user);
           this.storeService.setUserConnections(login.connections);
           this.storeService.setToken(login.token);
-          this.storeService.setDefaultConnection(login.connections);
           this.storeService.setLoginStatus(true);
           this.makeLogin();
         }

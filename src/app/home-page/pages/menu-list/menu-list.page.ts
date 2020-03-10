@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
 import {Store} from '@ngrx/store';
 import {StorageService} from '../../../shared/services/storage/storage.service';
@@ -8,20 +8,18 @@ import {AuthService} from '../../../shared/services/auth/auth.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NetworkService} from '../../../shared/services/network/network.service';
-import * as MenuAction from '../../../store/menu/menu.action';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {Subscription} from 'rxjs';
-import {StoreService} from "../../../shared/services/store/store.service";
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-menu-list',
   templateUrl: './menu-list.page.html',
   styleUrls: ['./menu-list.page.scss'],
 })
-export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
+export class MenuListPage implements OnInit, OnDestroy {
 
-  public userData = null;
   public menus: Array<TabMenu> = [];
   private isOnline: boolean;
 
@@ -45,12 +43,13 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.makeSync();
     this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
-  }
+    this.storeService.stateChanged.subscribe(data => {
+      const {sync} = data;
+      this.menus = [...sync.menus];
+    });
 
-  ngAfterViewInit(): void {
-    this.init();
+    this.syncData();
   }
 
   ngOnDestroy(): void {
@@ -58,35 +57,28 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * makeSync
+   * syncData
    */
-  private makeSync = async () => {
+  private syncData = () => {
     this.loaderService.startLoader();
-    const dataSynced = await this.syncData();
-    await this.syncService.storeSync(dataSynced);
-    this.loaderService.stopLoader();
-  }
+    const user = this.storeService.getUser();
 
-  /**
-   * init
-   */
-  private init = async () => {
-    const menus = await this.syncService.getMenus();
-    this.menus = [...menus]
-
-    const userData = await this.userService.getUserData()
-    this.store.dispatch(new MenuAction.AddProfile(userData));
-    this.userData = userData;
+    this.syncService.syncData(user.username).subscribe((success: any) => {
+      const data = success.data;
+      this.storeService.setSyncedData(data);
+      this.loaderService.stopLoader();
+    }, async error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
   }
 
   /**
    * reSync
    * @param event
    */
-  public reSync = async (event) => {
-    const data = await this.syncData();
-    await this.syncService.storeSync(data);
-    await this.getUserData();
+  public reSync = (event) => {
+    this.syncData();
     event.target.complete();
   }
 
@@ -105,34 +97,6 @@ export class MenuListPage implements OnInit, AfterViewInit, OnDestroy {
    */
   public checkDisabled = (menu: TabMenu) => {
     return !this.isOnline && !menu.offlineMenu;
-  }
-
-  /**
-   * getUserData
-   */
-  private getUserData = async () => {
-    const data = await this.userService.getUserData();
-    this.store.dispatch(new MenuAction.AddProfile(data));
-    this.userData = data;
-  }
-
-  /**
-   * syncData
-   * @param username
-   */
-  private syncData = (): Promise<any> => {
-    return new Promise<any>(resolve => {
-      const user = this.storeService.getUser();
-
-      if (user) {
-        this.syncService.syncData(user.username).subscribe((success: any) => {
-          resolve(success.data);
-        }, async error => {
-          this.httpService.errorHandler(error);
-          resolve(null);
-        });
-      }
-    });
   }
 
 }

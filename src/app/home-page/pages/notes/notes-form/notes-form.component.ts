@@ -9,6 +9,7 @@ import {DetectPlatformService} from '../../../../shared/services/detect-platform
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {CameraService} from '../../../../shared/services/camera/camera.service';
+import {StoreService} from '../../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-notes-form',
@@ -23,7 +24,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
   public noteForm: FormGroup;
   public imageSrc = '';
   public isSaving = false;
-  private userConnection: any;
+  private userCompany: any;
   public loadingImg = false;
 
   constructor(
@@ -35,18 +36,19 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
     private toastService: ToastService,
     public detectPlatformService: DetectPlatformService,
     private loaderService: LoaderService,
-    private cameraService: CameraService
+    private cameraService: CameraService,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
-    this.userConnection = this.authService.getCompany();
+    this.userCompany = this.storeService.getActiveCompany();
 
     this.noteForm = this.formBuilder.group({
       id: [this.note ? this.note.id : 0, Validators.required],
       costCenter: [this.costCenter.id, Validators.required],
-      user: [this.userConnection.user, Validators.required],
+      user: [this.userCompany.user, Validators.required],
       note: [{value: this.note ? this.note.note : '', disabled: !!this.note}],
       image: [{value: this.note ? this.note.image : '', disabled: !!this.note}]
     });

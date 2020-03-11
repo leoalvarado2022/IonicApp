@@ -147,8 +147,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
         quality: newQuality
       };
 
-      await this.storeQuality(data);
-      await this.reloadList();
+      this.storeQuality(data);
     }
   }
 
@@ -157,16 +156,13 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    * @param data
    */
   private storeQuality = (data: any) => {
-    return new Promise((resolve, reject) => {
-      this.loaderService.startLoader('Borrando estimacion de calidad');
-      this.contractDetailService.storeQuality(data).subscribe(success => {
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        this.httpService.errorHandler(error);
-        resolve(false);
-      });
+    this.loaderService.startLoader('Borrando estimacion de calidad');
+    this.contractDetailService.storeQuality(data).subscribe(success => {
+      this.reloadList();
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
     });
   }
 

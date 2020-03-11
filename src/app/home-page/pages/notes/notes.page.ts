@@ -9,6 +9,7 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
 import {Subscription} from 'rxjs';
 import {NetworkService} from '../../../shared/services/network/network.service';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-notes',
@@ -25,8 +26,7 @@ export class NotesPage implements OnInit, OnDestroy {
 
   public isOnline$: Subscription;
   private router$: Subscription;
-  private costCenter$: Subscription;
-  private notes$: Subscription;
+  private store$: Subscription;
 
   constructor(
     private modalController: ModalController,
@@ -35,7 +35,8 @@ export class NotesPage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private loaderService: LoaderService,
     private alertService: AlertService,
-    private networkService: NetworkService
+    private networkService: NetworkService,
+    private storeService: StoreService
   ) {
     this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
       this.isOnline = status;
@@ -49,23 +50,17 @@ export class NotesPage implements OnInit, OnDestroy {
       }
     });
 
-    /*
-    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      this.costCenter = this.storeService.getCostCenter();
+      this.notes = this.storeService.getNotes();
+      this.filteredNotes = this.storeService.getNotes();
     });
-
-    this.notes$ = this.contractDetailService.getNotes().subscribe(value => {
-      this.notes = value;
-      this.filteredNotes = value;
-    });
-    */
   }
 
   ngOnDestroy(): void {
     this.isOnline$.unsubscribe();
     this.router$.unsubscribe();
-    this.costCenter$.unsubscribe();
-    this.notes$.unsubscribe();
+    this.store$.unsubscribe();
   }
 
   /**
@@ -124,9 +119,7 @@ export class NotesPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.reloadList().then(success => {
-          // TERMINADO
-        });
+        this.reloadList();
       }
     });
 
@@ -141,8 +134,7 @@ export class NotesPage implements OnInit, OnDestroy {
 
     if (response) {
       const newNote = Object.assign({}, note, {id: -note.id});
-      await this.storeNote(newNote);
-      await this.reloadList();
+      this.storeNote(newNote);
     }
   }
 
@@ -151,16 +143,13 @@ export class NotesPage implements OnInit, OnDestroy {
    * @param data
    */
   private storeNote = (data: any) => {
-    return new Promise((resolve, reject) => {
-      this.loaderService.startLoader('Borrando nota');
-      this.contractDetailService.storeNote(data).subscribe(success => {
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        this.httpService.errorHandler(error);
-        resolve(false);
-      });
+    this.loaderService.startLoader('Borrando nota');
+    this.contractDetailService.storeNote(data).subscribe(success => {
+      this.reloadList();
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
     });
   }
 
@@ -168,15 +157,12 @@ export class NotesPage implements OnInit, OnDestroy {
    * reloadList
    */
   public reloadList = () => {
-    return new Promise((resolve, reject) => {
-      this.loaderService.startLoader('Cargando notas');
-      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(success => {
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        resolve(false);
-      });
+    this.loaderService.startLoader('Cargando notas');
+    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
+      this.storeService.setContractData(success.data);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
     });
   }
 

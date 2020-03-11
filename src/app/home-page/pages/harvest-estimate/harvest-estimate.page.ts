@@ -146,8 +146,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
         harvestEstimate: newHarvest
       };
 
-      await this.storeEstimation(data);
-      await this.reloadList();
+      this.storeEstimation(data);
     }
   }
 
@@ -156,16 +155,13 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    * @param data
    */
   private storeEstimation = (data: any) => {
-    return new Promise((resolve, reject) => {
-      this.loaderService.startLoader('Borrando estimacion de cosecha');
-      this.contractDetailService.storeHarvest(data).subscribe(success => {
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        this.httpService.errorHandler(error);
-        resolve(true);
-      });
+    this.loaderService.startLoader('Borrando estimacion de cosecha');
+    this.contractDetailService.storeHarvest(data).subscribe(success => {
+      this.reloadList();
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
     });
   }
 

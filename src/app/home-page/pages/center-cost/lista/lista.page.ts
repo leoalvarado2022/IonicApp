@@ -74,7 +74,7 @@ export class ListaPage implements OnInit {
    * @param costCenter
    */
   public costCenterSelected = (costCenter: CostCenterList) => {
-    this.contractDetailService.setCostCenterListItem(costCenter);
+    this.storeService.setActiveCostCenter(costCenter);
     this.router.navigate(['home-page/contract-detail', costCenter.id]);
   }
 }

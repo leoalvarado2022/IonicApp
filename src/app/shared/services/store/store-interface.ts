@@ -54,6 +54,7 @@ export interface Sync {
 }
 
 export interface ContractInterface {
+  activeCostCenter: CostCenterList;
   costCenter: CostCenter;
   productionContracts: Array<ProductContract>;
   productionContractsDetails: Array<ProductContractDetail>;

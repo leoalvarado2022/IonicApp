@@ -24,6 +24,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   private isOnline: boolean;
 
   private network$: Subscription;
+  private store$: Subscription;
 
   constructor(
     public store: Store<any>,
@@ -44,7 +45,7 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
-    this.storeService.stateChanged.subscribe(data => {
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
       const {sync} = data;
       this.menus = [...sync.menus];
     });
@@ -54,6 +55,7 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.network$.unsubscribe();
+    this.store$.unsubscribe();
   }
 
   /**

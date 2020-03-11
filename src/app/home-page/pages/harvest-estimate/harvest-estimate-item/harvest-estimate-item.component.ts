@@ -17,21 +17,17 @@ export class HarvestEstimateItemComponent implements OnInit {
   @Input() item: Arrows = null;
   @Input() isOld = false;
   @Input() slideDisabled = true;
+  @Input() units: Array<Unit> = [];
+
   @Output() harvestSelected: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
   @Output() deleteHarvest: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
 
-  private units: Array<Unit> = [];
-
-  constructor(private syncService: SyncService) {
+  constructor() {
 
   }
 
   ngOnInit() {
-    this.loadUnits();
-  }
 
-  private loadUnits = async () => {
-    this.units = await this.syncService.getUnits();
   }
 
   /**

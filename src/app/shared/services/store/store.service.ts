@@ -68,6 +68,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
         destinations: []
       },
       contract: {
+        activeCostCenter: null,
         costCenter: null,
         productionContracts: [],
         productionContractsDetails: [],
@@ -503,6 +504,22 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
 
   /**
+   * setActiveCostCenter
+   * @param costCenter
+   */
+  public setActiveCostCenter = (costCenter: CostCenterList): void => {
+    const contract = {...this.getState().contract, activeCostCenter: costCenter};
+    this.setState({contract}, StoreActions.SetActiveCostCenter);
+  }
+
+  /**
+   * getActiveCostCenter
+   */
+  public getActiveCostCenter = (): CostCenterList => {
+    return this.getState().contract.activeCostCenter;
+  }
+
+  /**
    * setCostCenter
    * @param costCenter
    */
@@ -649,11 +666,47 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setCostCenter(costCenter);
     this.setProductionContracts(productionContracts);
     this.setProductionContractsDetails(productionContractsDetails);
-    this.setHarvestEstimate(harvestEstimate);
-    this.setQualityEstimate(qualityEstimate);
+    this.setHarvestEstimate(this.defineArrows(harvestEstimate, 'quantity'));
+    this.setQualityEstimate(this.defineArrows(qualityEstimate, 'exportPercentage'));
     this.setQualityEstimateDetail(qualityEstimateDetail);
     this.setNotes(notes);
     this.setHolidays(holidays);
+  }
+
+  /**
+   * defineArrows
+   * @param data
+   * @param field
+   */
+  private defineArrows = (data: Array<any> = [], field: string) => {
+    if (data.length > 0) {
+      const mappedData = data.map((item, index, arr) => {
+        if (arr.length === 1) {
+          return Object.assign({}, item, {
+            arrow: '',
+            color: 'default'
+          });
+        } else if (arr.length > 1) {
+          const limit = arr.length - 1;
+
+          if (index < limit) {
+            return Object.assign({}, item, {
+              arrow: arr[index][field] > arr[index + 1][field] ? 'arrow-round-up' : 'arrow-round-down',
+              color: arr[index][field] > arr[index + 1][field] ? 'primary' : 'danger'
+            });
+          } else {
+            return Object.assign({}, item, {
+              arrow: '',
+              color: 'default'
+            });
+          }
+        }
+      });
+
+      return mappedData;
+    }
+
+    return data;
   }
 
   /**

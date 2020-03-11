@@ -49,6 +49,7 @@ export class NotesPage implements OnInit, OnDestroy {
       }
     });
 
+    /*
     this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
       this.costCenter = value;
     });
@@ -57,6 +58,7 @@ export class NotesPage implements OnInit, OnDestroy {
       this.notes = value;
       this.filteredNotes = value;
     });
+    */
   }
 
   ngOnDestroy(): void {

@@ -18,6 +18,7 @@ export enum StoreActions {
   SetWorkers = 'SET_WORKERS',
   SetProcessPlants = 'SET_PROCESS_PLANTS',
   SetDestinations = 'SET_DESTINATIONS',
+  SetActiveCostCenter = 'SET_ACTIVE_COST_CENTER',
   SetCostCenter = 'SET_COST_CENTER',
   SetProductionContracts = 'SET_PRODUCTION_CONTRACTS',
   SetProductionContractsDetails = 'SET_PRODUCTION_CONTRACTS_DETAILS',

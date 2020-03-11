@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
-import {CostCenter, HarvestEstimate, Note, ProductContract, QualityDetail, QualityEstimate, Unit} from '@primetec/primetec-angular';
+import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, QualityDetail, QualityEstimate, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
@@ -11,6 +11,7 @@ import {UserService} from '../../../shared/services/user/user.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
 import {StoreService} from '../../../shared/services/store/store.service';
+import {ContractInterface} from "../../../shared/services/store/store-interface";
 
 @Component({
   selector: 'app-contract-detail',
@@ -22,13 +23,20 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   public openSelected = false;
   public geolocationClass = false;
 
-  public productionContracts: Array<ProductContract> = [];
+  public costCenterListItem: CostCenterList = null;
   public costCenter: CostCenter = null;
-  private units: Array<Unit> = [];
+  public productionContracts: Array<ProductContract> = [];
+  public harvestEstimate: Array<HarvestEstimate> = [];
+  public qualityEstimate: Array<QualityEstimate> = [];
+  public notes: Array<Note> = [];
+  public units: Array<Unit> = [];
+
   private qualityEstimateDetail: Array<QualityDetail>;
   private lat: number;
   private lng: number;
+
   private geolocationService$: Subscription;
+  private store$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,8 +56,8 @@ export class ContractDetailPage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadUnits();
+    this.costCenterListItem = this.storeService.getActiveCostCenter();
     const id = this.route.snapshot.paramMap.get('id');
-
 
     if (id) {
       this.loadContractDetail(id);
@@ -60,13 +68,21 @@ export class ContractDetailPage implements OnInit, OnDestroy {
       this.lng = data.lng;
     });
 
-    this.storeService.stateChanged.subscribe(data => {
-      console.log('data', data);
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      const {contract} = data;
+
+      this.costCenter = contract.costCenter;
+      this.productionContracts = [...contract.productionContracts];
+      this.harvestEstimate = [...contract.harvestEstimate];
+      this.qualityEstimate = [...contract.qualityEstimate];
+      this.qualityEstimateDetail = [...contract.qualityEstimateDetail];
+      this.notes = [...contract.notes];
     });
   }
 
   ngOnDestroy(): void {
     this.geolocationService$.unsubscribe();
+    this.store$.unsubscribe();
   }
 
   /**
@@ -83,8 +99,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   private loadContractDetail = (id: string) => {
     this.loaderService.startLoader();
     this.contractDetailService.getCostCenterDetail(id).subscribe((success: any) => {
-      const data = success.data;
-      this.storeService.setContractData(data);
+      this.storeService.setContractData(success.data);
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
@@ -156,41 +171,34 @@ export class ContractDetailPage implements OnInit, OnDestroy {
       return;
     }
 
-    const user = await this.userService.getUserData();
+    const user = this.storeService.getUser();
     const object = {
       lat: this.lat,
       lng: this.lng,
-      id_user: user.user.id,
+      id_user: user.id,
       id_cost_center: this.costCenter.id,
     };
-    await this.updateGelocation(object);
 
-    const id = this.route.snapshot.paramMap.get('id');
-    await this.loadContractDetail(id);
-    const data = await this.syncData();
-    await this.syncService.storeSync(data);
+    this.updateGeolocation(object);
   }
 
   /**
    * @description actualizar localizacion
    * @param data
    */
-  public updateGelocation = (data: any) => {
-    return new Promise(resolve => {
-      this.geolocationClass = true;
-      this.loaderService.startLoader('Actualizando posicion');
-      this.contractDetailService.updateGelocationCostCenter(data).subscribe(() => {
-        this.loaderService.stopLoader();
-        this.toastService.successToast('posicion actualizada.');
-        this.geolocationClass = false;
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        this.toastService.errorToast('No se ha cambiado la localización');
-        this.httpService.errorHandler(error);
-        this.geolocationClass = false;
-        resolve(false);
-      });
+  public updateGeolocation = (data: any) => {
+    this.geolocationClass = true;
+    this.loaderService.startLoader('Actualizando posicion');
+    this.contractDetailService.updateGeolocationCostCenter(data).subscribe(() => {
+      this.geolocationClass = false;
+      this.syncData();
+      this.loaderService.stopLoader();
+      this.toastService.successToast('posicion actualizada.');
+    }, error => {
+      this.geolocationClass = false;
+      this.loaderService.stopLoader();
+      this.toastService.errorToast('No se ha cambiado la localización');
+      this.httpService.errorHandler(error);
     });
   }
 
@@ -199,16 +207,12 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    * @param username
    */
   private syncData = () => {
-    return new Promise(async resolve => {
-      const user = await this.userService.getUserData();
-      const username = user.user.username;
-
-      this.syncService.syncData(username).subscribe(async (success: any) => {
-        resolve(success.data);
-      }, async error => {
-        resolve(null);
-        this.httpService.errorHandler(error);
-      });
+    const user = this.storeService.getUser();
+    const username = user.username;
+    this.syncService.syncData(username).subscribe((success: any) => {
+      this.storeService.setSyncedData(success.data);
+    }, error => {
+      this.httpService.errorHandler(error);
     });
   }
 

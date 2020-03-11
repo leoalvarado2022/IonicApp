@@ -1,7 +1,7 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CostCenter, EntityList, HarvestEstimate, Unit} from '@primetec/primetec-angular';
+import {CostCenter, EntityList, Generic, HarvestEstimate, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
@@ -9,15 +9,15 @@ import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
+import {StoreService} from '../../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-harvest-estimate-form',
   templateUrl: './harvest-estimate-form.component.html',
   styleUrls: ['./harvest-estimate-form.component.scss']
 })
-export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
+export class HarvestEstimateFormComponent implements OnInit {
 
   @Input() costCenter: CostCenter;
   @Input() harvestEstimate: HarvestEstimate;
@@ -41,13 +41,11 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public harvestForm: FormGroup;
   public units: Array<Unit> = [];
   public processPlants: Array<EntityList> = [];
-  public destinations: Array<any> = [];
+  public destinations: Array<Generic> = [];
 
   public isSaving = false;
-  private userConnection: any;
+  private userCompany: any;
   public holidays: Array<any> = [];
-
-  private holidays$: Subscription;
 
   constructor(
     private modalController: ModalController,
@@ -57,21 +55,21 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private toastService: ToastService,
     private httpService: HttpService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private storeService: StoreService
   ) {
-    this.holidays$ = this.contractDetailService.getHolidays().subscribe(holidays => {
-      this.holidays = holidays;
-    });
+
   }
 
   ngOnInit() {
-    this.userConnection = this.authService.getCompany();
+    this.holidays = this.storeService.getHolidays();
+    this.userCompany = this.storeService.getActiveCompany();
 
     if (this.isView) {
       this.harvestForm = this.formBuilder.group({
         id: [this.harvestEstimate.id],
         costCenter: [this.costCenter.id],
-        user: [this.userConnection.user],
+        user: [this.userCompany.user],
         unit: [this.costCenter.controlUnit],
         quantity: [{value: this.harvestEstimate.quantity, disabled: true}],
         dailyAmount: [{value: this.harvestEstimate.dailyAmount, disabled: true}],
@@ -85,7 +83,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
       this.harvestForm = this.formBuilder.group({
         id: [0, Validators.required],
         costCenter: [this.costCenter.id],
-        user: [this.userConnection.user, Validators.required],
+        user: [this.userCompany.user, Validators.required],
         unit: [this.costCenter.controlUnit, Validators.required],
         quantity: [this.previous ? this.previous.quantity : '', [
           Validators.required,
@@ -111,21 +109,16 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
       });
     }
 
-
     this.loadData();
-  }
-
-  ngOnDestroy(): void {
-    this.holidays$.unsubscribe();
   }
 
   /**
    * loadData
    */
-  private loadData = async () => {
-    this.units = await this.syncService.getUnits();
-    this.processPlants = await this.syncService.getProcessPlants();
-    this.destinations = await this.syncService.getDestinations();
+  private loadData = () => {
+    this.units = this.storeService.getUnits();
+    this.processPlants = this.storeService.getProcessPlants();
+    this.destinations = this.storeService.getDestinations();
 
     this.preSelectProcessPlant();
     this.preSelectDestination();
@@ -193,7 +186,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   public workHolidaysEvent = (value: string) => {
     this.harvestForm.patchValue({
-      workHolidays: parseInt(value)
+      workHolidays: parseInt(value, 10)
     });
 
     this.harvestForm.updateValueAndValidity();
@@ -265,10 +258,10 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
   /**
    * cleanParseNumber
-   * @param number
+   * @param value
    */
-  private cleanParseNumber = (number: string): number => {
-    return parseInt(String(number).replace('.', ''));
+  private cleanParseNumber = (value: string): number => {
+    return parseInt(String(value).replace('.', ''), 10);
   }
 
   /**

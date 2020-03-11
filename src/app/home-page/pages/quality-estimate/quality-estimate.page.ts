@@ -51,6 +51,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
       }
     });
 
+    /*
     this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
       this.costCenter = value;
     });
@@ -63,6 +64,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
       this.qualityEstimateDetail = [...value];
     });
+    */
   }
 
   ngOnDestroy(): void {

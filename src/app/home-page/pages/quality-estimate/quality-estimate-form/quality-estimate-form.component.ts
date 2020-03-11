@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CostCenter, CostCenterList, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
+import {Caliber, CostCenter, CostCenterList, Generic, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
@@ -8,6 +8,7 @@ import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {StoreService} from '../../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-quality-estimate-form',
@@ -28,13 +29,12 @@ export class QualityEstimateFormComponent implements OnInit {
     backdropDismiss: false
   };
 
-  private costCenterListItem: CostCenterList;
   public qualityForm: FormGroup;
   public isSaving = false;
-  private userConnection: any;
-  private calibers: Array<any>;
-  public qualities: Array<any>;
-  private filteredCalibers: Array<any>;
+  private userCompany: any;
+  private calibers: Array<Caliber>;
+  public qualities: Array<Generic>;
+  private filteredCalibers: Array<Caliber>;
 
   constructor(
     private modalController: ModalController,
@@ -44,19 +44,20 @@ export class QualityEstimateFormComponent implements OnInit {
     private syncService: SyncService,
     private toastService: ToastService,
     private httpService: HttpService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
-    this.userConnection = this.authService.getCompany();
+    this.userCompany = this.storeService.getActiveCompany();
     if (this.isView) {
       this.qualityForm = this.formBuilder.group({
         quality: this.formBuilder.group({
           id: [this.qualityEstimate.id, Validators.required],
           costCenter: [this.costCenter.id, Validators.required],
-          user: [this.userConnection.user, Validators.required],
+          user: [this.userCompany.user, Validators.required],
           quality: [{value: this.qualityEstimate.quality, disabled: true}, Validators.required],
           exportPercentage: [{value: this.qualityEstimate.exportPercentage, disabled: true}, [
             Validators.required,
@@ -72,7 +73,7 @@ export class QualityEstimateFormComponent implements OnInit {
         quality: this.formBuilder.group({
           id: [0, Validators.required],
           costCenter: [this.costCenter.id, Validators.required],
-          user: [this.userConnection.user, Validators.required],
+          user: [this.userCompany.user, Validators.required],
           quality: [this.previous ? this.previous.quality : '', Validators.required],
           exportPercentage: [this.previous ? this.previous.exportPercentage : '', [
             Validators.required,
@@ -123,7 +124,7 @@ export class QualityEstimateFormComponent implements OnInit {
    * @param item
    */
   public getCaliberName = (item: any) => {
-    const caliber = this.calibers.find((caliber: any) => caliber.id === item.get('caliber').value);
+    const caliber = this.calibers.find((caliber: Caliber) => caliber.id === item.get('caliber').value);
     return caliber ? caliber.name : 'NOMBRE CALIBRE';
   }
 
@@ -148,9 +149,9 @@ export class QualityEstimateFormComponent implements OnInit {
   /**
    * loadCalibers
    */
-  private loadCalibers = async () => {
-    this.calibers = await this.syncService.getCalibers();
-    this.qualities = await this.syncService.getQualities();
+  private loadCalibers = () => {
+    this.calibers = this.storeService.getCalibers();
+    this.qualities = this.storeService.getQualities();
     this.filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
 
     const items = this.qualityForm.get('calibers') as FormArray;

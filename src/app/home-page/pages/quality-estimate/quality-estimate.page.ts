@@ -9,6 +9,7 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
 import {Subscription} from 'rxjs';
 import {NetworkService} from '../../../shared/services/network/network.service';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-quality-estimate',
@@ -26,9 +27,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
 
   private isOnline$: Subscription;
   private router$: Subscription;
-  private costCenter$: Subscription;
-  private qualityEstimate$: Subscription;
-  private qualityEstimateDetail$: Subscription;
+  private store$: Subscription;
 
   constructor(
     private router: Router,
@@ -37,7 +36,8 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     private alertService: AlertService,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private networkService: NetworkService
+    private networkService: NetworkService,
+    private storeService: StoreService
   ) {
     this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
       this.isOnline = status;
@@ -51,28 +51,18 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
       }
     });
 
-    /*
-    this.costCenter$ = this.contractDetailService.getCostCenter().subscribe(value => {
-      this.costCenter = value;
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      this.costCenter = this.storeService.getCostCenter();
+      this.qualityEstimate = this.storeService.getQualityEstimate();
+      this.filteredQualityEstimate = this.storeService.getQualityEstimate();
+      this.qualityEstimateDetail = this.storeService.getQualityEstimateDetail();
     });
-
-    this.qualityEstimate$ = this.contractDetailService.getQualityEstimate().subscribe(value => {
-      this.qualityEstimate = [...value];
-      this.filteredQualityEstimate = [...value];
-    });
-
-    this.qualityEstimateDetail$ = this.contractDetailService.getQualityEstimateDetail().subscribe(value => {
-      this.qualityEstimateDetail = [...value];
-    });
-    */
   }
 
   ngOnDestroy(): void {
     this.isOnline$.unsubscribe();
     this.router$.unsubscribe();
-    this.costCenter$.unsubscribe();
-    this.qualityEstimate$.unsubscribe();
-    this.qualityEstimateDetail$.unsubscribe();
+    this.store$.unsubscribe();
   }
 
   /**
@@ -102,9 +92,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.reloadList().then(success => {
-          // TERMINO AQUI
-        });
+        this.reloadList();
       }
     });
 
@@ -186,15 +174,12 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    * reloadList
    */
   public reloadList = () => {
-    return new Promise((resolve, reject) => {
-      this.loaderService.startLoader('Cargando estimaciones de calidad');
-      this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe(success => {
-        this.loaderService.stopLoader();
-        resolve(true);
-      }, error => {
-        this.loaderService.stopLoader();
-        resolve(false);
-      });
+    this.loaderService.startLoader('Cargando estimaciones de calidad');
+    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
+      this.storeService.setContractData(success.data);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
     });
   }
 

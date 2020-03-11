@@ -24,8 +24,8 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
   public noteForm: FormGroup;
   public imageSrc = '';
   public isSaving = false;
-  private userCompany: any;
   public loadingImg = false;
+  private userCompany: any;
 
   constructor(
     private modalController: ModalController,
@@ -61,28 +61,12 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
   }
 
   /**
-   * loadBigImage
-   */
-  private loadBigImage = () => {
-    if (this.note && this.note.image) {
-      this.loadingImg = true;
-      this.contractDetailService.getNoteImage(this.note.id.toString()).subscribe((success: any) => {
-        this.imageSrc = 'data:image/jpeg;base64,' + success.image;
-        this.loadingImg = false;
-      }, error => {
-        this.loadingImg = false;
-        this.httpService.errorHandler(error);
-      });
-    }
-  }
-
-  /**
    * closeModal
    */
   public closeModal = (status: boolean = false) => {
     this.noteForm.reset();
     this.modalController.dismiss(status);
-  }
+  };
 
   /**
    * submit
@@ -97,7 +81,45 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
       this.isSaving = false;
       this.toastService.warningToast('Debe ingresar la nota o la imagen');
     }
-  }
+  };
+
+  /**
+   * openCamera
+   */
+  public openCamera = async () => {
+    const image = await this.cameraService.openCamera();
+
+    if (image) {
+      this.getImage(image);
+    }
+  };
+
+  /**
+   * openGallery
+   */
+  public openGallery = async () => {
+    const image = await this.cameraService.openGallery();
+
+    if (image) {
+      this.getImage(image);
+    }
+  };
+
+  /**
+   * loadBigImage
+   */
+  private loadBigImage = () => {
+    if (this.note && this.note.image) {
+      this.loadingImg = true;
+      this.contractDetailService.getNoteImage(this.note.id.toString()).subscribe((success: any) => {
+        this.imageSrc = 'data:image/jpeg;base64,' + success.image;
+        this.loadingImg = false;
+      }, error => {
+        this.loadingImg = false;
+        this.httpService.errorHandler(error);
+      });
+    }
+  };
 
   /**
    * storeNote
@@ -114,29 +136,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * openCamera
-   */
-  public openCamera = async () => {
-    const image = await this.cameraService.openCamera();
-
-    if (image) {
-      this.getImage(image);
-    }
-  }
-
-  /**
-   * openGallery
-   */
-  public openGallery = async () => {
-    const image = await this.cameraService.openGallery();
-
-    if (image) {
-      this.getImage(image);
-    }
-  }
+  };
 
   /**
    * getImage

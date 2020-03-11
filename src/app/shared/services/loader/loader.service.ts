@@ -27,7 +27,7 @@ export class LoaderService {
   public startLoader = (message: string = 'Cargando...') => {
     this.message = message;
     this.isLoading.next(true);
-  }
+  };
 
   /**
    * stopLoader
@@ -35,7 +35,7 @@ export class LoaderService {
   public stopLoader = () => {
     this.message = '';
     this.isLoading.next(false);
-  }
+  };
 
   /**
    * getMessage

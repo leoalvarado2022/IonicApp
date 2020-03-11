@@ -23,11 +23,11 @@ enum WorkerStatus {
 })
 export class RemWorkersPage implements OnInit, OnDestroy {
 
-  private workers: Array<any> = [];
-  private quadrilles: Array<any> = [];
   public filteredWorkers: Array<any> = [];
   public quadrille: any;
   public selectedWorkers: Array<any> = [];
+  private workers: Array<any> = [];
+  private quadrilles: Array<any> = [];
   private buttons: Array<any> = [];
   private userData = null;
 
@@ -60,27 +60,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   }
 
   /**
-   * loadWorkers
-   */
-  private loadWorkers = (id: string) => {
-    this.loaderService.startLoader();
-    const quadrilles = this.storeService.getQuadrilles();
-    const allWorkers = this.storeService.getWorkers();
-
-    if (quadrilles && allWorkers) {
-      this.quadrilles = [...quadrilles];
-      this.quadrille = quadrilles.find(item => item.id === +id);
-      const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
-      this.workers = [...workers];
-      this.filteredWorkers = [...workers];
-
-      this.buildButtons();
-    }
-
-    this.loaderService.stopLoader();
-  }
-
-  /**
    * reload
    * @param event
    */
@@ -88,7 +67,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id');
     this.loadWorkers(id);
     event.target.complete();
-  }
+  };
 
   /**
    * markWorker
@@ -105,7 +84,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       this.selectedWorkers.push(worker);
     }
-  }
+  };
 
   /**
    * selectQuadrille
@@ -126,7 +105,49 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     });
 
     await actionSheet.present();
-  }
+  };
+
+  /**
+   * acceptWorkers
+   */
+  public acceptWorkers = () => {
+    this.transferWorkers(this.quadrille.id, WorkerStatus.APROBADO);
+  };
+
+  /**
+   * rejectWorkers
+   */
+  public rejectWorkers = () => {
+    this.transferWorkers(this.quadrille.id, WorkerStatus.RECHAZADO);
+  };
+
+  /**
+   * acceptRejectWorkers
+   */
+  public acceptRejectWorkers = () => {
+    this.transferWorkers(this.quadrille.id, WorkerStatus['APRUEBA RECHAZO']);
+  };
+
+  /**
+   * loadWorkers
+   */
+  private loadWorkers = (id: string) => {
+    this.loaderService.startLoader();
+    const quadrilles = this.storeService.getQuadrilles();
+    const allWorkers = this.storeService.getWorkers();
+
+    if (quadrilles && allWorkers) {
+      this.quadrilles = [...quadrilles];
+      this.quadrille = quadrilles.find(item => item.id === +id);
+      const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
+      this.workers = [...workers];
+      this.filteredWorkers = [...workers];
+
+      this.buildButtons();
+    }
+
+    this.loaderService.stopLoader();
+  };
 
   /**
    * buildButtons
@@ -141,7 +162,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
           this.transferWorkers(item.id, WorkerStatus['POR APROBAR']);
         }
       }));
-  }
+  };
 
   /**
    * transferWorkers
@@ -163,7 +184,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
+  };
 
   /**
    * reSync
@@ -174,7 +195,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.syncData();
     // this.loadWorkers(id);
     this.loaderService.stopLoader();
-  }
+  };
 
   /**
    * syncData
@@ -188,26 +209,5 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     }, async error => {
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * acceptWorkers
-   */
-  public acceptWorkers = () => {
-    this.transferWorkers(this.quadrille.id, WorkerStatus.APROBADO);
-  }
-
-  /**
-   * rejectWorkers
-   */
-  public rejectWorkers = () => {
-    this.transferWorkers(this.quadrille.id, WorkerStatus.RECHAZADO);
-  }
-
-  /**
-   * acceptRejectWorkers
-   */
-  public acceptRejectWorkers = () => {
-    this.transferWorkers(this.quadrille.id, WorkerStatus['APRUEBA RECHAZO']);
   }
 }

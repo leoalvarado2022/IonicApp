@@ -20,11 +20,10 @@ export class NotesPage implements OnInit, OnDestroy {
 
   public costCenter: CostCenter;
   public filteredNotes: Array<Note>;
+  public isOnline: boolean;
+  public isOnline$: Subscription;
   private notes: Array<Note>;
   private currentUrl: string;
-  public isOnline: boolean;
-
-  public isOnline$: Subscription;
   private router$: Subscription;
   private store$: Subscription;
 
@@ -68,7 +67,7 @@ export class NotesPage implements OnInit, OnDestroy {
    */
   public checkButton = () => {
     return this.currentUrl === '/home-page/notes';
-  }
+  };
 
   /**
    * searchNote
@@ -85,14 +84,14 @@ export class NotesPage implements OnInit, OnDestroy {
     } else {
       this.filteredNotes = this.notes;
     }
-  }
+  };
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredNotes = this.notes;
-  }
+  };
 
   /**
    * viewNote
@@ -100,7 +99,7 @@ export class NotesPage implements OnInit, OnDestroy {
    */
   public viewNote = async (note: Note) => {
     await this.openForm(note);
-  }
+  };
 
   /**
    * openForm
@@ -124,7 +123,7 @@ export class NotesPage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
-  }
+  };
 
   /**
    * deleteNoteConfirm
@@ -136,7 +135,20 @@ export class NotesPage implements OnInit, OnDestroy {
       const newNote = Object.assign({}, note, {id: -note.id});
       this.storeNote(newNote);
     }
-  }
+  };
+
+  /**
+   * reloadList
+   */
+  public reloadList = () => {
+    this.loaderService.startLoader('Cargando notas');
+    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
+      this.storeService.setContractData(success.data);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+    });
+  };
 
   /**
    * storeNote
@@ -150,19 +162,6 @@ export class NotesPage implements OnInit, OnDestroy {
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
-    });
-  }
-
-  /**
-   * reloadList
-   */
-  public reloadList = () => {
-    this.loaderService.startLoader('Cargando notas');
-    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
-      this.storeService.setContractData(success.data);
-      this.loaderService.stopLoader();
-    }, error => {
-      this.loaderService.stopLoader();
     });
   }
 

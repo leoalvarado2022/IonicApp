@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reload($event)">
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
       pullingText="Pull to refresh"
@@ -31,7 +31,7 @@
     <ng-container *ngIf="filteredWorkers.length > 0">
       <ion-list lines="none">
         <ion-virtual-scroll [items]="filteredWorkers">
-          <ion-item *virtualItem="let worker" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+          <ion-item (click)="markWorker(worker)" *virtualItem="let worker" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
             <ion-icon name="contact" slot="start"></ion-icon>
             <ion-label>
               <h3 class="label-padding">{{ worker.name }}</h3>

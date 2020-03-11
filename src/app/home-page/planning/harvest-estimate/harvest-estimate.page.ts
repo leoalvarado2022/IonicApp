@@ -20,10 +20,9 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
   public costCenter: CostCenter;
   public filteredHarvestEstimate: Array<HarvestEstimate>;
+  public isOnline: boolean;
   private harvestEstimate: Array<HarvestEstimate>;
   private currentUrl: string;
-  public isOnline: boolean;
-
   private isOnline$: Subscription;
   private router$: Subscription;
   private store$: Subscription;
@@ -68,7 +67,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    */
   public checkButton = () => {
     return this.currentUrl === '/home-page/harvest-estimate';
-  }
+  };
 
   /**
    * openForm
@@ -94,7 +93,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
-  }
+  };
 
   /**
    * searchHarvest
@@ -111,14 +110,14 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     } else {
       this.filteredHarvestEstimate = this.harvestEstimate;
     }
-  }
+  };
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredHarvestEstimate = this.harvestEstimate;
-  }
+  };
 
   /**
    * harvestSelected
@@ -126,7 +125,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    */
   public viewHarvest = async (harvestEstimate: HarvestEstimate) => {
     await this.openForm(harvestEstimate);
-  }
+  };
 
   /**
    * deleteHarvest
@@ -148,7 +147,21 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
       this.storeEstimation(data);
     }
-  }
+  };
+
+  /**
+   * reloadList
+   */
+  public reloadList = () => {
+    this.loaderService.startLoader();
+    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
+      this.storeService.setContractData(success.data);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
+  };
 
   /**
    * storeEstimation
@@ -158,20 +171,6 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     this.loaderService.startLoader('Borrando estimacion de cosecha');
     this.contractDetailService.storeHarvest(data).subscribe(success => {
       this.reloadList();
-      this.loaderService.stopLoader();
-    }, error => {
-      this.loaderService.stopLoader();
-      this.httpService.errorHandler(error);
-    });
-  }
-
-  /**
-   * reloadList
-   */
-  public reloadList = () => {
-    this.loaderService.startLoader();
-    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
-      this.storeService.setContractData(success.data);
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();

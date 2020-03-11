@@ -35,33 +35,20 @@ export class MenuComponent implements OnInit {
   }
 
   /**
-   *
-   */
-  private loadData = (): void => {
-    const user = this.storeService.getUser();
-    const connections = this.storeService.getUserConnections();
-    const companies = this.storeService.getCompanies();
-
-    this.profile = user;
-    this.connections = [...connections];
-    this.companies = [...companies];
-  }
-
-  /**
    * routerLink
    * @param router
    */
   public routerLink = (router: string) => {
     this.closeMenu();
     this.router.navigate(['home-page/' + router]);
-  }
+  };
 
   /**
    * closeMenu
    */
   public closeMenu = () => {
     this.menu.close('menu');
-  }
+  };
 
   /**
    * close
@@ -70,7 +57,7 @@ export class MenuComponent implements OnInit {
     this.closeMenu();
     this.storeService.logout();
     this.router.navigate(['auth/login']);
-  }
+  };
 
   /**
    * menuReload
@@ -78,7 +65,7 @@ export class MenuComponent implements OnInit {
    */
   public menuReload = (event: any) => {
     this.loadData();
-  }
+  };
 
   /**
    * getAvatar
@@ -89,5 +76,18 @@ export class MenuComponent implements OnInit {
     }
 
     return null;
+  };
+
+  /**
+   *
+   */
+  private loadData = (): void => {
+    const user = this.storeService.getUser();
+    const connections = this.storeService.getUserConnections();
+    const companies = this.storeService.getCompanies();
+
+    this.profile = user;
+    this.connections = [...connections];
+    this.companies = [...companies];
   }
 }

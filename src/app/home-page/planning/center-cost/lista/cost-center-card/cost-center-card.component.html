@@ -13,7 +13,7 @@
         <p>
           {{ costCenter.speciesName }} <strong>/</strong> {{ costCenter.varietyName }}
         </p>
-        <p class="production-name" *ngIf="costCenter.contractResponsible">
+        <p *ngIf="costCenter.contractResponsible" class="production-name">
           {{ costCenter.contractResponsible }}
         </p>
         <div class="bottom-info">

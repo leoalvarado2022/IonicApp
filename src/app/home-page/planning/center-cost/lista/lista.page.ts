@@ -39,7 +39,7 @@ export class ListaPage implements OnInit {
     this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
     this.loaderService.stopLoader();
-  }
+  };
 
   /**
    * searchCostCenter
@@ -60,14 +60,14 @@ export class ListaPage implements OnInit {
     } else {
       this.filteredCostCenters = this.costCenters;
     }
-  }
+  };
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredCostCenters = this.costCenters;
-  }
+  };
 
   /**
    * costCenterSelected

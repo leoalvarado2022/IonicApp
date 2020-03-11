@@ -86,7 +86,7 @@ export class LoginPage implements OnInit {
       console.log({e});
     }
 
-  }
+  };
 
   /**
    * addPin
@@ -97,7 +97,7 @@ export class LoginPage implements OnInit {
     this.loginForm.reset();
     this.storeService.setToken(login.token);
     this.router.navigate(['auth/pin']);
-  }
+  };
 
   /**
    * @description hacer login si no tiene pin
@@ -105,7 +105,7 @@ export class LoginPage implements OnInit {
   public makeLogin = () => {
     this.loginForm.reset();
     this.router.navigate(['/home-page']);
-  }
+  };
 
   /**
    * filterKeys
@@ -119,7 +119,7 @@ export class LoginPage implements OnInit {
     }
 
     return false;
-  }
+  };
 
   /**
    * checkRemember
@@ -138,7 +138,7 @@ export class LoginPage implements OnInit {
         this.loginForm.updateValueAndValidity();
       }
     }
-  }
+  };
 
   /**
    * loginEndpoint

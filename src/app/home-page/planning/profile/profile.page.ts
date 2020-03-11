@@ -22,8 +22,8 @@ export class ProfilePage implements OnInit {
 
   public profile: any = null;
   public avatarPreview: any = null;
-  private rutValue: string;
   public registerForm: FormGroup;
+  private rutValue: string;
 
   constructor(
     private userService: UserService,
@@ -64,15 +64,6 @@ export class ProfilePage implements OnInit {
   }
 
   /**
-   * loadUserData
-   */
-  private loadUserData = (): void => {
-    this.profile = this.storeService.getUser();
-    this.avatarPreview = `data:image/jpeg;base64,${this.profile.avatar}`;
-    this.rutValue = this.profile.rut;
-  }
-
-  /**
    * onSubmit
    */
   public onSubmit() {
@@ -95,7 +86,38 @@ export class ProfilePage implements OnInit {
       cssClass: 'change-modal-password'
     });
     return await modal.present();
-  }
+  };
+
+  /**
+   * openCamera
+   */
+  public openCamera = async () => {
+    const image = await this.cameraService.openCamera();
+
+    if (image) {
+      this.getImage(image);
+    }
+  };
+
+  /**
+   * openGallery
+   */
+  public openGallery = async () => {
+    const image = await this.cameraService.openGallery();
+
+    if (image) {
+      this.getImage(image);
+    }
+  };
+
+  /**
+   * loadUserData
+   */
+  private loadUserData = (): void => {
+    this.profile = this.storeService.getUser();
+    this.avatarPreview = `data:image/jpeg;base64,${this.profile.avatar}`;
+    this.rutValue = this.profile.rut;
+  };
 
   /**
    * update
@@ -120,29 +142,7 @@ export class ProfilePage implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * openCamera
-   */
-  public openCamera = async () => {
-    const image = await this.cameraService.openCamera();
-
-    if (image) {
-      this.getImage(image);
-    }
-  }
-
-  /**
-   * openGallery
-   */
-  public openGallery = async () => {
-    const image = await this.cameraService.openGallery();
-
-    if (image) {
-      this.getImage(image);
-    }
-  }
+  };
 
   /**
    * getImage

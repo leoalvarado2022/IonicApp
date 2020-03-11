@@ -14,7 +14,7 @@
     <ng-container formGroupName="quality">
       <ion-item>
         <ion-label position="fixed">Calidad</ion-label>
-        <ion-select [interfaceOptions]="customActionSheetOptions" interface="action-sheet" cancelText="Cancelar" formControlName="quality" [selectedText]="getSelectedQuality()">
+        <ion-select [interfaceOptions]="customActionSheetOptions" [selectedText]="getSelectedQuality()" cancelText="Cancelar" formControlName="quality" interface="action-sheet">
           <ion-select-option *ngFor="let q of qualities" [value]="q.id">
             {{ q.name }}
           </ion-select-option>
@@ -27,7 +27,7 @@
 
       <ion-item>
         <ion-label position="fixed">% de Exportación</ion-label>
-        <ion-input formControlName="exportPercentage" type="number" placeholder="Ingrese el %" clearInput></ion-input>
+        <ion-input clearInput formControlName="exportPercentage" placeholder="Ingrese el %" type="number"></ion-input>
       </ion-item>
 
       <ng-container *ngIf="qualityForm.get(['quality', 'exportPercentage']).hasError('max')">
@@ -48,7 +48,7 @@
         <ng-container *ngFor="let item of qualityForm.get('calibers')['controls']; let index = index" [formGroupName]="index.toString()">
           <ion-item>
             <ion-label position="fixed">{{ getCaliberName(item) }}</ion-label>
-            <ion-input formControlName="percentage" placeholder="Ingrese el %" type="number" clearInput></ion-input>
+            <ion-input clearInput formControlName="percentage" placeholder="Ingrese el %" type="number"></ion-input>
           </ion-item>
           <ng-container *ngIf="item.get('percentage').hasError('max')">
             <span class="errorMsg">El porcentaje maximo es 100</span>
@@ -60,7 +60,7 @@
 
         <ion-item>
           <ion-label position="fixed">Total</ion-label>
-          <ion-input type="number" clearInput [value]="getTotal()" readonly="true" [disabled]="isView" [ngClass]="{ 'total-padding': !isView }"></ion-input>
+          <ion-input [disabled]="isView" [ngClass]="{ 'total-padding': !isView }" [value]="getTotal()" clearInput readonly="true" type="number"></ion-input>
         </ion-item>
 
         <ng-container *ngIf="!isView && qualityForm.hasError('wrongPercentage')">

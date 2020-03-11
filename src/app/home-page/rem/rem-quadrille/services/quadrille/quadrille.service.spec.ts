@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { QuadrilleService } from './quadrille.service';
+import {QuadrilleService} from './quadrille.service';
 
 describe('QuadrilleService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

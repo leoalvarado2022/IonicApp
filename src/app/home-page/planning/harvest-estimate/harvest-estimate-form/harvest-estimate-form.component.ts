@@ -44,8 +44,8 @@ export class HarvestEstimateFormComponent implements OnInit {
   public destinations: Array<Generic> = [];
 
   public isSaving = false;
-  private userCompany: any;
   public holidays: Array<any> = [];
+  private userCompany: any;
 
   constructor(
     private modalController: ModalController,
@@ -113,23 +113,11 @@ export class HarvestEstimateFormComponent implements OnInit {
   }
 
   /**
-   * loadData
-   */
-  private loadData = () => {
-    this.units = this.storeService.getUnits();
-    this.processPlants = this.storeService.getProcessPlants();
-    this.destinations = this.storeService.getDestinations();
-
-    this.preSelectProcessPlant();
-    this.preSelectDestination();
-  }
-
-  /**
    * closeModal
    */
   public closeModal = (status: boolean = false) => {
     this.modalController.dismiss(status);
-  }
+  };
 
   /**
    * submit
@@ -153,7 +141,65 @@ export class HarvestEstimateFormComponent implements OnInit {
     } else {
       this.isSaving = false;
     }
-  }
+  };
+
+  /**
+   * showUnitName
+   */
+  public showUnitName = () => {
+    const find = this.units.find(item => item.id === this.costCenter.controlUnit);
+    return find ? find.code : 'N/A';
+  };
+
+  /**
+   * workHolidaysEvent
+   * @param event
+   */
+  public workHolidaysEvent = (value: string) => {
+    this.harvestForm.patchValue({
+      workHolidays: parseInt(value, 10)
+    });
+
+    this.harvestForm.updateValueAndValidity();
+  };
+
+  /**
+   * getSelectedProcessPlant
+   */
+  public getSelectedProcessPlant = () => {
+    if (this.processPlants) {
+      const id = this.harvestForm.get('processPlant').value;
+      const find = this.processPlants.find(item => item.id === id);
+      return find ? find.name : '';
+    }
+
+    return '';
+  };
+
+  /**
+   * getSelectedDestination
+   */
+  public getSelectedDestination = () => {
+    if (this.destinations) {
+      const id = this.harvestForm.get('destination').value;
+      const find = this.destinations.find(item => item['id'] === id);
+      return find ? find['name'] : '';
+    }
+
+    return '';
+  };
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    this.units = this.storeService.getUnits();
+    this.processPlants = this.storeService.getProcessPlants();
+    this.destinations = this.storeService.getDestinations();
+
+    this.preSelectProcessPlant();
+    this.preSelectDestination();
+  };
 
   /**
    * storeEstimation
@@ -170,27 +216,7 @@ export class HarvestEstimateFormComponent implements OnInit {
       this.isSaving = false;
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * showUnitName
-   */
-  public showUnitName = () => {
-    const find = this.units.find(item => item.id === this.costCenter.controlUnit);
-    return find ? find.code : 'N/A';
-  }
-
-  /**
-   * workHolidaysEvent
-   * @param event
-   */
-  public workHolidaysEvent = (value: string) => {
-    this.harvestForm.patchValue({
-      workHolidays: parseInt(value, 10)
-    });
-
-    this.harvestForm.updateValueAndValidity();
-  }
+  };
 
   /**
    * calculateEndDate
@@ -223,7 +249,7 @@ export class HarvestEstimateFormComponent implements OnInit {
 
       this.harvestForm.updateValueAndValidity();
     }
-  }
+  };
 
   /**
    * cleanDate
@@ -235,7 +261,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     }
 
     return date;
-  }
+  };
 
   /**
    * computeEndDate
@@ -254,7 +280,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     }
 
     return momentDate;
-  }
+  };
 
   /**
    * cleanParseNumber
@@ -262,33 +288,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    */
   private cleanParseNumber = (value: string): number => {
     return parseInt(String(value).replace('.', ''), 10);
-  }
-
-  /**
-   * getSelectedProcessPlant
-   */
-  public getSelectedProcessPlant = () => {
-    if (this.processPlants) {
-      const id = this.harvestForm.get('processPlant').value;
-      const find = this.processPlants.find(item => item.id === id);
-      return find ? find.name : '';
-    }
-
-    return '';
-  }
-
-  /**
-   * getSelectedDestination
-   */
-  public getSelectedDestination = () => {
-    if (this.destinations) {
-      const id = this.harvestForm.get('destination').value;
-      const find = this.destinations.find(item => item['id'] === id);
-      return find ? find['name'] : '';
-    }
-
-    return '';
-  }
+  };
 
   /**
    * preSelectProcessPlant
@@ -301,7 +301,7 @@ export class HarvestEstimateFormComponent implements OnInit {
 
       this.harvestForm.updateValueAndValidity();
     }
-  }
+  };
 
   /**
    * preSelectDestination

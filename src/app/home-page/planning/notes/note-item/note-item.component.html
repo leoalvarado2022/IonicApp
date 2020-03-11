@@ -3,12 +3,12 @@
   <ion-item-sliding [disabled]="slideDisabled">
     <ion-item class="note-item" lines="none">
       <ng-container *ngIf="getPhotoPath()">
-        <ion-thumbnail slot="start" (click)="viewPicture()">
+        <ion-thumbnail (click)="viewPicture()" slot="start">
           <img [src]="getPhotoPath()">
         </ion-thumbnail>
       </ng-container>
-      <ng-container slot="start" *ngIf="!getPhotoPath()">
-        <ion-icon class="icon" name="mail" color="danger"></ion-icon>
+      <ng-container *ngIf="!getPhotoPath()" slot="start">
+        <ion-icon class="icon" color="danger" name="mail"></ion-icon>
       </ng-container>
       <ion-label (click)="itemClicked(item)">
         <h6 class="name">{{ item.responsibleName }}</h6>
@@ -26,14 +26,14 @@
 </ng-container>
 
 <ng-template #empty>
-  <ion-item class="note-item" (click)="itemClicked(item)" lines="none">
+  <ion-item (click)="itemClicked(item)" class="note-item" lines="none">
     <ng-container *ngIf="getPhotoPath()">
       <ion-thumbnail slot="start">
         <img [src]="getPhotoPath()">
       </ion-thumbnail>
     </ng-container>
-    <ng-container slot="start" *ngIf="!getPhotoPath()">
-      <ion-icon class="icon" name="mail" color="danger"></ion-icon>
+    <ng-container *ngIf="!getPhotoPath()" slot="start">
+      <ion-icon class="icon" color="danger" name="mail"></ion-icon>
     </ng-container>
     <ion-label>
       <h6 class="name">N/A</h6>

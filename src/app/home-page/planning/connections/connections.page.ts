@@ -46,7 +46,7 @@ export class ConnectionsPage implements OnInit {
       this.storeService.setActiveConnection(connection);
       this.syncMobile();
     }
-  }
+  };
 
   /**
    * syncMobile
@@ -63,7 +63,7 @@ export class ConnectionsPage implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
+  };
 
   /**
    * loadConnections

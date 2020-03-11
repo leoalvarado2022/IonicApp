@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher class="refresher" slot="fixed" (ionRefresh)="reload($event)">
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
       pullingText="Pull to refresh"
@@ -31,7 +31,7 @@
   <ng-container *ngIf="filteredQuadrilles.length > 0">
     <ion-list>
       <ion-virtual-scroll [items]="filteredQuadrilles">
-        <ion-item *virtualItem="let quadrille" detail="true" (click)="goToWorkers(quadrille)">
+        <ion-item (click)="goToWorkers(quadrille)" *virtualItem="let quadrille" detail="true">
           <ion-icon name="clipboard" slot="start"></ion-icon>
           <ion-label>
             <h2>{{ quadrille.name }}</h2>

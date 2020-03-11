@@ -36,14 +36,14 @@
         <ion-row>
           <ion-col>
             <ion-item lines="none">
-              <ion-checkbox slot="start" formControlName="remember" [checked]="loginForm.get('remember').value"></ion-checkbox>
+              <ion-checkbox [checked]="loginForm.get('remember').value" formControlName="remember" slot="start"></ion-checkbox>
               <ion-label>Recordarme</ion-label>
             </ion-item>
           </ion-col>
 
           <ion-col>
             <ion-item lines="none">
-              <ion-label color="danger" class="ion-text-center">Olvide mi contraseña</ion-label>
+              <ion-label class="ion-text-center" color="danger">Olvide mi contraseña</ion-label>
             </ion-item>
           </ion-col>
         </ion-row>

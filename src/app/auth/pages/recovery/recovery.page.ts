@@ -40,7 +40,7 @@ export class RecoveryPage implements OnInit {
     const data = Object.assign(list, this.recovery.value);
 
     await this.update(data);
-  }
+  };
 
 
   /**

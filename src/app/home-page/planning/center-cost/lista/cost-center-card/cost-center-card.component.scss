@@ -2,13 +2,13 @@
   height: 160px;
 }
 
-ion-card{
+ion-card {
   margin: 5px 5px 0 5px;
   background-color: white;
   box-shadow: none;
 }
 
-ion-card-title{
+ion-card-title {
   font-size: 25px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -16,15 +16,15 @@ ion-card-title{
   white-space: nowrap;
 }
 
-ion-card-header{
+ion-card-header {
   padding: 10px 15px 0 15px;
 }
 
-ion-card-content{
+ion-card-content {
   padding: 0 15px 0 15px;
 }
 
-.production-name{
+.production-name {
   font-style: italic;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -38,22 +38,25 @@ ion-card-content{
     font-style: italic;
     color: var(--color-cosecha-date);
   }
-  .bottom__icon{
+
+  .bottom__icon {
     float: right;
-    ion-icon{
+
+    ion-icon {
       font-size: 25px;
     }
-    span{
+
+    span {
       font-size: 18px;
       vertical-align: top;
     }
   }
 }
 
-.ion-float-right{
+.ion-float-right {
   //color: #962727;
 }
 
-.code-const-center{
+.code-const-center {
   //color: var(--color-home-secondary);
 }

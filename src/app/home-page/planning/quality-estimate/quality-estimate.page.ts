@@ -19,12 +19,11 @@ import {StoreService} from '../../../shared/services/store/store.service';
 export class QualityEstimatePage implements OnInit, OnDestroy {
 
   public filteredQualityEstimate: Array<QualityEstimate>;
+  public costCenter: CostCenter;
+  public isOnline: boolean;
   private qualityEstimate: Array<QualityEstimate>;
   private qualityEstimateDetail: Array<QualityDetail>;
-  public costCenter: CostCenter;
   private currentUrl: string;
-  public isOnline: boolean;
-
   private isOnline$: Subscription;
   private router$: Subscription;
   private store$: Subscription;
@@ -70,7 +69,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    */
   public checkButton = () => {
     return this.currentUrl === '/home-page/quality-estimate';
-  }
+  };
 
   /**
    * openForm
@@ -97,7 +96,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
-  }
+  };
 
   /**
    * searchQuality
@@ -115,14 +114,14 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     } else {
       this.filteredQualityEstimate = this.qualityEstimate;
     }
-  }
+  };
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredQualityEstimate = this.qualityEstimate;
-  }
+  };
 
   /**
    * viewQuality
@@ -130,7 +129,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    */
   public viewQuality = async (qualityEstimate: QualityEstimate) => {
     await this.openForm(qualityEstimate);
-  }
+  };
 
   /**
    * deleteQuality
@@ -149,7 +148,28 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
 
       this.storeQuality(data);
     }
-  }
+  };
+
+  /**
+   * reloadList
+   */
+  public reloadList = () => {
+    this.loaderService.startLoader('Cargando estimaciones de calidad');
+    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
+      this.storeService.setContractData(success.data);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+    });
+  };
+
+  /**
+   * getItemDetails
+   * @param id
+   */
+  public getItemDetails = (id: number) => {
+    return this.qualityEstimateDetail.filter(item => item.qualityEstimate === id);
+  };
 
   /**
    * storeQuality
@@ -164,26 +184,5 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * reloadList
-   */
-  public reloadList = () => {
-    this.loaderService.startLoader('Cargando estimaciones de calidad');
-    this.contractDetailService.getCostCenterDetail(this.costCenter.id.toString()).subscribe((success: any) => {
-      this.storeService.setContractData(success.data);
-      this.loaderService.stopLoader();
-    }, error => {
-      this.loaderService.stopLoader();
-    });
-  }
-
-  /**
-   * getItemDetails
-   * @param id
-   */
-  public getItemDetails = (id: number) => {
-    return this.qualityEstimateDetail.filter(item => item.qualityEstimate === id);
   }
 }

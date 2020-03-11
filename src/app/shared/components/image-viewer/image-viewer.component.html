@@ -9,6 +9,6 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content scrollY="false" scrollX="false">
-  <ion-img class="full-image" (ionError)="showError()" [src]="image"></ion-img>
+<ion-content scrollX="false" scrollY="false">
+  <ion-img (ionError)="showError()" [src]="image" class="full-image"></ion-img>
 </ion-content>

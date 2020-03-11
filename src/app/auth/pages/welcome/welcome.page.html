@@ -2,13 +2,13 @@
   <ion-toolbar>
     <ng-container *ngIf="showCordovaFeatures">
       <ion-buttons slot="start">
-        <ion-button fill="clear" class="button-text-color" (click)="showDeviceData()">{{ getVersion() }}</ion-button>
+        <ion-button (click)="showDeviceData()" class="button-text-color" fill="clear">{{ getVersion() }}</ion-button>
       </ion-buttons>
     </ng-container>
     <ion-title>&nbsp;</ion-title>
     <ion-buttons slot="end">
       <ng-container *ngIf="device.uuid">
-        <ion-button fill="clear" (click)="showFullUUID()" class="button-text-color">
+        <ion-button (click)="showFullUUID()" class="button-text-color" fill="clear">
           NC: {{ getUUIDLast8() }}
         </ion-button>
       </ng-container>
@@ -26,7 +26,7 @@
   <ion-tabs>
     <!-- Tab bar -->
     <ion-tab-bar slot="top">
-      <ion-tab-button tab="login" selected="true">
+      <ion-tab-button selected="true" tab="login">
         Iniciar sesión
       </ion-tab-button>
       <ion-tab-button tab="register">

@@ -57,6 +57,32 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   /**
+   * reSync
+   * @param event
+   */
+  public reSync = (event) => {
+    this.syncData();
+    event.target.complete();
+  };
+
+  /**
+   * navigate
+   * @param url
+   */
+  public navigate = (menu: TabMenu) => {
+    if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
+      this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
+    }
+  };
+
+  /**
+   * checkDisabled
+   */
+  public checkDisabled = (menu: TabMenu) => {
+    return !this.isOnline && !menu.offlineMenu;
+  };
+
+  /**
    * syncData
    */
   private syncData = () => {
@@ -71,32 +97,6 @@ export class MenuListPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * reSync
-   * @param event
-   */
-  public reSync = (event) => {
-    this.syncData();
-    event.target.complete();
-  }
-
-  /**
-   * navigate
-   * @param url
-   */
-  public navigate = (menu: TabMenu) => {
-    if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
-      this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
-    }
-  }
-
-  /**
-   * checkDisabled
-   */
-  public checkDisabled = (menu: TabMenu) => {
-    return !this.isOnline && !menu.offlineMenu;
   }
 
 }

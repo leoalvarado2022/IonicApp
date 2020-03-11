@@ -85,7 +85,29 @@ export class RegisterPage implements OnInit {
     }
 
     return rut;
-  }
+  };
+
+  /**
+   * openCamera
+   */
+  public openCamera = async () => {
+    const image = await this.cameraService.openCamera();
+
+    if (image) {
+      this.getImage(image);
+    }
+  };
+
+  /**
+   * openGallery
+   */
+  public openGallery = async () => {
+    const image = await this.cameraService.openGallery();
+
+    if (image) {
+      this.getImage(image);
+    }
+  };
 
   /**
    * create
@@ -106,28 +128,6 @@ export class RegisterPage implements OnInit {
         resolve(false);
       });
     });
-  }
-
-  /**
-   * openCamera
-   */
-  public openCamera = async () => {
-    const image = await this.cameraService.openCamera();
-
-    if (image) {
-      this.getImage(image);
-    }
-  }
-
-  /**
-   * openGallery
-   */
-  public openGallery = async () => {
-    const image = await this.cameraService.openGallery();
-
-    if (image) {
-      this.getImage(image);
-    }
   }
 
   /**

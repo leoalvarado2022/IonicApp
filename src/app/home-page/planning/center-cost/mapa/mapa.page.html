@@ -1,15 +1,15 @@
 <ion-searchbar (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ng-container *ngIf="lat && lng; else retry">
-  <agm-map class="map-size" [latitude]="lat" [longitude]="lng" [zoom]="10">
+  <agm-map [latitude]="lat" [longitude]="lng" [zoom]="10" class="map-size">
     <ng-container *ngFor="let costCenter of filteredCostCenters">
       <ng-container *ngIf="costCenter.lat && costCenter.lng">
         <agm-marker
+          (markerClick)="selectedCostCenter = costCenter"
           [label]="'C'"
-          [title]="costCenter.code"
           [latitude]="costCenter.lat"
           [longitude]="costCenter.lng"
-          (markerClick)="selectedCostCenter = costCenter"
+          [title]="costCenter.code"
         >
           <agm-info-window
             [isOpen]="selectedCostCenter === costCenter"
@@ -31,7 +31,7 @@
     No se pudo cargar la ubicacion
   </p>
 
-  <ion-button color="primary" (click)="loadCurrentPosition()">
+  <ion-button (click)="loadCurrentPosition()" color="primary">
     Reintentar
   </ion-button>
 

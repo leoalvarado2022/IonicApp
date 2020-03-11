@@ -56,7 +56,11 @@ export class ChangePasswordComponent implements OnInit {
     const data = Object.assign({}, custom);
 
     this.update(data, user);
-  }
+  };
+
+  modalClose = () => {
+    this.modalController.dismiss();
+  };
 
   /**
    * create
@@ -76,10 +80,6 @@ export class ChangePasswordComponent implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
-
-  modalClose = () => {
-    this.modalController.dismiss();
   }
 
 }

@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HarvestEstimate, Unit} from '@primetec/primetec-angular';
-import {SyncService} from '../../../../shared/services/sync/sync.service';
 
 interface Arrows extends HarvestEstimate {
   arrow: string;
@@ -36,7 +35,7 @@ export class HarvestEstimateItemComponent implements OnInit {
    */
   public clickHarvest = (item: Arrows = null) => {
     this.harvestSelected.emit(item);
-  }
+  };
 
   /**
    * deleteHarvest
@@ -44,7 +43,7 @@ export class HarvestEstimateItemComponent implements OnInit {
    */
   public deleteItem = (item: Arrows) => {
     this.deleteHarvest.emit(item);
-  }
+  };
 
   /**
    * showUnitCode

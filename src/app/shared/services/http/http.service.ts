@@ -25,7 +25,7 @@ export class HttpService {
    */
   public buildUrl = (url: string, id: string = null): string => {
     return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
-  }
+  };
 
   /**
    * getHeaders
@@ -38,7 +38,7 @@ export class HttpService {
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  }
+  };
 
 
   /**
@@ -59,7 +59,7 @@ export class HttpService {
         connectionId: connection ? connection.token : null
       };
     }
-  }
+  };
 
   /**
    * errorHandler

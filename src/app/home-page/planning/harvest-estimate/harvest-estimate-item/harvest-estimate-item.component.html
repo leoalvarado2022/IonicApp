@@ -1,7 +1,7 @@
 <ng-container *ngIf="item; else empty">
   <ion-item-sliding [disabled]="slideDisabled">
-    <ion-item class="harvest" (click)="clickHarvest(item)" lines="none" [ngClass]="{ 'old': isOld}">
-      <ion-icon class="icon" name="cart" color="warning"></ion-icon>
+    <ion-item (click)="clickHarvest(item)" [ngClass]="{ 'old': isOld}" class="harvest" lines="none">
+      <ion-icon class="icon" color="warning" name="cart"></ion-icon>
       <ion-label>
         <div class="name">{{ item.userName }}</div>
         <ion-row class="highlight">
@@ -13,12 +13,12 @@
           </ion-col>
         </ion-row>
         <ion-row class="highlight">
-          <ion-col size="6" class="ion-no-padding">
+          <ion-col class="ion-no-padding" size="6">
             <div class="value totales">{{ item.startDate | customDate }}</div>
           </ion-col>
-          <ion-col size="6" class="ion-no-padding">
+          <ion-col class="ion-no-padding" size="6">
             <div class="value">
-              <ion-icon size="large" [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
+              <ion-icon [color]="item.color" [name]="item.arrow" size="large"></ion-icon>&nbsp;
               <span class="totales">{{ item.quantity | number:'1.0-0':'es-CL' }} {{ showUnitCode() | uppercase }}</span>
             </div>
           </ion-col>
@@ -28,7 +28,7 @@
     </ion-item>
 
     <ion-item-options side="start">
-      <ion-item-option color="danger" (click)="deleteItem(item)">
+      <ion-item-option (click)="deleteItem(item)" color="danger">
         <ion-icon name="trash"></ion-icon>
       </ion-item-option>
     </ion-item-options>
@@ -36,8 +36,8 @@
 </ng-container>
 
 <ng-template #empty>
-  <ion-item class="harvest" (click)="clickHarvest()" lines="none" [ngClass]="{ 'old': isOld}">
-    <ion-icon class="icon" name="cart" color="warning"></ion-icon>
+  <ion-item (click)="clickHarvest()" [ngClass]="{ 'old': isOld}" class="harvest" lines="none">
+    <ion-icon class="icon" color="warning" name="cart"></ion-icon>
     <ion-label>
       <div class="name">N/A</div>
       <ion-row class="highlight">

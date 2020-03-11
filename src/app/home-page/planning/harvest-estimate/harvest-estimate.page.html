@@ -20,11 +20,11 @@
     <div class="card-sli">
       <div class="card-sli-back">
         <app-harvest-estimate-item
-            (harvestSelected)="viewHarvest($event)"
-            (deleteHarvest)="deleteHarvest($event)"
-            [isOld]="index > 0"
-            [item]="harvest"
-            [slideDisabled]="false">
+          (deleteHarvest)="deleteHarvest($event)"
+          (harvestSelected)="viewHarvest($event)"
+          [isOld]="index > 0"
+          [item]="harvest"
+          [slideDisabled]="false">
         </app-harvest-estimate-item>
       </div>
     </div>

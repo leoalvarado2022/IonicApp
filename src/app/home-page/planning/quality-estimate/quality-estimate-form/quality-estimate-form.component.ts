@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Caliber, CostCenter, CostCenterList, Generic, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
+import {Caliber, CostCenter, Generic, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
@@ -31,9 +31,9 @@ export class QualityEstimateFormComponent implements OnInit {
 
   public qualityForm: FormGroup;
   public isSaving = false;
+  public qualities: Array<Generic>;
   private userCompany: any;
   private calibers: Array<Caliber>;
-  public qualities: Array<Generic>;
   private filteredCalibers: Array<Caliber>;
 
   constructor(
@@ -95,7 +95,7 @@ export class QualityEstimateFormComponent implements OnInit {
   public closeModal = (status: boolean = false) => {
     this.qualityForm.reset();
     this.modalController.dismiss(status);
-  }
+  };
 
   /**
    * submit
@@ -117,7 +117,7 @@ export class QualityEstimateFormComponent implements OnInit {
     } else {
       this.isSaving = false;
     }
-  }
+  };
 
   /**
    * getCaliberName
@@ -126,7 +126,7 @@ export class QualityEstimateFormComponent implements OnInit {
   public getCaliberName = (item: any) => {
     const caliber = this.calibers.find((caliber: Caliber) => caliber.id === item.get('caliber').value);
     return caliber ? caliber.name : 'NOMBRE CALIBRE';
-  }
+  };
 
   /**
    * validateCalibers
@@ -144,7 +144,37 @@ export class QualityEstimateFormComponent implements OnInit {
     }
 
     return accum < 100 || accum > 100 ? {wrongPercentage: true} : null;
-  }
+  };
+
+  /**
+   * getTotal
+   */
+  public getTotal = () => {
+    const items = this.qualityForm.get('calibers') as FormArray;
+
+    let accum = 0;
+    for (const item of items.controls) {
+      const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
+      if (percentage && percentage > 0) {
+        accum = accum + percentage;
+      }
+    }
+
+    return accum;
+  };
+
+  /**
+   * getSelectedQuality
+   */
+  public getSelectedQuality = () => {
+    if (this.qualities) {
+      const id = this.qualityForm.get('quality.quality').value;
+      const find = this.qualities.find(item => item.id === id);
+      return find ? find.name : '';
+    }
+
+    return '';
+  };
 
   /**
    * loadCalibers
@@ -174,7 +204,7 @@ export class QualityEstimateFormComponent implements OnInit {
       });
       items.push(newCaliber);
     }
-  }
+  };
 
   /**
    * storeQuality
@@ -191,36 +221,6 @@ export class QualityEstimateFormComponent implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * getTotal
-   */
-  public getTotal = () => {
-    const items = this.qualityForm.get('calibers') as FormArray;
-
-    let accum = 0;
-    for (const item of items.controls) {
-      const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
-      if (percentage && percentage > 0) {
-        accum = accum + percentage;
-      }
-    }
-
-    return accum;
-  }
-
-  /**
-   * getSelectedQuality
-   */
-  public getSelectedQuality = () => {
-    if (this.qualities) {
-      const id = this.qualityForm.get('quality.quality').value;
-      const find = this.qualities.find(item => item.id === id);
-      return find ? find.name : '';
-    }
-
-    return '';
   }
 
 }

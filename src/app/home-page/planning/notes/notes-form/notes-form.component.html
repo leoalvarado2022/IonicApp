@@ -23,7 +23,7 @@
       </ion-item>
     </ng-container>
 
-    <div class="loadingImg" *ngIf="loadingImg">
+    <div *ngIf="loadingImg" class="loadingImg">
       Cargando Imagen...
     </div>
 
@@ -33,7 +33,7 @@
 
     <ion-item>
       <ion-label position="floating">Nota</ion-label>
-      <ion-textarea rows="5" cols="5" formControlName="note" placeholder="Escriba la nota..."></ion-textarea>
+      <ion-textarea cols="5" formControlName="note" placeholder="Escriba la nota..." rows="5"></ion-textarea>
       <ng-container *ngIf="noteForm.get('note').dirty && noteForm.get('note').hasError('required')">
         <span class="errorMsg">Ingrese la nota</span>
       </ng-container>

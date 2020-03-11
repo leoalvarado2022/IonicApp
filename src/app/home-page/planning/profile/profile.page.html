@@ -40,8 +40,8 @@
         <ion-label position="floating">Rut</ion-label>
         <ion-input formControlName="rut" tabindex="0"></ion-input>
         <ng-container *ngIf="registerForm.get('rut').errors">
-          <span style="color: red" *ngIf="registerForm.get('rut').hasError('required')">El rut es requerido.</span>
-          <span style="color: red" *ngIf="registerForm.get('rut').hasError('notRut')">El rut es inválido.</span>
+          <span *ngIf="registerForm.get('rut').hasError('required')" style="color: red">El rut es requerido.</span>
+          <span *ngIf="registerForm.get('rut').hasError('notRut')" style="color: red">El rut es inválido.</span>
         </ng-container>
       </ion-item>
 
@@ -49,7 +49,7 @@
         <ion-label position="floating">Nombres</ion-label>
         <ion-input formControlName="nombre" tabindex="1"></ion-input>
         <ng-container *ngIf="registerForm.get('nombre').errors">
-          <span style="color: red" *ngIf="registerForm.get('nombre').hasError('required')">Los nombres son requeridos.</span>
+          <span *ngIf="registerForm.get('nombre').hasError('required')" style="color: red">Los nombres son requeridos.</span>
         </ng-container>
       </ion-item>
 
@@ -57,7 +57,7 @@
         <ion-label position="floating">Apellido Paterno</ion-label>
         <ion-input formControlName="apellido_paterno" tabindex="2"></ion-input>
         <ng-container *ngIf="registerForm.get('apellido_paterno').errors">
-          <span style="color: red" *ngIf="registerForm.get('apellido_paterno').hasError('required')">El apellido parterno es requerido.</span>
+          <span *ngIf="registerForm.get('apellido_paterno').hasError('required')" style="color: red">El apellido parterno es requerido.</span>
         </ng-container>
       </ion-item>
 
@@ -65,7 +65,7 @@
         <ion-label position="floating">Apellido Materno</ion-label>
         <ion-input class="input-text" formControlName="apellido_materno" tabindex="3"></ion-input>
         <ng-container *ngIf="registerForm.get('apellido_materno').errors">
-          <span style="color: red" *ngIf="registerForm.get('apellido_materno').hasError('required')">El apellido materno es requerido.</span>
+          <span *ngIf="registerForm.get('apellido_materno').hasError('required')" style="color: red">El apellido materno es requerido.</span>
         </ng-container>
       </ion-item>
 
@@ -73,8 +73,8 @@
         <ion-label position="floating">Correo</ion-label>
         <ion-input formControlName="email" tabindex="4" type="email"></ion-input>
         <ng-container *ngIf="registerForm.get('email').errors">
-          <span style="color: red" *ngIf="registerForm.get('email').hasError('required')">El correo es requerido.</span>
-          <span style="color: red" *ngIf="registerForm.get('email').hasError('email')">Ingrese un correo valido.</span>
+          <span *ngIf="registerForm.get('email').hasError('required')" style="color: red">El correo es requerido.</span>
+          <span *ngIf="registerForm.get('email').hasError('email')" style="color: red">Ingrese un correo valido.</span>
         </ng-container>
       </ion-item>
 
@@ -82,7 +82,7 @@
         <ion-label position="floating">Telefono</ion-label>
         <ion-input formControlName="telefono" tabindex="5" type="tel"></ion-input>
         <ng-container *ngIf="registerForm.get('telefono').errors">
-          <span style="color: red" *ngIf="registerForm.get('telefono').hasError('required')">El telefono es requerido.</span>
+          <span *ngIf="registerForm.get('telefono').hasError('required')" style="color: red">El telefono es requerido.</span>
         </ng-container>
       </ion-item>
 

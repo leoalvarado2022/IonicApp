@@ -26,13 +26,13 @@
     <div class="card-sli">
       <div class="card-sli-back">
         <app-quality-estimate-item
-          (itemSelected)="viewQuality(quality)"
           (itemDelete)="deleteQuality(quality)"
-          [isOld]="index > 0 "
-          [slideDisabled]="false"
+          (itemSelected)="viewQuality(quality)"
           [costCenter]="costCenter"
+          [details]="getItemDetails(quality.id)"
+          [isOld]="index > 0 "
           [item]="quality"
-          [details]="getItemDetails(quality.id)">
+          [slideDisabled]="false">
         </app-quality-estimate-item>
       </div>
     </div>

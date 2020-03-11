@@ -3,7 +3,7 @@
 <ion-content>
   <ng-container>
     <ion-virtual-scroll [items]="filteredCostCenters">
-      <app-cost-center-card *virtualItem="let item" (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
+      <app-cost-center-card (cardClicked)="costCenterSelected($event)" *virtualItem="let item" [costCenter]="item"></app-cost-center-card>
     </ion-virtual-scroll>
   </ng-container>
 </ion-content>

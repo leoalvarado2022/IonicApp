@@ -1,21 +1,4 @@
-import {
-  Caliber,
-  CfgAccess,
-  Company,
-  Connection,
-  CostCenter,
-  CostCenterList,
-  EntityList,
-  Generic,
-  HarvestEstimate,
-  Note,
-  ProductContract,
-  ProductContractDetail,
-  Quadrille, QualityDetail,
-  QualityEstimate,
-  TabMenu,
-  Unit
-} from '@primetec/primetec-angular';
+import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
 
 export interface StoreInterface {
   auth: Auth;

@@ -22,8 +22,8 @@
         </ion-col>
         <ion-col size="2">
           <ng-container *ngIf="costCenter">
-            <ion-button fill="clear" size="small" (click)="myGeolocation()">
-              <ion-icon name="globe" slot="icon-only" [ngClass]="{ 'geolocation': costCenter.latitude && costCenter.longitude, 'no-geolocation': !costCenter.latitude || !costCenter.longitude }" style="color:white;"></ion-icon>
+            <ion-button (click)="myGeolocation()" fill="clear" size="small">
+              <ion-icon [ngClass]="{ 'geolocation': costCenter.latitude && costCenter.longitude, 'no-geolocation': !costCenter.latitude || !costCenter.longitude }" name="globe" slot="icon-only" style="color:white;"></ion-icon>
             </ion-button>
           </ng-container>
         </ion-col>
@@ -48,7 +48,7 @@
     </ng-container>
 
     <ng-container *ngFor="let contract of productionContracts; let index = index">
-      <div class="scroll-card" [class.scroll-card-custom]="openSelected">
+      <div [class.scroll-card-custom]="openSelected" class="scroll-card">
         <ng-container>
           <div class="card-text">
             <div class="card-text-one">
@@ -105,8 +105,8 @@
       <app-quality-estimate-item
         (itemSelected)="qualityPage($event)"
         [costCenter]="costCenter"
-        [item]="qualityEstimate[0]"
-        [details]="getItemDetails(qualityEstimate[0])">
+        [details]="getItemDetails(qualityEstimate[0])"
+        [item]="qualityEstimate[0]">
       </app-quality-estimate-item>
     </ng-container>
     <ng-template #emptyQuality>

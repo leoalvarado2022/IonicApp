@@ -1,7 +1,7 @@
 <ng-container *ngIf="item; else empty">
 
   <ion-item-sliding [disabled]="slideDisabled">
-    <ion-item class="quality" (click)="clickItem(item)" lines="none" [ngClass]="{ 'old': isOld}">
+    <ion-item (click)="clickItem(item)" [ngClass]="{ 'old': isOld}" class="quality" lines="none">
       <ion-icon class="icon" color="success" name="card"></ion-icon>
       <ion-label>
         <div class="name">{{ item.userName }}</div>
@@ -14,12 +14,12 @@
           </ion-col>
         </ion-row>
         <ion-row class="highlight">
-          <ion-col size="6" class="ion-no-padding">
+          <ion-col class="ion-no-padding" size="6">
             <div class="value totales">{{ item.qualityName }}</div>
           </ion-col>
-          <ion-col size="6" class="ion-no-padding">
+          <ion-col class="ion-no-padding" size="6">
             <div class="value">
-              <ion-icon size="large" [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
+              <ion-icon [color]="item.color" [name]="item.arrow" size="large"></ion-icon>&nbsp;
               <span class="totales">{{ item.exportPercentage }} %</span>
             </div>
           </ion-col>
@@ -29,25 +29,25 @@
     </ion-item>
 
     <ng-container *ngIf="!showChart">
-      <div class="chart-button" (click)="openChart()" [ngClass]="{ 'old': isOld}">
+      <div (click)="openChart()" [ngClass]="{ 'old': isOld}" class="chart-button">
         Desplegar Grafico
-        <ion-icon slot="end" name="analytics"></ion-icon>
+        <ion-icon name="analytics" slot="end"></ion-icon>
       </div>
     </ng-container>
 
     <ng-container *ngIf="showChart">
-      <div class="chart-button" (click)="showChart = false" [ngClass]="{ 'old': isOld}">
+      <div (click)="showChart = false" [ngClass]="{ 'old': isOld}" class="chart-button">
         Ocultar Grafico
-        <ion-icon slot="end" name="analytics"></ion-icon>
+        <ion-icon name="analytics" slot="end"></ion-icon>
       </div>
     </ng-container>
 
     <ng-container *ngIf="showChart">
-      <div echarts [options]="this.chartData" class="chart" [ngClass]="{ 'old': isOld}"></div>
+      <div [ngClass]="{ 'old': isOld}" [options]="this.chartData" class="chart" echarts></div>
     </ng-container>
 
     <ion-item-options side="start">
-      <ion-item-option color="danger" (click)="deleteItem(item)">
+      <ion-item-option (click)="deleteItem(item)" color="danger">
         <ion-icon name="trash"></ion-icon>
       </ion-item-option>
     </ion-item-options>
@@ -55,7 +55,7 @@
 </ng-container>
 
 <ng-template #empty>
-  <ion-item class="quality" (click)="clickItem()" lines="none" [ngClass]="{ 'old': isOld}">
+  <ion-item (click)="clickItem()" [ngClass]="{ 'old': isOld}" class="quality" lines="none">
     <ion-icon class="icon" color="success" name="card"></ion-icon>
     <ion-label>
       <div class="name">N/A</div>

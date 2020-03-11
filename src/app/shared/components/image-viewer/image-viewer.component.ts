@@ -25,7 +25,7 @@ export class ImageViewerComponent implements OnInit {
   public showError = () => {
     this.toastService.warningToast('No se puede mostrar la imagen');
     this.closeModal();
-  }
+  };
 
   /**
    * closeModal

@@ -11,7 +11,6 @@ import {UserService} from '../../../shared/services/user/user.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {ContractInterface} from "../../../shared/services/store/store-interface";
 
 @Component({
   selector: 'app-contract-detail',
@@ -86,32 +85,11 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   }
 
   /**
-   * loadUnits
-   */
-  private loadUnits = (): void => {
-    this.units = this.storeService.getUnits();
-  }
-
-  /**
-   * loadContractDetail
-   * @param id
-   */
-  private loadContractDetail = (id: string) => {
-    this.loaderService.startLoader();
-    this.contractDetailService.getCostCenterDetail(id).subscribe((success: any) => {
-      this.storeService.setContractData(success.data);
-      this.loaderService.stopLoader();
-    }, error => {
-      this.loaderService.stopLoader();
-    });
-  }
-
-  /**
    * getTotal
    */
   public getTotal = () => {
     return this.productionContracts.reduce((accumulator, contract) => accumulator + contract.totalQuantity, 0);
-  }
+  };
 
   /**
    * showUnitName
@@ -123,7 +101,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     return 'N/A';
-  }
+  };
 
   /**
    * getItemDetails
@@ -135,7 +113,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     return [];
-  }
+  };
 
   /**
    * goToList
@@ -143,7 +121,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public noteListPage = (note: Note = null) => {
     this.router.navigate(['/home-page/notes']);
-  }
+  };
 
   /**
    * harvestPage
@@ -151,7 +129,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public harvestPage = (item: HarvestEstimate) => {
     this.router.navigate(['/home-page/harvest-estimate']);
-  }
+  };
 
   /**
    * qualityPage
@@ -159,7 +137,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public qualityPage = (item: QualityEstimate) => {
     this.router.navigate(['/home-page/quality-estimate']);
-  }
+  };
 
   /**
    * @description actualizacion de la geolocation al centro de costo
@@ -180,7 +158,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     };
 
     this.updateGeolocation(object);
-  }
+  };
 
   /**
    * @description actualizar localizacion
@@ -200,7 +178,28 @@ export class ContractDetailPage implements OnInit, OnDestroy {
       this.toastService.errorToast('No se ha cambiado la localización');
       this.httpService.errorHandler(error);
     });
-  }
+  };
+
+  /**
+   * loadUnits
+   */
+  private loadUnits = (): void => {
+    this.units = this.storeService.getUnits();
+  };
+
+  /**
+   * loadContractDetail
+   * @param id
+   */
+  private loadContractDetail = (id: string) => {
+    this.loaderService.startLoader();
+    this.contractDetailService.getCostCenterDetail(id).subscribe((success: any) => {
+      this.storeService.setContractData(success.data);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+    });
+  };
 
   /**
    * syncData

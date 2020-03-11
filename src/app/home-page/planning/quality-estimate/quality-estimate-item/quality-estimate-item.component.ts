@@ -21,10 +21,9 @@ export class QualityEstimateItemComponent implements OnInit {
   @Input() slideDisabled = true;
   @Output() itemSelected: EventEmitter<QualityEstimate | null> = new EventEmitter<QualityEstimate | null>();
   @Output() itemDelete: EventEmitter<QualityEstimate | null> = new EventEmitter<QualityEstimate | null>();
-
-  private calibers: Array<any>;
   public chartData: any;
   public showChart = false;
+  private calibers: Array<any>;
 
   constructor(private storeService: StoreService) {
 
@@ -40,7 +39,7 @@ export class QualityEstimateItemComponent implements OnInit {
    */
   public clickItem = (item: Arrows = null) => {
     this.itemSelected.emit(item);
-  }
+  };
 
   /**
    * deleteItem
@@ -48,7 +47,7 @@ export class QualityEstimateItemComponent implements OnInit {
    */
   public deleteItem = (item: Arrows) => {
     this.itemDelete.emit(item);
-  }
+  };
 
   /**
    * openChart

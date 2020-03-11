@@ -9,9 +9,9 @@ import {StoreService} from '../../../shared/services/store/store.service';
 })
 export class RemQuadrillePage implements OnInit {
 
-  private quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
   public workers: Array<any> = [];
+  private quadrilles: Array<any> = [];
 
   constructor(
     private router: Router,
@@ -27,24 +27,12 @@ export class RemQuadrillePage implements OnInit {
   }
 
   /**
-   * loadQuadrilles
-   */
-  private loadQuadrilles = () => {
-    const quadrilles = this.storeService.getQuadrilles();
-    const workers = this.storeService.getWorkers();
-
-    this.quadrilles = [...quadrilles];
-    this.filteredQuadrilles = [...quadrilles];
-    this.workers = [...workers];
-  }
-
-  /**
    * reload
    */
   public reload = (event) => {
     this.loadQuadrilles();
     event.target.complete();
-  }
+  };
 
   /**
    * goToWorkers
@@ -52,7 +40,7 @@ export class RemQuadrillePage implements OnInit {
    */
   public goToWorkers = (quadrille: any) => {
     this.router.navigate(['/home-page/rem-workers', quadrille.id]);
-  }
+  };
 
   /**
    * getQuadrilleWorkers
@@ -64,5 +52,17 @@ export class RemQuadrillePage implements OnInit {
     }
 
     return 0;
+  };
+
+  /**
+   * loadQuadrilles
+   */
+  private loadQuadrilles = () => {
+    const quadrilles = this.storeService.getQuadrilles();
+    const workers = this.storeService.getWorkers();
+
+    this.quadrilles = [...quadrilles];
+    this.filteredQuadrilles = [...quadrilles];
+    this.workers = [...workers];
   }
 }

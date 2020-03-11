@@ -1,0 +1,9 @@
+<ion-searchbar (ionChange)="searchTickets($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
+<ion-content>
+
+  <ng-container *ngFor="let ticket of [1,1,1,1,1,1]">
+    <app-ticket-card></app-ticket-card>
+  </ng-container>
+
+</ion-content>

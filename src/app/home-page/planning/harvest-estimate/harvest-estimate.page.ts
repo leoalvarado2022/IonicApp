@@ -3,7 +3,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
 import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
-import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';

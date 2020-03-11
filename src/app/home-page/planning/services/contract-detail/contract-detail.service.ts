@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {AuthService} from '../auth/auth.service';
+import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {HttpClient} from '@angular/common/http';
-import {LoaderService} from '../loader/loader.service';
-import {HttpService} from '../http/http.service';
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {HttpService} from '../../../../shared/services/http/http.service';
 
 @Injectable()
 export class ContractDetailService {

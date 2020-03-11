@@ -5,7 +5,7 @@ import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {Device} from '@ionic-native/device/ngx';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
-import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
 
 @Component({
   selector: 'app-note-item',

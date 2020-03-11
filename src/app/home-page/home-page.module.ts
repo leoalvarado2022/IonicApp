@@ -3,7 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
 import {MenuComponent} from './common/menu/menu.component';
-import {ContractDetailService} from '../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from './planning/services/contract-detail/contract-detail.service';
 
 const routes: Routes = [
   {
@@ -53,6 +53,10 @@ const routes: Routes = [
       {
         path: 'rem-workers',
         loadChildren: () => import('./rem/rem-workers/rem-workers.module').then(module => module.RemWorkersPageModule)
+      },
+      {
+        path: 'crm_tickets',
+        loadChildren: () => import('./crm/tickets/tickets.module').then(module => module.TicketsPageModule)
       }
     ]
   },

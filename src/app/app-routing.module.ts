@@ -24,6 +24,22 @@ const routes: Routes = [
     loadChildren: () => import('./home-page/home-page.module').then(module => module.HomePagePageModule),
     canActivate: [AuthGuard]
   },
+  {
+    path: 'tickets',
+    loadChildren: () => import('./home-page/crm/tickets/tickets.module').then( m => m.TicketsPageModule)
+  },
+  {
+    path: 'tickets',
+    loadChildren: () => import('./home-page/crm/tickets/tickets.module').then( m => m.TicketsPageModule)
+  },
+  {
+    path: 'me',
+    loadChildren: () => import('./home-page/crm/tickets/me/me.module').then( m => m.MePageModule)
+  },
+  {
+    path: 'all',
+    loadChildren: () => import('./home-page/crm/tickets/all/all.module').then( m => m.AllPageModule)
+  },
 ];
 
 @NgModule({

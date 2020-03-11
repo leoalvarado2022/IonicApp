@@ -3,7 +3,7 @@ import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CostCenter, EntityList, Generic, HarvestEstimate, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
-import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';

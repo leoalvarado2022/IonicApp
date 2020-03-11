@@ -24,6 +24,8 @@ import {CameraService} from './services/camera/camera.service';
 import {RutPipe} from './pipes/rut/rut.pipe';
 import {SyncService} from './services/sync/sync.service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
+import {TicketCardComponent} from '../home-page/crm/tickets/ticket-card/ticket-card.component';
+import {TicketsService} from '../home-page/crm/services/tickets/tickets.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import {FileOpener} from '@ionic-native/file-opener/ngx';
     NoteItemComponent,
     ImageViewerComponent,
     CustomDatetimePipe,
-    RutPipe
+    RutPipe,
+    TicketCardComponent
   ],
   imports: [
     CommonModule,
@@ -55,7 +58,8 @@ import {FileOpener} from '@ionic-native/file-opener/ngx';
     PreviewAnyFile,
     CameraService,
     SyncService,
-    FileOpener
+    FileOpener,
+    TicketsService
   ],
   exports: [
     CommonModule,
@@ -70,7 +74,8 @@ import {FileOpener} from '@ionic-native/file-opener/ngx';
     NoteItemComponent,
     ImageViewerComponent,
     CustomDatetimePipe,
-    RutPipe
+    RutPipe,
+    TicketCardComponent
   ],
   entryComponents: [
     ImageViewerComponent

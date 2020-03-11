@@ -3,7 +3,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {CostCenter, Note} from '@primetec/primetec-angular';
 import {ModalController} from '@ionic/angular';
 import {NotesFormComponent} from './notes-form/notes-form.component';
-import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AlertService} from '../../../shared/services/alert/alert.service';

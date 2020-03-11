@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {CostCenterList} from '@primetec/primetec-angular';
-import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
 import {Router} from '@angular/router';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {StoreService} from '../../../../shared/services/store/store.service';

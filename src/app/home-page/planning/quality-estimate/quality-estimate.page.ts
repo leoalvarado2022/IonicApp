@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
 import {CostCenter, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {ModalController} from '@ionic/angular';
 import {QualityEstimateFormComponent} from './quality-estimate-form/quality-estimate-form.component';

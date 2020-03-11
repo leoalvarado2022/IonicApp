@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Tickets</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scrollX="false" scrollY="false">
+  <ion-tabs>
+    <!-- Tab bar -->
+    <ion-tab-bar slot="top">
+      <ion-tab-button tab="me">
+        <span>Mis Tickets</span>
+      </ion-tab-button>
+      <ion-tab-button tab="all">
+        <span>Todos</span>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</ion-content>

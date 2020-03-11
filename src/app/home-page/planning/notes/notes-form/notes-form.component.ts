@@ -3,7 +3,7 @@ import {CostCenter, Note} from '@primetec/primetec-angular';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ContractDetailService} from '../../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {DetectPlatformService} from '../../../../shared/services/detect-platform/detect-platform.service';
 import {HttpService} from '../../../../shared/services/http/http.service';

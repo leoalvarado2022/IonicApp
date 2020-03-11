@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ContractDetailService} from '../../../shared/services/contract-detail/contract-detail.service';
+import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
 import {CostCenter, CostCenterList, HarvestEstimate, Note, ProductContract, QualityDetail, QualityEstimate, Unit} from '@primetec/primetec-angular';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';

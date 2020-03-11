@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Router} from '@angular/router';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-rem-quadrille',
@@ -14,24 +14,24 @@ export class RemQuadrillePage implements OnInit {
   public workers: Array<any> = [];
 
   constructor(
-    private syncService: SyncService,
-    private router: Router
+    private router: Router,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
-    this.loadQuadrilles();
+    this.storeService.stateChanged.subscribe(data => {
+      this.loadQuadrilles();
+    });
   }
 
   /**
    * loadQuadrilles
    */
-  private loadQuadrilles = async () => {
-    const quadrilles = await this.syncService.getQuadrilles();
-    const workers = await this.syncService.getWorkers();
-
-    console.log({quadrilles, workers});
+  private loadQuadrilles = () => {
+    const quadrilles = this.storeService.getQuadrilles();
+    const workers = this.storeService.getWorkers();
 
     this.quadrilles = [...quadrilles];
     this.filteredQuadrilles = [...quadrilles];
@@ -41,8 +41,8 @@ export class RemQuadrillePage implements OnInit {
   /**
    * reload
    */
-  public reload = async (event) => {
-    await this.loadQuadrilles();
+  public reload = (event) => {
+    this.loadQuadrilles();
     event.target.complete();
   }
 

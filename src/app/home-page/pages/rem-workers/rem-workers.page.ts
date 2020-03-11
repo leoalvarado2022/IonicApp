@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ActivatedRoute} from '@angular/router';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
@@ -6,6 +6,8 @@ import {ActionSheetController} from '@ionic/angular';
 import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {UserService} from '../../../shared/services/user/user.service';
 import {HttpService} from '../../../shared/services/http/http.service';
+import {StoreService} from '../../../shared/services/store/store.service';
+import {Subscription} from "rxjs";
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -19,7 +21,7 @@ enum WorkerStatus {
   templateUrl: './rem-workers.page.html',
   styleUrls: ['./rem-workers.page.scss'],
 })
-export class RemWorkersPage implements OnInit {
+export class RemWorkersPage implements OnInit, OnDestroy {
 
   private workers: Array<any> = [];
   private quadrilles: Array<any> = [];
@@ -29,6 +31,8 @@ export class RemWorkersPage implements OnInit {
   private buttons: Array<any> = [];
   private userData = null;
 
+  private store$: Subscription;
+
   constructor(
     private syncService: SyncService,
     private route: ActivatedRoute,
@@ -36,34 +40,32 @@ export class RemWorkersPage implements OnInit {
     private actionSheetController: ActionSheetController,
     private quadrilleService: QuadrilleService,
     private userService: UserService,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.loadWorkers(id);
-    this.init();
+
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      this.userData = this.storeService.getUser();
+      this.loadWorkers(id);
+    });
   }
 
-  /**
-   * init
-   */
-  private init = async () => {
-    const userData = await this.userService.getUserData();
-    this.userData = userData;
+  ngOnDestroy(): void {
+    this.store$.unsubscribe();
   }
 
   /**
    * loadWorkers
    */
-  private loadWorkers = async (id: string) => {
+  private loadWorkers = (id: string) => {
     this.loaderService.startLoader();
-    const quadrilles = await this.syncService.getQuadrilles();
-    const allWorkers = await this.syncService.getWorkers();
-
-    console.log({quadrilles, allWorkers});
+    const quadrilles = this.storeService.getQuadrilles();
+    const allWorkers = this.storeService.getWorkers();
 
     if (quadrilles && allWorkers) {
       this.quadrilles = [...quadrilles];
@@ -82,9 +84,9 @@ export class RemWorkersPage implements OnInit {
    * reload
    * @param event
    */
-  public reload = async (event) => {
+  public reload = (event) => {
     const id = this.route.snapshot.paramMap.get('id');
-    await this.loadWorkers(id);
+    this.loadWorkers(id);
     event.target.complete();
   }
 
@@ -152,6 +154,7 @@ export class RemWorkersPage implements OnInit {
     };
 
     this.loaderService.startLoader();
+
     this.quadrilleService.transferWorkers(data).subscribe(success => {
       this.loaderService.stopLoader();
       this.selectedWorkers = [];
@@ -165,12 +168,11 @@ export class RemWorkersPage implements OnInit {
   /**
    * reSync
    */
-  private reSync = async () => {
+  private reSync = () => {
     this.loaderService.startLoader();
     const id = this.route.snapshot.paramMap.get('id');
-    const data = await this.syncData();
-    await this.syncService.storeSync(data);
-    await this.loadWorkers(id);
+    this.syncData();
+    // this.loadWorkers(id);
     this.loaderService.stopLoader();
   }
 
@@ -178,19 +180,13 @@ export class RemWorkersPage implements OnInit {
    * syncData
    * @param username
    */
-  private syncData = (): Promise<any> => {
-    return new Promise<any>(resolve => {
-      if (this.userData) {
-        const {user} = this.userData;
-        const username = user.username;
+  private syncData = () => {
+    const username = this.userData.username;
 
-        this.syncService.syncData(username).subscribe((success: any) => {
-          resolve(success.data);
-        }, async error => {
-          this.httpService.errorHandler(error);
-          resolve(null);
-        });
-      }
+    this.syncService.syncData(username).subscribe((success: any) => {
+      this.storeService.setSyncedData(success.data);
+    }, async error => {
+      this.httpService.errorHandler(error);
     });
   }
 

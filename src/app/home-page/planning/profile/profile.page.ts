@@ -6,7 +6,6 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../../../shared/services/auth/auth.service';
 import {ValidateRut} from '@primetec/primetec-angular';
-import {Store} from '@ngrx/store';
 import {ModalController} from '@ionic/angular';
 import {ChangePasswordComponent} from './change-password/change-password.component';
 import {HttpService} from '../../../shared/services/http/http.service';
@@ -32,7 +31,6 @@ export class ProfilePage implements OnInit {
     private loaderService: LoaderService,
     private toastService: ToastService,
     private router: Router,
-    private store: Store<any>,
     private modalController: ModalController,
     public device: Device,
     private authService: AuthService,

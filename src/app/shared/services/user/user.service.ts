@@ -1,8 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {getMenuProfile} from '../../../reducers/reducers';
-import {Store} from '@ngrx/store';
 import {StorageService} from '../storage/storage.service';
 import {HttpService} from '../http/http.service';
 
@@ -20,7 +17,6 @@ export class UserService {
   constructor(
     private httpClient: HttpClient,
     private httpService: HttpService,
-    private store: Store<any>,
     private storageService: StorageService
   ) {
   }
@@ -69,13 +65,6 @@ export class UserService {
   public updatePassword = (data: any) => {
     const url = this.httpService.buildUrl(this.updatePasswordUrl);
     return this.httpClient.put(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  }
-
-  /**
-   * @descripcion obtener datos del perfil cuando se loguea
-   */
-  getMenuProfiles(): Observable<any> {
-    return this.store.select(getMenuProfile);
   }
 
   /////////////// USUARIO

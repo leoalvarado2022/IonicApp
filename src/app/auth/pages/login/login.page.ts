@@ -4,7 +4,6 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {Store} from '@ngrx/store';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
@@ -27,7 +26,6 @@ export class LoginPage implements OnInit {
     private authService: AuthService,
     private router: Router,
     private toastService: ToastService,
-    private store: Store<any>,
     private syncService: SyncService,
     private userService: UserService,
     private httpService: HttpService,

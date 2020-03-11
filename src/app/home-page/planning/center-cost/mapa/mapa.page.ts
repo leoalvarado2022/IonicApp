@@ -4,6 +4,7 @@ import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {GeolocationService} from '../../../../shared/services/geolocation/geolocation.service';
 import {Subscription} from 'rxjs';
+import {StoreService} from '../../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-mapa',
@@ -20,41 +21,29 @@ export class MapaPage implements OnInit, OnDestroy {
   private costCenters: CostCenterList[] = [];
 
   private position$: Subscription;
+  private store$: Subscription;
 
   constructor(
     private syncService: SyncService,
     private loaderService: LoaderService,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private storeService: StoreService
   ) {
 
   }
 
-  ionViewWillEnter() {
-    this.loadCostCenters();
-  }
-
   ngOnInit() {
+    this.loadCurrentPosition();
 
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      this.costCenters = this.storeService.getCostCenters();
+      this.filteredCostCenters = this.costCenters;
+    });
   }
 
   ngOnDestroy(): void {
     this.position$.unsubscribe();
-  }
-
-  ionViewDidEnter() {
-    this.loadCurrentPosition();
-  }
-
-  /**
-   * loadCostCenters
-   */
-  public loadCostCenters = async () => {
-    this.loaderService.startLoader('Cargando centros de costo...');
-    this.costCenters = [];
-    this.filteredCostCenters = [];
-    this.costCenters = await this.syncService.getCostCenters();
-    this.filteredCostCenters = this.costCenters;
-    this.loaderService.stopLoader();
+    this.store$.unsubscribe();
   }
 
   /**

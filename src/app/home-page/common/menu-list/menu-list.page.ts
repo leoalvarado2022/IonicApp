@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
-import {Store} from '@ngrx/store';
 import {StorageService} from '../../../shared/services/storage/storage.service';
 import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
@@ -27,7 +26,6 @@ export class MenuListPage implements OnInit, OnDestroy {
   private store$: Subscription;
 
   constructor(
-    public store: Store<any>,
     private storage: StorageService,
     private userService: UserService,
     public syncService: SyncService,

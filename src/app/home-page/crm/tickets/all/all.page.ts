@@ -11,6 +11,9 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
 })
 export class AllPage implements OnInit {
 
+  private allTickets: Array<any> = [];
+  public filteredTickets: Array<any> = [];
+
   constructor(
     private ticketsService: TicketsService,
     private storeService: StoreService,
@@ -29,19 +32,20 @@ export class AllPage implements OnInit {
    */
   private loadTickets = () => {
     this.loaderService.startLoader('Cargando tickets');
-    const user = this.storeService.getUser();
+    const user = this.storeService.getActiveCompany();
 
     const data = {
-      filter: '',
-      user: user.id,
+      filter: 'todos',
+      user: user.user,
       init: 0,
       registers: 0,
       order: 0,
       search: ''
     };
 
-    this.ticketsService.getTickets(data).subscribe(success => {
-      console.log('getTickets', success);
+    this.ticketsService.getTickets(data).subscribe((success: any) => {
+      this.allTickets = success.data.listTickets;
+      this.filteredTickets = success.data.listTickets;
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
@@ -49,12 +53,31 @@ export class AllPage implements OnInit {
     });
   }
 
-  searchTickets(search: string) {
-
+  /**
+   * searchTickets
+   * @param search
+   */
+  public searchTickets = (search: string) => {
+    if (search) {
+      this.filteredTickets = this.allTickets.filter(item => {
+        return (
+          item.id.toString().includes(search.toLowerCase()) ||
+          item.client.toLowerCase().includes(search.toLowerCase()) ||
+          item.maxResolution.toLowerCase().includes(search.toLowerCase()) ||
+          item.state.toLowerCase().includes(search.toLowerCase()) ||
+          item.createdAt.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    } else {
+      this.filteredTickets = this.allTickets;
+    }
   }
 
-  cancelSearch() {
-
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = () => {
+    this.filteredTickets = this.allTickets;
   }
 
 }

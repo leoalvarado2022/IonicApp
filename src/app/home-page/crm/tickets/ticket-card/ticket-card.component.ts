@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-ticket-card',
@@ -7,8 +7,32 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TicketCardComponent implements OnInit {
 
-  constructor() { }
+  @Input() ticket: any = null;
 
-  ngOnInit() {}
+  @Output() ticketSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() deleteTicketEvent: EventEmitter<any> = new EventEmitter<any>();
 
+  constructor() {
+
+  }
+
+  ngOnInit() {
+
+  }
+
+  /**
+   * viewTicket
+   * @param ticket
+   */
+  public viewTicket = (ticket: any) => {
+    this.ticketSelected.emit(ticket);
+  }
+
+  /**
+   * deleteTicket
+   * @param ticket
+   */
+  public deleteTicket = (ticket: any) => {
+    this.deleteTicketEvent.emit(ticket);
+  }
 }

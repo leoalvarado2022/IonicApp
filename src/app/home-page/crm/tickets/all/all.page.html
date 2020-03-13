@@ -1,9 +1,11 @@
-<ion-searchbar (ionChange)="searchTickets($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+<ion-searchbar placeholder="Buscar..." (ionChange)="searchTickets($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
 
-  <ng-container *ngFor="let ticket of [1,1,1,1,1,1]">
-    <app-ticket-card></app-ticket-card>
+  <ng-container *ngIf="filteredTickets.length > 0">
+    <ion-virtual-scroll [items]="filteredTickets">
+      <app-ticket-card *virtualItem="let ticket" [ticket]="ticket"></app-ticket-card>
+    </ion-virtual-scroll>
   </ng-container>
 
 </ion-content>

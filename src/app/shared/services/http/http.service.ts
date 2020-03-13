@@ -3,6 +3,7 @@ import {environment} from '../../../../environments/environment';
 import {HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ToastService} from '../toast/toast.service';
+import {StoreService} from '../store/store.service';
 
 @Injectable()
 export class HttpService {
@@ -11,6 +12,7 @@ export class HttpService {
 
   constructor(
     private router: Router,
+    private storeService: StoreService,
     private toastService: ToastService
   ) {
 
@@ -23,20 +25,20 @@ export class HttpService {
    */
   public buildUrl = (url: string, id: string = null): string => {
     return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
-  }
+  };
 
   /**
    * getHeaders
    * @return HttpHeaders
    */
   public getHeaders = (): HttpHeaders => {
-    const token = localStorage.getItem('token');
+    const token = this.storeService.getToken();
 
     return new HttpHeaders({
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  }
+  };
 
 
   /**
@@ -44,7 +46,7 @@ export class HttpService {
    * @param data
    */
   public buildBody = (data: any = null) => {
-    const connection = JSON.parse(localStorage.getItem('connection'));
+    const connection = this.storeService.getActiveConnection();
 
     if (data) {
       return Object.assign({}, data, {
@@ -57,7 +59,7 @@ export class HttpService {
         connectionId: connection ? connection.token : null
       };
     }
-  }
+  };
 
   /**
    * errorHandler

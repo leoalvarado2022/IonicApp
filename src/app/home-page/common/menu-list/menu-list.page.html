@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">
+      <strong>Menú</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="content">
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Sincronizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngFor="let menu of menus; let i = index" class="card-menu-item">
+    <div
+      (click)="navigate(menu)"
+      [ngClass]="{ 'disabled': checkDisabled(menu) }"
+      class="ion-text-center card-menu row-menu">
+      <div>
+        <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
+        <!--
+        <ion-badge class="menu-badge">1</ion-badge>
+        -->
+        <p class="title-menu ion-text-capitalize">
+          {{ menu.caption }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

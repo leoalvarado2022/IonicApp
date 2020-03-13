@@ -4,7 +4,7 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 import {AlertController, Platform} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
 import {Device} from '@ionic-native/device/ngx';
-import {iosDeviceNames} from "../../../../environments/ios-device-names";
+import {iosDeviceNames} from '../../../../environments/ios-device-names';
 
 @Component({
   selector: 'app-welcome',
@@ -39,7 +39,7 @@ export class WelcomePage implements OnInit {
    */
   public getVersion = (): string => {
     return environment.appVersion;
-  }
+  };
 
   /**
    * confirmClean
@@ -65,7 +65,7 @@ export class WelcomePage implements OnInit {
     });
 
     await alert.present();
-  }
+  };
 
   /**
    * cleanCache
@@ -85,7 +85,7 @@ export class WelcomePage implements OnInit {
     }
 
     this.toastService.successToast('Datos eliminados');
-  }
+  };
 
   /**
    * getUUIDLast8
@@ -96,7 +96,7 @@ export class WelcomePage implements OnInit {
     }
 
     return '';
-  }
+  };
 
   /**
    * showFullUUID
@@ -111,7 +111,7 @@ export class WelcomePage implements OnInit {
 
       await alert.present();
     }
-  }
+  };
 
   /**
    * showDeviceData

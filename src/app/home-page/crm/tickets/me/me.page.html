@@ -1,0 +1,23 @@
+<ion-searchbar placeholder="Buscar..." (ionChange)="searchTickets($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
+<ion-content>
+
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Sincronizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-virtual-scroll [items]="filteredTickets">
+    <app-ticket-card
+      *virtualItem="let ticket"
+      [ticket]="ticket"
+      (ticketSelected)="ticketSelected($event)"
+      (deleteTicketEvent)="deleteTicket($event)">
+    </app-ticket-card>
+  </ion-virtual-scroll>
+
+</ion-content>

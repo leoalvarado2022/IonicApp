@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Trabajadores</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Cargando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ng-container *ngIf="quadrille">
+    <h2 class="ion-text-center">
+      {{ quadrille.name }}
+      <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
+    </h2>
+
+    <ng-container *ngIf="filteredWorkers.length > 0">
+      <ion-list lines="none">
+        <ion-virtual-scroll [items]="filteredWorkers">
+          <ion-item (click)="markWorker(worker)" *virtualItem="let worker" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-label>
+              <h3 class="label-padding">{{ worker.name }}</h3>
+              <div class="label-padding">
+
+                <div class="ion-text-left">
+                  {{ worker.identifier | rut }}
+                </div>
+                <div class="ion-text-right">
+                  <ng-container *ngIf="worker.quadrilleToApprove > 0">
+                    <ion-badge *ngIf="worker.quadrilleStatus === 'POR APROBAR' && worker.quadrille === quadrille.id" color="warning">
+                      Traspasando
+                    </ion-badge>
+                    <ion-badge *ngIf="worker.quadrilleStatus === 'POR APROBAR' && worker.quadrille !== quadrille.id" color="warning">
+                      Por Aprobar
+                    </ion-badge>
+                  </ng-container>
+                  <ng-container *ngIf="worker.quadrilleToApprove === 0">
+                    <ion-badge color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
+                  </ng-container>
+                </div>
+              </div>
+            </ion-label>
+          </ion-item>
+        </ion-virtual-scroll>
+      </ion-list>
+    </ng-container>
+  </ng-container>
+
+</ion-content>
+
+<ion-footer>
+  <ng-container *ngIf="selectedWorkers.length > 0">
+    <ion-row>
+      <ng-container *ngIf="selectedWorkers[0].quadrilleToApprove === 0">
+        <ion-col>
+          <ng-container *ngIf="selectedWorkers[0].quadrilleStatus === ''">
+            <ion-button (click)="selectQuadrille();" color="warning" expand="block">
+              Traspasar {{ selectedWorkers.length }}
+            </ion-button>
+          </ng-container>
+          <ng-container *ngIf="selectedWorkers[0].quadrilleStatus === 'rechazado'">
+            <ion-button (click)="acceptRejectWorkers()" color="success" expand="block">
+              Aprobar {{ selectedWorkers.length }}
+            </ion-button>
+          </ng-container>
+        </ion-col>
+      </ng-container>
+
+      <ng-container *ngIf="selectedWorkers[0].quadrilleToApprove > 0">
+        <ion-col>
+          <ion-button (click)="acceptWorkers();" color="success" expand="block">
+            Aprobar {{ selectedWorkers.length }}
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="rejectWorkers();" color="danger" expand="block">
+            Rechazar {{ selectedWorkers.length }}
+          </ion-button>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+  </ng-container>
+</ion-footer>

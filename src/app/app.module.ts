@@ -13,11 +13,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {Device} from '@ionic-native/device/ngx';
 import {SharedModule} from './shared/shared.module';
 import {Camera} from '@ionic-native/camera/ngx';
-import {StoreModule} from '@ngrx/store';
-import {EffectsModule} from '@ngrx/effects';
-import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {metaReducers, reducers} from './reducers/reducers';
-import {environment} from '../environments/environment';
 import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
@@ -26,21 +21,11 @@ import {RouteReuseStrategy} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {GeolocationService} from './shared/services/geolocation/geolocation.service';
 import {SyncService} from './shared/services/sync/sync.service';
-import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {LoaderService} from './shared/services/loader/loader.service';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
+import {StoreService} from './shared/services/store/store.service';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
-
-const NGRX_IMPORTS = [
-  StoreModule.forRoot(reducers, {metaReducers}),
-  EffectsModule.forRoot([]),
-  StoreDevtoolsModule.instrument({
-    name: 'ngFX11Ngrx',
-    logOnly: environment.production,
-    maxAge: 25
-  })
-];
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
@@ -62,8 +47,7 @@ const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
     IonicStorageModule.forRoot(),
     NgxMaskModule.forRoot(ngxMaskOptions),
     SharedModule,
-    HttpClientModule,
-    ...NGRX_IMPORTS
+    HttpClientModule
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
@@ -78,7 +62,7 @@ const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
     Geolocation,
     GeolocationService,
     SyncService,
-    FileOpener
+    StoreService
   ],
   bootstrap: [AppComponent]
 })

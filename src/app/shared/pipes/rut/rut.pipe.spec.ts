@@ -1,4 +1,4 @@
-import { RutPipe } from './rut.pipe';
+import {RutPipe} from './rut.pipe';
 
 describe('RutPipe', () => {
   it('create an instance', () => {

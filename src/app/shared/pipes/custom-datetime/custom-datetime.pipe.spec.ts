@@ -1,4 +1,4 @@
-import { CustomDatetimePipe } from './custom-datetime.pipe';
+import {CustomDatetimePipe} from './custom-datetime.pipe';
 
 describe('CustomDatetimePipe', () => {
   it('create an instance', () => {

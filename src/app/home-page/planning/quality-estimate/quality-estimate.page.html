@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="white" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="white">
+      <strong>Estimación de Calidad</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-searchbar
+  placeholder="Buscar..."
+  (ionChange)="searchQuality($event.target.value)"
+  (ionClear)="cancelSearch()"
+  animated
+  class="production"
+  showCancelButton="never">
+</ion-searchbar>
+
+<ion-content class="content">
+
+  <ng-container *ngFor="let quality of filteredQualityEstimate; let index = index">
+    <div class="card-sli">
+      <div class="card-sli-back">
+        <app-quality-estimate-item
+          (itemDelete)="deleteQuality(quality)"
+          (itemSelected)="viewQuality(quality)"
+          [costCenter]="costCenter"
+          [details]="getItemDetails(quality.id)"
+          [isOld]="index > 0 "
+          [item]="quality"
+          [slideDisabled]="false">
+        </app-quality-estimate-item>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="checkButton()">
+    <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+      <ion-fab-button (click)="openForm()" [disabled]="!costCenter || !isOnline" color="success">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ng-container>
+
+</ion-content>

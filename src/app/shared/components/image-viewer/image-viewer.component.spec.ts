@@ -1,7 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ImageViewerComponent } from './image-viewer.component';
+import {ImageViewerComponent} from './image-viewer.component';
 
 describe('ImageViewerComponent', () => {
   let component: ImageViewerComponent;
@@ -9,10 +9,10 @@ describe('ImageViewerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ImageViewerComponent ],
+      declarations: [ImageViewerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

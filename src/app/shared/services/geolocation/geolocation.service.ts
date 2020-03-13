@@ -39,20 +39,27 @@ export class GeolocationService {
   }
 
   /**
+   * getCurrentPosition
+   */
+  public getCurrentPosition = () => {
+    return this.currentPosition.asObservable();
+  };
+
+  /**
+   * showHistory
+   */
+  public showHistory = () => {
+    return this.positionHistory;
+  };
+
+  /**
    * updatePosition
    * @param lat
    * @param lng
    */
   private updatePosition = (lat: number, lng: number) => {
     this.currentPosition.next({lat, lng});
-  }
-
-  /**
-   * getCurrentPosition
-   */
-  public getCurrentPosition = () => {
-    return this.currentPosition.asObservable();
-  }
+  };
 
   /**
    * startTracker
@@ -64,18 +71,11 @@ export class GeolocationService {
       this.positionHistory.push({
         lat: position.coords.latitude,
         lng: position.coords.longitude
-      })
+      });
 
       this.updatePosition(position.coords.latitude, position.coords.longitude);
     }, error => {
       console.log({error});
     });
-  }
-
-  /**
-   * showHistory
-   */
-  public showHistory = () => {
-    return this.positionHistory;
   }
 }

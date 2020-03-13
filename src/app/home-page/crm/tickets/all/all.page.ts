@@ -1,0 +1,83 @@
+import {Component, OnInit} from '@angular/core';
+import {TicketsService} from '../../services/tickets/tickets.service';
+import {StoreService} from '../../../../shared/services/store/store.service';
+import {HttpService} from '../../../../shared/services/http/http.service';
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
+
+@Component({
+  selector: 'app-all',
+  templateUrl: './all.page.html',
+  styleUrls: ['./all.page.scss'],
+})
+export class AllPage implements OnInit {
+
+  private allTickets: Array<any> = [];
+  public filteredTickets: Array<any> = [];
+
+  constructor(
+    private ticketsService: TicketsService,
+    private storeService: StoreService,
+    private httpService: HttpService,
+    private loaderService: LoaderService
+  ) {
+
+  }
+
+  ngOnInit() {
+    this.loadTickets();
+  }
+
+  /**
+   * loadTickets
+   */
+  private loadTickets = () => {
+    this.loaderService.startLoader('Cargando tickets');
+    const user = this.storeService.getActiveCompany();
+
+    const data = {
+      filter: 'todos',
+      user: user.user,
+      init: 0,
+      registers: 0,
+      order: 0,
+      search: ''
+    };
+
+    this.ticketsService.getTickets(data).subscribe((success: any) => {
+      this.allTickets = success.data.listTickets;
+      this.filteredTickets = success.data.listTickets;
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
+  }
+
+  /**
+   * searchTickets
+   * @param search
+   */
+  public searchTickets = (search: string) => {
+    if (search) {
+      this.filteredTickets = this.allTickets.filter(item => {
+        return (
+          item.id.toString().includes(search.toLowerCase()) ||
+          item.client.toLowerCase().includes(search.toLowerCase()) ||
+          item.maxResolution.toLowerCase().includes(search.toLowerCase()) ||
+          item.state.toLowerCase().includes(search.toLowerCase()) ||
+          item.createdAt.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    } else {
+      this.filteredTickets = this.allTickets;
+    }
+  }
+
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = () => {
+    this.filteredTickets = this.allTickets;
+  }
+
+}

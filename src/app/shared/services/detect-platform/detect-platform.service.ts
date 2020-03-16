@@ -25,7 +25,7 @@ export class DetectPlatformService {
    */
   private detectPlatform = (): boolean => {
     return this.platform.is('ios') === true;
-  };
+  }
 
   /**
    * checkCordova

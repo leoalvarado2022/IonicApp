@@ -85,7 +85,7 @@ export class RegisterPage implements OnInit {
     }
 
     return rut;
-  };
+  }
 
   /**
    * openCamera
@@ -96,7 +96,7 @@ export class RegisterPage implements OnInit {
     if (image) {
       this.getImage(image);
     }
-  };
+  }
 
   /**
    * openGallery
@@ -107,7 +107,7 @@ export class RegisterPage implements OnInit {
     if (image) {
       this.getImage(image);
     }
-  };
+  }
 
   /**
    * create

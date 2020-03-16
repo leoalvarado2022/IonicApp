@@ -33,14 +33,14 @@ export class NetworkService {
       console.log('went offline');
       this.updateNetworkStatus(false);
     });
-  };
+  }
 
   /**
    * getNetWorkStatus
    */
   public getNetworkStatus = (): Observable<boolean> => {
     return this.isOnline.asObservable();
-  };
+  }
 
   /**
    * updateNetworkStatus
@@ -49,7 +49,7 @@ export class NetworkService {
   private updateNetworkStatus = (status: boolean) => {
     this.isOnline.next(status);
     this.showAlert(status);
-  };
+  }
 
   /**
    * showAlert

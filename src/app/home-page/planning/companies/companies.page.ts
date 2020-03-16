@@ -38,7 +38,7 @@ export class CompaniesPage implements OnInit {
       this.loadCompanies();
       this.router.navigate(['home-page']);
     }
-  };
+  }
 
   /**
    * loadCompanies

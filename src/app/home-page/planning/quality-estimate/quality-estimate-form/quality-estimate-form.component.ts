@@ -95,7 +95,7 @@ export class QualityEstimateFormComponent implements OnInit {
   public closeModal = (status: boolean = false) => {
     this.qualityForm.reset();
     this.modalController.dismiss(status);
-  };
+  }
 
   /**
    * submit
@@ -117,7 +117,7 @@ export class QualityEstimateFormComponent implements OnInit {
     } else {
       this.isSaving = false;
     }
-  };
+  }
 
   /**
    * getCaliberName
@@ -126,7 +126,7 @@ export class QualityEstimateFormComponent implements OnInit {
   public getCaliberName = (item: any) => {
     const caliber = this.calibers.find((caliber: Caliber) => caliber.id === item.get('caliber').value);
     return caliber ? caliber.name : 'NOMBRE CALIBRE';
-  };
+  }
 
   /**
    * validateCalibers
@@ -144,7 +144,7 @@ export class QualityEstimateFormComponent implements OnInit {
     }
 
     return accum < 100 || accum > 100 ? {wrongPercentage: true} : null;
-  };
+  }
 
   /**
    * getTotal
@@ -161,7 +161,7 @@ export class QualityEstimateFormComponent implements OnInit {
     }
 
     return accum;
-  };
+  }
 
   /**
    * getSelectedQuality
@@ -174,7 +174,7 @@ export class QualityEstimateFormComponent implements OnInit {
     }
 
     return '';
-  };
+  }
 
   /**
    * loadCalibers
@@ -204,7 +204,7 @@ export class QualityEstimateFormComponent implements OnInit {
       });
       items.push(newCaliber);
     }
-  };
+  }
 
   /**
    * storeQuality

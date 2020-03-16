@@ -66,7 +66,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
   public closeModal = (status: boolean = false) => {
     this.noteForm.reset();
     this.modalController.dismiss(status);
-  };
+  }
 
   /**
    * submit
@@ -81,7 +81,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
       this.isSaving = false;
       this.toastService.warningToast('Debe ingresar la nota o la imagen');
     }
-  };
+  }
 
   /**
    * openCamera
@@ -92,7 +92,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
     if (image) {
       this.getImage(image);
     }
-  };
+  }
 
   /**
    * openGallery
@@ -103,7 +103,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
     if (image) {
       this.getImage(image);
     }
-  };
+  }
 
   /**
    * loadBigImage
@@ -119,7 +119,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
         this.httpService.errorHandler(error);
       });
     }
-  };
+  }
 
   /**
    * storeNote
@@ -136,7 +136,7 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * getImage

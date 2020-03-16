@@ -89,7 +89,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public getTotal = () => {
     return this.productionContracts.reduce((accumulator, contract) => accumulator + contract.totalQuantity, 0);
-  };
+  }
 
   /**
    * showUnitName
@@ -101,7 +101,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     return 'N/A';
-  };
+  }
 
   /**
    * getItemDetails
@@ -113,7 +113,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }
 
     return [];
-  };
+  }
 
   /**
    * goToList
@@ -121,7 +121,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public noteListPage = (note: Note = null) => {
     this.router.navigate(['/home-page/notes']);
-  };
+  }
 
   /**
    * harvestPage
@@ -129,7 +129,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public harvestPage = (item: HarvestEstimate) => {
     this.router.navigate(['/home-page/harvest-estimate']);
-  };
+  }
 
   /**
    * qualityPage
@@ -137,7 +137,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   public qualityPage = (item: QualityEstimate) => {
     this.router.navigate(['/home-page/quality-estimate']);
-  };
+  }
 
   /**
    * @description actualizacion de la geolocation al centro de costo
@@ -158,7 +158,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     };
 
     this.updateGeolocation(object);
-  };
+  }
 
   /**
    * @description actualizar localizacion
@@ -178,14 +178,14 @@ export class ContractDetailPage implements OnInit, OnDestroy {
       this.toastService.errorToast('No se ha cambiado la localización');
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * loadUnits
    */
   private loadUnits = (): void => {
     this.units = this.storeService.getUnits();
-  };
+  }
 
   /**
    * loadContractDetail
@@ -199,7 +199,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
     }, error => {
       this.loaderService.stopLoader();
     });
-  };
+  }
 
   /**
    * syncData

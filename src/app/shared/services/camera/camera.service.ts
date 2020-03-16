@@ -34,7 +34,7 @@ export class CameraService {
     });
 
     return await this.getImage(options);
-  };
+  }
 
   /**
    * openGallery
@@ -46,7 +46,7 @@ export class CameraService {
     });
 
     return await this.getImage(options);
-  };
+  }
 
   /**
    * getImage

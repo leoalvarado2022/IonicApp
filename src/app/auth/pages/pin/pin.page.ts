@@ -101,7 +101,7 @@ export class PinPage implements OnInit {
     } catch (e) {
       this.loaderService.stopLoader();
     }
-  };
+  }
 
 
   /**
@@ -121,7 +121,7 @@ export class PinPage implements OnInit {
         resolve(null);
       });
     });
-  };
+  }
 
   /**
    * check token
@@ -139,7 +139,7 @@ export class PinPage implements OnInit {
         resolve(null);
       });
     });
-  };
+  }
 
   /**
    * use connection
@@ -157,7 +157,7 @@ export class PinPage implements OnInit {
         resolve(null);
       });
     });
-  };
+  }
 
   /**
    * createConnectionPin

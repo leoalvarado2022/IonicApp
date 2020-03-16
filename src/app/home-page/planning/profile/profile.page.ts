@@ -86,7 +86,7 @@ export class ProfilePage implements OnInit {
       cssClass: 'change-modal-password'
     });
     return await modal.present();
-  };
+  }
 
   /**
    * openCamera
@@ -97,7 +97,7 @@ export class ProfilePage implements OnInit {
     if (image) {
       this.getImage(image);
     }
-  };
+  }
 
   /**
    * openGallery
@@ -108,7 +108,7 @@ export class ProfilePage implements OnInit {
     if (image) {
       this.getImage(image);
     }
-  };
+  }
 
   /**
    * loadUserData
@@ -117,7 +117,7 @@ export class ProfilePage implements OnInit {
     this.profile = this.storeService.getUser();
     this.avatarPreview = `data:image/jpeg;base64,${this.profile.avatar}`;
     this.rutValue = this.profile.rut;
-  };
+  }
 
   /**
    * update
@@ -142,7 +142,7 @@ export class ProfilePage implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * getImage

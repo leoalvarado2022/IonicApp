@@ -35,7 +35,7 @@ export class HarvestEstimateItemComponent implements OnInit {
    */
   public clickHarvest = (item: Arrows = null) => {
     this.harvestSelected.emit(item);
-  };
+  }
 
   /**
    * deleteHarvest
@@ -43,7 +43,7 @@ export class HarvestEstimateItemComponent implements OnInit {
    */
   public deleteItem = (item: Arrows) => {
     this.deleteHarvest.emit(item);
-  };
+  }
 
   /**
    * showUnitCode

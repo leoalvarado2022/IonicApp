@@ -69,7 +69,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    */
   public checkButton = () => {
     return this.currentUrl === '/home-page/quality-estimate';
-  };
+  }
 
   /**
    * openForm
@@ -96,7 +96,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
-  };
+  }
 
   /**
    * searchQuality
@@ -114,14 +114,14 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     } else {
       this.filteredQualityEstimate = this.qualityEstimate;
     }
-  };
+  }
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredQualityEstimate = this.qualityEstimate;
-  };
+  }
 
   /**
    * viewQuality
@@ -129,7 +129,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    */
   public viewQuality = async (qualityEstimate: QualityEstimate) => {
     await this.openForm(qualityEstimate);
-  };
+  }
 
   /**
    * deleteQuality
@@ -148,7 +148,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
 
       this.storeQuality(data);
     }
-  };
+  }
 
   /**
    * reloadList
@@ -161,7 +161,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     }, error => {
       this.loaderService.stopLoader();
     });
-  };
+  }
 
   /**
    * getItemDetails
@@ -169,7 +169,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
    */
   public getItemDetails = (id: number) => {
     return this.qualityEstimateDetail.filter(item => item.qualityEstimate === id);
-  };
+  }
 
   /**
    * storeQuality

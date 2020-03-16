@@ -67,7 +67,7 @@ export class NotesPage implements OnInit, OnDestroy {
    */
   public checkButton = () => {
     return this.currentUrl === '/home-page/notes';
-  };
+  }
 
   /**
    * searchNote
@@ -84,14 +84,14 @@ export class NotesPage implements OnInit, OnDestroy {
     } else {
       this.filteredNotes = this.notes;
     }
-  };
+  }
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredNotes = this.notes;
-  };
+  }
 
   /**
    * viewNote
@@ -99,7 +99,7 @@ export class NotesPage implements OnInit, OnDestroy {
    */
   public viewNote = async (note: Note) => {
     await this.openForm(note);
-  };
+  }
 
   /**
    * openForm
@@ -123,7 +123,7 @@ export class NotesPage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
-  };
+  }
 
   /**
    * deleteNoteConfirm
@@ -135,7 +135,7 @@ export class NotesPage implements OnInit, OnDestroy {
       const newNote = Object.assign({}, note, {id: -note.id});
       this.storeNote(newNote);
     }
-  };
+  }
 
   /**
    * reloadList
@@ -148,7 +148,7 @@ export class NotesPage implements OnInit, OnDestroy {
     }, error => {
       this.loaderService.stopLoader();
     });
-  };
+  }
 
   /**
    * storeNote

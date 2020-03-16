@@ -32,7 +32,7 @@ export class RemQuadrillePage implements OnInit {
   public reload = (event) => {
     this.loadQuadrilles();
     event.target.complete();
-  };
+  }
 
   /**
    * goToWorkers
@@ -40,7 +40,7 @@ export class RemQuadrillePage implements OnInit {
    */
   public goToWorkers = (quadrille: any) => {
     this.router.navigate(['/home-page/rem-workers', quadrille.id]);
-  };
+  }
 
   /**
    * getQuadrilleWorkers
@@ -52,7 +52,7 @@ export class RemQuadrillePage implements OnInit {
     }
 
     return 0;
-  };
+  }
 
   /**
    * loadQuadrilles

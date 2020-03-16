@@ -39,7 +39,7 @@ export class QualityEstimateItemComponent implements OnInit {
    */
   public clickItem = (item: Arrows = null) => {
     this.itemSelected.emit(item);
-  };
+  }
 
   /**
    * deleteItem
@@ -47,7 +47,7 @@ export class QualityEstimateItemComponent implements OnInit {
    */
   public deleteItem = (item: Arrows) => {
     this.itemDelete.emit(item);
-  };
+  }
 
   /**
    * openChart

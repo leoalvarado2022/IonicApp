@@ -65,14 +65,14 @@ export class MapaPage implements OnInit, OnDestroy {
     } else {
       this.filteredCostCenters = this.costCenters;
     }
-  };
+  }
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredCostCenters = this.costCenters;
-  };
+  }
 
   /**
    * loadCurrentPosition

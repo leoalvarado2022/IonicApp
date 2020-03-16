@@ -63,7 +63,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   public reSync = (event) => {
     this.syncData();
     event.target.complete();
-  };
+  }
 
   /**
    * navigate
@@ -73,14 +73,14 @@ export class MenuListPage implements OnInit, OnDestroy {
     if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
       this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
     }
-  };
+  }
 
   /**
    * checkDisabled
    */
   public checkDisabled = (menu: TabMenu) => {
     return !this.isOnline && !menu.offlineMenu;
-  };
+  }
 
   /**
    * syncData

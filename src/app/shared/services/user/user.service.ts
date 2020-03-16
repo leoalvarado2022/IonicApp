@@ -28,7 +28,7 @@ export class UserService {
   public createUser = (data: any) => {
     const url = this.httpService.buildUrl(this.createUrl);
     return this.httpClient.post(url, data);
-  };
+  }
 
   /**
    * updateUser
@@ -37,7 +37,7 @@ export class UserService {
   public getUser = () => {
     const url = this.httpService.buildUrl(this.userUrl);
     return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * updateUser
@@ -46,7 +46,7 @@ export class UserService {
   public updateUser = (data: any) => {
     const url = this.httpService.buildUrl(this.updateUrl);
     return this.httpClient.put(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  };
+  }
 
 
   /**
@@ -56,7 +56,7 @@ export class UserService {
   public assignUser = (data: any) => {
     const url = this.httpService.buildUrl(this.assignUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * updatePassword
@@ -65,7 +65,7 @@ export class UserService {
   public updatePassword = (data: any) => {
     const url = this.httpService.buildUrl(this.updatePasswordUrl);
     return this.httpClient.put(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /////////////// USUARIO
 
@@ -75,21 +75,21 @@ export class UserService {
    */
   setUserData = async (data: any) => {
     await this.storageService.setRow('userData', data);
-  };
+  }
 
   /**
    * @description obtener usuario
    */
   getUserData = async () => {
     return await this.storageService.getRow('userData');
-  };
+  }
 
   /**
    * @description remover usuario
    */
   removeUserData = async () => {
     await this.storageService.removeRow('userData');
-  };
+  }
 
   /**
    * @description recordar usuario login {usuario, password}
@@ -97,14 +97,14 @@ export class UserService {
    */
   setUserRemember = (data: any) => {
     this.storageService.setRow('userRemember', data);
-  };
+  }
 
   /**
    * @description obtener usuario login
    */
   getUserRemember = async () => {
     return await this.storageService.getRow('userRemember');
-  };
+  }
 
   /**
    * @description remover usuario login

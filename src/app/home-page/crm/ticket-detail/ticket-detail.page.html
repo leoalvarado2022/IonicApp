@@ -13,5 +13,27 @@
 </ion-header>
 
 <ion-content>
-  Ticket Detail
+
+  <ion-card *ngIf="header">
+    <ion-card-content>
+      <p>Tipo: {{ header.type }}</p>
+      <p>Origen: {{ header.origin_id }}</p>
+      <p>Descripcion: {{ header.description }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ng-container *ngIf="details.length > 0">
+    <ion-virtual-scroll [items]="details">
+      <app-ticket-detail-card *virtualItem="let detail" [detail]="detail"></app-ticket-detail-card>
+    </ion-virtual-scroll>
+  </ng-container>
+
+
+  <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+    <!-- (click)="openForm()" [disabled]="!costCenter || !isOnline" -->
+    <ion-fab-button color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

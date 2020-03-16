@@ -3,6 +3,7 @@ import {TicketsService} from '../../services/tickets/tickets.service';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-all',
@@ -18,12 +19,17 @@ export class AllPage implements OnInit {
     private ticketsService: TicketsService,
     private storeService: StoreService,
     private httpService: HttpService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private router: Router
   ) {
 
   }
 
   ngOnInit() {
+
+  }
+
+  ionViewDidEnter() {
     this.loadTickets();
   }
 
@@ -78,6 +84,22 @@ export class AllPage implements OnInit {
    */
   public cancelSearch = () => {
     this.filteredTickets = this.allTickets;
+  }
+
+  /**
+   * ticketSelected
+   * @param ticket
+   */
+  public ticketSelected = (ticket: any) => {
+    this.router.navigate(['/home-page/ticket-detail', ticket.id]);
+  }
+
+  /**
+   * deleteTicket
+   * @param ticket
+   */
+  deleteTicket(ticket: any) {
+    console.log('deleteTicket', ticket);
   }
 
 }

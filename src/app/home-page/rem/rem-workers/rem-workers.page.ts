@@ -7,7 +7,7 @@ import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.se
 import {UserService} from '../../../shared/services/user/user.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {Subscription} from "rxjs";
+import {Subscription} from 'rxjs';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -67,7 +67,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id');
     this.loadWorkers(id);
     event.target.complete();
-  };
+  }
 
   /**
    * markWorker
@@ -84,7 +84,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       this.selectedWorkers.push(worker);
     }
-  };
+  }
 
   /**
    * selectQuadrille
@@ -105,28 +105,28 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     });
 
     await actionSheet.present();
-  };
+  }
 
   /**
    * acceptWorkers
    */
   public acceptWorkers = () => {
     this.transferWorkers(this.quadrille.id, WorkerStatus.APROBADO);
-  };
+  }
 
   /**
    * rejectWorkers
    */
   public rejectWorkers = () => {
     this.transferWorkers(this.quadrille.id, WorkerStatus.RECHAZADO);
-  };
+  }
 
   /**
    * acceptRejectWorkers
    */
   public acceptRejectWorkers = () => {
     this.transferWorkers(this.quadrille.id, WorkerStatus['APRUEBA RECHAZO']);
-  };
+  }
 
   /**
    * loadWorkers
@@ -147,7 +147,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     }
 
     this.loaderService.stopLoader();
-  };
+  }
 
   /**
    * buildButtons
@@ -162,7 +162,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
           this.transferWorkers(item.id, WorkerStatus['POR APROBAR']);
         }
       }));
-  };
+  }
 
   /**
    * transferWorkers
@@ -184,7 +184,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * reSync
@@ -195,7 +195,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.syncData();
     // this.loadWorkers(id);
     this.loaderService.stopLoader();
-  };
+  }
 
   /**
    * syncData

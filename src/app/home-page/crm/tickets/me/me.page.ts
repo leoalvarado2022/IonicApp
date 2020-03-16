@@ -3,7 +3,7 @@ import {TicketsService} from '../../services/tickets/tickets.service';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-me',
@@ -20,13 +20,16 @@ export class MePage implements OnInit {
     private storeService: StoreService,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
 
   }
 
   ngOnInit() {
+    this.loadTickets();
+  }
+
+  ionViewDidEnter() {
     this.loadTickets();
   }
 
@@ -99,24 +102,8 @@ export class MePage implements OnInit {
    * ticketSelected
    * @param ticket
    */
-  ticketSelected(ticket: any) {
-    console.log('ticketSelected', ticket);
-
+  public ticketSelected = (ticket: any) => {
     this.router.navigate(['/home-page/ticket-detail', ticket.id]);
-
-    /*
-    const user = this.storeService.getActiveCompany();
-    const data = {
-      user: user.user
-    };
-
-    this.ticketsService.getTicket(ticket.id, data).subscribe(success => {
-      console.log({success});
-    }, error => {
-      console.log({error});
-    });
-
-    */
   }
 
   /**

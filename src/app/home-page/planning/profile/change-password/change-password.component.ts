@@ -56,11 +56,11 @@ export class ChangePasswordComponent implements OnInit {
     const data = Object.assign({}, custom);
 
     this.update(data, user);
-  };
+  }
 
   modalClose = () => {
     this.modalController.dismiss();
-  };
+  }
 
   /**
    * create

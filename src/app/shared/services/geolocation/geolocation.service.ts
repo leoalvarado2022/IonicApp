@@ -43,14 +43,14 @@ export class GeolocationService {
    */
   public getCurrentPosition = () => {
     return this.currentPosition.asObservable();
-  };
+  }
 
   /**
    * showHistory
    */
   public showHistory = () => {
     return this.positionHistory;
-  };
+  }
 
   /**
    * updatePosition
@@ -59,7 +59,7 @@ export class GeolocationService {
    */
   private updatePosition = (lat: number, lng: number) => {
     this.currentPosition.next({lat, lng});
-  };
+  }
 
   /**
    * startTracker

@@ -48,7 +48,7 @@ export class NoteItemComponent implements OnInit {
     }
 
     return null;
-  };
+  }
 
   /**
    * itemClicked
@@ -56,7 +56,7 @@ export class NoteItemComponent implements OnInit {
    */
   public itemClicked = (item: Note = null) => {
     this.noteClicked.emit(item);
-  };
+  }
 
   /**
    * deleteItem
@@ -64,7 +64,7 @@ export class NoteItemComponent implements OnInit {
    */
   public deleteItem = (item: Note) => {
     this.deleteNote.emit(item);
-  };
+  }
 
   /**
    * viewPicture
@@ -97,7 +97,7 @@ export class NoteItemComponent implements OnInit {
         console.log('no resp');
       }
     }
-  };
+  }
 
   /**
    * createFile
@@ -134,7 +134,7 @@ export class NoteItemComponent implements OnInit {
         resolve(false);
       });
     });
-  };
+  }
 
   /**
    * getNoteImage

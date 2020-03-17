@@ -90,6 +90,8 @@ export class MenuListPage implements OnInit, OnDestroy {
     const user = this.storeService.getUser();
     const activeConnection = this.storeService.getActiveConnection();
 
+    console.log('activeConnection', activeConnection);
+
     this.syncService.syncData(user.username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
       const data = success.data;
       this.storeService.setSyncedData(data);

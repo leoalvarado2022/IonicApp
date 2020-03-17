@@ -75,6 +75,8 @@ export class LoginPage implements OnInit {
         this.addPin(login);
       } else {
         if (login !== null) {
+          console.log({ login });
+
           this.storeService.setUser(login.user);
           this.storeService.setUserConnections(login.connections);
           this.storeService.setToken(login.token);

@@ -207,8 +207,9 @@ export class ContractDetailPage implements OnInit, OnDestroy {
    */
   private syncData = () => {
     const user = this.storeService.getUser();
+    const activeConnection = this.storeService.getActiveConnection();
     const username = user.username;
-    this.syncService.syncData(username).subscribe((success: any) => {
+    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
       this.storeService.setSyncedData(success.data);
     }, error => {
       this.httpService.errorHandler(error);

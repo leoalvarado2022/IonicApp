@@ -53,7 +53,7 @@ export class ConnectionsPage implements OnInit {
    */
   private syncMobile = () => {
     this.loaderService.startLoader('Sincronizando...');
-    this.syncService.syncData(this.userData.username).subscribe((success: any) => {
+    this.syncService.syncData(this.userData.username, this.currentConnection.superuser ? 1 : 0).subscribe((success: any) => {
       const data = success.data;
       this.storeService.setSyncedData(data);
       this.loadConnections();

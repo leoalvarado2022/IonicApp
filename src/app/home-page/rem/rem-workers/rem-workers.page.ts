@@ -203,8 +203,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    */
   private syncData = () => {
     const username = this.userData.username;
+    const activeConnection = this.storeService.getActiveConnection();
 
-    this.syncService.syncData(username).subscribe((success: any) => {
+    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
       this.storeService.setSyncedData(success.data);
     }, async error => {
       this.httpService.errorHandler(error);

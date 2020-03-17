@@ -1,29 +1,21 @@
-<ion-item-sliding disabled="false">
-  <ion-card class="ticket-detail-item">
-    <ion-item>
-      <ion-label>{{ detail.assignedName }}</ion-label>
-      <ion-icon color="primary" name="document" slot="end"></ion-icon>
-    </ion-item>
+<ion-card class="ticket-detail-item">
+  <ion-item>
+    <ion-label>{{ detail.assignedName }}</ion-label>
+    <ion-icon color="primary" name="document" slot="end"></ion-icon>
+  </ion-item>
 
-    <ion-card-content>
-      <p>Fecha Compromiso: {{ detail.commitmentAt | customDate }}</p>
-      <p>Fecha Compromiso Interna: {{ detail.commitmentInternAt | customDate }}</p>
-      <br>
-      <p>{{ detail.observations || 'Sin Observacion' }}</p>
+  <ion-card-content>
+    <p>Fecha Compromiso: {{ detail.commitmentAt | customDate }}</p>
+    <p>Fecha Compromiso Interna: {{ detail.commitmentInternAt | customDate }}</p>
+    <br>
+    <p>{{ detail.observations || 'Sin Observacion' }}</p>
 
-      <ng-container *ngIf="detail.attached">
-        Adjuntos:
-        <ng-container *ngFor="let file of detail.attached">
-          <a [href]="buildLink(file)" target="_blank">{{ file.name }}</a>
-        </ng-container>
+    <ng-container *ngIf="detail.attached">
+      Adjuntos:
+      <ng-container *ngFor="let file of detail.attached">
+        <a [href]="buildLink(file)" target="_blank">{{ file.name }}</a>
       </ng-container>
+    </ng-container>
 
-    </ion-card-content>
-  </ion-card>
-
-  <ion-item-options side="start">
-    <ion-item-option (click)="deleteDetail(detail)" color="danger">
-      <ion-icon name="trash"></ion-icon>
-    </ion-item-option>
-  </ion-item-options>
-</ion-item-sliding>
+  </ion-card-content>
+</ion-card>

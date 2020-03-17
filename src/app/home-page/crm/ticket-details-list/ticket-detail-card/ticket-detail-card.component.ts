@@ -17,4 +17,16 @@ export class TicketDetailCardComponent implements OnInit {
 
   }
 
+
+  /**
+   * buildLink
+   * @param file
+   */
+  public buildLink = (file: any): string => {
+    if (file.link && file.link !== 'undefined') {
+      return `https://drive.google.com/file/d/${file.link}/view?usp=sharing`;
+    }
+
+    return '#';
+  }
 }

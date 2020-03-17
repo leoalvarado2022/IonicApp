@@ -91,7 +91,18 @@ export class AllPage implements OnInit {
    * @param ticket
    */
   public ticketSelected = (ticket: any) => {
-    this.router.navigate(['/home-page/ticket-detail', ticket.id]);
+    this.router.navigate(['/home-page/ticket-details-list', ticket.id]);
+  }
+
+  /**
+   * reSync
+   * @param event
+   */
+  public reSync = (event: any) => {
+    this.allTickets = [];
+    this.filteredTickets = [];
+    this.loadTickets();
+    event.target.complete();
   }
 
   /**

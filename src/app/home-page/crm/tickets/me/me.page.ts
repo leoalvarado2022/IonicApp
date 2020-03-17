@@ -103,7 +103,7 @@ export class MePage implements OnInit {
    * @param ticket
    */
   public ticketSelected = (ticket: any) => {
-    this.router.navigate(['/home-page/ticket-detail', ticket.id]);
+    this.router.navigate(['/home-page/ticket-details-list', ticket.id]);
   }
 
   /**

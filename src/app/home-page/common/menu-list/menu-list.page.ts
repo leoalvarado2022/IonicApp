@@ -88,8 +88,9 @@ export class MenuListPage implements OnInit, OnDestroy {
   private syncData = () => {
     this.loaderService.startLoader();
     const user = this.storeService.getUser();
+    const activeConnection = this.storeService.getActiveConnection();
 
-    this.syncService.syncData(user.username).subscribe((success: any) => {
+    this.syncService.syncData(user.username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
       const data = success.data;
       this.storeService.setSyncedData(data);
       this.loaderService.stopLoader();

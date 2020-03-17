@@ -24,9 +24,9 @@ export class SyncService {
    * syncData
    * @param username
    */
-  public syncData = (username: string) => {
+  public syncData = (username: string, superuser: number = 0) => {
     const url = this.httpService.buildUrl(this.syncUrl);
-    return this.httpClient.post(url, this.httpService.buildBody({username}), {headers: this.httpService.getHeaders()});
+    return this.httpClient.post(url, this.httpService.buildBody({username, superuser}), {headers: this.httpService.getHeaders()});
   }
 
 }

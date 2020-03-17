@@ -6,11 +6,11 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 
 @Component({
-  selector: 'app-ticket-detail',
-  templateUrl: './ticket-detail.page.html',
-  styleUrls: ['./ticket-detail.page.scss'],
+  selector: 'app-ticket-details-list',
+  templateUrl: './ticket-details-list.page.html',
+  styleUrls: ['./ticket-details-list.page.scss'],
 })
-export class TicketDetailPage implements OnInit {
+export class TicketDetailsListPage implements OnInit {
 
   private id: string;
   public details: Array<any> = [];
@@ -23,7 +23,6 @@ export class TicketDetailPage implements OnInit {
     private loaderService: LoaderService,
     private httpService: HttpService
   ) {
-
   }
 
   ngOnInit() {
@@ -54,6 +53,8 @@ export class TicketDetailPage implements OnInit {
         periodicities
       } = success.data;
 
+      console.log({success});
+
       this.header = element;
       this.details = [...details];
 
@@ -62,6 +63,15 @@ export class TicketDetailPage implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * reSync
+   * @param event
+   */
+  public reSync = (event: any) => {
+    this.loadTicket();
+    event.target.complete();
   }
 
 }

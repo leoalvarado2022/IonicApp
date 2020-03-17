@@ -59,9 +59,9 @@ const routes: Routes = [
         loadChildren: () => import('./crm/tickets/tickets.module').then(module => module.TicketsPageModule)
       },
       {
-        path: 'ticket-detail',
-        loadChildren: () => import('./crm/ticket-detail/ticket-detail.module').then(module => module.TicketDetailPageModule)
-      },
+        path: 'ticket-details-list',
+        loadChildren: () => import('./crm/ticket-details-list/ticket-details-list.module').then(module => module.TicketDetailsListPageModule)
+      }
     ]
   },
 ];

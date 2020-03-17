@@ -28,11 +28,4 @@ export class TicketCardComponent implements OnInit {
     this.ticketSelected.emit(ticket);
   }
 
-  /**
-   * deleteTicket
-   * @param ticket
-   */
-  public deleteTicket = (ticket: any) => {
-    this.deleteTicketEvent.emit(ticket);
-  }
 }

@@ -1,13 +1,14 @@
 import {NgModule} from '@angular/core';
-import {TicketDetailPage} from './ticket-detail.page';
-import {SharedModule} from '../../../shared/shared.module';
+
+import {TicketDetailsListPage} from './ticket-details-list.page';
 import {RouterModule, Routes} from '@angular/router';
+import {SharedModule} from '../../../shared/shared.module';
 import {TicketDetailCardComponent} from './ticket-detail-card/ticket-detail-card.component';
 
 const routes: Routes = [
   {
     path: ':id',
-    component: TicketDetailPage
+    component: TicketDetailsListPage
   }
 ];
 
@@ -17,10 +18,10 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [
-    TicketDetailPage,
+    TicketDetailsListPage,
     TicketDetailCardComponent
   ]
 })
-export class TicketDetailPageModule {
+export class TicketDetailsListPageModule {
 
 }

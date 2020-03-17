@@ -2,6 +2,15 @@
 
 <ion-content>
 
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Sincronizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
   <ng-container *ngIf="filteredTickets.length > 0">
     <ion-virtual-scroll [items]="filteredTickets">
       <app-ticket-card

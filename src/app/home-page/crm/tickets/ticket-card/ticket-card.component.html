@@ -1,40 +1,85 @@
-<ion-item-sliding disabled="false">
-  <ion-item (click)="viewTicket(ticket)" class="ticket-card-height" lines="none">
-    <ion-icon class="icon" color="primary" name="document"></ion-icon>
-    <ion-label>
-      <ion-row>
-        <ion-col size="3" class="ion-float-left">
-          <div class="id">#{{ ticket.id }}</div>
-        </ion-col>
-        <ion-col size="9" class="ion-float-right">
-          <div class="name">{{ ticket.client }}</div>
-        </ion-col>
-      </ion-row>
-      <ion-row class="highlight">
-        <ion-col size="6">
-          <div class="title">Fecha Inicio</div>
-        </ion-col>
-        <ion-col size="6">
-          <div class="title">Estado</div>
-        </ion-col>
-      </ion-row>
-      <ion-row class="highlight">
-        <ion-col class="ion-no-padding" size="6">
-          <div class="value totales">{{ ticket.maxResolution | customDate }}</div>
-        </ion-col>
-        <ion-col class="ion-no-padding" size="6">
-          <div class="value">
-            <span class="totales">{{ ticket.state  }}</span>
-          </div>
-        </ion-col>
-      </ion-row>
-      <div class="date">Ult. Act. {{ ticket.createdAt | customDatetime }}</div>
-    </ion-label>
+<ion-card class="ticket-card-height" (click)="viewTicket(ticket)">
+  <ion-item>
+    <ion-badge slot="start">#{{ ticket.id }}</ion-badge>
+    <ion-label>{{ ticket.client }}</ion-label>
   </ion-item>
 
-  <ion-item-options side="start">
-    <ion-item-option (click)="deleteTicket(ticket)" color="danger">
-      <ion-icon name="trash"></ion-icon>
-    </ion-item-option>
-  </ion-item-options>
-</ion-item-sliding>
+  <ion-card-content>
+    <p>Tipo: {{ ticket.type }}</p>
+    <p>Producto: {{ ticket.productName }}</p>
+    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>
+    <p>Estado: {{ ticket.state  }}</p>
+    <p>Referencia: {{ ticket.reference }}</p>
+    <p>Creador: {{ ticket.user }}</p>
+  </ion-card-content>
+</ion-card>
+
+<!--  <ion-item (click)="viewTicket(ticket)" class="ticket-card-height" lines="none">-->
+<!--    <ion-icon class="icon" color="primary" name="document"></ion-icon>-->
+<!--    <ion-label>-->
+
+<!--      &lt;!&ndash; FIRST ROW &ndash;&gt;-->
+<!--      <ion-row>-->
+<!--        <ion-col size="3" class="ion-float-left">-->
+<!--          <div class="id">#{{ ticket.id }}</div>-->
+<!--        </ion-col>-->
+<!--        <ion-col size="9" class="ion-float-right">-->
+<!--          <div class="name">{{ ticket.client }}</div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+
+<!--      &lt;!&ndash; SECOND ROW &ndash;&gt;-->
+<!--      <ion-row class="highlight">-->
+<!--        <ion-col size="6">-->
+<!--          <div class="title">Tipo</div>-->
+<!--        </ion-col>-->
+<!--        <ion-col size="6">-->
+<!--          <div class="title">Producto</div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+<!--      <ion-row class="highlight">-->
+<!--        <ion-col class="ion-no-padding" size="6">-->
+<!--          <div class="value totales">{{ ticket.type }}</div>-->
+<!--        </ion-col>-->
+<!--        <ion-col class="ion-no-padding" size="6">-->
+<!--          <div class="value">-->
+<!--            <span class="totales">{{ ticket.productName }}</span>-->
+<!--          </div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+
+<!--      &lt;!&ndash; THIRD ROW &ndash;&gt;-->
+<!--      <ion-row class="highlight">-->
+<!--        <ion-col size="6">-->
+<!--          <div class="title">Fecha Maxima</div>-->
+<!--        </ion-col>-->
+<!--        <ion-col size="6">-->
+<!--          <div class="title">Estado</div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+<!--      <ion-row class="highlight">-->
+<!--        <ion-col class="ion-no-padding" size="6">-->
+<!--          <div class="value totales">{{ ticket.maxResolution | customDatetime }}</div>-->
+<!--        </ion-col>-->
+<!--        <ion-col class="ion-no-padding" size="6">-->
+<!--          <div class="value">-->
+<!--            <span class="totales">{{ ticket.state  }}</span>-->
+<!--          </div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+
+<!--      &lt;!&ndash; FOURTH &ndash;&gt;-->
+<!--      <ion-row class="highlight">-->
+<!--        <ion-col>-->
+<!--          <div class="title">Referencia</div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+<!--      <ion-row class="highlight">-->
+<!--        <ion-col class="ion-no-padding" size="6">-->
+<!--          <div class="value totales">{{ ticket.reference }}</div>-->
+<!--        </ion-col>-->
+<!--      </ion-row>-->
+
+<!--      <div class="date">{{ ticket.user }}</div>-->
+<!--    </ion-label>-->
+<!--  </ion-item>-->

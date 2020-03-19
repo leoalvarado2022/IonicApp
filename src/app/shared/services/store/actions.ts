@@ -26,5 +26,13 @@ export enum StoreActions {
   SetQualityEstimate = 'SET_QUALITY_ESTIMATE',
   SetQualityEstimateDetail = 'SET_QUALITY_ESTIMATE_DETAIL',
   SetNotes = 'SET_NOTES',
-  SetHolidays = 'SET_HOLIDAYS'
+  SetHolidays = 'SET_HOLIDAYS',
+  SetActiveTicket = 'SET_ACTIVE_TICKET',
+  SetTicketTypes = 'SET_TICKET_TYPES',
+  SetTicketStates = 'SET_TICKET_STATES',
+  SetTicketUsers = 'SET_TICKET_USERS',
+  SetTicketOrigins = 'SET_TICKET_ORIGINS',
+  SetTicketPriorities = 'SET_TICKET_PRIORITIES',
+  SetTicketPeriodicities = 'SET_TICKET_PERIODICITIES'
+
 }

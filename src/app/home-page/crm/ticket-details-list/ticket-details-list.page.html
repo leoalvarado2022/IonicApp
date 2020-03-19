@@ -12,22 +12,22 @@
   </ion-toolbar>
 </ion-header>
 
-<ng-container *ngIf="header">
+<ng-container *ngIf="ticket">
   <div class="header-content background-color--header">
     <ion-row class="text-white">
-      <ion-col>ID: {{ header.id }}</ion-col>
-      <ion-col>Cliente: {{ header.client }}</ion-col>
+      <ion-col>ID: {{ ticket.id }}</ion-col>
+      <ion-col>Cliente: {{ ticket.client }}</ion-col>
     </ion-row>
     <ion-row class="text-white">
-      <ion-col>Tipo: {{ header.type }}</ion-col>
+      <ion-col>Tipo: {{ ticket.type }}</ion-col>
       <ion-col>Producto: {{ 'pendiente' }}</ion-col>
     </ion-row>
     <ion-row class="text-white">
-      <ion-col>Fecha Maxima: {{ header.maxResolution | customDate }}</ion-col>
-      <ion-col>Estado: {{ header.state }}</ion-col>
+      <ion-col>Fecha Maxima: {{ ticket.maxResolution | customDate }}</ion-col>
+      <ion-col>Estado: {{ ticket.state }}</ion-col>
     </ion-row>
     <ion-row class="text-white">
-      <ion-col>Referencia: {{ header.reference }}</ion-col>
+      <ion-col>Referencia: {{ ticket.reference }}</ion-col>
     </ion-row>
   </div>
 </ng-container>
@@ -50,8 +50,7 @@
   </ng-container>
 
   <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-    <!-- (click)="openForm()" [disabled]="!costCenter || !isOnline" -->
-    <ion-fab-button color="primary">
+    <ion-fab-button (click)="openForm()" [disabled]="!isOnline" color="primary">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

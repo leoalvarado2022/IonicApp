@@ -606,6 +606,15 @@ export class StoreService extends ObservableStore<StoreInterface> {
         qualityEstimateDetail: [],
         notes: [],
         holidays: []
+      },
+      ticket: {
+        activeTicket: null,
+        types: [],
+        states: [],
+        users: [],
+        origins: [],
+        priorities: [],
+        periodicities: []
       }
     };
   }
@@ -700,4 +709,133 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * ================================================================================================================
    */
 
+  /**
+   * TICKET STATE METHODS
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   */
+
+  /**
+   * setActiveTicket
+   * @param activeTicket
+   */
+  public setActiveTicket = (activeTicket: any): void => {
+    const ticket = {...this.getState().ticket, activeTicket};
+    this.setState({ticket}, StoreActions.SetActiveTicket);
+  }
+
+  /**
+   * getActiveTicket
+   */
+  public getActiveTicket = (): any => {
+    return this.getState().ticket.activeTicket;
+  }
+
+  /**
+   * setTicketTypes
+   * @param ticketTypes
+   */
+  public setTicketTypes = (ticketTypes: Array<any>): void => {
+    const ticket = {...this.getState().ticket, types: ticketTypes};
+    this.setState({ticket}, StoreActions.SetTicketTypes);
+  }
+
+  /**
+   * getTicketTypes
+   */
+  public getTicketTypes = (): Array<any> => {
+    return this.getState().ticket.types;
+  }
+
+  /**
+   * getTicketStates
+   * @param ticketStates
+   */
+  public setTicketStates = (ticketStates: Array<any>): void => {
+    const ticket = {...this.getState().ticket, states: ticketStates};
+    this.setState({ticket}, StoreActions.SetTicketStates);
+  }
+
+  /**
+   * getTicketStates
+   */
+  public getTicketStates = (): Array<any> => {
+    return this.getState().ticket.states;
+  }
+
+  /**
+   * setTicketUsers
+   * @param ticketUsers
+   */
+  public setTicketUsers = (ticketUsers: Array<any>): void => {
+    const ticket = {...this.getState().ticket, users: ticketUsers};
+    this.setState({ticket}, StoreActions.SetTicketUsers);
+  }
+
+  /**
+   * getTicketUsers
+   */
+  public getTicketUsers = (): Array<any> => {
+    return this.getState().ticket.users;
+  }
+
+  /**
+   * setTicketOrigins
+   * @param ticketOrigins
+   */
+  public setTicketOrigins = (ticketOrigins: Array<any>): void => {
+    const ticket = {...this.getState().ticket, origins: ticketOrigins};
+    this.setState({ticket}, StoreActions.SetTicketOrigins);
+  }
+
+  /**
+   * getTicketOrigins
+   */
+  public getTicketOrigins = (): Array<any> => {
+    return this.getState().ticket.origins;
+  }
+
+  /**
+   * setTicketPriorities
+   * @param ticketPriorities
+   */
+  public setTicketPriorities = (ticketPriorities: Array<any>): void => {
+    const ticket = {...this.getState().ticket, priorities: ticketPriorities};
+    this.setState({ticket}, StoreActions.SetTicketPriorities);
+  }
+
+  /**
+   * getTicketPriorities
+   */
+  public getTicketPriorities = (): Array<any> => {
+    return this.getState().ticket.priorities;
+  }
+
+  /**
+   * setTicketPeriodicities
+   * @param ticketPeriodicities
+   */
+  public setTicketPeriodicities = (ticketPeriodicities: Array<any>): void => {
+    const ticket = {...this.getState().ticket, periodicities: ticketPeriodicities};
+    this.setState({ticket}, StoreActions.SetTicketPeriodicities);
+  }
+
+  /**
+   * getTicketperiodicities
+   */
+  public getTicketPeriodicities = (): Array<any> => {
+    return this.getState().ticket.periodicities;
+  }
+
+  /**
+   * END OF TICKET STATE METHODS
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   */
 }

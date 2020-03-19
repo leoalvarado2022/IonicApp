@@ -4,6 +4,7 @@ export interface StoreInterface {
   auth: Auth;
   sync: Sync;
   contract: ContractInterface;
+  ticket: TicketForm;
 }
 
 export interface Auth {
@@ -46,4 +47,14 @@ export interface ContractInterface {
   qualityEstimateDetail: Array<QualityDetail>;
   notes: Array<Note>;
   holidays: Array<any>;
+}
+
+export interface TicketForm {
+  activeTicket: any;
+  types: Array<any>;
+  states: Array<any>;
+  users: Array<any>;
+  origins: Array<any>;
+  priorities: Array<any>;
+  periodicities: Array<any>;
 }

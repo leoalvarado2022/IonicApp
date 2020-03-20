@@ -61,6 +61,10 @@ const routes: Routes = [
       {
         path: 'ticket-details-list',
         loadChildren: () => import('./crm/ticket-details-list/ticket-details-list.module').then(module => module.TicketDetailsListPageModule)
+      },
+      {
+        path: 'ticket-form',
+        loadChildren: () => import('./crm/ticket-form/ticket-form.module').then(module => module.TicketFormPageModule)
       }
     ]
   },

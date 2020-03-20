@@ -17,13 +17,13 @@ export class TicketFormPage implements OnInit {
 
   public activeTab = 1;
 
-  private ticketForm: FormGroup;
+  public ticketForm: FormGroup;
   private activeTicket: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
-  private states: Array<any> = [];
-  private users: Array<any> = [];
-  private priorities: Array<any> = [];
+  public states: Array<any> = [];
+  public users: Array<any> = [];
+  public priorities: Array<any> = [];
   public difficulties: Array<any> = [
     {level: 1, name: 'facil'},
     {level: 2, name: 'medio'},

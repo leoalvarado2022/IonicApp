@@ -100,7 +100,8 @@ export class TicketFormPage implements OnInit {
   public submitDetail = () => {
     const formData = Object.assign({}, this.ticketForm.value);
     const element = this.activeTicket;
-    element.details = formData;
+    element.details = [];
+    element.details.push(formData);
     element.attached = this.attachments;
     const data = {element};
     this.storeDetail(data);

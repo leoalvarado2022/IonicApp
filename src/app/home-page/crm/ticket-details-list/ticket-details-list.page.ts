@@ -36,12 +36,14 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
-
-    this.loadTicket();
   }
 
   ngOnDestroy(): void {
     this.network$.unsubscribe();
+  }
+
+  ionViewWillEnter() {
+    this.loadTicket();
   }
 
   /**

@@ -39,10 +39,15 @@ export class AppComponent {
 
       // get FCM token
       this.fcm.getToken().then(token => {
-        console.log(token);
+        console.log('getToken', token);
+        this.storeService.setPushToken(token);
       });
 
-      this.networkService.initializeNetworkEvents();
+      // get FCM token
+      this.fcm.onTokenRefresh().subscribe(token => {
+        console.log('onTokenRefresh', token);
+        this.storeService.setPushToken(token);
+      })
 
       this.platform.pause.subscribe((e) => {
         this.storeService.backupState();
@@ -51,6 +56,8 @@ export class AppComponent {
       this.platform.resume.subscribe((e) => {
         // PENDIENTE DEFINIR SI HACE FALTA ESTE EVENTO
       });
+
+      this.networkService.initializeNetworkEvents();
     });
   }
 

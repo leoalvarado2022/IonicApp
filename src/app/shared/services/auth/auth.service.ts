@@ -15,6 +15,7 @@ export class AuthService {
   private testConnectionUrl = 'auth/test-connection';
   private checkUrl = 'auth/check-token';
   private recoveryPasswordUrl = 'auth/password';
+  private savePushTokenUrl = 'auth/save-push-token';
 
   constructor(
     private httpClient: HttpClient,
@@ -23,6 +24,16 @@ export class AuthService {
     private router: Router
   ) {
 
+  }
+
+  /**
+   * savePushToken
+   * @param user
+   * @param token
+   */
+  public savePushToken = (user: number, token: string) => {
+    const url = this.httpService.buildUrl(this.savePushTokenUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({user, token}));
   }
 
   /**

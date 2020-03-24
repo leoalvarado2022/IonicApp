@@ -5,6 +5,7 @@ export interface StoreInterface {
   sync: Sync;
   contract: ContractInterface;
   ticket: TicketForm;
+  pushToken: string;
 }
 
 export interface Auth {

@@ -615,8 +615,24 @@ export class StoreService extends ObservableStore<StoreInterface> {
         origins: [],
         priorities: [],
         periodicities: []
-      }
+      },
+      pushToken: null
     };
+  }
+
+  /**
+   * setPushToken
+   * @param token
+   */
+  public setPushToken = (token: string): void => {
+    this.setState({pushToken: token}, StoreActions.SetPushToken);
+  }
+
+  /**
+   * getPushToken
+   */
+  public getPushToken = (): string => {
+    return this.getState().pushToken;
   }
 
   /**

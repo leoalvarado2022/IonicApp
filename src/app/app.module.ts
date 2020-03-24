@@ -25,6 +25,8 @@ import {LoaderService} from './shared/services/loader/loader.service';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
 import {StoreService} from './shared/services/store/store.service';
 
+import { FCM } from '@ionic-native/fcm/ngx';
+
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
@@ -62,7 +64,8 @@ const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
     Geolocation,
     GeolocationService,
     SyncService,
-    StoreService
+    StoreService,
+    FCM
   ],
   bootstrap: [AppComponent]
 })

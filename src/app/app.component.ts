@@ -6,6 +6,7 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {StorageService} from './shared/services/storage/storage.service';
 import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
+import {FCM} from "@ionic-native/fcm/ngx";
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private networkService: NetworkService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private fcm: FCM
   ) {
     this.initializeApp();
   }
@@ -29,11 +31,17 @@ export class AppComponent {
     this.platform.ready().then(() => {
       if (this.platform.is('ios')) {
         this.statusBar.styleDefault();
+        this.splashScreen.hide();
       } else {
         this.statusBar.overlaysWebView(false);
+        this.splashScreen.hide();
       }
 
-      this.splashScreen.hide();
+      // get FCM token
+      this.fcm.getToken().then(token => {
+        console.log(token);
+      });
+
       this.networkService.initializeNetworkEvents();
 
       this.platform.pause.subscribe((e) => {

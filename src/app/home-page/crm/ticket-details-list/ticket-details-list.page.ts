@@ -58,26 +58,20 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
 
     this.ticketsService.getTicket(this.id, data).subscribe((success: any) => {
       const {
-        element,
-        types,
-        states,
-        clients,
+        ticket,
         details,
-        origins,
-        priorities,
-        periodicities
+        states,
+        workers,
+        priorities
       } = success.data;
 
-      this.ticket = element;
+      this.ticket = ticket;
       this.details = [...details];
 
       this.storeService.setActiveTicket(this.ticket);
-      this.storeService.setTicketTypes(types);
       this.storeService.setTicketStates(states);
-      this.storeService.setTicketUsers(clients);
-      this.storeService.setTicketOrigins(origins);
+      this.storeService.setTicketUsers(workers);
       this.storeService.setTicketPriorities(priorities);
-      this.storeService.setTicketPeriodicities(periodicities);
 
       this.loaderService.stopLoader();
     }, error => {

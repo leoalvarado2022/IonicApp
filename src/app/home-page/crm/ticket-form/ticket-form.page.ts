@@ -3,10 +3,11 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {Chooser} from '@ionic-native/chooser/ngx';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {LoaderService} from "../../../shared/services/loader/loader.service";
-import {TicketsService} from "../services/tickets/tickets.service";
-import {HttpService} from "../../../shared/services/http/http.service";
-import {Router} from "@angular/router";
+import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {TicketsService} from '../services/tickets/tickets.service';
+import {HttpService} from '../../../shared/services/http/http.service';
+import {Router} from '@angular/router';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-ticket-form',
@@ -91,7 +92,7 @@ export class TicketFormPage implements OnInit {
    * @param filename
    */
   private getFileExtension = (filename: string): string => {
-    return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+    return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
   }
 
   /**
@@ -99,11 +100,19 @@ export class TicketFormPage implements OnInit {
    */
   public submitDetail = () => {
     const formData = Object.assign({}, this.ticketForm.value);
-    const element = this.activeTicket;
-    element.details = [];
-    element.details.push(formData);
-    element.attached = this.attachments;
-    const data = {element};
+    const userSelected = this.users.find(i => i.id === formData.assigned_id);
+    formData.assign_client = userSelected.clientContact === 0 ? false : true;
+    formData.commitmentAt = moment(formData.commitmentAt).format('YYYY-MM-DD')
+    formData.commitmentInternAt = moment(formData.commitmentInternAt).format('YYYY-MM-DD');
+    this.activeTicket.maxResolution = moment(this.activeTicket.maxResolution).format('YYYY-MM-DD HH:mm:ss');
+    this.activeTicket.createdAt = moment(this.activeTicket.createdAt).format('YYYY-MM-DD HH:mm:ss');
+
+    const data = {
+      ticket: this.activeTicket,
+      detail: formData,
+      attachments: this.attachments,
+      wsAuthID: userSelected.wsAuthID
+    };
     this.storeDetail(data);
   }
 

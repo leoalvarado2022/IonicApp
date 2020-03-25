@@ -33,6 +33,7 @@ export enum StoreActions {
   SetTicketUsers = 'SET_TICKET_USERS',
   SetTicketOrigins = 'SET_TICKET_ORIGINS',
   SetTicketPriorities = 'SET_TICKET_PRIORITIES',
-  SetTicketPeriodicities = 'SET_TICKET_PERIODICITIES'
+  SetTicketPeriodicities = 'SET_TICKET_PERIODICITIES',
+  SetPushToken = 'SET_PUSH_TOKEN'
 
 }

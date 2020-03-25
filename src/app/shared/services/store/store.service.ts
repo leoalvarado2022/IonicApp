@@ -609,12 +609,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
       },
       ticket: {
         activeTicket: null,
-        types: [],
         states: [],
         users: [],
-        origins: [],
-        priorities: [],
-        periodicities: []
+        priorities: []
       },
       pushToken: null
     };
@@ -751,22 +748,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
   }
 
   /**
-   * setTicketTypes
-   * @param ticketTypes
-   */
-  public setTicketTypes = (ticketTypes: Array<any>): void => {
-    const ticket = {...this.getState().ticket, types: ticketTypes};
-    this.setState({ticket}, StoreActions.SetTicketTypes);
-  }
-
-  /**
-   * getTicketTypes
-   */
-  public getTicketTypes = (): Array<any> => {
-    return this.getState().ticket.types;
-  }
-
-  /**
    * getTicketStates
    * @param ticketStates
    */
@@ -799,22 +780,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
   }
 
   /**
-   * setTicketOrigins
-   * @param ticketOrigins
-   */
-  public setTicketOrigins = (ticketOrigins: Array<any>): void => {
-    const ticket = {...this.getState().ticket, origins: ticketOrigins};
-    this.setState({ticket}, StoreActions.SetTicketOrigins);
-  }
-
-  /**
-   * getTicketOrigins
-   */
-  public getTicketOrigins = (): Array<any> => {
-    return this.getState().ticket.origins;
-  }
-
-  /**
    * setTicketPriorities
    * @param ticketPriorities
    */
@@ -828,22 +793,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getTicketPriorities = (): Array<any> => {
     return this.getState().ticket.priorities;
-  }
-
-  /**
-   * setTicketPeriodicities
-   * @param ticketPeriodicities
-   */
-  public setTicketPeriodicities = (ticketPeriodicities: Array<any>): void => {
-    const ticket = {...this.getState().ticket, periodicities: ticketPeriodicities};
-    this.setState({ticket}, StoreActions.SetTicketPeriodicities);
-  }
-
-  /**
-   * getTicketperiodicities
-   */
-  public getTicketPeriodicities = (): Array<any> => {
-    return this.getState().ticket.periodicities;
   }
 
   /**

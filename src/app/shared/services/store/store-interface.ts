@@ -52,10 +52,7 @@ export interface ContractInterface {
 
 export interface TicketForm {
   activeTicket: any;
-  types: Array<any>;
   states: Array<any>;
   users: Array<any>;
-  origins: Array<any>;
   priorities: Array<any>;
-  periodicities: Array<any>;
 }

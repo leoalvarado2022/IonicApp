@@ -6,8 +6,9 @@ import {HttpClient} from '@angular/common/http';
 export class TicketsService {
 
   private readonly ticketsUrl = 'crm/ticket/list';
-  private readonly getTicketUrl = 'crm/ticket';
+  private readonly getTicketUrl = 'mobile/ticket';
   private readonly storeTicketUrl = 'crm/ticket/store';
+  private readonly ticketUsersUrl = 'crm/ticket/client';
 
   constructor(
     private httpService: HttpService,
@@ -42,5 +43,15 @@ export class TicketsService {
   public storeTicket = (data: any) => {
     const url = this.httpService.buildUrl(this.storeTicketUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+  }
+
+  /**
+   * getTicketUsers
+   * @param client
+   * @param user
+   */
+  public getTicketUsers = (client: number, user: number) => {
+    const url = this.httpService.buildUrl(this.ticketUsersUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({id: client, user}), {headers: this.httpService.getHeaders()});
   }
 }

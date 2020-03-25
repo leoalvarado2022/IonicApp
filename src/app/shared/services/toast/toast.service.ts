@@ -16,7 +16,7 @@ export class ToastService {
    * @param time
    * @param position
    */
-  async successToast(msg: string = 'Loading...', time: number = 2000, position: any = 'top') {
+  public successToast = async (msg: string = 'Loading...', time: number = 2000, position: any = 'top') => {
     const toast = await this.toastController.create({
       message: msg,
       duration: time,
@@ -36,7 +36,7 @@ export class ToastService {
    * @param time
    * @param position
    */
-  async errorToast(msg: string = 'Loading...', time: number = 2000, position: any = 'top') {
+  public errorToast = async (msg: string = 'Loading...', time: number = 2000, position: any = 'top') => {
     const toast = await this.toastController.create({
       message: msg,
       duration: time,
@@ -56,7 +56,7 @@ export class ToastService {
    * @param time
    * @param position
    */
-  async warningToast(msg: string = 'Loading...', time: number = 3500, position: any = 'top') {
+  public warningToast = async (msg: string = 'Loading...', time: number = 3500, position: any = 'top') => {
     const toast = await this.toastController.create({
       message: msg,
       duration: time,
@@ -65,6 +65,24 @@ export class ToastService {
       keyboardClose: true,
       position,
       cssClass: 'customToast'
+    });
+
+    toast.present();
+  }
+
+  /**
+   * normalToast
+   * @param msg
+   * @param time
+   * @param position
+   */
+  public normalToast = async (msg: string = 'Loading...', time: number = 2000, position: any = 'top') => {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: time,
+      animated: true,
+      keyboardClose: true,
+      position
     });
 
     toast.present();

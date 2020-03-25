@@ -6,7 +6,8 @@ import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {StorageService} from './shared/services/storage/storage.service';
 import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
-import {FCM} from "@ionic-native/fcm/ngx";
+import {FCM} from '@ionic-native/fcm/ngx';
+import {ToastService} from './shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private networkService: NetworkService,
     private storeService: StoreService,
-    private fcm: FCM
+    private fcm: FCM,
+    private toastService: ToastService
   ) {
     this.initializeApp();
   }
@@ -37,17 +39,31 @@ export class AppComponent {
         this.splashScreen.hide();
       }
 
-      // get FCM token
-      this.fcm.getToken().then(token => {
-        console.log('getToken', token);
-        this.storeService.setPushToken(token);
-      });
+      // CHECK PUSH PERMISSION
+      this.fcm.hasPermission().then(() => {
 
-      // get FCM token
-      this.fcm.onTokenRefresh().subscribe(token => {
-        console.log('onTokenRefresh', token);
-        this.storeService.setPushToken(token);
-      })
+        // get token
+        this.fcm.getToken().then(token => {
+          // Validar que el token no esta vacio o nulo
+          if (token) {
+            this.storeService.setPushToken(token);
+          }
+        });
+
+        // get refresh token
+        this.fcm.onTokenRefresh().subscribe(token => {
+          // Validar que el token no esta vacio o nulo
+          if (token) {
+            this.storeService.setPushToken(token);
+          }
+        });
+
+        // Listen to notifications if app is open
+        this.fcm.onNotification().subscribe((data: any) => {
+          const note = data.aps.alert;
+          this.toastService.normalToast(note.body);
+        });
+      });
 
       this.platform.pause.subscribe((e) => {
         this.storeService.backupState();

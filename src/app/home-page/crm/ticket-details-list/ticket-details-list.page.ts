@@ -72,6 +72,7 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
       this.storeService.setTicketStates(states);
       this.storeService.setTicketUsers(workers);
       this.storeService.setTicketPriorities(priorities);
+      this.storeService.setTicketDetails(details);
 
       this.loaderService.stopLoader();
     }, error => {

@@ -16,6 +16,62 @@ export class StoreService extends ObservableStore<StoreInterface> {
   }
 
   /**
+   * buildInitialState
+   */
+  private buildInitialState = (): StoreInterface => {
+    const lastState: StoreInterface = JSON.parse(localStorage.getItem('fx11StateBackup'));
+
+    if (lastState) {
+      return lastState;
+    }
+
+    return {
+      auth: {
+        isLogged: false,
+        remember: false,
+        rememberData: null,
+        userActiveCompany: null,
+        userActiveConnection: null,
+        userConnections: [],
+        userToken: '',
+        userData: null
+      },
+      sync: {
+        companies: [],
+        costCenters: [],
+        menus: [],
+        units: [],
+        qualities: [],
+        calibers: [],
+        cfgAccess: [],
+        quadrilles: [],
+        workers: [],
+        processPlants: [],
+        destinations: []
+      },
+      contract: {
+        activeCostCenter: null,
+        costCenter: null,
+        productionContracts: [],
+        productionContractsDetails: [],
+        harvestEstimate: [],
+        qualityEstimate: [],
+        qualityEstimateDetail: [],
+        notes: [],
+        holidays: []
+      },
+      ticket: {
+        activeTicket: null,
+        states: [],
+        users: [],
+        priorities: [],
+        details: []
+      },
+      pushToken: null
+    };
+  }
+
+  /**
    * backupState
    */
   public backupState = (): void => {
@@ -563,61 +619,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
   }
 
   /**
-   * buildInitialState
-   */
-  private buildInitialState = (): StoreInterface => {
-    const lastState: StoreInterface = JSON.parse(localStorage.getItem('fx11StateBackup'));
-
-    if (lastState) {
-      return lastState;
-    }
-
-    return {
-      auth: {
-        isLogged: false,
-        remember: false,
-        rememberData: null,
-        userActiveCompany: null,
-        userActiveConnection: null,
-        userConnections: [],
-        userToken: '',
-        userData: null
-      },
-      sync: {
-        companies: [],
-        costCenters: [],
-        menus: [],
-        units: [],
-        qualities: [],
-        calibers: [],
-        cfgAccess: [],
-        quadrilles: [],
-        workers: [],
-        processPlants: [],
-        destinations: []
-      },
-      contract: {
-        activeCostCenter: null,
-        costCenter: null,
-        productionContracts: [],
-        productionContractsDetails: [],
-        harvestEstimate: [],
-        qualityEstimate: [],
-        qualityEstimateDetail: [],
-        notes: [],
-        holidays: []
-      },
-      ticket: {
-        activeTicket: null,
-        states: [],
-        users: [],
-        priorities: []
-      },
-      pushToken: null
-    };
-  }
-
-  /**
    * setPushToken
    * @param token
    */
@@ -793,6 +794,22 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getTicketPriorities = (): Array<any> => {
     return this.getState().ticket.priorities;
+  }
+
+  /**
+   * setTicketDetails
+   * @param ticketDetails
+   */
+  public setTicketDetails = (ticketDetails: Array<any>): void => {
+    const ticket = {...this.getState().ticket, details: ticketDetails};
+    this.setState({ticket}, StoreActions.SetTicketDetails);
+  }
+
+  /**
+   * getTicketDetails
+   */
+  public getTicketDetails = (): Array<any> => {
+    return this.getState().ticket.details;
   }
 
   /**

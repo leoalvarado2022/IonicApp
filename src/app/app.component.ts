@@ -39,6 +39,7 @@ export class AppComponent {
         this.splashScreen.hide();
       }
 
+
       // CHECK PUSH PERMISSION
       this.fcm.hasPermission().then(() => {
 
@@ -48,6 +49,8 @@ export class AppComponent {
           if (token) {
             this.storeService.setPushToken(token);
           }
+        }).catch(error => {
+          console.log('fcm.getToken ERROR: ', error);
         });
 
         // get refresh token
@@ -56,13 +59,20 @@ export class AppComponent {
           if (token) {
             this.storeService.setPushToken(token);
           }
+        }, error => {
+          console.log('fcm.onTokenRefresh() ERROR: ', error);
         });
 
         // Listen to notifications if app is open
         this.fcm.onNotification().subscribe((data: any) => {
           const note = data.aps.alert;
           this.toastService.normalToast(note.body);
+        }, error => {
+          console.log('fcm.onNotification ERROR: ', error);
         });
+      }).catch(error => {
+        console.log('No tiene permiso para recibir notificaciones PUSH: ', error);
+        this.toastService.errorToast('No tiene permiso para recibir notificaciones PUSH');
       });
 
       this.platform.pause.subscribe((e) => {

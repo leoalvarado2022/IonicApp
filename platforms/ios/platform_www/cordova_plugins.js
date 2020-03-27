@@ -1,6 +1,14 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
   module.exports = [
     {
+      "id": "cordova-plugin-fcm-with-dependecy-updated.FCMPlugin",
+      "file": "plugins/cordova-plugin-fcm-with-dependecy-updated/www/FCMPlugin.js",
+      "pluginId": "cordova-plugin-fcm-with-dependecy-updated",
+      "clobbers": [
+        "FCMPlugin"
+      ]
+    },
+    {
       "id": "cordova-plugin-statusbar.statusbar",
       "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
       "pluginId": "cordova-plugin-statusbar",
@@ -324,17 +332,10 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
       "clobbers": [
         "chooser"
       ]
-    },
-    {
-      "id": "cordova-plugin-fcm-with-dependecy-updated.FCMPlugin",
-      "file": "plugins/cordova-plugin-fcm-with-dependecy-updated/www/FCMPlugin.js",
-      "pluginId": "cordova-plugin-fcm-with-dependecy-updated",
-      "clobbers": [
-        "FCMPlugin"
-      ]
     }
   ];
   module.exports.metadata = {
+    "cordova-plugin-fcm-with-dependecy-updated": "4.4.1",
     "cordova-plugin-whitelist": "1.3.4",
     "cordova-plugin-statusbar": "2.4.3",
     "cordova-plugin-device": "2.0.3",
@@ -350,7 +351,6 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-file-opener2": "2.2.1",
     "cordova-plugin-filepath": "1.5.8",
     "cordova-plugin-add-swift-support": "2.0.2",
-    "cordova-plugin-chooser": "1.2.6",
-    "cordova-plugin-fcm-with-dependecy-updated": "4.4.0"
+    "cordova-plugin-chooser": "1.2.6"
   };
 });

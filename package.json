@@ -88,6 +88,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.5.1",
     "protractor": "~5.4.0",
+    "recursive-readdir": "^2.2.2",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.5.3"
@@ -113,7 +114,9 @@
       "cordova-plugin-preview-any-file": {},
       "cordova-plugin-file-opener2": {},
       "cordova-plugin-filepath": {},
-      "cordova-plugin-chooser": {}
+      "cordova-plugin-chooser": {},
+      "cordova-plugin-androidx": {},
+      "cordova-plugin-androidx-adapter": {}
     },
     "platforms": [
       "android",

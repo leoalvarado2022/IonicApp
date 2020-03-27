@@ -351,6 +351,8 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-filepath": "1.5.8",
     "cordova-plugin-add-swift-support": "2.0.2",
     "cordova-plugin-chooser": "1.2.6",
-    "cordova-plugin-fcm-with-dependecy-updated": "4.4.0"
+    "cordova-plugin-fcm-with-dependecy-updated": "4.4.0",
+    "cordova-plugin-androidx": "1.0.2",
+    "cordova-plugin-androidx-adapter": "1.1.0"
   };
 });

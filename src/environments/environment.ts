@@ -7,7 +7,7 @@ import {iosDeviceNames} from './ios-device-names';
 export const environment = {
   production: false,
   app_name: 'FX10',
-  api_url: 'http://localhost:5572',
+  api_url: 'https://fx11apiqa.primetec.cl',
   appVersion: 'v1.0.48',
   tz: 'America/Santiago',
   iosDeviceNames

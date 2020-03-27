@@ -51,13 +51,14 @@ export class TicketFormPage implements OnInit {
     this.states = this.storeService.getTicketStates();
     this.users = this.storeService.getTicketUsers();
     this.priorities = this.storeService.getTicketPriorities();
+    const activeCompany = this.storeService.getActiveCompany();
 
     this.ticketForm = this.formBuilder.group({
       id: [0, Validators.required],
       ticket: [this.activeTicket.id, Validators.required],
       state: ['', Validators.required],
       public: ['', Validators.required],
-      created_id: [this.activeTicket.client_id, Validators.required],
+      created_id: [activeCompany.user, Validators.required],
       assigned_id: ['', Validators.required],
       observations: ['', Validators.required],
       commitmentAt: [this.activeTicket.internalCommitment || ''],
@@ -113,6 +114,7 @@ export class TicketFormPage implements OnInit {
       attachments: this.attachments,
       wsAuthID: userSelected.wsAuthID
     };
+
     this.storeDetail(data);
   }
 

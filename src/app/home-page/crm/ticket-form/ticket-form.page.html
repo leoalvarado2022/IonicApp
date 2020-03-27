@@ -51,7 +51,7 @@
         <ion-item>
           <ion-label>Prioridad</ion-label>
           <ion-select placeholder="Prioridad" formControlName="priority">
-            <ion-select-option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.name | titlecase }}</ion-select-option>
+            <ion-select-option *ngFor="let priority of priorities" [value]="priority.name">{{ priority.name | titlecase }}</ion-select-option>
           </ion-select>
         </ion-item>
 

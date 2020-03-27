@@ -64,7 +64,11 @@ export class AppComponent {
 
         // Listen to notifications if app is open
         this.fcm.onNotification().subscribe((data: any) => {
-          const note = data.aps.alert;
+          // console.log(data, 'notification');
+          let note = data;
+          if (this.platform.is('ios')) {
+            note = data.aps.alert;
+          }
           this.toastService.normalToast(note.body);
         }, error => {
           console.log('fcm.onNotification ERROR: ', error);

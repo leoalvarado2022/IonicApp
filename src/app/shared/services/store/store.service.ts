@@ -19,7 +19,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * buildInitialState
    */
   private buildInitialState = (): StoreInterface => {
+    console.log(' pasa por buildInitialState');
     const lastState: StoreInterface = JSON.parse(localStorage.getItem('fx11StateBackup'));
+    console.log({lastState});
 
     if (lastState) {
       return lastState;

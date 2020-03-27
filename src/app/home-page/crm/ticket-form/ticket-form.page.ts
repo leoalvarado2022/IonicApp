@@ -26,9 +26,9 @@ export class TicketFormPage implements OnInit {
   public users: Array<any> = [];
   public priorities: Array<any> = [];
   public difficulties: Array<any> = [
-    {level: 1, name: 'facil'},
-    {level: 2, name: 'medio'},
-    {level: 3, name: 'dificil'}
+    {level: 1, name: '1'},
+    {level: 2, name: '2'},
+    {level: 3, name: '3'}
   ];
 
   public attachments: Array<any> = [];
@@ -94,6 +94,7 @@ export class TicketFormPage implements OnInit {
    * pickFiles
    */
   public pickFiles = () => {
+    this.chooser.getFile()
     this.chooser.getFile('image/*,video/*').then((data: any) => {
       this.attachments.push({
         id: 0,

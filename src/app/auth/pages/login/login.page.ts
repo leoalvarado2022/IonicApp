@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {AuthService} from '../../../shared/services/auth/auth.service';
@@ -8,17 +8,21 @@ import {UserService} from '../../../shared/services/user/user.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {StoreService} from 'src/app/shared/services/store/store.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit, OnDestroy {
 
   public loginForm: FormGroup;
   public innerWidth: number;
   public innerHeight: number;
+
+  private router$: Subscription;
+  private store$: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,6 +39,16 @@ export class LoginPage implements OnInit {
   }
 
   ngOnInit() {
+    this.router$ = this.router.events.subscribe((e) => {
+      if (e instanceof NavigationEnd) {
+        this.checkRemember();
+      }
+    });
+
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      this.checkRemember();
+    });
+
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required],
@@ -43,49 +57,40 @@ export class LoginPage implements OnInit {
 
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
+  }
 
-    this.router.events.subscribe((e) => {
-      if (e instanceof NavigationEnd) {
-        this.checkRemember();
-      }
-    });
-
-    this.checkRemember();
+  ngOnDestroy(): void {
+    this.router$.unsubscribe();
+    this.store$.unsubscribe();
   }
 
   /**
    * onSubmit
    */
   public onSubmit = async () => {
-    try {
-      const data = Object.assign({}, this.loginForm.value);
-      data.username = data.username.toLowerCase();
-      const login = await this.login(data);
+    const data = Object.assign({}, this.loginForm.value);
+    data.username = data.username.toLowerCase();
+    const login = await this.login(data);
 
-      // recordar usuario
-      if (data.remember) {
-        this.storeService.setRemember(true);
-        this.storeService.setRememberData(data);
-      } else {
-        this.storeService.setRemember(false);
-        this.storeService.removeRememberData();
-      }
-
-      if (login && login.code === 1) {
-        this.addPin(login);
-      } else {
-        if (login !== null) {
-          this.storeService.setUser(login.user);
-          this.storeService.setUserConnections(login.connections);
-          this.storeService.setToken(login.token);
-          this.storeService.setLoginStatus(true);
-          this.makeLogin();
-        }
-      }
-    } catch (e) {
-      console.log({e});
+    if (data.remember) {
+      this.storeService.setRemember(true);
+      this.storeService.setRememberData(data);
+    } else {
+      this.storeService.setRemember(false);
+      this.storeService.removeRememberData();
     }
 
+    if (login && login.code === 1) {
+      this.addPin(login);
+    } else {
+      if (login !== null) {
+        this.storeService.setUser(login.user);
+        this.storeService.setUserConnections(login.connections);
+        this.storeService.setToken(login.token);
+        this.storeService.setLoginStatus(true);
+        this.makeLogin();
+      }
+    }
   }
 
   /**

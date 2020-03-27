@@ -39,7 +39,6 @@ export class AppComponent {
         this.splashScreen.hide();
       }
 
-
       // CHECK PUSH PERMISSION
       this.fcm.hasPermission().then(() => {
 

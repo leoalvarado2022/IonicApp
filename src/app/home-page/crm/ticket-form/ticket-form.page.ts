@@ -60,8 +60,8 @@ export class TicketFormPage implements OnInit {
       created_id: [this.activeTicket.client_id, Validators.required],
       assigned_id: ['', Validators.required],
       observations: ['', Validators.required],
-      commitmentAt: [this.activeTicket.internalCommitment, Validators.required],
-      commitmentInternAt: [this.activeTicket.clientCommitment, Validators.required],
+      commitmentAt: [this.activeTicket.internalCommitment || ''],
+      commitmentInternAt: [this.activeTicket.clientCommitment || ''],
       difficulty: ['', Validators.required],
       priority: ['', Validators.required],
       assign_client: [0, Validators.required],
@@ -102,8 +102,8 @@ export class TicketFormPage implements OnInit {
     const formData = Object.assign({}, this.ticketForm.value);
     const userSelected = this.users.find(i => i.id === formData.assigned_id);
     formData.assign_client = userSelected.clientContact === 0 ? false : true;
-    formData.commitmentAt = moment(formData.commitmentAt).format('YYYY-MM-DD')
-    formData.commitmentInternAt = moment(formData.commitmentInternAt).format('YYYY-MM-DD');
+    formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt).format('YYYY-MM-DD') : '';
+    formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt).format('YYYY-MM-DD') : '';
     this.activeTicket.maxResolution = moment(this.activeTicket.maxResolution).format('YYYY-MM-DD HH:mm:ss');
     this.activeTicket.createdAt = moment(this.activeTicket.createdAt).format('YYYY-MM-DD HH:mm:ss');
 

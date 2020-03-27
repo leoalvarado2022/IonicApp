@@ -51,7 +51,7 @@
         <ion-item>
           <ion-label>Prioridad</ion-label>
           <ion-select placeholder="Prioridad" formControlName="priority">
-            <ion-select-option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.name | titlecase }}</ion-select-option>
+            <ion-select-option *ngFor="let priority of priorities" [value]="priority.name">{{ priority.name | titlecase }}</ion-select-option>
           </ion-select>
         </ion-item>
 
@@ -75,8 +75,8 @@
         <ion-item>
           <ion-label>Publico</ion-label>
           <ion-select placeholder="Publico" formControlName="public">
-            <ion-select-option value="true">Si</ion-select-option>
-            <ion-select-option value="false">No</ion-select-option>
+            <ion-select-option [value]="true">Si</ion-select-option>
+            <ion-select-option [value]="false">No</ion-select-option>
           </ion-select>
         </ion-item>
 

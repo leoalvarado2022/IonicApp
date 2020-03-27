@@ -55,4 +55,5 @@ export interface TicketForm {
   states: Array<any>;
   users: Array<any>;
   priorities: Array<any>;
+  details: Array<any>;
 }

@@ -1,8 +1,8 @@
 {
     "declarations": {},
     "sources": {
-        "https://github.com/CocoaPods/Specs.git": {
-            "source": "https://github.com/CocoaPods/Specs.git",
+        "https://cdn.cocoapods.org/": {
+            "source": "https://cdn.cocoapods.org/",
             "count": 1
         }
     },

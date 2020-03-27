@@ -26,9 +26,9 @@ export class TicketFormPage implements OnInit {
   public users: Array<any> = [];
   public priorities: Array<any> = [];
   public difficulties: Array<any> = [
-    {level: 1, name: 'facil'},
-    {level: 2, name: 'medio'},
-    {level: 3, name: 'dificil'}
+    {level: 1, name: '1'},
+    {level: 2, name: '2'},
+    {level: 3, name: '3'}
   ];
 
   public attachments: Array<any> = [];
@@ -52,18 +52,39 @@ export class TicketFormPage implements OnInit {
     this.users = this.storeService.getTicketUsers();
     this.priorities = this.storeService.getTicketPriorities();
 
+    const activeCompany = this.storeService.getActiveCompany();
+    const details = this.storeService.getTicketDetails();
+    const lastDetail = details.find(item => item.id === this.activeTicket.tickets_det);
+
+    /**
+     * id: 37
+     state: "Abierto"
+     ticket: 39
+     created_id: 2
+     assigned_id: 2
+     creatorName: "Contreras Montiel Luis"
+     assignedName: "Contreras Montiel Luis"
+     observations: ""
+     difficulty: 1
+     priority: "Normal"
+     public: false
+     createdAt: "12/02/2020 00:00:00"
+     commitmentAt: "01/01/1900"
+     commitmentInternAt: "01/01/1900"
+     */
+
     this.ticketForm = this.formBuilder.group({
       id: [0, Validators.required],
       ticket: [this.activeTicket.id, Validators.required],
-      state: ['', Validators.required],
-      public: ['', Validators.required],
-      created_id: [this.activeTicket.client_id, Validators.required],
-      assigned_id: ['', Validators.required],
+      state: [lastDetail ? lastDetail.state.toLowerCase() : '', Validators.required],
+      public: [false, Validators.required],
+      created_id: [activeCompany.user, Validators.required],
+      assigned_id: [activeCompany.user, Validators.required],
       observations: ['', Validators.required],
-      commitmentAt: [this.activeTicket.internalCommitment, Validators.required],
-      commitmentInternAt: [this.activeTicket.clientCommitment, Validators.required],
-      difficulty: ['', Validators.required],
-      priority: ['', Validators.required],
+      commitmentAt: [lastDetail ? lastDetail.commitmentAt : ''],
+      commitmentInternAt: [lastDetail ? lastDetail.commitmentInternAt : ''],
+      difficulty: [lastDetail ? lastDetail.difficulty : '', Validators.required],
+      priority: [lastDetail ? lastDetail.priority.toLowerCase() : '', Validators.required],
       assign_client: [0, Validators.required],
       temporal_id: [0]
     });
@@ -73,6 +94,7 @@ export class TicketFormPage implements OnInit {
    * pickFiles
    */
   public pickFiles = () => {
+    this.chooser.getFile()
     this.chooser.getFile('image/*,video/*').then((data: any) => {
       this.attachments.push({
         id: 0,
@@ -102,8 +124,8 @@ export class TicketFormPage implements OnInit {
     const formData = Object.assign({}, this.ticketForm.value);
     const userSelected = this.users.find(i => i.id === formData.assigned_id);
     formData.assign_client = userSelected.clientContact === 0 ? false : true;
-    formData.commitmentAt = moment(formData.commitmentAt).format('YYYY-MM-DD')
-    formData.commitmentInternAt = moment(formData.commitmentInternAt).format('YYYY-MM-DD');
+    formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt).format('YYYY-MM-DD') : '';
+    formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt).format('YYYY-MM-DD') : '';
     this.activeTicket.maxResolution = moment(this.activeTicket.maxResolution).format('YYYY-MM-DD HH:mm:ss');
     this.activeTicket.createdAt = moment(this.activeTicket.createdAt).format('YYYY-MM-DD HH:mm:ss');
 
@@ -113,6 +135,7 @@ export class TicketFormPage implements OnInit {
       attachments: this.attachments,
       wsAuthID: userSelected.wsAuthID
     };
+
     this.storeDetail(data);
   }
 

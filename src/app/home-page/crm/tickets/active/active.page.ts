@@ -6,13 +6,13 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {Router} from '@angular/router';
 
 @Component({
-  selector: 'app-me',
-  templateUrl: './me.page.html',
-  styleUrls: ['./me.page.scss'],
+  selector: 'app-all',
+  templateUrl: './active.page.html',
+  styleUrls: ['./active.page.scss'],
 })
-export class MePage implements OnInit {
+export class ActivePage implements OnInit {
 
-  private myTickets: Array<any> = [];
+  private allTickets: Array<any> = [];
   public filteredTickets: Array<any> = [];
 
   constructor(
@@ -26,7 +26,7 @@ export class MePage implements OnInit {
   }
 
   ngOnInit() {
-    this.loadTickets();
+
   }
 
   ionViewDidEnter() {
@@ -41,7 +41,7 @@ export class MePage implements OnInit {
     const user = this.storeService.getActiveCompany();
 
     const data = {
-      filter: 'mis tickets',
+      filter: 'activos',
       user: user.user,
       init: 0,
       registers: 0,
@@ -50,9 +50,8 @@ export class MePage implements OnInit {
     };
 
     this.ticketsService.getTickets(data).subscribe((success: any) => {
-      this.myTickets = success.data.listTickets;
+      this.allTickets = success.data.listTickets;
       this.filteredTickets = success.data.listTickets;
-
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
@@ -66,7 +65,7 @@ export class MePage implements OnInit {
    */
   public searchTickets = (search: string) => {
     if (search) {
-      this.filteredTickets = this.myTickets.filter(item => {
+      this.filteredTickets = this.allTickets.filter(item => {
         return (
           item.id.toString().includes(search.toLowerCase()) ||
           item.client.toLowerCase().includes(search.toLowerCase()) ||
@@ -76,7 +75,7 @@ export class MePage implements OnInit {
         );
       });
     } else {
-      this.filteredTickets = this.myTickets;
+      this.filteredTickets = this.allTickets;
     }
   }
 
@@ -84,18 +83,7 @@ export class MePage implements OnInit {
    * cancelSearch
    */
   public cancelSearch = () => {
-    this.filteredTickets = this.myTickets;
-  }
-
-  /**
-   * reSync
-   * @param event
-   */
-  public reSync = (event: any) => {
-    this.myTickets = [];
-    this.filteredTickets = [];
-    this.loadTickets();
-    event.target.complete();
+    this.filteredTickets = this.allTickets;
   }
 
   /**
@@ -104,6 +92,17 @@ export class MePage implements OnInit {
    */
   public ticketSelected = (ticket: any) => {
     this.router.navigate(['/home-page/ticket-details-list', ticket.id]);
+  }
+
+  /**
+   * reSync
+   * @param event
+   */
+  public reSync = (event: any) => {
+    this.allTickets = [];
+    this.filteredTickets = [];
+    this.loadTickets();
+    event.target.complete();
   }
 
   /**

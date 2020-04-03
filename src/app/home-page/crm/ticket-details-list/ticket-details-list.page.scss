@@ -16,6 +16,10 @@ ion-tab-button {
   border-bottom: 1px solid white !important;
 }
 
+ion-content{
+  --background: var(--color-background-tabs);
+}
+
 ion-tab-bar {
   height: 45px;
   //height: 100px;
@@ -26,4 +30,29 @@ ion-tab-bar {
 
 .text-white {
   color: white !important;
+}
+
+.ticket-p{
+  margin: 0 !important;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.texto-ticket{
+  padding: 10px 0;
+  color: white;
+}
+
+
+.h{
+  position: absolute;
+  right: 20px;
+  font-style: italic;
+}
+
+.date-compromiso{
+  font-size: 12px;
+  float: right;
+  margin-bottom: 11px !important;
+  font-style: italic;
 }

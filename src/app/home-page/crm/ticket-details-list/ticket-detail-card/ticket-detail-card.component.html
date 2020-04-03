@@ -5,12 +5,11 @@
   </ion-item>
 
   <ion-card-content>
-    <p>Fecha Compromiso: {{ detail.commitmentAt | customDate }}</p>
-    <p>Fecha Compromiso Interna: {{ detail.commitmentInternAt | customDate }}</p>
-    <br>
+    <p *ngIf="detail.active_state"><strong>Estado:</strong> {{ detail.state }}</p>
     <p>{{ detail.observations || 'Sin Observacion' }}</p>
+    <p class="text-confirm" *ngIf="detail.active_commit">Fecha Compromiso: {{ detail.commitmentAt | customDate }}</p>
 
-    <ng-container *ngIf="detail.attached">
+    <ng-container *ngIf="detail.attached && detail.attached.length">
       Adjuntos:
       <ng-container *ngFor="let file of detail.attached">
         <a [href]="buildLink(file)" target="_blank">{{ file.name }}</a>

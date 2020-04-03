@@ -1,6 +1,8 @@
 .ticket-card-height {
   margin: 5px;
-  width: 100%;
+  //width: 100%;
+  background: white;
+  box-shadow: none !important;
 }
 
 .harvest {
@@ -74,3 +76,18 @@ ion-item-sliding {
   border-radius: 10px !important;
 }
 
+.date-compromiso{
+  font-size: 12px;
+  float: right;
+  margin-top: 12px;
+  margin-bottom: 11px;
+  color: var(--ion-color-success-shade);
+  font-style: italic;
+}
+
+.h{
+  position: absolute;
+  right: 20px;
+  font-style: italic;
+  color: var(--ion-color-primary);
+}

@@ -6,6 +6,7 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import {NetworkService} from '../../../shared/services/network/network.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-ticket-details-list',
@@ -19,6 +20,7 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
   public ticket: any = null;
   private network$: Subscription;
   public isOnline = false;
+  private now = moment();
 
   constructor(
     private storeService: StoreService,
@@ -95,5 +97,15 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
    */
   public openForm = () => {
     this.router.navigate(['home-page/ticket-form']);
+  }
+
+  /**
+   * @description tiempo restante
+   * @param date
+   */
+  public remainingTime(date: string): string {
+    const _date = moment(date, 'DD/MM/YYYY HH:mm:ss');
+    const difference = _date.diff(this.now, 'hours');
+    return difference + ' h';
   }
 }

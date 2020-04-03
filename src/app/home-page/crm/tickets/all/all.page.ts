@@ -41,7 +41,7 @@ export class AllPage implements OnInit {
     const user = this.storeService.getActiveCompany();
 
     const data = {
-      filter: 'todos',
+      filter: 'mi equipo',
       user: user.user,
       init: 0,
       registers: 0,

@@ -14,21 +14,21 @@
 
 <ng-container *ngIf="ticket">
   <div class="header-content background-color--header">
-    <ion-row class="text-white">
-      <ion-col>ID: {{ ticket.id }}</ion-col>
-      <ion-col>Cliente: {{ ticket.client }}</ion-col>
-    </ion-row>
-    <ion-row class="text-white">
-      <ion-col>Tipo: {{ ticket.type }}</ion-col>
-      <ion-col>Producto: {{ 'pendiente' }}</ion-col>
-    </ion-row>
-    <ion-row class="text-white">
-      <ion-col>Fecha Maxima: {{ ticket.maxResolution | customDate }}</ion-col>
-      <ion-col>Estado: {{ ticket.state }}</ion-col>
-    </ion-row>
-    <ion-row class="text-white">
-      <ion-col>Referencia: {{ ticket.reference }}</ion-col>
-    </ion-row>
+<!--    <ion-row class="text-white">-->
+<!--      <p class="h">{{remainingTime(ticket.clientCommitment)}}</p>-->
+      <div class="texto-ticket">
+        <p class="h"><strong>{{remainingTime(ticket.clientCommitment)}}</strong></p>
+        <p class="ticket-p"><strong>#Ticket:</strong> {{ ticket.id }}</p>
+        <p class="ticket-p"><strong>Cliente:</strong> {{ ticket.client }}</p>
+        <p class="ticket-p"><strong>Tipo:</strong> {{ ticket.type }}</p>
+        <p class="ticket-p"><strong>Producto:</strong> {{ ticket.productName }}</p>
+        <p class="ticket-p"><strong>Funcionalidad:</strong> {{ ticket.funcionalityName }}</p>
+        <!--    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>-->
+        <p class="ticket-p"><strong>Estado:</strong> {{ ticket.state  }}</p>
+        <p class="ticket-p"><strong>Referencia:</strong> {{ ticket.reference }}</p>
+        <p class="ticket-p"><strong>Creador:</strong> {{ ticket.creator }}</p>
+        <p class="date-compromiso ticket-p">Fecha de Compromiso: {{ ticket.clientCommitment }}</p>
+      </div>
   </div>
 </ng-container>
 

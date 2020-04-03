@@ -17,6 +17,10 @@ const routes: Routes = [
         loadChildren: () => import('./all/all.module').then(module => module.AllPageModule),
       },
       {
+        path: 'active',
+        loadChildren: () => import('./active/active.module').then(module => module.ActiveModule),
+      },
+      {
         path: '**',
         redirectTo: 'me'
       }

@@ -1,16 +1,20 @@
 <ion-card class="ticket-card-height" (click)="viewTicket(ticket)">
   <ion-item>
     <ion-badge slot="start">#{{ ticket.id }}</ion-badge>
+    <br>
     <ion-label>{{ ticket.client }}</ion-label>
   </ion-item>
 
   <ion-card-content>
-    <p>Tipo: {{ ticket.type }}</p>
-    <p>Producto: {{ ticket.productName }}</p>
-    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>
-    <p>Estado: {{ ticket.state  }}</p>
-    <p>Referencia: {{ ticket.reference }}</p>
-    <p>Creador: {{ ticket.user }}</p>
+    <p class="h">{{remainingTime(ticket.clientCommitment)}}</p>
+    <p><strong>Tipo:</strong> {{ ticket.type }}</p>
+    <p><strong>Producto:</strong> {{ ticket.productName }}</p>
+    <p><strong>Funcionalidad:</strong> {{ ticket.funcionalityName }}</p>
+<!--    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>-->
+    <p><strong>Estado:</strong> {{ ticket.state  }}</p>
+    <p><strong>Referencia:</strong> {{ ticket.reference }}</p>
+    <p><strong>Creador:</strong> {{ ticket.user }}</p>
+    <p class="date-compromiso">Fecha de Compromiso: {{ ticket.clientCommitment }}</p>
   </ion-card-content>
 </ion-card>
 

@@ -16,7 +16,7 @@ ion-tab-button {
   border-bottom: 1px solid white !important;
 }
 
-ion-content{
+ion-content {
   --background: var(--color-background-tabs);
 }
 
@@ -32,27 +32,50 @@ ion-tab-bar {
   color: white !important;
 }
 
-.ticket-p{
+.ticket-p {
   margin: 0 !important;
   padding-left: 5px;
   padding-right: 5px;
 }
 
-.texto-ticket{
+.texto-ticket {
   padding: 10px 0;
   color: white;
 }
 
-
-.h{
+.h {
   position: absolute;
   right: 20px;
   font-style: italic;
+  top: 37px;
 }
 
-.date-compromiso{
+.date-compromiso {
   font-size: 12px;
   float: right;
   margin-bottom: 11px !important;
   font-style: italic;
 }
+
+.scroll-card {
+  max-height: 0;
+  transition: max-height 0.15s ease-out;
+  overflow: hidden;
+  width: 100%;
+}
+
+.card-text {
+  border-radius: 10px;
+  border: none !important;
+  padding: 10px 0;
+  color: white;
+  p {
+    margin: 0;
+  }
+}
+
+.header-content.selected .scroll-card {
+  max-height: 500px;
+  transition: max-height 0.25s ease-in;
+}
+

@@ -12,9 +12,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ng-container *ngIf="ticket">
-  <div class="header-content background-color--header">
-<!--    <ion-row class="text-white">-->
+  <div (click)="openSelected = !openSelected" [class.selected]="openSelected"  class="header-content background-color--header">
+    <ng-container *ngIf="ticket">
+    <!--    <ion-row class="text-white">-->
 <!--      <p class="h">{{remainingTime(ticket.clientCommitment)}}</p>-->
       <div class="texto-ticket">
         <p class="h"><strong>{{remainingTime(ticket.clientCommitment)}}</strong></p>
@@ -29,8 +29,20 @@
         <p class="ticket-p"><strong>Creador:</strong> {{ ticket.creator }}</p>
         <p class="date-compromiso ticket-p">Fecha de Compromiso: {{ ticket.clientCommitment }}</p>
       </div>
+    </ng-container>
+
+    <div [class.scroll-card-custom]="openSelected" class="scroll-card">
+      <ng-container *ngIf="ticket">
+        <div class="card-text">
+          <p class="ticket-p"><strong>Periodicidad:</strong> {{ ticket.periodicity }}</p>
+          <p class="ticket-p"><strong>Descripción:</strong> {{ ticket.description }}</p>
+          <p class="ticket-p"><strong>Solución:</strong> {{ ticket.Solution }}</p>
+          <p class="ticket-p"><strong>Creado:</strong> {{ ticket.createdAt }}</p>
+        </div>
+      </ng-container>
+    </div>
   </div>
-</ng-container>
+
 
 <ion-content>
 

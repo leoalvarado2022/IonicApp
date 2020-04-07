@@ -2,8 +2,8 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
-import {MenuComponent} from './common/menu/menu.component';
-import {ContractDetailService} from './planning/services/contract-detail/contract-detail.service';
+import {MenuComponent} from '../modules/common/menu/menu.component';
+import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
 
 const routes: Routes = [
   {
@@ -12,59 +12,63 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('./common/menu-list/menu-list.module').then(module => module.MenuListPageModule)
+        loadChildren: () => import('../modules/common/menu-list/menu-list.module').then(module => module.MenuListPageModule)
       },
       {
         path: 'companies',
-        loadChildren: () => import('./planning/companies/companies.module').then(module => module.CompaniesPageModule)
+        loadChildren: () => import('../modules/planning/companies/companies.module').then(module => module.CompaniesPageModule)
       },
       {
         path: 'connections',
-        loadChildren: () => import('./planning/connections/connections.module').then(module => module.ConnectionsPageModule)
+        loadChildren: () => import('../modules/planning/connections/connections.module').then(module => module.ConnectionsPageModule)
       },
       {
         path: 'profile',
-        loadChildren: () => import('./planning/profile/profile.module').then(module => module.ProfilePageModule)
+        loadChildren: () => import('../modules/planning/profile/profile.module').then(module => module.ProfilePageModule)
       },
       {
         path: 'produccion_centrocosto',
-        loadChildren: () => import('./planning/center-cost/center-cost.module').then(module => module.CenterCostPageModule)
+        loadChildren: () => import('../modules/planning/center-cost/center-cost.module').then(module => module.CenterCostPageModule)
       },
       {
         path: 'contract-detail',
-        loadChildren: () => import('./planning/contract-detail/contract-detail.module').then(module => module.ContractDetailPageModule),
+        loadChildren: () => import('../modules/planning/contract-detail/contract-detail.module').then(module => module.ContractDetailPageModule),
       },
       {
         path: 'harvest-estimate',
-        loadChildren: () => import('./planning/harvest-estimate/harvest-estimate.module').then(module => module.HarvestEstimatePageModule),
+        loadChildren: () => import('../modules/planning/harvest-estimate/harvest-estimate.module').then(module => module.HarvestEstimatePageModule),
       },
       {
         path: 'quality-estimate',
-        loadChildren: () => import('./planning/quality-estimate/quality-estimate.module').then(module => module.QualityEstimatePageModule),
+        loadChildren: () => import('../modules/planning/quality-estimate/quality-estimate.module').then(module => module.QualityEstimatePageModule),
       },
       {
         path: 'notes',
-        loadChildren: () => import('./planning/notes/notes.module').then(module => module.NotesPageModule)
+        loadChildren: () => import('../modules/planning/notes/notes.module').then(module => module.NotesPageModule)
       },
       {
         path: 'tarja_cuadrillas',
-        loadChildren: () => import('./rem/rem-quadrille/rem-quadrille.module').then(module => module.RemQuadrillePageModule)
+        loadChildren: () => import('../modules/rem/rem-quadrille/rem-quadrille.module').then(module => module.RemQuadrillePageModule)
       },
       {
         path: 'rem-workers',
-        loadChildren: () => import('./rem/rem-workers/rem-workers.module').then(module => module.RemWorkersPageModule)
+        loadChildren: () => import('../modules/rem/rem-workers/rem-workers.module').then(module => module.RemWorkersPageModule)
       },
       {
         path: 'crm_tickets',
-        loadChildren: () => import('./crm/tickets/tickets.module').then(module => module.TicketsPageModule)
+        loadChildren: () => import('../modules/crm/tickets/tickets.module').then(module => module.TicketsPageModule)
       },
       {
         path: 'ticket-details-list',
-        loadChildren: () => import('./crm/ticket-details-list/ticket-details-list.module').then(module => module.TicketDetailsListPageModule)
+        loadChildren: () => import('../modules/crm/ticket-details-list/ticket-details-list.module').then(module => module.TicketDetailsListPageModule)
       },
       {
         path: 'ticket-form',
-        loadChildren: () => import('./crm/ticket-form/ticket-form.module').then(module => module.TicketFormPageModule)
+        loadChildren: () => import('../modules/crm/ticket-form/ticket-form.module').then(module => module.TicketFormPageModule)
+      },
+      {
+        path: 'tarja_contrato',
+        loadChildren: () => import('../modules/contracts/contracts-list/contracts-list.module').then(module => module.ContractsListPageModule)
       }
     ]
   },

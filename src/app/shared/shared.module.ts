@@ -9,9 +9,9 @@ import {UserService} from './services/user/user.service';
 import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
 import {StorageService} from './services/storage/storage.service';
 import {CustomDatePipe} from './pipes/custom-date/custom-date.pipe';
-import {HarvestEstimateItemComponent} from '../home-page/planning/harvest-estimate/harvest-estimate-item/harvest-estimate-item.component';
-import {QualityEstimateItemComponent} from '../home-page/planning/quality-estimate/quality-estimate-item/quality-estimate-item.component';
-import {NoteItemComponent} from '../home-page/planning/notes/note-item/note-item.component';
+import {HarvestEstimateItemComponent} from '../modules/planning/harvest-estimate/harvest-estimate-item/harvest-estimate-item.component';
+import {QualityEstimateItemComponent} from '../modules/planning/quality-estimate/quality-estimate-item/quality-estimate-item.component';
+import {NoteItemComponent} from '../modules/planning/notes/note-item/note-item.component';
 import {ToastService} from './services/toast/toast.service';
 import {HttpService} from './services/http/http.service';
 import {AlertService} from './services/alert/alert.service';
@@ -24,8 +24,8 @@ import {CameraService} from './services/camera/camera.service';
 import {RutPipe} from './pipes/rut/rut.pipe';
 import {SyncService} from './services/sync/sync.service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
-import {TicketCardComponent} from '../home-page/crm/tickets/ticket-card/ticket-card.component';
-import {TicketsService} from '../home-page/crm/services/tickets/tickets.service';
+import {TicketCardComponent} from '../modules/crm/tickets/ticket-card/ticket-card.component';
+import {TicketsService} from '../modules/crm/services/tickets/tickets.service';
 
 @NgModule({
   declarations: [

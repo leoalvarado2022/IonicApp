@@ -36,6 +36,12 @@ export interface Sync {
   workers: Array<any>;
   processPlants: Array<EntityList>;
   destinations: Array<Generic>;
+  preContracts: Array<any>;
+  countries: Array<any>;
+  contractTypes: Array<any>;
+  civilStatus: Array<any>;
+  afps: Array<any>;
+  isapres: Array<any>;
 }
 
 export interface ContractInterface {

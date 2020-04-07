@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-contracts-list',
@@ -10,38 +11,64 @@ export class ContractsListPage implements OnInit {
   private contracts: Array<any> = [];
   public filteredContracts: Array<any> = [];
 
-  constructor() {
-    this.filteredContracts = Array.from({length: 10}, () => ({
-      id: 1,
-      workerName: 'Worker Name',
-      companyName: 'Company Name',
-      status: 'enviado'
-    }));
-    this.filteredContracts.push({
-      id: 1,
-      workerName: 'Worker Name',
-      companyName: 'Company Name',
-      status: 'pendiente'
-    });
+  constructor(
+    private storeService: StoreService
+  ) {
+
   }
 
   ngOnInit() {
-
+    this.loadPreContracts();
   }
 
-  searchContract(value: any) {
-
+  /**
+   * loadPreContracts
+   */
+  private loadPreContracts = () => {
+    const preContracts = this.storeService.getPreContracts();
+    this.contracts = preContracts;
+    this.filteredContracts = preContracts;
   }
 
-  cancelSearch() {
-
+  /**
+   * searchContract
+   * @param search
+   */
+  public searchContract = (search: string) => {
+    if (search) {
+      this.filteredContracts = this.contracts.filter(item => {
+        return (
+          item.id.toString().includes(search.toLowerCase()) ||
+          item.workerName.toLowerCase().includes(search.toLowerCase()) ||
+          item.workerLastname.toLowerCase().includes(search.toLowerCase()) ||
+          item.workerSurname.toLowerCase().includes(search.toLowerCase()) ||
+          item.contractTypeName.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    } else {
+      this.filteredContracts = this.contracts;
+    }
   }
 
-  reSync($event: CustomEvent) {
-
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = () => {
+    this.filteredContracts = this.contracts;
   }
 
-  contractForm() {
-
+  public reSync = (event: any) => {
+    this.contracts = [];
+    this.filteredContracts = [];
+    this.loadPreContracts();
+    event.target.complete();
   }
+
+  /**
+   * contractForm
+   */
+  public contractForm = () => {
+    console.log('ir al form');
+  }
+
 }

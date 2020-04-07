@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-contracts-list',
@@ -12,7 +13,8 @@ export class ContractsListPage implements OnInit {
   public filteredContracts: Array<any> = [];
 
   constructor(
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router
   ) {
 
   }
@@ -68,7 +70,7 @@ export class ContractsListPage implements OnInit {
    * contractForm
    */
   public contractForm = () => {
-    console.log('ir al form');
+    this.router.navigate(['contract-form']);
   }
 
 }

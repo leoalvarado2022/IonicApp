@@ -69,6 +69,10 @@ const routes: Routes = [
       {
         path: 'tarja_contrato',
         loadChildren: () => import('../modules/contracts/contracts-list/contracts-list.module').then(module => module.ContractsListPageModule)
+      },
+      {
+        path: 'contract-form',
+        loadChildren: () => import('../modules/contracts/contract-form/contract-form.module').then(module => module.ContractFormPageModule)
       }
     ]
   },

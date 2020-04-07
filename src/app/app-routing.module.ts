@@ -23,6 +23,10 @@ const routes: Routes = [
     path: 'home-page',
     loadChildren: () => import('./home-page/home-page.module').then(module => module.HomePagePageModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'contract-form',
+    loadChildren: () => import('./modules/contracts/contract-form/contract-form.module').then( m => m.ContractFormPageModule)
   }
 ];
 

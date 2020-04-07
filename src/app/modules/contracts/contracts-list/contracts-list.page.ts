@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-contracts-list',
@@ -7,9 +7,41 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContractsListPage implements OnInit {
 
-  constructor() { }
+  private contracts: Array<any> = [];
+  public filteredContracts: Array<any> = [];
 
-  ngOnInit() {
+  constructor() {
+    this.filteredContracts = Array.from({length: 10}, () => ({
+      id: 1,
+      workerName: 'Worker Name',
+      companyName: 'Company Name',
+      status: 'enviado'
+    }));
+    this.filteredContracts.push({
+      id: 1,
+      workerName: 'Worker Name',
+      companyName: 'Company Name',
+      status: 'pendiente'
+    });
   }
 
+  ngOnInit() {
+
+  }
+
+  searchContract(value: any) {
+
+  }
+
+  cancelSearch() {
+
+  }
+
+  reSync($event: CustomEvent) {
+
+  }
+
+  contractForm() {
+
+  }
 }

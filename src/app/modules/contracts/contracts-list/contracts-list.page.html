@@ -1,9 +1,40 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>ContractsList</ion-title>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Contratos</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<ion-searchbar placeholder="Buscar..." (ionChange)="searchContract($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
 <ion-content>
+
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Sincronizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ng-container *ngIf="filteredContracts.length > 0">
+    <ion-virtual-scroll [items]="filteredContracts">
+      <app-contract-list-item *virtualItem="let contract" [contract]="contract"></app-contract-list-item>
+    </ion-virtual-scroll>
+  </ng-container>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="contractForm()" >
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>

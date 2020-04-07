@@ -336,6 +336,8 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
   ];
   module.exports.metadata = {
     "cordova-plugin-add-swift-support": "2.0.2",
+    "cordova-plugin-androidx": "1.0.2",
+    "cordova-plugin-androidx-adapter": "1.1.0",
     "cordova-plugin-app-version": "0.1.9",
     "cordova-plugin-camera": "4.1.0",
     "cordova-plugin-chooser": "1.2.6",
@@ -351,8 +353,6 @@ cordova.define('cordova/plugin_list', function(require, exports, module) {
     "cordova-plugin-splashscreen": "5.0.3",
     "cordova-plugin-statusbar": "2.4.3",
     "cordova-plugin-whitelist": "1.3.4",
-    "cordova-sqlite-storage": "3.4.1",
-    "cordova-plugin-androidx": "1.0.2",
-    "cordova-plugin-androidx-adapter": "1.1.0"
+    "cordova-sqlite-storage": "3.4.1"
   };
 });

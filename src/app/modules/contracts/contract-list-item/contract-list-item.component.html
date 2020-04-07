@@ -1,0 +1,8 @@
+<ion-item>
+  <ion-icon name="document" slot="start"></ion-icon>
+  <ion-label>
+    <h2>{{ contract.workerName | titlecase }}</h2>
+    <p>{{ contract.companyName | titlecase }}</p>
+  </ion-label>
+  <ion-badge [color]="contract.status === 'enviado' ? 'success': 'warning'" slot="end">{{ contract.status | titlecase }}</ion-badge>
+</ion-item>

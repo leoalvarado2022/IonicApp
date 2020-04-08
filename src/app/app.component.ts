@@ -8,6 +8,8 @@ import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
 import {FCM} from '@ionic-native/fcm/ngx';
 import {ToastService} from './shared/services/toast/toast.service';
+import {Subscription} from 'rxjs';
+import {NavigationEnd, Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,8 @@ import {ToastService} from './shared/services/toast/toast.service';
 })
 export class AppComponent {
 
+  private subscription$: Subscription;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -24,9 +28,16 @@ export class AppComponent {
     private networkService: NetworkService,
     private storeService: StoreService,
     private fcm: FCM,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) {
     this.initializeApp();
+
+    this.subscription$ = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.storeService.backupState();
+      }
+    });
   }
 
   initializeApp() {

@@ -3,8 +3,8 @@ import {iosDeviceNames} from './ios-device-names';
 export const environment = {
   production: true,
   app_name: 'FX10',
-  api_url: 'https://fx11apiqa.primetec.cl',
-  appVersion: 'v1.0.52',
+  api_url: 'https://apiqa.fx360.cl',
+  appVersion: 'v1.0.53',
   tz: 'America/Santiago',
   iosDeviceNames
 };

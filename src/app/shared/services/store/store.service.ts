@@ -49,7 +49,13 @@ export class StoreService extends ObservableStore<StoreInterface> {
         quadrilles: [],
         workers: [],
         processPlants: [],
-        destinations: []
+        destinations: [],
+        preContracts: [],
+        countries: [],
+        contractTypes: [],
+        civilStatus: [],
+        afps: [],
+        isapres: []
       },
       contract: {
         activeCostCenter: null,
@@ -416,7 +422,13 @@ export class StoreService extends ObservableStore<StoreInterface> {
       quadrilles,
       workers,
       processPlants,
-      destinations
+      destinations,
+      preContracts,
+      countries,
+      contractTypes,
+      civilStatus,
+      afps,
+      isapres
     } = data;
 
     this.setCompanies(companies);
@@ -430,6 +442,12 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setWorkers(workers);
     this.setProcessPlants(processPlants);
     this.setDestinations(destinations);
+    this.setPreContracts(preContracts);
+    this.setCountries(countries);
+    this.setContractTypes(contractTypes);
+    this.setCivilStatus(civilStatus);
+    this.setAfps(afps);
+    this.setIsapres(isapres);
   }
 
   /**
@@ -816,6 +834,120 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
   /**
    * END OF TICKET STATE METHODS
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   */
+
+  /**
+   * PRE-CONTRACT STATE METHODS
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   * ================================================================================================================
+   */
+
+  /**
+   * setPreContracts
+   * @param preContracts
+   */
+  public setPreContracts = (preContracts: Array<any> = []): void => {
+    const sync = {...this.getState().sync, preContracts};
+    this.setState({sync}, StoreActions.SetPreContracts);
+  }
+
+  /**
+   * getPreContracts
+   */
+  public getPreContracts = (): Array<any> => {
+    return this.getState().sync.preContracts;
+  }
+
+  /**
+   * setCountries
+   * @param countries
+   */
+  public setCountries = (countries: Array<any> = []): void => {
+    const sync = {...this.getState().sync, countries};
+    this.setState({sync}, StoreActions.SetCountries);
+  }
+
+  /**
+   * getCountries
+   */
+  public getCountries = (): Array<any> => {
+    return this.getState().sync.countries;
+  }
+
+  /**
+   * setContractTypes
+   * @param contractTypes
+   */
+  public setContractTypes = (contractTypes: Array<any> = []): void => {
+    const sync = {...this.getState().sync, contractTypes};
+    this.setState({sync}, StoreActions.SetContractTypes);
+  }
+
+  /**
+   * getContractTypes
+   */
+  public getContractTypes(): Array<any> {
+    return this.getState().sync.contractTypes;
+  }
+
+  /**
+   * setCivilStatus
+   * @param civilStatus
+   */
+  public setCivilStatus(civilStatus: Array<any> = []): void {
+    const sync = {...this.getState().sync, civilStatus};
+    this.setState({sync}, StoreActions.SetCivilStatus);
+  }
+
+  /**
+   * getCivilStatus
+   */
+  public getCivilStatus = (): Array<any> => {
+    return this.getState().sync.civilStatus;
+  }
+
+  /**
+   * setAfps
+   * @param afps
+   */
+  public setAfps = (afps: Array<any> = []): void => {
+    const sync = {...this.getState().sync, afps};
+    this.setState({sync}, StoreActions.SetAfps);
+  }
+
+  /**
+   * getAfps
+   */
+  public getAfps = (): Array<any> => {
+    return this.getState().sync.afps;
+  }
+
+  /**
+   * setIsapres
+   * @param isapres
+   */
+  public setIsapres = (isapres: Array<any> = []): void => {
+    const sync = {...this.getState().sync, isapres};
+    this.setState({sync}, StoreActions.SetIsapres);
+  }
+
+  /**
+   * getIsapres
+   */
+  public getIsapres = (): Array<any> => {
+    return this.getState().sync.isapres;
+  }
+
+  /**
+   * END OF PRE-CONTRACT STATE METHODS
    * ================================================================================================================
    * ================================================================================================================
    * ================================================================================================================

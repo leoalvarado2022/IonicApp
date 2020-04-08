@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Crear PreContrato</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-tabs>
+    <ion-tab-bar slot="top">
+      <ion-tab-button [selected]="currentStep === 1" (click)="currentStep = 1">
+        <ion-label>Paso 1</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button [selected]="currentStep === 2" (click)="currentStep = 2">
+        <ion-label>Paso 2</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button [selected]="currentStep === 3" (click)="currentStep = 3">
+        <ion-label>Paso 3</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+
+  <form [formGroup]="contractForm">
+    <!-- STEP 1 -->
+    <ng-container *ngIf="currentStep === 1">
+
+      <ion-item>
+        <ion-label>Nacionalidad</ion-label>
+        <ion-select placeholder="Nacionalidad" formControlName="nationality">
+          <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality.id">{{ nationality.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Tipo de Contrato</ion-label>
+        <ion-select placeholder="Tipo de Contrato" formControlName="contractType">
+          <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Observaciones</ion-label>
+        <ion-textarea rows="5" formControlName="identifier"></ion-textarea>
+      </ion-item>
+
+    </ng-container>
+
+    <!-- STEP 2 -->
+    <ng-container *ngIf="currentStep === 2">
+      PASO 2
+    </ng-container>
+
+    <!-- STEP 3 -->
+    <ng-container *ngIf="currentStep === 3">
+      PASO 3
+    </ng-container>
+
+  </form>
+
+
+</ion-content>

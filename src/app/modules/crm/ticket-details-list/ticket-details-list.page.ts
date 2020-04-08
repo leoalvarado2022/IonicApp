@@ -21,6 +21,7 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
   private network$: Subscription;
   public isOnline = false;
   private now = moment();
+  public openSelected = false;
 
   constructor(
     private storeService: StoreService,

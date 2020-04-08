@@ -1,5 +1,9 @@
 <ion-card class="ticket-detail-item">
-  <ion-item>
+  <div class="reasignado" *ngIf="detail.active_assigned">
+    <p>Asignado: {{ detail.assignedName }}</p>
+    <p>Resignado: {{ detail.creatorName }}</p>
+  </div>
+  <ion-item *ngIf="!detail.active_assigned">
     <ion-label>{{ detail.assignedName }}</ion-label>
     <ion-icon color="primary" name="document" slot="end"></ion-icon>
   </ion-item>

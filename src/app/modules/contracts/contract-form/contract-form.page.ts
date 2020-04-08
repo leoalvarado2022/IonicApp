@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {StoreService} from "../../../shared/services/store/store.service";
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-contract-form',

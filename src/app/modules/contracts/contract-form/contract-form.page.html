@@ -10,61 +10,144 @@
       <app-notifications></app-notifications>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-tabs>
+      <ion-tab-bar slot="top">
+        <ion-tab-button [selected]="currentStep === 1">
+          <ion-label>Paso 1</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button [selected]="currentStep === 2">
+          <ion-label>Paso 2</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button [selected]="currentStep === 3">
+          <ion-label>Paso 3</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-tabs>
-    <ion-tab-bar slot="top">
-      <ion-tab-button [selected]="currentStep === 1" (click)="currentStep = 1">
-        <ion-label>Paso 1</ion-label>
-      </ion-tab-button>
-
-      <ion-tab-button [selected]="currentStep === 2" (click)="currentStep = 2">
-        <ion-label>Paso 2</ion-label>
-      </ion-tab-button>
-
-      <ion-tab-button [selected]="currentStep === 3" (click)="currentStep = 3">
-        <ion-label>Paso 3</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
-
-  <form [formGroup]="contractForm">
+  <form class="form-container" [formGroup]="contractForm">
     <!-- STEP 1 -->
     <ng-container *ngIf="currentStep === 1">
 
       <ion-item>
         <ion-label>Nacionalidad</ion-label>
-        <ion-select placeholder="Nacionalidad" formControlName="nationality">
+        <ion-select placeholder="Nacionalidad" formControlName="nationality" okText="Seleccionar" cancelText="Cancelar">
           <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality.id">{{ nationality.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label>Tipo de Contrato</ion-label>
-        <ion-select placeholder="Tipo de Contrato" formControlName="contractType">
+        <ion-select placeholder="Tipo de Contrato" formControlName="contractType" okText="Seleccionar" cancelText="Cancelar">
           <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked">Observaciones</ion-label>
-        <ion-textarea rows="5" formControlName="identifier"></ion-textarea>
+        <ion-label position="floating">Identificador</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
       </ion-item>
+
+      <ion-item-divider>
+        <ion-label>&nbsp;</ion-label>
+      </ion-item-divider>
+
+      <ion-button expand="block">
+        Escanear Carnet
+        <ion-icon slot="end" name="camera"></ion-icon>
+      </ion-button>
 
     </ng-container>
 
     <!-- STEP 2 -->
     <ng-container *ngIf="currentStep === 2">
-      PASO 2
+
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Apellido Paterno</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Apellido Materno</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Fecha de Nacimiento</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">HOMBRE</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">MUJER</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
     </ng-container>
 
     <!-- STEP 3 -->
     <ng-container *ngIf="currentStep === 3">
-      PASO 3
+
+      <ion-item>
+        <ion-label position="floating">Estado Civil</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">AFP</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">ISAPRE</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">JUBILADO</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Cuadrilla</ion-label>
+        <ion-input formControlName="identifier"></ion-input>
+      </ion-item>
+
     </ng-container>
 
   </form>
-
-
 </ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col>
+      <ion-button color="warning" expand="block" [disabled]="currentStep === 1" (click)="currentStep = currentStep - 1">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Anterior
+      </ion-button>
+    </ion-col>
+
+    <ion-col>
+      <ion-button [color]="currentStep === 3 ? 'success': 'warning'" expand="block" [disabled]="currentStep === 3" (click)="currentStep = currentStep + 1">
+        Siguiente
+        <ion-icon slot="end" [name]=" currentStep === 3 ? 'save' : 'arrow-forward'"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>
+
+

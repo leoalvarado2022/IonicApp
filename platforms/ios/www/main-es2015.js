@@ -1093,6 +1093,10 @@ const routes = [
         path: 'home-page',
         loadChildren: () => __webpack_require__.e(/*! import() | home-page-home-page-module */ "home-page-home-page-module").then(__webpack_require__.bind(null, /*! ./home-page/home-page.module */ "./src/app/home-page/home-page.module.ts")).then(module => module.HomePagePageModule),
         canActivate: [_guards_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
+    },
+    {
+        path: 'contract-form',
+        loadChildren: () => __webpack_require__.e(/*! import() | modules-contracts-contract-form-contract-form-module */ "modules-contracts-contract-form-contract-form-module").then(__webpack_require__.bind(null, /*! ./modules/contracts/contract-form/contract-form.module */ "./src/app/modules/contracts/contract-form/contract-form.module.ts")).then(m => m.ContractFormPageModule)
     }
 ];
 let AppRoutingModule = class AppRoutingModule {
@@ -1143,6 +1147,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_services_store_store_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./shared/services/store/store.service */ "./src/app/shared/services/store/store.service.ts");
 /* harmony import */ var _ionic_native_fcm_ngx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @ionic-native/fcm/ngx */ "./node_modules/@ionic-native/fcm/ngx/index.js");
 /* harmony import */ var _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./shared/services/toast/toast.service */ "./src/app/shared/services/toast/toast.service.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+
 
 
 
@@ -1154,7 +1160,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let AppComponent = class AppComponent {
-    constructor(platform, splashScreen, statusBar, networkService, storeService, fcm, toastService) {
+    constructor(platform, splashScreen, statusBar, networkService, storeService, fcm, toastService, router) {
         this.platform = platform;
         this.splashScreen = splashScreen;
         this.statusBar = statusBar;
@@ -1162,7 +1168,13 @@ let AppComponent = class AppComponent {
         this.storeService = storeService;
         this.fcm = fcm;
         this.toastService = toastService;
+        this.router = router;
         this.initializeApp();
+        this.subscription$ = this.router.events.subscribe((event) => {
+            if (event instanceof _angular_router__WEBPACK_IMPORTED_MODULE_10__["NavigationEnd"]) {
+                this.storeService.backupState();
+            }
+        });
     }
     initializeApp() {
         this.platform.ready().then(() => {
@@ -1226,7 +1238,8 @@ AppComponent.ctorParameters = () => [
     { type: _shared_services_network_network_service__WEBPACK_IMPORTED_MODULE_6__["NetworkService"] },
     { type: _shared_services_store_store_service__WEBPACK_IMPORTED_MODULE_7__["StoreService"] },
     { type: _ionic_native_fcm_ngx__WEBPACK_IMPORTED_MODULE_8__["FCM"] },
-    { type: _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__["ToastService"] }
+    { type: _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__["ToastService"] },
+    { type: _angular_router__WEBPACK_IMPORTED_MODULE_10__["Router"] }
 ];
 AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -1241,7 +1254,8 @@ AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         _shared_services_network_network_service__WEBPACK_IMPORTED_MODULE_6__["NetworkService"],
         _shared_services_store_store_service__WEBPACK_IMPORTED_MODULE_7__["StoreService"],
         _ionic_native_fcm_ngx__WEBPACK_IMPORTED_MODULE_8__["FCM"],
-        _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__["ToastService"]])
+        _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__["ToastService"],
+        _angular_router__WEBPACK_IMPORTED_MODULE_10__["Router"]])
 ], AppComponent);
 
 
@@ -3410,6 +3424,12 @@ var StoreActions;
     StoreActions["SetTicketPriorities"] = "SET_TICKET_PRIORITIES";
     StoreActions["SetTicketDetails"] = "SET_TICKET_DETAILS";
     StoreActions["SetPushToken"] = "SET_PUSH_TOKEN";
+    StoreActions["SetPreContracts"] = "SET_PRE_CONTRACTS";
+    StoreActions["SetCountries"] = "SET_COUNTRIES";
+    StoreActions["SetContractTypes"] = "SET_CONTRACT_TYPES";
+    StoreActions["SetCivilStatus"] = "SET_CIVIL_STATUS";
+    StoreActions["SetAfps"] = "SET_AFPS";
+    StoreActions["SetIsapres"] = "SET_ISAPRES";
 })(StoreActions || (StoreActions = {}));
 
 
@@ -3469,7 +3489,13 @@ let StoreService = class StoreService extends _codewithdan_observable_store__WEB
                     quadrilles: [],
                     workers: [],
                     processPlants: [],
-                    destinations: []
+                    destinations: [],
+                    preContracts: [],
+                    countries: [],
+                    contractTypes: [],
+                    civilStatus: [],
+                    afps: [],
+                    isapres: []
                 },
                 contract: {
                     activeCostCenter: null,
@@ -3781,7 +3807,7 @@ let StoreService = class StoreService extends _codewithdan_observable_store__WEB
          * @param data
          */
         this.setSyncedData = (data) => {
-            const { companies, costCenters, menus, units, qualities, calibers, cfgAccess, quadrilles, workers, processPlants, destinations } = data;
+            const { companies, costCenters, menus, units, qualities, calibers, cfgAccess, quadrilles, workers, processPlants, destinations, preContracts, countries, contractTypes, civilStatus, afps, isapres } = data;
             this.setCompanies(companies);
             this.setCostCenters(costCenters);
             this.setMenus(menus);
@@ -3793,6 +3819,12 @@ let StoreService = class StoreService extends _codewithdan_observable_store__WEB
             this.setWorkers(workers);
             this.setProcessPlants(processPlants);
             this.setDestinations(destinations);
+            this.setPreContracts(preContracts);
+            this.setCountries(countries);
+            this.setContractTypes(contractTypes);
+            this.setCivilStatus(civilStatus);
+            this.setAfps(afps);
+            this.setIsapres(isapres);
         };
         /**
          * setActiveCostCenter
@@ -4124,7 +4156,107 @@ let StoreService = class StoreService extends _codewithdan_observable_store__WEB
         this.getTicketDetails = () => {
             return this.getState().ticket.details;
         };
+        /**
+         * END OF TICKET STATE METHODS
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         */
+        /**
+         * PRE-CONTRACT STATE METHODS
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         */
+        /**
+         * setPreContracts
+         * @param preContracts
+         */
+        this.setPreContracts = (preContracts = []) => {
+            const sync = Object.assign({}, this.getState().sync, { preContracts });
+            this.setState({ sync }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetPreContracts);
+        };
+        /**
+         * getPreContracts
+         */
+        this.getPreContracts = () => {
+            return this.getState().sync.preContracts;
+        };
+        /**
+         * setCountries
+         * @param countries
+         */
+        this.setCountries = (countries = []) => {
+            const sync = Object.assign({}, this.getState().sync, { countries });
+            this.setState({ sync }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCountries);
+        };
+        /**
+         * getCountries
+         */
+        this.getCountries = () => {
+            return this.getState().sync.countries;
+        };
+        /**
+         * setContractTypes
+         * @param contractTypes
+         */
+        this.setContractTypes = (contractTypes = []) => {
+            const sync = Object.assign({}, this.getState().sync, { contractTypes });
+            this.setState({ sync }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetContractTypes);
+        };
+        /**
+         * getCivilStatus
+         */
+        this.getCivilStatus = () => {
+            return this.getState().sync.civilStatus;
+        };
+        /**
+         * setAfps
+         * @param afps
+         */
+        this.setAfps = (afps = []) => {
+            const sync = Object.assign({}, this.getState().sync, { afps });
+            this.setState({ sync }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetAfps);
+        };
+        /**
+         * getAfps
+         */
+        this.getAfps = () => {
+            return this.getState().sync.afps;
+        };
+        /**
+         * setIsapres
+         * @param isapres
+         */
+        this.setIsapres = (isapres = []) => {
+            const sync = Object.assign({}, this.getState().sync, { isapres });
+            this.setState({ sync }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetIsapres);
+        };
+        /**
+         * getIsapres
+         */
+        this.getIsapres = () => {
+            return this.getState().sync.isapres;
+        };
         this.setState(this.buildInitialState, 'INIT_STATE');
+    }
+    /**
+     * getContractTypes
+     */
+    getContractTypes() {
+        return this.getState().sync.contractTypes;
+    }
+    /**
+     * setCivilStatus
+     * @param civilStatus
+     */
+    setCivilStatus(civilStatus = []) {
+        const sync = Object.assign({}, this.getState().sync, { civilStatus });
+        this.setState({ sync }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCivilStatus);
     }
 };
 StoreService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -4581,7 +4713,7 @@ const environment = {
     production: false,
     app_name: 'FX10',
     api_url: 'http://localhost:5572',
-    appVersion: 'v1.0.51',
+    appVersion: 'v1.0.53',
     tz: 'America/Santiago',
     iosDeviceNames: _ios_device_names__WEBPACK_IMPORTED_MODULE_1__["iosDeviceNames"]
 };

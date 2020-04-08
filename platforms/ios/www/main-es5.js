@@ -1273,6 +1273,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         });
       },
       canActivate: [_guards_auth_auth_guard__WEBPACK_IMPORTED_MODULE_4__["AuthGuard"]]
+    }, {
+      path: 'contract-form',
+      loadChildren: function loadChildren() {
+        return __webpack_require__.e(
+        /*! import() | modules-contracts-contract-form-contract-form-module */
+        "modules-contracts-contract-form-contract-form-module").then(__webpack_require__.bind(null,
+        /*! ./modules/contracts/contract-form/contract-form.module */
+        "./src/app/modules/contracts/contract-form/contract-form.module.ts")).then(function (m) {
+          return m.ContractFormPageModule;
+        });
+      }
     }];
 
     var AppRoutingModule = function AppRoutingModule() {
@@ -1385,11 +1396,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     var _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(
     /*! ./shared/services/toast/toast.service */
     "./src/app/shared/services/toast/toast.service.ts");
+    /* harmony import */
+
+
+    var _angular_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(
+    /*! @angular/router */
+    "./node_modules/@angular/router/fesm2015/router.js");
 
     var AppComponent =
     /*#__PURE__*/
     function () {
-      function AppComponent(platform, splashScreen, statusBar, networkService, storeService, fcm, toastService) {
+      function AppComponent(platform, splashScreen, statusBar, networkService, storeService, fcm, toastService, router) {
+        var _this = this;
+
         _classCallCheck(this, AppComponent);
 
         this.platform = platform;
@@ -1399,74 +1418,80 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.storeService = storeService;
         this.fcm = fcm;
         this.toastService = toastService;
+        this.router = router;
         this.initializeApp();
+        this.subscription$ = this.router.events.subscribe(function (event) {
+          if (event instanceof _angular_router__WEBPACK_IMPORTED_MODULE_10__["NavigationEnd"]) {
+            _this.storeService.backupState();
+          }
+        });
       }
 
       _createClass(AppComponent, [{
         key: "initializeApp",
         value: function initializeApp() {
-          var _this = this;
+          var _this2 = this;
 
           this.platform.ready().then(function () {
-            if (_this.platform.is('ios')) {
-              _this.statusBar.styleDefault();
+            if (_this2.platform.is('ios')) {
+              _this2.statusBar.styleDefault();
 
-              _this.splashScreen.hide();
+              _this2.splashScreen.hide();
             } else {
-              _this.statusBar.overlaysWebView(false);
+              _this2.statusBar.overlaysWebView(false);
 
-              _this.splashScreen.hide();
+              _this2.splashScreen.hide();
             } // CHECK PUSH PERMISSION
 
 
-            _this.fcm.hasPermission().then(function () {
+            _this2.fcm.hasPermission().then(function () {
               // get token
-              _this.fcm.getToken().then(function (token) {
+              _this2.fcm.getToken().then(function (token) {
                 // Validar que el token no esta vacio o nulo
                 if (token) {
-                  _this.storeService.setPushToken(token);
+                  _this2.storeService.setPushToken(token);
                 }
               }).catch(function (error) {
                 console.log('fcm.getToken ERROR: ', error);
               }); // get refresh token
 
 
-              _this.fcm.onTokenRefresh().subscribe(function (token) {
+              _this2.fcm.onTokenRefresh().subscribe(function (token) {
                 // Validar que el token no esta vacio o nulo
                 if (token) {
-                  _this.storeService.setPushToken(token);
+                  _this2.storeService.setPushToken(token);
                 }
               }, function (error) {
                 console.log('fcm.onTokenRefresh() ERROR: ', error);
               }); // Listen to notifications if app is open
 
 
-              _this.fcm.onNotification().subscribe(function (data) {
+              _this2.fcm.onNotification().subscribe(function (data) {
                 // console.log(data, 'notification');
                 var note = data;
 
-                if (_this.platform.is('ios')) {
+                if (_this2.platform.is('ios')) {
                   note = data.aps.alert;
                 }
 
-                _this.toastService.normalToast(note.body);
+                _this2.toastService.normalToast(note.body);
               }, function (error) {
                 console.log('fcm.onNotification ERROR: ', error);
               });
             }).catch(function (error) {
               console.log('No tiene permiso para recibir notificaciones PUSH: ', error);
 
-              _this.toastService.errorToast('No tiene permiso para recibir notificaciones PUSH');
+              _this2.toastService.errorToast('No tiene permiso para recibir notificaciones PUSH');
             });
 
-            _this.platform.pause.subscribe(function (e) {
-              _this.storeService.backupState();
+            _this2.platform.pause.subscribe(function (e) {
+              _this2.storeService.backupState();
             });
 
-            _this.platform.resume.subscribe(function (e) {// PENDIENTE DEFINIR SI HACE FALTA ESTE EVENTO
+            _this2.platform.resume.subscribe(function (e) {// PENDIENTE DEFINIR SI HACE FALTA ESTE EVENTO
             });
 
-            _this.networkService.initializeNetworkEvents();
+            _this2.networkService.initializeNetworkEvents();
           });
         }
       }]);
@@ -1489,6 +1514,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         type: _ionic_native_fcm_ngx__WEBPACK_IMPORTED_MODULE_8__["FCM"]
       }, {
         type: _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__["ToastService"]
+      }, {
+        type: _angular_router__WEBPACK_IMPORTED_MODULE_10__["Router"]
       }];
     };
 
@@ -1501,7 +1528,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
       /*! ./app.component.scss */
       "./src/app/app.component.scss")).default]
-    }), tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ionic_angular__WEBPACK_IMPORTED_MODULE_2__["Platform"], _ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_3__["SplashScreen"], _ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_4__["StatusBar"], _shared_services_network_network_service__WEBPACK_IMPORTED_MODULE_6__["NetworkService"], _shared_services_store_store_service__WEBPACK_IMPORTED_MODULE_7__["StoreService"], _ionic_native_fcm_ngx__WEBPACK_IMPORTED_MODULE_8__["FCM"], _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__["ToastService"]])], AppComponent);
+    }), tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_ionic_angular__WEBPACK_IMPORTED_MODULE_2__["Platform"], _ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_3__["SplashScreen"], _ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_4__["StatusBar"], _shared_services_network_network_service__WEBPACK_IMPORTED_MODULE_6__["NetworkService"], _shared_services_store_store_service__WEBPACK_IMPORTED_MODULE_7__["StoreService"], _ionic_native_fcm_ngx__WEBPACK_IMPORTED_MODULE_8__["FCM"], _shared_services_toast_toast_service__WEBPACK_IMPORTED_MODULE_9__["ToastService"], _angular_router__WEBPACK_IMPORTED_MODULE_10__["Router"]])], AppComponent);
     /***/
   },
 
@@ -1775,7 +1802,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/store/store.service.ts");
 
     var AuthGuard = function AuthGuard(router, storeService) {
-      var _this2 = this;
+      var _this3 = this;
 
       _classCallCheck(this, AuthGuard);
 
@@ -1786,8 +1813,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.canActivate = function () {
-        if (!_this2.storeService.getLoginStatus()) {
-          _this2.router.navigate(['auth']);
+        if (!_this3.storeService.getLoginStatus()) {
+          _this3.router.navigate(['auth']);
 
           return false;
         }
@@ -1855,7 +1882,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/store/store.service.ts");
 
     var LoggedGuard = function LoggedGuard(router, storeService) {
-      var _this3 = this;
+      var _this4 = this;
 
       _classCallCheck(this, LoggedGuard);
 
@@ -1866,8 +1893,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.canActivate = function () {
-        if (_this3.storeService.getLoginStatus()) {
-          _this3.router.navigate(['home-page']);
+        if (_this4.storeService.getLoginStatus()) {
+          _this4.router.navigate(['home-page']);
         }
 
         return true;
@@ -1933,7 +1960,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./node_modules/@angular/common/fesm2015/http.js");
 
     var TicketsService = function TicketsService(httpService, httpClient) {
-      var _this4 = this;
+      var _this5 = this;
 
       _classCallCheck(this, TicketsService);
 
@@ -1949,10 +1976,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.getTickets = function (data) {
-        var url = _this4.httpService.buildUrl(_this4.ticketsUrl);
+        var url = _this5.httpService.buildUrl(_this5.ticketsUrl);
 
-        return _this4.httpClient.post(url, _this4.httpService.buildBody(data), {
-          headers: _this4.httpService.getHeaders()
+        return _this5.httpClient.post(url, _this5.httpService.buildBody(data), {
+          headers: _this5.httpService.getHeaders()
         });
       };
       /**
@@ -1963,10 +1990,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getTicket = function (id, data) {
-        var url = _this4.httpService.buildUrl(_this4.getTicketUrl, id);
+        var url = _this5.httpService.buildUrl(_this5.getTicketUrl, id);
 
-        return _this4.httpClient.post(url, _this4.httpService.buildBody(data), {
-          headers: _this4.httpService.getHeaders()
+        return _this5.httpClient.post(url, _this5.httpService.buildBody(data), {
+          headers: _this5.httpService.getHeaders()
         });
       };
       /**
@@ -1976,10 +2003,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.storeTicket = function (data) {
-        var url = _this4.httpService.buildUrl(_this4.storeTicketUrl);
+        var url = _this5.httpService.buildUrl(_this5.storeTicketUrl);
 
-        return _this4.httpClient.post(url, _this4.httpService.buildBody(data), {
-          headers: _this4.httpService.getHeaders()
+        return _this5.httpClient.post(url, _this5.httpService.buildBody(data), {
+          headers: _this5.httpService.getHeaders()
         });
       };
       /**
@@ -1990,13 +2017,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getTicketUsers = function (client, user) {
-        var url = _this4.httpService.buildUrl(_this4.ticketUsersUrl);
+        var url = _this5.httpService.buildUrl(_this5.ticketUsersUrl);
 
-        return _this4.httpClient.post(url, _this4.httpService.buildBody({
+        return _this5.httpClient.post(url, _this5.httpService.buildBody({
           id: client,
           user: user
         }), {
-          headers: _this4.httpService.getHeaders()
+          headers: _this5.httpService.getHeaders()
         });
       };
     };
@@ -2081,7 +2108,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /*#__PURE__*/
     function () {
       function TicketCardComponent() {
-        var _this5 = this;
+        var _this6 = this;
 
         _classCallCheck(this, TicketCardComponent);
 
@@ -2095,7 +2122,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
         this.viewTicket = function (ticket) {
-          _this5.ticketSelected.emit(ticket);
+          _this6.ticketSelected.emit(ticket);
         };
       }
 
@@ -2229,7 +2256,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /*#__PURE__*/
     function () {
       function HarvestEstimateItemComponent() {
-        var _this6 = this;
+        var _this7 = this;
 
         _classCallCheck(this, HarvestEstimateItemComponent);
 
@@ -2247,7 +2274,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.clickHarvest = function () {
           var item = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-          _this6.harvestSelected.emit(item);
+          _this7.harvestSelected.emit(item);
         };
         /**
          * deleteHarvest
@@ -2256,7 +2283,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.deleteItem = function (item) {
-          _this6.deleteHarvest.emit(item);
+          _this7.deleteHarvest.emit(item);
         };
         /**
          * showUnitCode
@@ -2264,8 +2291,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.showUnitCode = function () {
-          var find = _this6.units.find(function (item) {
-            return item.id === _this6.item.unit;
+          var find = _this7.units.find(function (item) {
+            return item.id === _this7.item.unit;
           });
 
           return find ? find.code : 'N/A';
@@ -2390,7 +2417,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /*#__PURE__*/
     function () {
       function NoteItemComponent(modalController, file, previewAnyFile, device, platform, fileOpener, contractDetailService) {
-        var _this7 = this;
+        var _this8 = this;
 
         _classCallCheck(this, NoteItemComponent);
 
@@ -2410,8 +2437,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
         this.getPhotoPath = function () {
-          if (_this7.item && _this7.item.image) {
-            return 'data:image/jpeg;base64,' + _this7.item.image;
+          if (_this8.item && _this8.item.image) {
+            return 'data:image/jpeg;base64,' + _this8.item.image;
           }
 
           return null;
@@ -2425,7 +2452,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.itemClicked = function () {
           var item = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-          _this7.noteClicked.emit(item);
+          _this8.noteClicked.emit(item);
         };
         /**
          * deleteItem
@@ -2434,7 +2461,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.deleteItem = function (item) {
-          _this7.deleteNote.emit(item);
+          _this8.deleteNote.emit(item);
         };
         /**
          * viewPicture
@@ -2442,7 +2469,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.viewPicture = function () {
-          return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this7, void 0, void 0,
+          return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this8, void 0, void 0,
           /*#__PURE__*/
           regeneratorRuntime.mark(function _callee() {
             var bigImage, fileName, dirName, filePath, mimeType, resp;
@@ -2507,7 +2534,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         this.createFile = function (dirName, fileName, mimeType, base64) {
           return new Promise(function (resolve) {
-            _this7.file.createFile(dirName, fileName, true).then(function (data) {
+            _this8.file.createFile(dirName, fileName, true).then(function (data) {
               var byteCharacters = atob(base64);
               var byteNumbers = new Array(byteCharacters.length);
 
@@ -2521,7 +2548,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               });
 
               if (blob) {
-                _this7.file.writeExistingFile(dirName, fileName, blob).then(function (response) {
+                _this8.file.writeExistingFile(dirName, fileName, blob).then(function (response) {
                   resolve(true);
                 }, function (error) {
                   console.log('writeExistingFile', error);
@@ -2545,7 +2572,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         this.getNoteImage = function (id) {
           return new Promise(function (resolve) {
-            _this7.contractDetailService.getNoteImage(id.toString()).subscribe(function (success) {
+            _this8.contractDetailService.getNoteImage(id.toString()).subscribe(function (success) {
               resolve(success.image);
             }, function (error) {
               resolve(null);
@@ -2554,7 +2581,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         };
 
         this.platform.ready().then(function () {
-          _this7.iOs = _this7.platform.is('ios');
+          _this8.iOs = _this8.platform.is('ios');
         });
       }
 
@@ -2662,7 +2689,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /*#__PURE__*/
     function () {
       function QualityEstimateItemComponent(storeService) {
-        var _this8 = this;
+        var _this9 = this;
 
         _classCallCheck(this, QualityEstimateItemComponent);
 
@@ -2682,7 +2709,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.clickItem = function () {
           var item = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-          _this8.itemSelected.emit(item);
+          _this9.itemSelected.emit(item);
         };
         /**
          * deleteItem
@@ -2691,7 +2718,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.deleteItem = function (item) {
-          _this8.itemDelete.emit(item);
+          _this9.itemDelete.emit(item);
         };
         /**
          * openChart
@@ -2699,14 +2726,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.openChart = function () {
-          _this8.calibers = _this8.storeService.getCalibers();
+          _this9.calibers = _this9.storeService.getCalibers();
 
-          var validCalibres = _this8.details.map(function (item) {
+          var validCalibres = _this9.details.map(function (item) {
             return item.qualityName;
           });
 
-          var filteredCalibers = _this8.calibers.filter(function (item) {
-            return item.species === _this8.costCenter.species && validCalibres.includes(item.name.trim());
+          var filteredCalibers = _this9.calibers.filter(function (item) {
+            return item.species === _this9.costCenter.species && validCalibres.includes(item.name.trim());
           });
 
           var xAxis = {
@@ -2721,13 +2748,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             max: 100
           };
           var series = [{
-            data: _this8.details.map(function (item) {
+            data: _this9.details.map(function (item) {
               return item.value;
             }),
             type: 'bar',
             name: '%'
           }];
-          _this8.chartData = {
+          _this9.chartData = {
             title: {
               text: 'Estimacion de Calidad',
               subtext: 'Porcentajes Calibres'
@@ -2740,7 +2767,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               formatter: function formatter(params) {
                 var code = params[0].name;
 
-                var caliber = _this8.calibers.find(function (item) {
+                var caliber = _this9.calibers.find(function (item) {
                   return item.code === code;
                 });
 
@@ -2755,7 +2782,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             xAxis: xAxis,
             series: series
           };
-          _this8.showChart = true;
+          _this9.showChart = true;
         };
       }
 
@@ -2849,7 +2876,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/http/http.service.ts");
 
     var ContractDetailService = function ContractDetailService(authService, httpClient, loaderService, httpService) {
-      var _this9 = this;
+      var _this10 = this;
 
       _classCallCheck(this, ContractDetailService);
 
@@ -2869,10 +2896,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.storeHarvest = function (data) {
-        var url = _this9.httpService.buildUrl(_this9.storeHarvestUrl);
+        var url = _this10.httpService.buildUrl(_this10.storeHarvestUrl);
 
-        return _this9.httpClient.post(url, _this9.httpService.buildBody(data), {
-          headers: _this9.httpService.getHeaders()
+        return _this10.httpClient.post(url, _this10.httpService.buildBody(data), {
+          headers: _this10.httpService.getHeaders()
         });
       };
       /**
@@ -2882,10 +2909,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.storeQuality = function (data) {
-        var url = _this9.httpService.buildUrl(_this9.storeQualityUrl);
+        var url = _this10.httpService.buildUrl(_this10.storeQualityUrl);
 
-        return _this9.httpClient.post(url, _this9.httpService.buildBody(data), {
-          headers: _this9.httpService.getHeaders()
+        return _this10.httpClient.post(url, _this10.httpService.buildBody(data), {
+          headers: _this10.httpService.getHeaders()
         });
       };
       /**
@@ -2895,12 +2922,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.storeNote = function (data) {
-        var url = _this9.httpService.buildUrl(_this9.storeNoteUrl);
+        var url = _this10.httpService.buildUrl(_this10.storeNoteUrl);
 
-        return _this9.httpClient.post(url, _this9.httpService.buildBody({
+        return _this10.httpClient.post(url, _this10.httpService.buildBody({
           note: data
         }), {
-          headers: _this9.httpService.getHeaders()
+          headers: _this10.httpService.getHeaders()
         });
       };
       /**
@@ -2910,10 +2937,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.updateGeolocationCostCenter = function (data) {
-        var url = _this9.httpService.buildUrl(_this9.storeCostCenterGeolocation);
+        var url = _this10.httpService.buildUrl(_this10.storeCostCenterGeolocation);
 
-        return _this9.httpClient.post(url, _this9.httpService.buildBody(data), {
-          headers: _this9.httpService.getHeaders()
+        return _this10.httpClient.post(url, _this10.httpService.buildBody(data), {
+          headers: _this10.httpService.getHeaders()
         });
       };
       /**
@@ -2923,10 +2950,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getCostCenterDetail = function (id) {
-        var url = _this9.httpService.buildUrl(_this9.getCostCenterUrl, id);
+        var url = _this10.httpService.buildUrl(_this10.getCostCenterUrl, id);
 
-        return _this9.httpClient.post(url, _this9.httpService.buildBody(), {
-          headers: _this9.httpService.getHeaders()
+        return _this10.httpClient.post(url, _this10.httpService.buildBody(), {
+          headers: _this10.httpService.getHeaders()
         });
       };
       /**
@@ -2936,10 +2963,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getNoteImage = function (id) {
-        var url = _this9.httpService.buildUrl(_this9.getNoteImageUrl, id);
+        var url = _this10.httpService.buildUrl(_this10.getNoteImageUrl, id);
 
-        return _this9.httpClient.post(url, _this9.httpService.buildBody(), {
-          headers: _this9.httpService.getHeaders()
+        return _this10.httpClient.post(url, _this10.httpService.buildBody(), {
+          headers: _this10.httpService.getHeaders()
         });
       };
     };
@@ -3028,7 +3055,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /*#__PURE__*/
     function () {
       function ImageViewerComponent(modalController, toastService) {
-        var _this10 = this;
+        var _this11 = this;
 
         _classCallCheck(this, ImageViewerComponent);
 
@@ -3037,9 +3064,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.image = null;
 
         this.showError = function () {
-          _this10.toastService.warningToast('No se puede mostrar la imagen');
+          _this11.toastService.warningToast('No se puede mostrar la imagen');
 
-          _this10.closeModal();
+          _this11.closeModal();
         };
         /**
          * closeModal
@@ -3047,7 +3074,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.closeModal = function () {
-          _this10.modalController.dismiss(status);
+          _this11.modalController.dismiss(status);
         };
       }
 
@@ -3151,10 +3178,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _createClass(LoaderComponent, [{
         key: "ngOnInit",
         value: function ngOnInit() {
-          var _this11 = this;
+          var _this12 = this;
 
           this.loaderService.getLoaderStatus().subscribe(function (state) {
-            return _this11.isLoading = state;
+            return _this12.isLoading = state;
           });
         }
       }, {
@@ -3575,7 +3602,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * handlers de la alerta.
      */
     function AlertService(alertController) {
-      var _this12 = this;
+      var _this13 = this;
 
       _classCallCheck(this, AlertService);
 
@@ -3588,7 +3615,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.confirmAlert = function () {
         var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Confirma ?';
         return new Promise(function (resolve) {
-          _this12.alertController.create({
+          _this13.alertController.create({
             message: message,
             buttons: [{
               text: 'Cancelar',
@@ -3677,7 +3704,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/http/http.service.ts");
 
     var AuthService = function AuthService(httpClient, httpService, storage, router) {
-      var _this13 = this;
+      var _this14 = this;
 
       _classCallCheck(this, AuthService);
 
@@ -3698,9 +3725,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.savePushToken = function (user, token) {
-        var url = _this13.httpService.buildUrl(_this13.savePushTokenUrl);
+        var url = _this14.httpService.buildUrl(_this14.savePushTokenUrl);
 
-        return _this13.httpClient.post(url, _this13.httpService.buildBody({
+        return _this14.httpClient.post(url, _this14.httpService.buildBody({
           user: user,
           token: token
         }));
@@ -3714,9 +3741,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.login = function (data) {
-        var url = _this13.httpService.buildUrl(_this13.loginUrl);
+        var url = _this14.httpService.buildUrl(_this14.loginUrl);
 
-        return _this13.httpClient.post(url, _this13.httpService.buildBody(data));
+        return _this14.httpClient.post(url, _this14.httpService.buildBody(data));
       };
       /**
        * login
@@ -3727,9 +3754,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.recoveryPassword = function (data) {
-        var url = _this13.httpService.buildUrl(_this13.recoveryPasswordUrl);
+        var url = _this14.httpService.buildUrl(_this14.recoveryPasswordUrl);
 
-        return _this13.httpClient.post(url, _this13.httpService.buildBody(data));
+        return _this14.httpClient.post(url, _this14.httpService.buildBody(data));
       };
       /**
        * createConnectionPin
@@ -3738,10 +3765,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.createPinConnection = function (pin) {
-        var url = _this13.httpService.buildUrl(_this13.createConnectionUrl);
+        var url = _this14.httpService.buildUrl(_this14.createConnectionUrl);
 
-        return _this13.httpClient.post(url, _this13.httpService.buildBody(pin), {
-          headers: _this13.httpService.getHeaders()
+        return _this14.httpClient.post(url, _this14.httpService.buildBody(pin), {
+          headers: _this14.httpService.getHeaders()
         });
       };
       /**
@@ -3751,10 +3778,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.checkToken = function () {
-        var url = _this13.httpService.buildUrl(_this13.checkUrl);
+        var url = _this14.httpService.buildUrl(_this14.checkUrl);
 
-        return _this13.httpClient.post(url, _this13.httpService.buildBody(null), {
-          headers: _this13.httpService.getHeaders()
+        return _this14.httpClient.post(url, _this14.httpService.buildBody(null), {
+          headers: _this14.httpService.getHeaders()
         });
       };
       /**
@@ -3889,7 +3916,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.closeSesion = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this13, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this14, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee2() {
           return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -3993,7 +4020,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/loader/loader.service.ts");
 
     var CameraService = function CameraService(camera, toastService, loaderService) {
-      var _this14 = this;
+      var _this15 = this;
 
       _classCallCheck(this, CameraService);
 
@@ -4005,7 +4032,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.openCamera = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this14, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this15, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee3() {
           var options;
@@ -4038,7 +4065,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.openGallery = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this14, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this15, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee4() {
           var options;
@@ -4072,10 +4099,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
       this.getImage = function (options) {
         return new Promise(function (resolve) {
-          _this14.camera.getPicture(options).then(function (image) {
+          _this15.camera.getPicture(options).then(function (image) {
             resolve(image);
           }, function (error) {
-            _this14.toastService.warningToast(error);
+            _this15.toastService.warningToast(error);
 
             resolve(null);
           });
@@ -4151,7 +4178,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./node_modules/@ionic-native/device/ngx/index.js");
 
     var DetectPlatformService = function DetectPlatformService(device, platform) {
-      var _this15 = this;
+      var _this16 = this;
 
       _classCallCheck(this, DetectPlatformService);
 
@@ -4165,7 +4192,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.detectPlatform = function () {
-        return _this15.platform.is('ios') === true;
+        return _this16.platform.is('ios') === true;
       };
       /**
        * checkCordova
@@ -4173,7 +4200,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.checkCordova = function () {
-        return _this15.device.cordova !== null;
+        return _this16.device.cordova !== null;
       };
 
       this.isIos = this.detectPlatform();
@@ -4245,7 +4272,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./node_modules/rxjs/_esm2015/operators/index.js");
 
     var GeolocationService = function GeolocationService(geolocation) {
-      var _this16 = this;
+      var _this17 = this;
 
       _classCallCheck(this, GeolocationService);
 
@@ -4267,7 +4294,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.getCurrentPosition = function () {
-        return _this16.currentPosition.asObservable();
+        return _this17.currentPosition.asObservable();
       };
       /**
        * showHistory
@@ -4275,7 +4302,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.showHistory = function () {
-        return _this16.positionHistory;
+        return _this17.positionHistory;
       };
       /**
        * updatePosition
@@ -4285,7 +4312,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.updatePosition = function (lat, lng) {
-        _this16.currentPosition.next({
+        _this17.currentPosition.next({
           lat: lat,
           lng: lng
         });
@@ -4296,15 +4323,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.startTracker = function () {
-        _this16.geolocation.watchPosition().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["filter"])(function (p) {
+        _this17.geolocation.watchPosition().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["filter"])(function (p) {
           return p.coords !== undefined;
         })).subscribe(function (position) {
-          _this16.positionHistory.push({
+          _this17.positionHistory.push({
             lat: position.coords.latitude,
             lng: position.coords.longitude
           });
 
-          _this16.updatePosition(position.coords.latitude, position.coords.longitude);
+          _this17.updatePosition(position.coords.latitude, position.coords.longitude);
         }, function (error) {
           console.log({
             error: error
@@ -4313,7 +4340,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       };
 
       this.geolocation.getCurrentPosition(this.positionOptions).then(function (data) {
-        _this16.updatePosition(data.coords.latitude, data.coords.longitude);
+        _this17.updatePosition(data.coords.latitude, data.coords.longitude);
       }).catch(function (error) {
         console.log('getCurrentPosition', error);
       });
@@ -4395,7 +4422,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/store/store.service.ts");
 
     var HttpService = function HttpService(router, storeService, toastService) {
-      var _this17 = this;
+      var _this18 = this;
 
       _classCallCheck(this, HttpService);
 
@@ -4411,7 +4438,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
       this.buildUrl = function (url) {
         var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-        return id == null ? _this17.apiUrl + url : _this17.apiUrl + "".concat(url, "/").concat(id);
+        return id == null ? _this18.apiUrl + url : _this18.apiUrl + "".concat(url, "/").concat(id);
       };
       /**
        * getHeaders
@@ -4420,7 +4447,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getHeaders = function () {
-        var token = _this17.storeService.getToken();
+        var token = _this18.storeService.getToken();
 
         return new _angular_common_http__WEBPACK_IMPORTED_MODULE_3__["HttpHeaders"]({
           Authorization: token !== null ? 'Bearer ' + token : '',
@@ -4436,7 +4463,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.buildBody = function () {
         var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-        var connection = _this17.storeService.getActiveConnection();
+        var connection = _this18.storeService.getActiveConnection();
 
         if (data) {
           return Object.assign({}, data, {
@@ -4471,37 +4498,37 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           switch (error.status) {
             case 0:
-              _this17.toastService.errorToast('No hay conexion con el servidor.');
+              _this18.toastService.errorToast('No hay conexion con el servidor.');
 
               break;
 
             case 400:
             case 404:
-              _this17.toastService.errorToast(message);
+              _this18.toastService.errorToast(message);
 
               break;
 
             case 401:
-              _this17.toastService.errorToast('Su sesion ha caducado');
+              _this18.toastService.errorToast('Su sesion ha caducado');
 
-              _this17.router.navigate(['/home-page']);
+              _this18.router.navigate(['/home-page']);
 
               break;
 
             case 403:
-              _this17.toastService.errorToast('No tiene conexiones disponibles');
+              _this18.toastService.errorToast('No tiene conexiones disponibles');
 
-              _this17.router.navigate(['/home-page']);
+              _this18.router.navigate(['/home-page']);
 
               break;
 
             case 500:
-              _this17.toastService.errorToast('API Error');
+              _this18.toastService.errorToast('API Error');
 
               break;
 
             default:
-              _this17.toastService.errorToast(message);
+              _this18.toastService.errorToast(message);
 
               break;
           }
@@ -4568,7 +4595,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /*#__PURE__*/
     function () {
       function LoaderService() {
-        var _this18 = this;
+        var _this19 = this;
 
         _classCallCheck(this, LoaderService);
 
@@ -4581,9 +4608,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         this.startLoader = function () {
           var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Cargando...';
-          _this18.message = message;
+          _this19.message = message;
 
-          _this18.isLoading.next(true);
+          _this19.isLoading.next(true);
         };
         /**
          * stopLoader
@@ -4591,9 +4618,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.stopLoader = function () {
-          _this18.message = '';
+          _this19.message = '';
 
-          _this18.isLoading.next(false);
+          _this19.isLoading.next(false);
         };
         /**
          * getMessage
@@ -4601,7 +4628,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
         this.getMessage = function () {
-          return _this18.message;
+          return _this19.message;
         };
       }
       /**
@@ -4670,7 +4697,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./node_modules/rxjs/_esm2015/index.js");
 
     var NetworkService = function NetworkService(toastController, platform) {
-      var _this19 = this;
+      var _this20 = this;
 
       _classCallCheck(this, NetworkService);
 
@@ -4686,13 +4713,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         window.addEventListener('online', function () {
           console.log('back online');
 
-          _this19.updateNetworkStatus(true);
+          _this20.updateNetworkStatus(true);
         });
         console.log('listen to offline');
         window.addEventListener('offline', function () {
           console.log('went offline');
 
-          _this19.updateNetworkStatus(false);
+          _this20.updateNetworkStatus(false);
         });
       };
       /**
@@ -4701,7 +4728,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getNetworkStatus = function () {
-        return _this19.isOnline.asObservable();
+        return _this20.isOnline.asObservable();
       };
       /**
        * updateNetworkStatus
@@ -4710,9 +4737,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.updateNetworkStatus = function (status) {
-        _this19.isOnline.next(status);
+        _this20.isOnline.next(status);
 
-        _this19.showAlert(status);
+        _this20.showAlert(status);
       };
       /**
        * showAlert
@@ -4721,7 +4748,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.showAlert = function (status) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this19, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this20, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee5() {
           var msg, toast;
@@ -4753,7 +4780,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       };
 
       this.platform.ready().then(function () {
-        _this19.isOnline.next(navigator.onLine);
+        _this20.isOnline.next(navigator.onLine);
       });
     };
 
@@ -4810,7 +4837,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./node_modules/@ionic/storage/fesm2015/ionic-storage.js");
 
     var StorageService = function StorageService(storage) {
-      var _this20 = this;
+      var _this21 = this;
 
       _classCallCheck(this, StorageService);
 
@@ -4822,7 +4849,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.setRow = function (nameDB, data) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this20, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this21, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee6() {
           return regeneratorRuntime.wrap(function _callee6$(_context6) {
@@ -4847,7 +4874,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getRow = function (nameDB) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this20, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this21, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee7() {
           return regeneratorRuntime.wrap(function _callee7$(_context7) {
@@ -4875,7 +4902,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.removeRow = function (nameDB) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this20, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this21, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee8() {
           return regeneratorRuntime.wrap(function _callee8$(_context8) {
@@ -4899,7 +4926,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.clearAllRow = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this20, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this21, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee9() {
           return regeneratorRuntime.wrap(function _callee9$(_context9) {
@@ -4994,6 +5021,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       StoreActions["SetTicketPriorities"] = "SET_TICKET_PRIORITIES";
       StoreActions["SetTicketDetails"] = "SET_TICKET_DETAILS";
       StoreActions["SetPushToken"] = "SET_PUSH_TOKEN";
+      StoreActions["SetPreContracts"] = "SET_PRE_CONTRACTS";
+      StoreActions["SetCountries"] = "SET_COUNTRIES";
+      StoreActions["SetContractTypes"] = "SET_CONTRACT_TYPES";
+      StoreActions["SetCivilStatus"] = "SET_CIVIL_STATUS";
+      StoreActions["SetAfps"] = "SET_AFPS";
+      StoreActions["SetIsapres"] = "SET_ISAPRES";
     })(StoreActions || (StoreActions = {}));
     /***/
 
@@ -5055,16 +5088,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _inherits(StoreService, _codewithdan_observab);
 
       function StoreService() {
-        var _this21;
+        var _this22;
 
         _classCallCheck(this, StoreService);
 
-        _this21 = _possibleConstructorReturn(this, _getPrototypeOf(StoreService).call(this, {}));
+        _this22 = _possibleConstructorReturn(this, _getPrototypeOf(StoreService).call(this, {}));
         /**
          * buildInitialState
          */
 
-        _this21.buildInitialState = function () {
+        _this22.buildInitialState = function () {
           console.log(' pasa por buildInitialState');
           var lastState = JSON.parse(localStorage.getItem('fx11StateBackup'));
           console.log({
@@ -5097,7 +5130,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               quadrilles: [],
               workers: [],
               processPlants: [],
-              destinations: []
+              destinations: [],
+              preContracts: [],
+              countries: [],
+              contractTypes: [],
+              civilStatus: [],
+              afps: [],
+              isapres: []
             },
             contract: {
               activeCostCenter: null,
@@ -5125,8 +5164,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.backupState = function () {
-          var currentState = _this21.getState();
+        _this22.backupState = function () {
+          var currentState = _this22.getState();
 
           localStorage.setItem('fx11StateBackup', JSON.stringify(currentState));
         };
@@ -5136,12 +5175,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setRemember = function (remember) {
-          var auth = Object.assign({}, _this21.getState().auth, {
+        _this22.setRemember = function (remember) {
+          var auth = Object.assign({}, _this22.getState().auth, {
             remember: remember
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetRemember);
         };
@@ -5159,8 +5198,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getRemember = function () {
-          return _this21.getState().auth.remember;
+        _this22.getRemember = function () {
+          return _this22.getState().auth.remember;
         };
         /**
          * setRememberData
@@ -5168,12 +5207,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setRememberData = function (rememberData) {
-          var auth = Object.assign({}, _this21.getState().auth, {
+        _this22.setRememberData = function (rememberData) {
+          var auth = Object.assign({}, _this22.getState().auth, {
             rememberData: rememberData
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetRememberData);
         };
@@ -5182,20 +5221,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getRememberData = function () {
-          return _this21.getState().auth.rememberData;
+        _this22.getRememberData = function () {
+          return _this22.getState().auth.rememberData;
         };
         /**
          * setUser
          */
 
 
-        _this21.setUser = function (userData) {
-          var auth = Object.assign({}, _this21.getState().auth, {
+        _this22.setUser = function (userData) {
+          var auth = Object.assign({}, _this22.getState().auth, {
             userData: userData
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetUser);
         };
@@ -5204,8 +5243,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getUser = function () {
-          return _this21.getState().auth.userData;
+        _this22.getUser = function () {
+          return _this22.getState().auth.userData;
         };
         /**
          * setUserConnections
@@ -5213,13 +5252,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setUserConnections = function () {
+        _this22.setUserConnections = function () {
           var userConnections = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-          var auth = Object.assign({}, _this21.getState().auth, {
+          var auth = Object.assign({}, _this22.getState().auth, {
             userConnections: userConnections
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetUserConnections);
 
@@ -5229,9 +5268,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             });
 
             if (defaultConnection) {
-              _this21.setActiveConnection(defaultConnection);
+              _this22.setActiveConnection(defaultConnection);
             } else {
-              _this21.setActiveConnection(userConnections[0]);
+              _this22.setActiveConnection(userConnections[0]);
             }
           }
         };
@@ -5241,13 +5280,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setActiveConnection = function () {
+        _this22.setActiveConnection = function () {
           var activeConnection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-          var auth = Object.assign({}, _this21.getState().auth, {
+          var auth = Object.assign({}, _this22.getState().auth, {
             userActiveConnection: activeConnection
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetUserActiveConnection);
         };
@@ -5256,8 +5295,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getActiveConnection = function () {
-          return _this21.getState().auth.userActiveConnection;
+        _this22.getActiveConnection = function () {
+          return _this22.getState().auth.userActiveConnection;
         };
         /**
          * setToken
@@ -5265,13 +5304,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setToken = function () {
+        _this22.setToken = function () {
           var userToken = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-          var auth = Object.assign({}, _this21.getState().auth, {
+          var auth = Object.assign({}, _this22.getState().auth, {
             userToken: userToken
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetUserToken);
         };
@@ -5280,8 +5319,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getToken = function () {
-          return _this21.getState().auth.userToken;
+        _this22.getToken = function () {
+          return _this22.getState().auth.userToken;
         };
         /**
          * setLoginStatus
@@ -5289,12 +5328,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setLoginStatus = function (status) {
-          var auth = Object.assign({}, _this21.getState().auth, {
+        _this22.setLoginStatus = function (status) {
+          var auth = Object.assign({}, _this22.getState().auth, {
             isLogged: status
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetLoginStatus);
         };
@@ -5303,20 +5342,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getLoginStatus = function () {
-          return _this21.getState().auth.isLogged;
+        _this22.getLoginStatus = function () {
+          return _this22.getState().auth.isLogged;
         };
         /**
          * removeRememberData
          */
 
 
-        _this21.removeRememberData = function () {
-          var auth = Object.assign({}, _this21.getState().auth, {
+        _this22.removeRememberData = function () {
+          var auth = Object.assign({}, _this22.getState().auth, {
             rememberData: null
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetRememberData);
         };
@@ -5325,24 +5364,24 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getUserConnections = function () {
-          return _this21.getState().auth.userConnections;
+        _this22.getUserConnections = function () {
+          return _this22.getState().auth.userConnections;
         };
         /**
          * logout
          */
 
 
-        _this21.logout = function () {
-          if (_this21.getRemember()) {
-            _this21.removeRememberData();
+        _this22.logout = function () {
+          if (_this22.getRemember()) {
+            _this22.removeRememberData();
           }
 
-          _this21.setLoginStatus(false);
+          _this22.setLoginStatus(false);
 
-          _this21.setToken();
+          _this22.setToken();
 
-          _this21.setActiveConnection();
+          _this22.setActiveConnection();
         };
         /**
          * setCompanies
@@ -5350,17 +5389,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setCompanies = function (companies) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setCompanies = function (companies) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             companies: companies
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCompanies);
 
           if (companies.length > 0) {
-            _this21.setActiveCompany(companies[0]);
+            _this22.setActiveCompany(companies[0]);
           }
         };
         /**
@@ -5386,8 +5425,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getCompanies = function () {
-          return _this21.getState().sync.companies;
+        _this22.getCompanies = function () {
+          return _this22.getState().sync.companies;
         };
         /**
          * setActiveCompany
@@ -5395,12 +5434,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setActiveCompany = function (company) {
-          var auth = Object.assign({}, _this21.getState().auth, {
+        _this22.setActiveCompany = function (company) {
+          var auth = Object.assign({}, _this22.getState().auth, {
             userActiveCompany: company
           });
 
-          _this21.setState({
+          _this22.setState({
             auth: auth
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetUserActiveCompany);
         };
@@ -5409,20 +5448,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getActiveCompany = function () {
-          return _this21.getState().auth.userActiveCompany;
+        _this22.getActiveCompany = function () {
+          return _this22.getState().auth.userActiveCompany;
         };
         /**
          * setCostCenters
          */
 
 
-        _this21.setCostCenters = function (costCenters) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setCostCenters = function (costCenters) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             costCenters: costCenters
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCostCenters);
         };
@@ -5431,20 +5470,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getCostCenters = function () {
-          return _this21.getState().sync.costCenters;
+        _this22.getCostCenters = function () {
+          return _this22.getState().sync.costCenters;
         };
         /**
          * setMenus
          */
 
 
-        _this21.setMenus = function (menus) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setMenus = function (menus) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             menus: menus
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetMenus);
         };
@@ -5453,8 +5492,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getMenus = function () {
-          return _this21.getState().sync.menus;
+        _this22.getMenus = function () {
+          return _this22.getState().sync.menus;
         };
         /**
          * setUnits
@@ -5462,12 +5501,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setUnits = function (units) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setUnits = function (units) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             units: units
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetUnits);
         };
@@ -5476,8 +5515,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getUnits = function () {
-          return _this21.getState().sync.units;
+        _this22.getUnits = function () {
+          return _this22.getState().sync.units;
         };
         /**
          * setQualities
@@ -5485,12 +5524,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setQualities = function (qualities) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setQualities = function (qualities) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             qualities: qualities
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetQualities);
         };
@@ -5499,8 +5538,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getQualities = function () {
-          return _this21.getState().sync.qualities;
+        _this22.getQualities = function () {
+          return _this22.getState().sync.qualities;
         };
         /**
          * setCalibers
@@ -5508,12 +5547,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setCalibers = function (calibers) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setCalibers = function (calibers) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             calibers: calibers
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCalibers);
         };
@@ -5522,48 +5561,48 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getCalibers = function () {
-          return _this21.getState().sync.calibers;
+        _this22.getCalibers = function () {
+          return _this22.getState().sync.calibers;
         };
         /**
          * getAccess
          */
 
 
-        _this21.getAccess = function () {
-          return _this21.getState().sync.cfgAccess;
+        _this22.getAccess = function () {
+          return _this22.getState().sync.cfgAccess;
         };
         /**
          * getQuadrilles
          */
 
 
-        _this21.getQuadrilles = function () {
-          return _this21.getState().sync.quadrilles;
+        _this22.getQuadrilles = function () {
+          return _this22.getState().sync.quadrilles;
         };
         /**
          * getWorkers
          */
 
 
-        _this21.getWorkers = function () {
-          return _this21.getState().sync.workers;
+        _this22.getWorkers = function () {
+          return _this22.getState().sync.workers;
         };
         /**
          * getProcessPlants
          */
 
 
-        _this21.getProcessPlants = function () {
-          return _this21.getState().sync.processPlants;
+        _this22.getProcessPlants = function () {
+          return _this22.getState().sync.processPlants;
         };
         /**
          * getDestinations
          */
 
 
-        _this21.getDestinations = function () {
-          return _this21.getState().sync.destinations;
+        _this22.getDestinations = function () {
+          return _this22.getState().sync.destinations;
         };
         /**
          * setSyncedData
@@ -5571,7 +5610,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setSyncedData = function (data) {
+        _this22.setSyncedData = function (data) {
           var companies = data.companies,
               costCenters = data.costCenters,
               menus = data.menus,
@@ -5582,29 +5621,47 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               quadrilles = data.quadrilles,
               workers = data.workers,
               processPlants = data.processPlants,
-              destinations = data.destinations;
+              destinations = data.destinations,
+              preContracts = data.preContracts,
+              countries = data.countries,
+              contractTypes = data.contractTypes,
+              civilStatus = data.civilStatus,
+              afps = data.afps,
+              isapres = data.isapres;
 
-          _this21.setCompanies(companies);
+          _this22.setCompanies(companies);
 
-          _this21.setCostCenters(costCenters);
+          _this22.setCostCenters(costCenters);
 
-          _this21.setMenus(menus);
+          _this22.setMenus(menus);
 
-          _this21.setUnits(units);
+          _this22.setUnits(units);
 
-          _this21.setQualities(qualities);
+          _this22.setQualities(qualities);
 
-          _this21.setCalibers(calibers);
+          _this22.setCalibers(calibers);
 
-          _this21.setAccess(cfgAccess);
+          _this22.setAccess(cfgAccess);
 
-          _this21.setQuadrilles(quadrilles);
+          _this22.setQuadrilles(quadrilles);
 
-          _this21.setWorkers(workers);
+          _this22.setWorkers(workers);
 
-          _this21.setProcessPlants(processPlants);
+          _this22.setProcessPlants(processPlants);
 
-          _this21.setDestinations(destinations);
+          _this22.setDestinations(destinations);
+
+          _this22.setPreContracts(preContracts);
+
+          _this22.setCountries(countries);
+
+          _this22.setContractTypes(contractTypes);
+
+          _this22.setCivilStatus(civilStatus);
+
+          _this22.setAfps(afps);
+
+          _this22.setIsapres(isapres);
         };
         /**
          * setActiveCostCenter
@@ -5612,12 +5669,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setActiveCostCenter = function (costCenter) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setActiveCostCenter = function (costCenter) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             activeCostCenter: costCenter
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetActiveCostCenter);
         };
@@ -5626,8 +5683,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getActiveCostCenter = function () {
-          return _this21.getState().contract.activeCostCenter;
+        _this22.getActiveCostCenter = function () {
+          return _this22.getState().contract.activeCostCenter;
         };
         /**
          * setCostCenter
@@ -5635,12 +5692,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setCostCenter = function (costCenter) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setCostCenter = function (costCenter) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             costCenter: costCenter
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCostCenter);
         };
@@ -5649,8 +5706,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getCostCenter = function () {
-          return _this21.getState().contract.costCenter;
+        _this22.getCostCenter = function () {
+          return _this22.getState().contract.costCenter;
         };
         /**
          * setProductionContracts
@@ -5658,12 +5715,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setProductionContracts = function (productionContracts) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setProductionContracts = function (productionContracts) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             productionContracts: productionContracts
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetProductionContracts);
         };
@@ -5672,8 +5729,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getProductionContracts = function () {
-          return _this21.getState().contract.productionContracts;
+        _this22.getProductionContracts = function () {
+          return _this22.getState().contract.productionContracts;
         };
         /**
          * END OF SYNC STATE METHODS
@@ -5699,12 +5756,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setProductionContractsDetails = function (productionContractsDetails) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setProductionContractsDetails = function (productionContractsDetails) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             productionContractsDetails: productionContractsDetails
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetProductionContractsDetails);
         };
@@ -5713,8 +5770,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getProductionContractsDetails = function () {
-          return _this21.getState().contract.productionContractsDetails;
+        _this22.getProductionContractsDetails = function () {
+          return _this22.getState().contract.productionContractsDetails;
         };
         /**
          * setHarvestEstimate
@@ -5722,12 +5779,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setHarvestEstimate = function (harvestEstimate) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setHarvestEstimate = function (harvestEstimate) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             harvestEstimate: harvestEstimate
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetHarvestEstimate);
         };
@@ -5736,8 +5793,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getHarvestEstimate = function () {
-          return _this21.getState().contract.harvestEstimate;
+        _this22.getHarvestEstimate = function () {
+          return _this22.getState().contract.harvestEstimate;
         };
         /**
          * setQualityEstimate
@@ -5745,12 +5802,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setQualityEstimate = function (qualityEstimate) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setQualityEstimate = function (qualityEstimate) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             qualityEstimate: qualityEstimate
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetQualityEstimate);
         };
@@ -5759,8 +5816,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getQualityEstimate = function () {
-          return _this21.getState().contract.qualityEstimate;
+        _this22.getQualityEstimate = function () {
+          return _this22.getState().contract.qualityEstimate;
         };
         /**
          * setQualityEstimateDetail
@@ -5768,12 +5825,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setQualityEstimateDetail = function (qualityEstimateDetail) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setQualityEstimateDetail = function (qualityEstimateDetail) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             qualityEstimateDetail: qualityEstimateDetail
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetQualityEstimateDetail);
         };
@@ -5782,8 +5839,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getQualityEstimateDetail = function () {
-          return _this21.getState().contract.qualityEstimateDetail;
+        _this22.getQualityEstimateDetail = function () {
+          return _this22.getState().contract.qualityEstimateDetail;
         };
         /**
          * setNotes
@@ -5791,12 +5848,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setNotes = function (notes) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setNotes = function (notes) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             notes: notes
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetNotes);
         };
@@ -5805,8 +5862,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getNotes = function () {
-          return _this21.getState().contract.notes;
+        _this22.getNotes = function () {
+          return _this22.getState().contract.notes;
         };
         /**
          * setHolidays
@@ -5814,12 +5871,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setHolidays = function (holidays) {
-          var contract = Object.assign({}, _this21.getState().contract, {
+        _this22.setHolidays = function (holidays) {
+          var contract = Object.assign({}, _this22.getState().contract, {
             holidays: holidays
           });
 
-          _this21.setState({
+          _this22.setState({
             contract: contract
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetHolidays);
         };
@@ -5828,8 +5885,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getHolidays = function () {
-          return _this21.getState().contract.holidays;
+        _this22.getHolidays = function () {
+          return _this22.getState().contract.holidays;
         };
         /**
          * setContractData
@@ -5837,7 +5894,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setContractData = function (data) {
+        _this22.setContractData = function (data) {
           var costCenter = data.costCenter,
               productionContracts = data.productionContracts,
               productionContractsDetails = data.productionContractsDetails,
@@ -5847,21 +5904,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               notes = data.notes,
               holidays = data.holidays;
 
-          _this21.setCostCenter(costCenter);
+          _this22.setCostCenter(costCenter);
 
-          _this21.setProductionContracts(productionContracts);
+          _this22.setProductionContracts(productionContracts);
 
-          _this21.setProductionContractsDetails(productionContractsDetails);
+          _this22.setProductionContractsDetails(productionContractsDetails);
 
-          _this21.setHarvestEstimate(_this21.defineArrows(harvestEstimate, 'quantity'));
+          _this22.setHarvestEstimate(_this22.defineArrows(harvestEstimate, 'quantity'));
 
-          _this21.setQualityEstimate(_this21.defineArrows(qualityEstimate, 'exportPercentage'));
+          _this22.setQualityEstimate(_this22.defineArrows(qualityEstimate, 'exportPercentage'));
 
-          _this21.setQualityEstimateDetail(qualityEstimateDetail);
+          _this22.setQualityEstimateDetail(qualityEstimateDetail);
 
-          _this21.setNotes(notes);
+          _this22.setNotes(notes);
 
-          _this21.setHolidays(holidays);
+          _this22.setHolidays(holidays);
         };
         /**
          * setPushToken
@@ -5869,8 +5926,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setPushToken = function (token) {
-          _this21.setState({
+        _this22.setPushToken = function (token) {
+          _this22.setState({
             pushToken: token
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetPushToken);
         };
@@ -5879,8 +5936,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getPushToken = function () {
-          return _this21.getState().pushToken;
+        _this22.getPushToken = function () {
+          return _this22.getState().pushToken;
         };
         /**
          * setAccess
@@ -5888,12 +5945,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setAccess = function (cfgAccess) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setAccess = function (cfgAccess) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             cfgAccess: cfgAccess
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetAccess);
         };
@@ -5903,12 +5960,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setQuadrilles = function (quadrilles) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setQuadrilles = function (quadrilles) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             quadrilles: quadrilles
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetQuadrilles);
         };
@@ -5918,12 +5975,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setWorkers = function (workers) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setWorkers = function (workers) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             workers: workers
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetWorkers);
         };
@@ -5933,12 +5990,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setProcessPlants = function (processPlants) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setProcessPlants = function (processPlants) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             processPlants: processPlants
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetProcessPlants);
         };
@@ -5948,12 +6005,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setDestinations = function (destinations) {
-          var sync = Object.assign({}, _this21.getState().sync, {
+        _this22.setDestinations = function (destinations) {
+          var sync = Object.assign({}, _this22.getState().sync, {
             destinations: destinations
           });
 
-          _this21.setState({
+          _this22.setState({
             sync: sync
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetDestinations);
         };
@@ -5964,7 +6021,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.defineArrows = function () {
+        _this22.defineArrows = function () {
           var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
           var field = arguments.length > 1 ? arguments[1] : undefined;
 
@@ -6020,12 +6077,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setActiveTicket = function (activeTicket) {
-          var ticket = Object.assign({}, _this21.getState().ticket, {
+        _this22.setActiveTicket = function (activeTicket) {
+          var ticket = Object.assign({}, _this22.getState().ticket, {
             activeTicket: activeTicket
           });
 
-          _this21.setState({
+          _this22.setState({
             ticket: ticket
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetActiveTicket);
         };
@@ -6034,8 +6091,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getActiveTicket = function () {
-          return _this21.getState().ticket.activeTicket;
+        _this22.getActiveTicket = function () {
+          return _this22.getState().ticket.activeTicket;
         };
         /**
          * getTicketStates
@@ -6043,12 +6100,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setTicketStates = function (ticketStates) {
-          var ticket = Object.assign({}, _this21.getState().ticket, {
+        _this22.setTicketStates = function (ticketStates) {
+          var ticket = Object.assign({}, _this22.getState().ticket, {
             states: ticketStates
           });
 
-          _this21.setState({
+          _this22.setState({
             ticket: ticket
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetTicketStates);
         };
@@ -6057,8 +6114,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getTicketStates = function () {
-          return _this21.getState().ticket.states;
+        _this22.getTicketStates = function () {
+          return _this22.getState().ticket.states;
         };
         /**
          * setTicketUsers
@@ -6066,12 +6123,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setTicketUsers = function (ticketUsers) {
-          var ticket = Object.assign({}, _this21.getState().ticket, {
+        _this22.setTicketUsers = function (ticketUsers) {
+          var ticket = Object.assign({}, _this22.getState().ticket, {
             users: ticketUsers
           });
 
-          _this21.setState({
+          _this22.setState({
             ticket: ticket
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetTicketUsers);
         };
@@ -6080,8 +6137,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getTicketUsers = function () {
-          return _this21.getState().ticket.users;
+        _this22.getTicketUsers = function () {
+          return _this22.getState().ticket.users;
         };
         /**
          * setTicketPriorities
@@ -6089,12 +6146,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setTicketPriorities = function (ticketPriorities) {
-          var ticket = Object.assign({}, _this21.getState().ticket, {
+        _this22.setTicketPriorities = function (ticketPriorities) {
+          var ticket = Object.assign({}, _this22.getState().ticket, {
             priorities: ticketPriorities
           });
 
-          _this21.setState({
+          _this22.setState({
             ticket: ticket
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetTicketPriorities);
         };
@@ -6103,8 +6160,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getTicketPriorities = function () {
-          return _this21.getState().ticket.priorities;
+        _this22.getTicketPriorities = function () {
+          return _this22.getState().ticket.priorities;
         };
         /**
          * setTicketDetails
@@ -6112,12 +6169,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.setTicketDetails = function (ticketDetails) {
-          var ticket = Object.assign({}, _this21.getState().ticket, {
+        _this22.setTicketDetails = function (ticketDetails) {
+          var ticket = Object.assign({}, _this22.getState().ticket, {
             details: ticketDetails
           });
 
-          _this21.setState({
+          _this22.setState({
             ticket: ticket
           }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetTicketDetails);
         };
@@ -6126,14 +6183,179 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
          */
 
 
-        _this21.getTicketDetails = function () {
-          return _this21.getState().ticket.details;
+        _this22.getTicketDetails = function () {
+          return _this22.getState().ticket.details;
+        };
+        /**
+         * END OF TICKET STATE METHODS
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         */
+
+        /**
+         * PRE-CONTRACT STATE METHODS
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         * ================================================================================================================
+         */
+
+        /**
+         * setPreContracts
+         * @param preContracts
+         */
+
+
+        _this22.setPreContracts = function () {
+          var preContracts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          var sync = Object.assign({}, _this22.getState().sync, {
+            preContracts: preContracts
+          });
+
+          _this22.setState({
+            sync: sync
+          }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetPreContracts);
+        };
+        /**
+         * getPreContracts
+         */
+
+
+        _this22.getPreContracts = function () {
+          return _this22.getState().sync.preContracts;
+        };
+        /**
+         * setCountries
+         * @param countries
+         */
+
+
+        _this22.setCountries = function () {
+          var countries = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          var sync = Object.assign({}, _this22.getState().sync, {
+            countries: countries
+          });
+
+          _this22.setState({
+            sync: sync
+          }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCountries);
+        };
+        /**
+         * getCountries
+         */
+
+
+        _this22.getCountries = function () {
+          return _this22.getState().sync.countries;
+        };
+        /**
+         * setContractTypes
+         * @param contractTypes
+         */
+
+
+        _this22.setContractTypes = function () {
+          var contractTypes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          var sync = Object.assign({}, _this22.getState().sync, {
+            contractTypes: contractTypes
+          });
+
+          _this22.setState({
+            sync: sync
+          }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetContractTypes);
+        };
+        /**
+         * getCivilStatus
+         */
+
+
+        _this22.getCivilStatus = function () {
+          return _this22.getState().sync.civilStatus;
+        };
+        /**
+         * setAfps
+         * @param afps
+         */
+
+
+        _this22.setAfps = function () {
+          var afps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          var sync = Object.assign({}, _this22.getState().sync, {
+            afps: afps
+          });
+
+          _this22.setState({
+            sync: sync
+          }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetAfps);
+        };
+        /**
+         * getAfps
+         */
+
+
+        _this22.getAfps = function () {
+          return _this22.getState().sync.afps;
+        };
+        /**
+         * setIsapres
+         * @param isapres
+         */
+
+
+        _this22.setIsapres = function () {
+          var isapres = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          var sync = Object.assign({}, _this22.getState().sync, {
+            isapres: isapres
+          });
+
+          _this22.setState({
+            sync: sync
+          }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetIsapres);
+        };
+        /**
+         * getIsapres
+         */
+
+
+        _this22.getIsapres = function () {
+          return _this22.getState().sync.isapres;
         };
 
-        _this21.setState(_this21.buildInitialState, 'INIT_STATE');
+        _this22.setState(_this22.buildInitialState, 'INIT_STATE');
 
-        return _this21;
+        return _this22;
       }
+      /**
+       * getContractTypes
+       */
+
+
+      _createClass(StoreService, [{
+        key: "getContractTypes",
+        value: function getContractTypes() {
+          return this.getState().sync.contractTypes;
+        }
+        /**
+         * setCivilStatus
+         * @param civilStatus
+         */
+
+      }, {
+        key: "setCivilStatus",
+        value: function setCivilStatus() {
+          var civilStatus = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+          var sync = Object.assign({}, this.getState().sync, {
+            civilStatus: civilStatus
+          });
+          this.setState({
+            sync: sync
+          }, _actions__WEBPACK_IMPORTED_MODULE_3__["StoreActions"].SetCivilStatus);
+        }
+      }]);
 
       return StoreService;
     }(_codewithdan_observable_store__WEBPACK_IMPORTED_MODULE_2__["ObservableStore"]);
@@ -6201,7 +6423,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/http/http.service.ts");
 
     var SyncService = function SyncService(authService, httpClient, storageService, httpService) {
-      var _this22 = this;
+      var _this23 = this;
 
       _classCallCheck(this, SyncService);
 
@@ -6216,13 +6438,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.syncData = function (username, superuser) {
-        var url = _this22.httpService.buildUrl(_this22.syncUrl);
+        var url = _this23.httpService.buildUrl(_this23.syncUrl);
 
-        return _this22.httpClient.post(url, _this22.httpService.buildBody({
+        return _this23.httpClient.post(url, _this23.httpService.buildBody({
           username: username,
           superuser: superuser
         }), {
-          headers: _this22.httpService.getHeaders()
+          headers: _this23.httpService.getHeaders()
         });
       };
     };
@@ -6284,7 +6506,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./node_modules/@ionic/angular/dist/fesm5.js");
 
     var ToastService = function ToastService(toastController) {
-      var _this23 = this;
+      var _this24 = this;
 
       _classCallCheck(this, ToastService);
 
@@ -6300,7 +6522,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var msg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Loading...';
         var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2000;
         var position = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'top';
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this23, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee10() {
           var toast;
@@ -6343,7 +6565,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var msg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Loading...';
         var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2000;
         var position = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'top';
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this23, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee11() {
           var toast;
@@ -6386,7 +6608,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var msg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Loading...';
         var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 3500;
         var position = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'top';
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this23, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee12() {
           var toast;
@@ -6429,7 +6651,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var msg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'Loading...';
         var time = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2000;
         var position = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'top';
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this23, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee13() {
           var toast;
@@ -6523,7 +6745,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     "./src/app/shared/services/http/http.service.ts");
 
     var UserService = function UserService(httpClient, httpService, storageService) {
-      var _this24 = this;
+      var _this25 = this;
 
       _classCallCheck(this, UserService);
 
@@ -6541,9 +6763,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
        */
 
       this.createUser = function (data) {
-        var url = _this24.httpService.buildUrl(_this24.createUrl);
+        var url = _this25.httpService.buildUrl(_this25.createUrl);
 
-        return _this24.httpClient.post(url, data);
+        return _this25.httpClient.post(url, data);
       };
       /**
        * updateUser
@@ -6552,10 +6774,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getUser = function () {
-        var url = _this24.httpService.buildUrl(_this24.userUrl);
+        var url = _this25.httpService.buildUrl(_this25.userUrl);
 
-        return _this24.httpClient.post(url, _this24.httpService.buildBody(), {
-          headers: _this24.httpService.getHeaders()
+        return _this25.httpClient.post(url, _this25.httpService.buildBody(), {
+          headers: _this25.httpService.getHeaders()
         });
       };
       /**
@@ -6565,10 +6787,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.updateUser = function (data) {
-        var url = _this24.httpService.buildUrl(_this24.updateUrl);
+        var url = _this25.httpService.buildUrl(_this25.updateUrl);
 
-        return _this24.httpClient.put(url, _this24.httpService.buildBody(data), {
-          headers: _this24.httpService.getHeaders()
+        return _this25.httpClient.put(url, _this25.httpService.buildBody(data), {
+          headers: _this25.httpService.getHeaders()
         });
       };
       /**
@@ -6578,10 +6800,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.assignUser = function (data) {
-        var url = _this24.httpService.buildUrl(_this24.assignUrl);
+        var url = _this25.httpService.buildUrl(_this25.assignUrl);
 
-        return _this24.httpClient.post(url, _this24.httpService.buildBody(data), {
-          headers: _this24.httpService.getHeaders()
+        return _this25.httpClient.post(url, _this25.httpService.buildBody(data), {
+          headers: _this25.httpService.getHeaders()
         });
       };
       /**
@@ -6591,10 +6813,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.updatePassword = function (data) {
-        var url = _this24.httpService.buildUrl(_this24.updatePasswordUrl);
+        var url = _this25.httpService.buildUrl(_this25.updatePasswordUrl);
 
-        return _this24.httpClient.put(url, _this24.httpService.buildBody(data), {
-          headers: _this24.httpService.getHeaders()
+        return _this25.httpClient.put(url, _this25.httpService.buildBody(data), {
+          headers: _this25.httpService.getHeaders()
         });
       }; /////////////// USUARIO
 
@@ -6605,7 +6827,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.setUserData = function (data) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this25, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee14() {
           return regeneratorRuntime.wrap(function _callee14$(_context14) {
@@ -6629,7 +6851,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getUserData = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this25, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee15() {
           return regeneratorRuntime.wrap(function _callee15$(_context15) {
@@ -6656,7 +6878,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.removeUserData = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this25, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee16() {
           return regeneratorRuntime.wrap(function _callee16$(_context16) {
@@ -6681,7 +6903,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.setUserRemember = function (data) {
-        _this24.storageService.setRow('userRemember', data);
+        _this25.storageService.setRow('userRemember', data);
       };
       /**
        * @description obtener usuario login
@@ -6689,7 +6911,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.getUserRemember = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this25, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee17() {
           return regeneratorRuntime.wrap(function _callee17$(_context17) {
@@ -6716,7 +6938,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
       this.removeUserRemember = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this24, void 0, void 0,
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](_this25, void 0, void 0,
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee18() {
           return regeneratorRuntime.wrap(function _callee18$(_context18) {
@@ -6993,7 +7215,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       production: false,
       app_name: 'FX10',
       api_url: 'http://localhost:5572',
-      appVersion: 'v1.0.51',
+      appVersion: 'v1.0.53',
       tz: 'America/Santiago',
       iosDeviceNames: _ios_device_names__WEBPACK_IMPORTED_MODULE_1__["iosDeviceNames"]
     };

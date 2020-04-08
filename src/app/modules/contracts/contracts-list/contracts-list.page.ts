@@ -20,6 +20,10 @@ export class ContractsListPage implements OnInit {
   }
 
   ngOnInit() {
+
+  }
+
+  ionViewWillEnter() {
     this.loadPreContracts();
   }
 

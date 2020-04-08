@@ -283,6 +283,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return module.ContractsListPageModule;
           });
         }
+      }, {
+        path: 'contract-form',
+        loadChildren: function loadChildren() {
+          return __webpack_require__.e(
+          /*! import() | modules-contracts-contract-form-contract-form-module */
+          "modules-contracts-contract-form-contract-form-module").then(__webpack_require__.bind(null,
+          /*! ../modules/contracts/contract-form/contract-form.module */
+          "./src/app/modules/contracts/contract-form/contract-form.module.ts")).then(function (module) {
+            return module.ContractFormPageModule;
+          });
+        }
       }]
     }];
 

@@ -114,6 +114,10 @@ const routes = [
             {
                 path: 'tarja_contrato',
                 loadChildren: () => __webpack_require__.e(/*! import() | modules-contracts-contracts-list-contracts-list-module */ "modules-contracts-contracts-list-contracts-list-module").then(__webpack_require__.bind(null, /*! ../modules/contracts/contracts-list/contracts-list.module */ "./src/app/modules/contracts/contracts-list/contracts-list.module.ts")).then(module => module.ContractsListPageModule)
+            },
+            {
+                path: 'contract-form',
+                loadChildren: () => __webpack_require__.e(/*! import() | modules-contracts-contract-form-contract-form-module */ "modules-contracts-contract-form-contract-form-module").then(__webpack_require__.bind(null, /*! ../modules/contracts/contract-form/contract-form.module */ "./src/app/modules/contracts/contract-form/contract-form.module.ts")).then(module => module.ContractFormPageModule)
             }
         ]
     },

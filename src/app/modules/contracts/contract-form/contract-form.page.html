@@ -31,12 +31,13 @@
 
 <ion-content>
   <form class="form-container" [formGroup]="contractForm">
+
     <!-- STEP 1 -->
     <ng-container *ngIf="currentStep === 1">
 
       <ion-item>
         <ion-label>Nacionalidad</ion-label>
-        <ion-select placeholder="Nacionalidad" formControlName="nationality" okText="Seleccionar" cancelText="Cancelar">
+        <ion-select placeholder="Nacionalidad" formControlName="nationality" okText="Seleccionar" cancelText="Cancelar" (ionChange)="changeIdentifierValidation($event.detail.value)">
           <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality.id">{{ nationality.name }}</ion-select-option>
         </ion-select>
       </ion-item>
@@ -44,20 +45,23 @@
       <ion-item>
         <ion-label>Tipo de Contrato</ion-label>
         <ion-select placeholder="Tipo de Contrato" formControlName="contractType" okText="Seleccionar" cancelText="Cancelar">
-          <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
+          <ion-select-option [selected]="" *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Identificador</ion-label>
         <ion-input formControlName="identifier"></ion-input>
+        <ng-container *ngIf="contractForm.get('identifier').hasError('validRut')">
+          <span style="color:red">Debe ingresar un RUT valido.</span>
+        </ng-container>
       </ion-item>
 
       <ion-item-divider>
         <ion-label>&nbsp;</ion-label>
       </ion-item-divider>
 
-      <ion-button expand="block">
+      <ion-button expand="block" (click)="openBarcodeScanner()">
         Escanear Carnet
         <ion-icon slot="end" name="camera"></ion-icon>
       </ion-button>
@@ -69,33 +73,41 @@
 
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-input formControlName="name"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Apellido Paterno</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-input formControlName="lastName"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Apellido Materno</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-input formControlName="sureName"></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Fecha de Nacimiento</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-datetime formControlName="dob"></ion-datetime>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="floating">HOMBRE</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
-      </ion-item>
+      <ion-radio-group formGroupName="gender" (ionChange)="changeGenderEvent($event.detail.value)">
+        <ion-row>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-label>Hombre</ion-label>
+              <ion-radio slot="start" value="hombre" [checked]="contractForm.get('gender').value === 'hombre'"></ion-radio>
+            </ion-item>
+          </ion-col>
 
-      <ion-item>
-        <ion-label position="floating">MUJER</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
-      </ion-item>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-label>Mujer</ion-label>
+              <ion-radio slot="start" value="mujer" [checked]="contractForm.get('gender').value === 'mujer'"></ion-radio>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-radio-group>
 
     </ng-container>
 
@@ -103,28 +115,36 @@
     <ng-container *ngIf="currentStep === 3">
 
       <ion-item>
-        <ion-label position="floating">Estado Civil</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-label>Estado Civil</ion-label>
+        <ion-select placeholder="Estado Civil" formControlName="civilStatus" okText="Seleccionar" cancelText="Cancelar">
+          <ion-select-option *ngFor="let status of civilStatus" [value]="status.name">{{ status.name }}</ion-select-option>
+        </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">AFP</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-label>AFP</ion-label>
+        <ion-select placeholder="AFP" formControlName="afp" okText="Seleccionar" cancelText="Cancelar">
+          <ion-select-option *ngFor="let afp of afps" [value]="afp.id">{{ afp.name }}</ion-select-option>
+        </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">ISAPRE</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-label>ISAPRE</ion-label>
+        <ion-select placeholder="Isapre" formControlName="isapre" okText="Seleccionar" cancelText="Cancelar">
+          <ion-select-option *ngFor="let isapre of isapres" [value]="isapre.id">{{ isapre.name }}</ion-select-option>
+        </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">JUBILADO</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-label>Jubilado</ion-label>
+        <ion-checkbox formControlName="retired" slot="start"></ion-checkbox>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Cuadrilla</ion-label>
-        <ion-input formControlName="identifier"></ion-input>
+        <ion-select placeholder="Cuadrilla" formControlName="quadrille" okText="Seleccionar" cancelText="Cancelar">
+          <ion-select-option *ngFor="let quadrille of quadrilles" [value]="quadrille.id">{{ quadrille.name }}</ion-select-option>
+        </ion-select>
       </ion-item>
 
     </ng-container>
@@ -142,10 +162,20 @@
     </ion-col>
 
     <ion-col>
-      <ion-button [color]="currentStep === 3 ? 'success': 'warning'" expand="block" [disabled]="currentStep === 3" (click)="currentStep = currentStep + 1">
-        Siguiente
-        <ion-icon slot="end" [name]=" currentStep === 3 ? 'save' : 'arrow-forward'"></ion-icon>
-      </ion-button>
+      <ng-container *ngIf="currentStep < 3">
+        <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1">
+          Siguiente
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </ng-container>
+
+      <ng-container *ngIf="currentStep  === 3">
+        <ion-button color="success" expand="block" [disabled]="contractForm.invalid" (click)="submit()">
+          Guardar
+          <ion-icon slot="end" name="save"></ion-icon>
+        </ion-button>
+      </ng-container>
+
     </ion-col>
   </ion-row>
 </ion-footer>

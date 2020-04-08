@@ -56,23 +56,6 @@ export class TicketFormPage implements OnInit {
     const details = this.storeService.getTicketDetails();
     const lastDetail = details.find(item => item.id === this.activeTicket.tickets_det);
 
-    /**
-     * id: 37
-     state: "Abierto"
-     ticket: 39
-     created_id: 2
-     assigned_id: 2
-     creatorName: "Contreras Montiel Luis"
-     assignedName: "Contreras Montiel Luis"
-     observations: ""
-     difficulty: 1
-     priority: "Normal"
-     public: false
-     createdAt: "12/02/2020 00:00:00"
-     commitmentAt: "01/01/1900"
-     commitmentInternAt: "01/01/1900"
-     */
-
     this.ticketForm = this.formBuilder.group({
       id: [0, Validators.required],
       ticket: [this.activeTicket.id, Validators.required],

@@ -25,6 +25,7 @@
     "@angular/router": "~8.2.14",
     "@codewithdan/observable-store": "^2.2.3",
     "@ionic-native/app-version": "^5.19.1",
+    "@ionic-native/barcode-scanner": "^5.23.0",
     "@ionic-native/camera": "^5.19.1",
     "@ionic-native/chooser": "^5.22.0",
     "@ionic-native/core": "^5.19.1",
@@ -60,6 +61,7 @@
     "moment": "^2.24.0",
     "ngx-echarts": "^4.2.2",
     "ngx-mask": "^8.1.7",
+    "phonegap-plugin-barcodescanner": "^8.1.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
@@ -118,7 +120,9 @@
       "cordova-plugin-filepath": {},
       "cordova-plugin-chooser": {},
       "cordova-plugin-androidx": {},
-      "cordova-plugin-androidx-adapter": {}
+      "cordova-plugin-androidx-adapter": {},
+      "phonegap-plugin-barcodescanner": {},
+      "cordova-plugin-fcm-with-dependecy-updated": {}
     },
     "platforms": [
       "android",

@@ -842,6 +842,28 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
 
   /**
+<<<<<<< HEAD
+   * @description set user remember
+   * @param user
+   */
+  public setUserLocaStorage(user: any) {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  /**
+   * @description get user remember
+   */
+  public getUserLocaStorage() {
+    return JSON.parse(localStorage.getItem('user'));
+  }
+
+  /**
+   * @description get user remember
+   */
+  public removeUserLocaStorage() {
+    localStorage.removeItem('user');
+  }
+=======
    * PRE-CONTRACT STATE METHODS
    * ================================================================================================================
    * ================================================================================================================
@@ -954,4 +976,5 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * ================================================================================================================
    * ================================================================================================================
    */
+>>>>>>> qa
 }

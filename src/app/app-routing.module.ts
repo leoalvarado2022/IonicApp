@@ -16,13 +16,17 @@ const routes: Routes = [
   },
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then(module => module.AuthPageModule),
+    loadChildren: () => import('./modules/auth/auth.module').then(module => module.AuthPageModule),
     canActivate: [LoggedGuard]
   },
   {
     path: 'home-page',
     loadChildren: () => import('./home-page/home-page.module').then(module => module.HomePagePageModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'contract-form',
+    loadChildren: () => import('./modules/contracts/contract-form/contract-form.module').then( m => m.ContractFormPageModule)
   }
 ];
 

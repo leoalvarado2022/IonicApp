@@ -1,0 +1,25 @@
+ion-menu-button {
+  --color: white;
+}
+
+ion-title {
+  color: white;
+}
+
+ion-tab-button {
+  font-size: 16px;
+  color: white;
+  --color: white;
+}
+
+.tab-selected {
+  border-bottom: 1px solid white !important;
+}
+
+ion-tab-bar {
+  height: 45px;
+  //height: 100px;
+  --background: var(--color-home-header-menu);
+  --color: white;
+  // margin-bottom: 58px;
+}

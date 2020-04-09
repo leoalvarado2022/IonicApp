@@ -5,6 +5,7 @@ import {AlertController, Platform} from '@ionic/angular';
 import {environment} from '../../../../environments/environment';
 import {Device} from '@ionic-native/device/ngx';
 import {iosDeviceNames} from '../../../../environments/ios-device-names';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-welcome',
@@ -18,6 +19,7 @@ export class WelcomePage implements OnInit {
 
   constructor(
     private storage: StorageService,
+    private storeService: StoreService,
     private alertController: AlertController,
     private toastService: ToastService,
     public device: Device,
@@ -72,6 +74,7 @@ export class WelcomePage implements OnInit {
    */
   public cleanCache = async () => {
     const remember = localStorage.getItem('remember');
+    const user  = this.storeService.getUserLocaStorage();
 
     if (remember === 'true') {
       const userRemember = await this.storage.getRow('userRemember');
@@ -84,6 +87,7 @@ export class WelcomePage implements OnInit {
       await this.storage.clearAllRow();
     }
 
+    this.storeService.setUserLocaStorage(user);
     this.toastService.successToast('Datos eliminados');
   }
 

@@ -43,8 +43,13 @@ export class ConnectionsPage implements OnInit {
    */
   public selectConnection = (connection: Connection): void => {
     if (connection.token !== this.currentConnection.token) {
-      this.storeService.setActiveConnection(connection);
-      this.syncMobile();
+
+      const user = this.storeService.getUser();
+
+      this.authService.connectionChange({connection: connection.token, loggedUser: user.id}).subscribe((data: any) => {
+        this.storeService.setActiveConnection(connection);
+        this.syncMobile();
+      });
     }
   }
 

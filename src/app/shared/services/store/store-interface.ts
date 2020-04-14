@@ -43,6 +43,10 @@ export interface Sync {
   civilStatus: Array<any>;
   afps: Array<any>;
   isapres: Array<any>;
+  labors: Array<any>;
+  laborsCostCenter: Array<any>;
+  deals: Array<any>;
+  costCentersCustom: Array<any>;
 }
 
 export interface ContractInterface {

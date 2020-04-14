@@ -40,6 +40,10 @@ export enum StoreActions {
   SetCivilStatus = 'SET_CIVIL_STATUS',
   SetAfps = 'SET_AFPS',
   SetIsapres = 'SET_ISAPRES',
+  SetLabors = 'SET_LABORS',
+  SetLaborsCostCenter = 'SET_LABORS_COST_CENTER',
+  SetDeals = 'SET_DEALS',
+  SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
   AddPreContract = 'ADD_PRECONTRACT',
 
 }

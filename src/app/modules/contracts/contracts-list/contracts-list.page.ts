@@ -32,9 +32,13 @@ export class ContractsListPage implements OnInit {
    */
   private loadPreContracts = () => {
     const preContracts = this.storeService.getPreContracts();
+    const preContractToRecord = this.storeService.getPreContractsToRecord();
+
+    console.log({preContracts, preContractToRecord});
+
     this.contracts = preContracts;
     this.filteredContracts = preContracts;
-  }
+  };
 
   /**
    * searchContract
@@ -54,27 +58,27 @@ export class ContractsListPage implements OnInit {
     } else {
       this.filteredContracts = this.contracts;
     }
-  }
+  };
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredContracts = this.contracts;
-  }
+  };
 
   public reSync = (event: any) => {
     this.contracts = [];
     this.filteredContracts = [];
     this.loadPreContracts();
     event.target.complete();
-  }
+  };
 
   /**
    * contractForm
    */
   public contractForm = () => {
     this.router.navigate(['contract-form']);
-  }
+  };
 
 }

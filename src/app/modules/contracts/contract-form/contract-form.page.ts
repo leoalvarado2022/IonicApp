@@ -5,6 +5,7 @@ import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {ValidateRut} from '@primetec/primetec-angular';
 import * as moment from 'moment';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-contract-form',
@@ -23,11 +24,16 @@ export class ContractFormPage implements OnInit {
   public isapres: Array<any> = [];
   public quadrilles: Array<any> = [];
 
+  private activeCompany: any = null;
+  public readonly dateFormat = 'DD/MM/YYYY';
+  public readonly maxDate = '2030';
+
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
     private barcodeScanner: BarcodeScanner,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) {
 
   }
@@ -39,8 +45,12 @@ export class ContractFormPage implements OnInit {
     this.afps = this.storeService.getAfps();
     this.isapres = this.storeService.getIsapres();
     this.quadrilles = this.storeService.getQuadrilles();
+    this.activeCompany = this.storeService.getActiveCompany();
 
     this.contractForm = this.formBuilder.group({
+      id: [0],
+      companyId: [this.activeCompany.id],
+      workerId: [0],
       nationality: [this.nationalities.length === 1 ? this.nationalities[0].id : '', Validators.required],
       contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
       identifier: ['', Validators.required],
@@ -73,14 +83,13 @@ export class ContractFormPage implements OnInit {
    * @param nationalityId
    */
   public changeIdentifierValidation = (nationalityId: number): void => {
-    console.log('se dispara este evento ?');
     const find = this.nationalities.find(i => i.id === nationalityId);
 
     if (find && find.identifierType.toLowerCase() === 'rut') {
       this.contractForm.get('identifier').setValidators([Validators.required, ValidateRut]);
       this.contractForm.get('identifier').updateValueAndValidity();
     } else {
-      this.contractForm.get('identifier').setValidators([Validators.required]);
+      this.contractForm.get('identifier').setValidators(Validators.required);
       this.contractForm.get('identifier').updateValueAndValidity();
     }
   };
@@ -91,7 +100,10 @@ export class ContractFormPage implements OnInit {
   public submit = () => {
     const data = Object.assign({}, this.contractForm.value);
     data.dob = moment(data.dob).format('YYYY-MM-DD');
-    console.log({data});
+
+    // RECORD TO MEMORY
+    this.storeService.addPreContract(data);
+    this.router.navigate(['/home-page/tarja_contrato']);
   };
 
   /**
@@ -101,5 +113,5 @@ export class ContractFormPage implements OnInit {
   public changeGenderEvent = (gender: string) => {
     this.contractForm.get('gender').patchValue(gender);
   };
-  
+
 }

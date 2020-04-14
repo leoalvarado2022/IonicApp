@@ -40,5 +40,6 @@ export enum StoreActions {
   SetCivilStatus = 'SET_CIVIL_STATUS',
   SetAfps = 'SET_AFPS',
   SetIsapres = 'SET_ISAPRES',
+  AddPreContract = 'ADD_PRECONTRACT',
 
 }

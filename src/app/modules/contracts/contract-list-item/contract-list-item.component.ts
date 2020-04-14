@@ -8,7 +8,6 @@ import {Component, Input, OnInit} from '@angular/core';
 export class ContractListItemComponent implements OnInit {
 
   @Input() contract: any = null;
-  @Input() status = 'pendiente';
 
   constructor() {
 

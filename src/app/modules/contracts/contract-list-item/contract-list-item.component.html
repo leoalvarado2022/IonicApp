@@ -4,5 +4,7 @@
     <h2>{{ contract.workerName + ' ' + contract.workerLastname + ' ' + contract.workerSurname | titlecase }}</h2>
     <p>{{ contract.contractTypeName | titlecase }}</p>
   </ion-label>
-  <ion-badge [color]="status === 'enviado' ? 'success': 'warning'" slot="end">{{ status | titlecase }}</ion-badge>
+  <ion-badge [color]="contract.id > 0 ? 'success': 'warning'" slot="end">
+    {{ (contract.id > 0 ? 'enviado' : 'pendiente') | titlecase }}
+  </ion-badge>
 </ion-item>

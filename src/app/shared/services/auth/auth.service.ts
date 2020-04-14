@@ -11,6 +11,8 @@ import {HttpService} from '../http/http.service';
 export class AuthService {
 
   private loginUrl = 'auth/login';
+  private connectionDefaultUrl = 'connection/default';
+  private companyDefaultUrl = 'company/default';
   private createConnectionUrl = 'user/create-connection';
   private testConnectionUrl = 'auth/test-connection';
   private checkUrl = 'auth/check-token';
@@ -56,6 +58,29 @@ export class AuthService {
   public recoveryPassword = (data: any) => {
     const url = this.httpService.buildUrl(this.recoveryPasswordUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data));
+  }
+
+
+  /**
+   * @description set company default
+   * @param data
+   */
+  public companyChange = (data: any) => {
+    const url = this.httpService.buildUrl(this.companyDefaultUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  }
+
+  /**
+   * @description set connection default
+   * @param data
+   */
+  public connectionChange = (data: any) => {
+    const url = this.httpService.buildUrl(this.connectionDefaultUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
   }
 
   /**

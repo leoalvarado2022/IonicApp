@@ -33,7 +33,7 @@ export class LoginPage implements OnInit, OnDestroy {
     private syncService: SyncService,
     private userService: UserService,
     private httpService: HttpService,
-    private storeService: StoreService
+    private storeService: StoreService,
   ) {
 
   }
@@ -57,6 +57,18 @@ export class LoginPage implements OnInit, OnDestroy {
 
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
+
+    const user  = this.storeService.getUserLocaStorage();
+
+    if (user !== null) {
+      this.loginForm.patchValue({
+        username: user.username,
+        password: user.password,
+        remember: [true]
+      });
+
+      this.loginForm.updateValueAndValidity();
+    }
   }
 
   ngOnDestroy(): void {
@@ -75,8 +87,10 @@ export class LoginPage implements OnInit, OnDestroy {
     if (data.remember) {
       this.storeService.setRemember(true);
       this.storeService.setRememberData(data);
+      this.storeService.setUserLocaStorage(data);
     } else {
       this.storeService.setRemember(false);
+      this.storeService.removeUserLocaStorage();
       this.storeService.removeRememberData();
     }
 
@@ -171,5 +185,4 @@ export class LoginPage implements OnInit, OnDestroy {
       });
     });
   }
-
 }

@@ -88,7 +88,7 @@
 
       <ion-item>
         <ion-label position="floating">Fecha de Nacimiento</ion-label>
-        <ion-datetime formControlName="dob"></ion-datetime>
+        <ion-datetime formControlName="dob" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
       </ion-item>
 
       <ion-radio-group formGroupName="gender" (ionChange)="changeGenderEvent($event.detail.value)">

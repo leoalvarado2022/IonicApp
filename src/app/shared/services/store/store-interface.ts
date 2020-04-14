@@ -6,6 +6,7 @@ export interface StoreInterface {
   contract: ContractInterface;
   ticket: TicketForm;
   pushToken: string;
+  toRecord: ToRecord;
 }
 
 export interface Auth {
@@ -62,4 +63,8 @@ export interface TicketForm {
   users: Array<any>;
   priorities: Array<any>;
   details: Array<any>;
+}
+
+export interface ToRecord {
+  preContracts: Array<any>;
 }

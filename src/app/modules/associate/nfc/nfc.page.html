@@ -19,4 +19,48 @@
     NFC
   </h2>
 
+  <ion-grid padding *ngIf="selected.length > 0 || scanning">
+    <ion-row *ngIf="!scanning">
+      <ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize" *ngIf="!isDelete" ion-button text-capitalize>Asociar
+        a trabajador
+      </ion-button>
+      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize" *ngIf="isDelete" ion-button text-capitalize>Desasociar a
+        trabajador
+      </ion-button>
+    </ion-row>
+    <!--<ion-row *ngIf="scanning">
+      <button ion-button text-capitalize block color="danger">Cancelar Scanning
+      </button>
+    </ion-row>-->
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row *ngIf="!scanned.length && !notSupported">
+      <ion-col col-12>
+        <ion-button color="warning" size="large" expand="full" class="ion-text-capitalize"> <ion-spinner style="position: absolute;left: 15%;"></ion-spinner> Buscando Dispositivos</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row *ngIf="scanned.length">
+      <ion-card *ngFor="let device of scanned" (click)="onPress(device)"
+                [class.selected]="selected.indexOf(device) > -1">
+        <ion-card-content>
+          <ion-row align-items-center>
+            <ion-col size="2">
+              <img src="assets/imgs/deals-icon-item.png">
+            </ion-col>
+            <ion-col size="10">
+              <div class="title-row">Tipo: {{device.type}}</div>
+              <div class="subtitle-row">ID: {{device.id_device}}</div>
+              <div class="subtitle-row" *ngIf="device.link">Trabajador: {{device.link}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+
+    </ion-row>
+  </ion-grid>
 </ion-content>
+

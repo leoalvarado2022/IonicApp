@@ -52,6 +52,18 @@
         </feature>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
+            <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate where the NFC card gets read." />
+        </plugin>
+        <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
+            <string>To locate where the NFC Card gets read.</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSLocationAlwaysUsageDescription">
+            <string>To locate where the NFC Card gets read.</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothPeripheralUsageDescription">
+            <string>We need to use the NFC to read Cards.</string>
+        </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
             <string>need camera access to take pictures</string>
         </edit-config>

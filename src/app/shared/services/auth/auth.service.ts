@@ -10,14 +10,14 @@ import {HttpService} from '../http/http.service';
 })
 export class AuthService {
 
-  private loginUrl = 'auth/login';
-  private connectionDefaultUrl = 'connection/default';
-  private companyDefaultUrl = 'company/default';
-  private createConnectionUrl = 'user/create-connection';
-  private testConnectionUrl = 'auth/test-connection';
-  private checkUrl = 'auth/check-token';
-  private recoveryPasswordUrl = 'auth/password';
-  private savePushTokenUrl = 'auth/save-push-token';
+  private readonly loginUrl = 'auth/login';
+  private readonly connectionDefaultUrl = 'connection/default';
+  private readonly companyDefaultUrl = 'company/default';
+  private readonly createConnectionUrl = 'user/create-connection';
+  private readonly testConnectionUrl = 'auth/test-connection';
+  private readonly checkUrl = 'auth/check-token';
+  private readonly recoveryPasswordUrl = 'auth/password';
+  private readonly savePushTokenUrl = 'auth/save-push-token';
 
   constructor(
     private httpClient: HttpClient,
@@ -36,7 +36,7 @@ export class AuthService {
   public savePushToken = (user: number, token: string) => {
     const url = this.httpService.buildUrl(this.savePushTokenUrl);
     return this.httpClient.post(url, this.httpService.buildBody({user, token}));
-  }
+  };
 
   /**
    * login
@@ -47,7 +47,7 @@ export class AuthService {
   public login = (data: any) => {
     const url = this.httpService.buildUrl(this.loginUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data));
-  }
+  };
 
   /**
    * login
@@ -58,7 +58,7 @@ export class AuthService {
   public recoveryPassword = (data: any) => {
     const url = this.httpService.buildUrl(this.recoveryPasswordUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data));
-  }
+  };
 
 
   /**
@@ -70,7 +70,7 @@ export class AuthService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  }
+  };
 
   /**
    * @description set connection default
@@ -81,7 +81,7 @@ export class AuthService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  }
+  };
 
   /**
    * createConnectionPin
@@ -92,7 +92,7 @@ export class AuthService {
     return this.httpClient.post(url, this.httpService.buildBody(pin), {
       headers: this.httpService.getHeaders()
     });
-  }
+  };
 
   /**
    * check token
@@ -103,7 +103,7 @@ export class AuthService {
     return this.httpClient.post(url, this.httpService.buildBody(null), {
       headers: this.httpService.getHeaders()
     });
-  }
+  };
 
   /**
    * setConnection
@@ -111,7 +111,7 @@ export class AuthService {
    */
   public setConnection = (connection: any) => {
     localStorage.setItem('connection', JSON.stringify(connection));
-  }
+  };
 
   /**
    * getConnection
@@ -119,14 +119,14 @@ export class AuthService {
   public getConnection = () => {
     const connection = localStorage.getItem('connection');
     return connection ? JSON.parse(connection) : null;
-  }
+  };
 
   /**
    * deleteConnection
    */
   public removeConnection = () => {
     localStorage.removeItem('connection');
-  }
+  };
 
   /**
    * setCompany
@@ -134,7 +134,7 @@ export class AuthService {
    */
   public setCompany = (company: Company) => {
     localStorage.setItem('company', JSON.stringify(company));
-  }
+  };
 
   /**
    * getCompany
@@ -142,21 +142,21 @@ export class AuthService {
   public getCompany = () => {
     const company = localStorage.getItem('company');
     return company ? JSON.parse(company) : null;
-  }
+  };
 
   /**
    * removeCompany
    */
   public removeCompany = () => {
     localStorage.removeItem('company');
-  }
+  };
 
   /**
    * getToken
    */
   public getToken = (): string => {
     return localStorage.getItem('token');
-  }
+  };
 
   /**
    * setToken
@@ -164,7 +164,7 @@ export class AuthService {
    */
   public setToken = (token: string) => {
     localStorage.setItem('token', token);
-  }
+  };
 
   /**
    * setToken
@@ -172,49 +172,49 @@ export class AuthService {
    */
   public removeToken = () => {
     localStorage.removeItem('token');
-  }
+  };
 
   /**
    * setLoggedIn
    */
   public setLoggedIn = () => {
     localStorage.setItem('logged', 'true');
-  }
+  };
 
   /**
    * setLoggedOut
    */
   public setLoggedOut = () => {
     localStorage.setItem('logged', 'false');
-  }
+  };
 
   /**
    * getLoggedStatus
    */
   public getLoggedStatus = () => {
     return localStorage.getItem('logged');
-  }
+  };
 
   /**
    * setRemember
    */
   public setRemember = () => {
     localStorage.setItem('remember', 'true');
-  }
+  };
 
   /**
    * removeRemember
    */
   public removeRemember = () => {
     localStorage.setItem('remember', 'false');
-  }
+  };
 
   /**
    * getRememberStatus
    */
   public getRememberStatus = () => {
     return localStorage.getItem('remember');
-  }
+  };
 
   /**
    * closeSesion
@@ -229,6 +229,6 @@ export class AuthService {
     this.removeToken();
     this.removeConnection();
     this.router.navigate(['auth/login']);
-  }
+  };
 
 }

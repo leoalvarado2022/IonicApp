@@ -55,7 +55,6 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    console.log('ionViewWillEnter');
     this.syncData();
   }
 

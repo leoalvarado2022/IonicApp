@@ -41,5 +41,6 @@ export enum StoreActions {
   SetAfps = 'SET_AFPS',
   SetIsapres = 'SET_ISAPRES',
   AddPreContract = 'ADD_PRECONTRACT',
+  ClearPreContracts = 'CLEAR_PRECONTRACTS',
 
 }

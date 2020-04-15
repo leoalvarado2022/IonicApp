@@ -11,6 +11,7 @@ import {Subscription} from 'rxjs';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {DocumentScanner} from '@ionic-native/document-scanner/ngx';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -45,7 +46,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
     private networkService: NetworkService,
     private httpService: HttpService,
     private syncService: SyncService,
-    private documentScanner: DocumentScanner
+    private documentScanner: DocumentScanner,
+    private loaderService: LoaderService
   ) {
     this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => {
       this.networkStatus = status;
@@ -89,11 +91,15 @@ export class ContractFormPage implements OnInit, OnDestroy {
    * openBarcodeScanner
    */
   public openBarcodeScanner = () => {
+    // this.toastService.errorToast('NO IMPLEMENTADO');
+
+    /*
     this.documentScanner.scanDoc({sourceType: 1}).then(data => {
       console.log({data});
     }).catch(err => {
       this.toastService.errorToast(err);
     });
+    */
 
     /*
     this.barcodeScanner.scan().then(barcodeData => {
@@ -146,10 +152,13 @@ export class ContractFormPage implements OnInit, OnDestroy {
     const preContracts = [];
     preContracts.push(data);
 
+    this.loaderService.startLoader();
     this.contractsService.storePreContracts(preContracts).subscribe(success => {
       this.syncData();
+      this.loaderService.stopLoader();
       this.router.navigate(['/home-page/tarja_contrato']);
     }, error => {
+      this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
   };

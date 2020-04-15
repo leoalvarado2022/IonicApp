@@ -73,6 +73,10 @@ const routes: Routes = [
       {
         path: 'contract-form',
         loadChildren: () => import('../modules/contracts/contract-form/contract-form.module').then(module => module.ContractFormPageModule)
+      },
+      {
+        path: 'tarja_asociarnfc',
+        loadChildren: () => import('../modules/associate/nfc/nfc.module').then( m => m.NfcPageModule)
       }
     ]
   },

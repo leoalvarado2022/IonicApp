@@ -10,7 +10,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({});
+    super({ logStateChanges: false });
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -53,7 +53,11 @@ export class StoreService extends ObservableStore<StoreInterface> {
         contractTypes: [],
         civilStatus: [],
         afps: [],
-        isapres: []
+        isapres: [],
+        labors: [],
+        laborsCostCenter: [],
+        deals: [],
+        costCentersCustom: []
       },
       contract: {
         activeCostCenter: null,
@@ -75,7 +79,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
       },
       pushToken: null,
       toRecord: {
-        preContracts: []
+        preContracts: [],
       }
     };
   };
@@ -451,7 +455,11 @@ export class StoreService extends ObservableStore<StoreInterface> {
       contractTypes,
       civilStatus,
       afps,
-      isapres
+      isapres,
+      labors,
+      laborsCostCenter,
+      deals,
+      costCentersCustom
     } = data;
 
     this.setCompanies(companies);
@@ -471,6 +479,10 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setCivilStatus(civilStatus);
     this.setAfps(afps);
     this.setIsapres(isapres);
+    this.setLabors(labors);
+    this.setLaborsCostCenter(laborsCostCenter);
+    this.setDeals(deals);
+    this.setCostCentersCustom(costCentersCustom);
   };
 
   /**
@@ -967,6 +979,68 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getIsapres = (): Array<any> => {
     return this.getState().sync.isapres;
+  };
+
+
+  /**
+   * @param labors
+   */
+  public setLabors = (labors: Array<any> = []): void => {
+    const sync = {...this.getState().sync, labors};
+    this.setState({sync}, StoreActions.SetLabors);
+  };
+
+  /**
+   * getLabors
+   */
+  public getLabors = (): Array<any> => {
+    return this.getState().sync.labors;
+  };
+
+  /**
+   * @param laborsCostCenter
+   */
+  public setLaborsCostCenter = (laborsCostCenter: Array<any> = []): void => {
+    const sync = {...this.getState().sync, laborsCostCenter};
+    this.setState({sync}, StoreActions.SetLaborsCostCenter);
+  };
+
+  /**
+   * getlaborsCostCenter
+   */
+  public getLaborsCostCenter = (): Array<any> => {
+    return this.getState().sync.laborsCostCenter;
+  };
+
+  /**
+   * @param deals
+   */
+  public setDeals = (deals: Array<any> = []): void => {
+    const sync = {...this.getState().sync, deals};
+    this.setState({sync}, StoreActions.SetDeals);
+  };
+
+  /**
+  /**
+   * getlaborsCostCenter
+   */
+  public getDeals = (): Array<any> => {
+    return this.getState().sync.deals;
+  };
+
+  /**
+   * @param costCentersCustom
+   */
+  public setCostCentersCustom = (costCentersCustom: Array<any> = []): void => {
+    const sync = {...this.getState().sync, costCentersCustom};
+    this.setState({sync}, StoreActions.SetCostCentersCustom);
+  };
+
+  /**
+   * costCentersCustom
+   */
+  public getCostCentersCustom = (): Array<any> => {
+    return this.getState().sync.costCentersCustom;
   };
 
   /**

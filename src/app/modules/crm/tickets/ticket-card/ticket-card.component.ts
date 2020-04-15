@@ -19,7 +19,7 @@ export class TicketCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.ticket, 'this.ticket');
+    // console.log(this.ticket, 'this.ticket');
   }
 
   /**

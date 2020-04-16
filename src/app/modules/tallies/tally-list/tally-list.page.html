@@ -12,7 +12,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ng-container *ngIf="!activeQuadrille && filteredQuadrilles.length > 1">
+<ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
   <ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 </ng-container>
 
@@ -31,7 +31,7 @@
   </ion-refresher>
 
 
-  <ng-container *ngIf="!activeQuadrille && filteredQuadrilles.length > 1">
+  <ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
     <h2 class="ion-text-center">
       Cuadrillas
 
@@ -58,7 +58,7 @@
 
   <ng-container *ngIf="activeQuadrille">
     <h2 class="ion-text-center">
-      Tarjas
+      Trabajadores
 
       <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
     </h2>
@@ -84,7 +84,7 @@ active: true
     <ion-list>
       <ion-virtual-scroll [items]="filteredWorkers">
         <ion-item *virtualItem="let worker" detail="true">
-          <ion-icon name="clipboard" slot="start"></ion-icon>
+          <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>
             <h2>{{ worker.name }}</h2>
             <p class="label-padding">{{ worker.identifier | rut }}</p>
@@ -101,3 +101,12 @@ active: true
   </ng-container>
 
 </ion-content>
+
+<ion-footer>
+  <ng-container *ngIf="quadrilles.length > 1 && activeQuadrille">
+    <ion-button color="success" expand="block" (click)="activeQuadrille = null">
+      <ion-icon slot="start" name="arrow-back"></ion-icon>
+      Cuadrillas
+    </ion-button>
+  </ng-container>
+</ion-footer>

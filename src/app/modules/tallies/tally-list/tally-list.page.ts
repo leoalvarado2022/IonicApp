@@ -9,9 +9,9 @@ import {Quadrille} from '@primetec/primetec-angular';
 })
 export class TallyListPage implements OnInit {
 
-  private quadrilles: Array<Quadrille> = [];
   private workers: Array<any> = [];
 
+  public quadrilles: Array<Quadrille> = [];
   public filteredQuadrilles: Array<Quadrille> = [];
   public filteredWorkers: Array<any> = [];
   public activeQuadrille: Quadrille = null;
@@ -70,9 +70,23 @@ export class TallyListPage implements OnInit {
     }
   };
 
-  searchTally(value: any) {
-
-  }
+  /**
+   * searchTally
+   * @param search
+   */
+  public searchTally = (search: string) => {
+    if (search) {
+      this.filteredWorkers = this.getWorkersFilteredByQuadrille().filter(item => {
+        return (
+          item.id.toString().includes(search.toLowerCase()) ||
+          item.identifier.toLowerCase().includes(search.toLowerCase()) ||
+          item.name.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    } else {
+      this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+    }
+  };
 
   /**
    * cancelSearch
@@ -96,6 +110,18 @@ export class TallyListPage implements OnInit {
    */
   public selectQuadrille = (quadrille: Quadrille) => {
     this.activeQuadrille = quadrille;
-    this.filteredWorkers = this.workers.filter(item => item.quadrille === this.activeQuadrille.id);
+    this.filteredQuadrilles = this.quadrilles;
+    this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+  };
+
+  /**
+   * getWorkersFilteredByQuadrille
+   */
+  public getWorkersFilteredByQuadrille = (): Array<any> => {
+    if (this.activeQuadrille) {
+      return this.workers.filter(item => item.quadrille === this.activeQuadrille.id);
+    }
+
+    return [];
   };
 }

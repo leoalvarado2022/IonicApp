@@ -117,7 +117,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    */
   public closeModal = (status: boolean = false) => {
     this.modalController.dismiss(status);
-  }
+  };
 
   /**
    * submit
@@ -141,7 +141,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     } else {
       this.isSaving = false;
     }
-  }
+  };
 
   /**
    * showUnitName
@@ -149,7 +149,7 @@ export class HarvestEstimateFormComponent implements OnInit {
   public showUnitName = () => {
     const find = this.units.find(item => item.id === this.costCenter.controlUnit);
     return find ? find.code : 'N/A';
-  }
+  };
 
   /**
    * workHolidaysEvent
@@ -161,7 +161,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     });
 
     this.harvestForm.updateValueAndValidity();
-  }
+  };
 
   /**
    * getSelectedProcessPlant
@@ -174,7 +174,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     }
 
     return '';
-  }
+  };
 
   /**
    * getSelectedDestination
@@ -187,7 +187,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     }
 
     return '';
-  }
+  };
 
   /**
    * loadData
@@ -199,7 +199,7 @@ export class HarvestEstimateFormComponent implements OnInit {
 
     this.preSelectProcessPlant();
     this.preSelectDestination();
-  }
+  };
 
   /**
    * storeEstimation
@@ -216,7 +216,7 @@ export class HarvestEstimateFormComponent implements OnInit {
       this.isSaving = false;
       this.httpService.errorHandler(error);
     });
-  }
+  };
 
   /**
    * calculateEndDate
@@ -249,7 +249,7 @@ export class HarvestEstimateFormComponent implements OnInit {
 
       this.harvestForm.updateValueAndValidity();
     }
-  }
+  };
 
   /**
    * cleanDate
@@ -261,7 +261,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     }
 
     return date;
-  }
+  };
 
   /**
    * computeEndDate
@@ -280,7 +280,7 @@ export class HarvestEstimateFormComponent implements OnInit {
     }
 
     return momentDate;
-  }
+  };
 
   /**
    * cleanParseNumber
@@ -288,7 +288,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    */
   private cleanParseNumber = (value: string): number => {
     return parseInt(String(value).replace('.', ''), 10);
-  }
+  };
 
   /**
    * preSelectProcessPlant
@@ -301,7 +301,7 @@ export class HarvestEstimateFormComponent implements OnInit {
 
       this.harvestForm.updateValueAndValidity();
     }
-  }
+  };
 
   /**
    * preSelectDestination
@@ -314,6 +314,6 @@ export class HarvestEstimateFormComponent implements OnInit {
 
       this.harvestForm.updateValueAndValidity();
     }
-  }
+  };
 
 }

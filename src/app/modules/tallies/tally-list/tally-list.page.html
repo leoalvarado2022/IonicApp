@@ -12,7 +12,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
+<ng-container *ngIf="!activeQuadrille && filteredQuadrilles.length > 1">
   <ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 </ng-container>
 
@@ -31,7 +31,7 @@
   </ion-refresher>
 
 
-  <ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
+  <ng-container *ngIf="!activeQuadrille && filteredQuadrilles.length > 1">
     <h2 class="ion-text-center">
       Cuadrillas
 

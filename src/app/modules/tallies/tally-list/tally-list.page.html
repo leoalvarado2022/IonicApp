@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Tarjas</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
+  <ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+</ng-container>
+
+<ng-container *ngIf="activeQuadrille">
+  <ion-searchbar placeholder="Buscar..." (ionChange)="searchTally($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+</ng-container>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Cargando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- CUADRILLAS -->
+  <ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
+    <h2 class="ion-text-center">
+      Cuadrillas
+
+      <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+    </h2>
+
+    <ion-list>
+      <ion-virtual-scroll [items]="filteredQuadrilles">
+        <ion-item (click)="selectQuadrille(quadrille)" *virtualItem="let quadrille" detail="true">
+          <ion-icon name="clipboard" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ quadrille.name }}</h2>
+            <p class="label-padding">{{ quadrille.responsibleName }}</p>
+            <p class="label-padding">
+              <ion-badge color="primary">
+                {{ getQuadrilleWorkers(quadrille.id) }} Personas
+              </ion-badge>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-virtual-scroll>
+    </ion-list>
+  </ng-container>
+
+  <!-- TRABAJADORES -->
+  <ng-container *ngIf="activeQuadrille">
+    <h2 class="ion-text-center">
+      Trabajadores
+
+      <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
+    </h2>
+
+    <ion-item>
+      <ion-button size="small" fill="clear" slot="start" (click)="moveDayOnDate(-1)">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+      </ion-button>
+      <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
+      <ion-button size="small" fill="clear" slot="end" (click)="moveDayOnDate(1)">
+        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-list>
+      <ion-virtual-scroll [items]="filteredWorkers">
+        <ion-item (click)="markWorker(worker)" *virtualItem="let worker" detail="true" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ worker.name }}</h2>
+            <p class="label-padding">{{ worker.identifier | rut }}</p>
+            <p class="label-padding">
+              <ion-badge color="primary">
+                0 JR
+              </ion-badge>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-virtual-scroll>
+    </ion-list>
+  </ng-container>
+
+</ion-content>
+
+<ion-footer>
+  <ng-container *ngIf="selectedWorkers.length === 0 && quadrilles.length > 1 && activeQuadrille">
+    <ion-button color="success" expand="block" (click)="activeQuadrille = null">
+      <ion-icon slot="start" name="arrow-back"></ion-icon>
+      Cuadrillas
+    </ion-button>
+  </ng-container>
+
+  <ng-container *ngIf="selectedWorkers.length > 0">
+    <ion-row>
+      <ion-col>
+        <ion-button color="success" expand="block">
+          <ion-icon slot="start" name="arrow-back"></ion-icon>
+          Agregar
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button color="success" expand="block">
+          <ion-icon slot="start" name="arrow-back"></ion-icon>
+          Modificar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+</ion-footer>

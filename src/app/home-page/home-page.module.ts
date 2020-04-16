@@ -76,7 +76,11 @@ const routes: Routes = [
       },
       {
         path: 'tarja_asociarnfc',
-        loadChildren: () => import('../modules/associate/nfc/nfc.module').then( m => m.NfcPageModule)
+        loadChildren: () => import('../modules/associate/nfc/nfc.module').then(m => m.NfcPageModule)
+      },
+      {
+        path: 'tarja_tarjas',
+        loadChildren: () => import('../modules/tallies/tally-list/tally-list.module').then(module => module.TallyListPageModule)
       }
     ]
   },

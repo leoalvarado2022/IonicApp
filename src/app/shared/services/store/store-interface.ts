@@ -72,4 +72,5 @@ export interface TicketForm {
 
 export interface ToRecord {
   preContracts: Array<any>;
+  preDevices: Array<any>;
 }

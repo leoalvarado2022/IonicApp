@@ -99,6 +99,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
       pushToken: null,
       toRecord: {
         preContracts: [],
+        preDevices: []
       }
     };
   };
@@ -1119,6 +1120,31 @@ export class StoreService extends ObservableStore<StoreInterface> {
       preContracts.push(preContract);
       const toRecord = {...this.getState().toRecord, preContracts};
       this.setState({toRecord}, StoreActions.AddPreContract);
+    }
+  };
+
+
+  /**
+   * getPreDevicesToRecord
+   */
+  public getPreDevicesToRecord = (): Array<any> => {
+    return this.getState().toRecord.preDevices;
+  };
+
+  /**
+   * setPreDevices
+   * @param setPreDevices
+   */
+  public setPreDevices = (preDevice: any): void => {
+    const preDevices = this.getPreDevicesToRecord();
+
+    console.log(preDevices);
+    const checkDuplicate = preDevices.find(item => item.id_device === preDevice.id_device);
+
+    if (checkDuplicate === undefined) {
+      preDevices.push(preDevice);
+      const toRecord = {...this.getState().toRecord, preDevices};
+      this.setState({toRecord}, StoreActions.AddPreDevices);
     }
   };
 

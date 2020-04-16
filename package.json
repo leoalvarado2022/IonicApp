@@ -45,7 +45,7 @@
     "@ionic/storage": "^2.2.0",
     "@primetec/primetec-angular": "^0.0.20",
     "build": "0.1.4",
-    "cordova-android": "8.1.0",
+    "cordova-android": "^8.1.0",
     "cordova-ios": "5.1.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-androidx": "^1.0.2",

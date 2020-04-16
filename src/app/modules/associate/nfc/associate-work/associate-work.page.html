@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Buscar Trabajador</strong>
+    </ion-title>
+    <ion-buttons slot="end" (click)="closeWork()" class="closeModal closeModalWork">
+      <ion-icon name="close-circle-outline"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-searchbar placeholder="Buscar..." (ionChange)="searchWork($event.target.value)" (ionClear)="cancelWork()" animated class="production" showCancelButton="never"></ion-searchbar>
+
+<ion-content>
+
+  <ion-grid>
+    <ion-row *ngIf="filtered.length">
+      <ion-card  *ngFor="let worker of filtered" (click)="onPress(worker)">
+        <ion-card-content>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="2">
+              <img src="assets/imgs/cuadrillas-icon-item.png">
+            </ion-col>
+            <ion-col size="10">
+              <div class="title-row" style="font-size: 18px;">{{worker.names}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+
+    </ion-row>
+  </ion-grid>
+
+
+</ion-content>

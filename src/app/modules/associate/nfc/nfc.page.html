@@ -13,18 +13,16 @@
 </ion-header>
 
 <ion-content>
-
-
   <h2 class="ion-text-center">
     NFC
   </h2>
 
-  <ion-grid padding *ngIf="selected.length > 0 || scanning">
+  <ion-grid class="ion-padding" *ngIf="selected.length > 0 || scanning">
     <ion-row *ngIf="!scanning">
-      <ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize" *ngIf="!isDelete" ion-button text-capitalize>Asociar
+      <ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize" (click)="associateWork()" *ngIf="!isDelete" ion-button>Asociar
         a trabajador
       </ion-button>
-      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize" *ngIf="isDelete" ion-button text-capitalize>Desasociar a
+      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize" *ngIf="isDelete" ion-button (click)="deassociateWork()">Desasociar a
         trabajador
       </ion-button>
     </ion-row>
@@ -45,9 +43,9 @@
   <ion-grid>
     <ion-row *ngIf="scanned.length">
       <ion-card *ngFor="let device of scanned" (click)="onPress(device)"
-                [class.selected]="selected.indexOf(device) > -1">
+                [class.selected]="selected === device">
         <ion-card-content>
-          <ion-row align-items-center>
+          <ion-row class="ion-align-items-center">
             <ion-col size="2">
               <img src="assets/imgs/deals-icon-item.png">
             </ion-col>

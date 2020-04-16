@@ -30,7 +30,7 @@
     </ion-refresher-content>
   </ion-refresher>
 
-
+  <!-- CUADRILLAS -->
   <ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
     <h2 class="ion-text-center">
       Cuadrillas
@@ -56,30 +56,13 @@
     </ion-list>
   </ng-container>
 
+  <!-- TRABAJADORES -->
   <ng-container *ngIf="activeQuadrille">
     <h2 class="ion-text-center">
       Trabajadores
 
       <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
     </h2>
-
-    <!--
-    id: 15
-identifier: "16750292K"
-name: "Troncoso Robles Jorge Andres"
-names: "Jorge Andres"
-firstSurname: "Troncoso"
-secondSurname: "Robles"
-company: 1
-startDate: "2020-01-10T00:00:00.000Z"
-endDate: "2021-01-10T00:00:00.000Z"
-validity: 12
-dailyMax: 1
-quadrille: 2
-quadrilleToApprove: 0
-quadrilleStatus: ""
-active: true
-    -->
 
     <ion-list>
       <ion-virtual-scroll [items]="filteredWorkers">
@@ -97,7 +80,6 @@ active: true
         </ion-item>
       </ion-virtual-scroll>
     </ion-list>
-
   </ng-container>
 
 </ion-content>

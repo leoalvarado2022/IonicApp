@@ -34,6 +34,8 @@ export class TallyListPage implements OnInit {
     this.quadrilles = quadrilles;
     this.filteredQuadrilles = quadrilles;
     this.workers = this.storeService.getWorkers();
+    this.filteredWorkers = this.workers;
+    this.activeQuadrille = null;
 
     if (this.quadrilles.length === 1) {
       this.selectQuadrille(this.quadrilles[0]);

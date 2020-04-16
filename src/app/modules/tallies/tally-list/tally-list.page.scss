@@ -23,3 +23,8 @@ ion-tab-bar {
   --color: white;
   // margin-bottom: 58px;
 }
+
+.workerSelected {
+  --background: var(--ion-color-medium);
+  --color: var(--ion-color-light);
+}

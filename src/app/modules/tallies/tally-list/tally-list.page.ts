@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {Quadrille} from '@primetec/primetec-angular';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-tally-list',
@@ -15,6 +16,11 @@ export class TallyListPage implements OnInit {
   public filteredQuadrilles: Array<Quadrille> = [];
   public filteredWorkers: Array<any> = [];
   public activeQuadrille: Quadrille = null;
+  public selectedWorkers: Array<any> = [];
+
+  public readonly dateFormat = 'DD/MM/YYYY';
+  public readonly maxDate = '2030';
+  public currentDate = moment(moment.utc(new Date())).local().startOf('day').toISOString();
 
   constructor(
     private storeService: StoreService
@@ -36,6 +42,7 @@ export class TallyListPage implements OnInit {
     this.workers = this.storeService.getWorkers();
     this.filteredWorkers = this.workers;
     this.activeQuadrille = null;
+
 
     if (this.quadrilles.length === 1) {
       this.selectQuadrille(this.quadrilles[0]);
@@ -113,6 +120,7 @@ export class TallyListPage implements OnInit {
   public selectQuadrille = (quadrille: Quadrille) => {
     this.activeQuadrille = quadrille;
     this.filteredQuadrilles = this.quadrilles;
+    this.selectedWorkers = [];
     this.filteredWorkers = this.getWorkersFilteredByQuadrille();
   };
 
@@ -121,9 +129,49 @@ export class TallyListPage implements OnInit {
    */
   public getWorkersFilteredByQuadrille = (): Array<any> => {
     if (this.activeQuadrille) {
-      return this.workers.filter(item => item.quadrille === this.activeQuadrille.id);
+      return this.workers.filter(item => item.quadrille === this.activeQuadrille.id && this.validContractDate(item));
     }
 
     return [];
   };
+
+  /**
+   * markWorker
+   * @param worker
+   */
+  public markWorker = (worker: any) => {
+    if (this.selectedWorkers.includes(worker)) {
+      const index = this.selectedWorkers.indexOf(worker);
+      this.selectedWorkers.splice(index, 1);
+    } else {
+      this.selectedWorkers.push(worker);
+    }
+  };
+
+  /**
+   * moveDayOnDate
+   * @param move
+   */
+  public moveDayOnDate = (move: number) => {
+    if (this.currentDate) {
+      this.currentDate = moment(this.currentDate).add(move, 'day').toISOString();
+      this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+    }
+  };
+
+  /**
+   * validContractDate
+   * @param worker
+   */
+  public validContractDate = (worker: any): boolean => {
+    if (this.currentDate) {
+      const start = moment(worker.startDate).toISOString();
+      const end = moment(worker.endDate).toISOString();
+
+      return moment(this.currentDate).isBetween(start, end);
+    }
+
+    return false;
+  };
+
 }

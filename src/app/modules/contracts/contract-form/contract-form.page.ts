@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
@@ -6,8 +6,6 @@ import {ValidateRut} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
 import {ContractsService} from '../services/contracts/contracts.service';
-import {NetworkService} from '../../../shared/services/network/network.service';
-import {Subscription} from 'rxjs';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {DocumentScanner} from '@ionic-native/document-scanner/ngx';
@@ -18,7 +16,7 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
   templateUrl: './contract-form.page.html',
   styleUrls: ['./contract-form.page.scss'],
 })
-export class ContractFormPage implements OnInit, OnDestroy {
+export class ContractFormPage implements OnInit {
 
   public currentStep = 1;
   public contractForm: FormGroup;
@@ -34,24 +32,18 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
 
-  private networkStatus = false;
-  private network$: Subscription;
-
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
     private toastService: ToastService,
     private router: Router,
     private contractsService: ContractsService,
-    private networkService: NetworkService,
     private httpService: HttpService,
     private syncService: SyncService,
     private documentScanner: DocumentScanner,
     private loaderService: LoaderService
   ) {
-    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => {
-      this.networkStatus = status;
-    });
+
   }
 
   ngOnInit() {
@@ -79,12 +71,9 @@ export class ContractFormPage implements OnInit, OnDestroy {
       afp: [this.afps.length === 1 ? this.afps[0].id : '', Validators.required],
       isapre: [this.isapres.length === 1 ? this.isapres[0].id : '', Validators.required],
       retired: [false, Validators.required],
-      quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required]
+      quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required],
+      creatorId: [this.activeCompany.user]
     });
-  }
-
-  ngOnDestroy(): void {
-    this.network$.unsubscribe();
   }
 
   /**
@@ -134,13 +123,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
     data.dob = moment(data.dob).format('YYYY-MM-DD');
     data.retired = data.retired ? 1 : 0;
 
-    if (this.networkStatus) {
-      this.recordPreContract(data);
-    } else {
-      // RECORD TO MEMORY
-      this.storeService.addPreContract(data);
-      this.router.navigate(['/home-page/tarja_contrato']);
-    }
+    this.storeService.addPreContract(data);
+    this.router.navigate(['/home-page/tarja_contrato']);
   };
 
   /**

@@ -110,7 +110,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * contractForm
    */
   public contractForm = () => {
-    this.router.navigate(['contract-form']);
+    this.router.navigate(['/home-page/contract-form']);
   };
 
 }

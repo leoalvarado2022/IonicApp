@@ -15,7 +15,6 @@
 <ion-searchbar placeholder="Buscar..." (ionChange)="searchContract($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
-
   <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
@@ -25,11 +24,10 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ng-container *ngIf="filteredContracts.length > 0">
-    <ion-virtual-scroll [items]="filteredContracts">
-      <app-contract-list-item *virtualItem="let contract" [contract]="contract"></app-contract-list-item>
-    </ion-virtual-scroll>
-  </ng-container>
+
+  <ion-virtual-scroll [items]="filteredContracts">
+    <app-contract-list-item *virtualItem="let contract" [contract]="contract"></app-contract-list-item>
+  </ion-virtual-scroll>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="contractForm()">

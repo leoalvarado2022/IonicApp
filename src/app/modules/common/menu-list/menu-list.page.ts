@@ -54,10 +54,6 @@ export class MenuListPage implements OnInit, OnDestroy {
     this.store$.unsubscribe();
   }
 
-  ionViewWillEnter() {
-    this.syncData();
-  }
-
   /**
    * reSync
    * @param event

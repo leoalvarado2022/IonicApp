@@ -26,6 +26,7 @@
     "@codewithdan/observable-store": "^2.2.3",
     "@codewithdan/observable-store-extensions": "^2.2.7",
     "@ionic-native/app-version": "^5.19.1",
+    "@ionic-native/regula-document-reader": "^5.23.0",
     "@ionic-native/camera": "^5.19.1",
     "@ionic-native/chooser": "^5.22.0",
     "@ionic-native/core": "^5.19.1",

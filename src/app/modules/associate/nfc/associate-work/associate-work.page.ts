@@ -51,7 +51,7 @@ export class AssociateWorkPage implements OnInit {
   /**
    * closeModal
    */
-  public closeWork = async (data: any) => {
+  public closeWork = async (data: any = null) => {
     await this.modalController.dismiss({
       'data': data
     });

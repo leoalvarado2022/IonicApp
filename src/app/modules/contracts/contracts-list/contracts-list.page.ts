@@ -1,16 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-contracts-list',
   templateUrl: './contracts-list.page.html',
   styleUrls: ['./contracts-list.page.scss'],
 })
-export class ContractsListPage implements OnInit {
+export class ContractsListPage implements OnInit, OnDestroy {
 
   private contracts: Array<any> = [];
   public filteredContracts: Array<any> = [];
+  private store$: Subscription;
 
   constructor(
     private storeService: StoreService,
@@ -20,11 +22,13 @@ export class ContractsListPage implements OnInit {
   }
 
   ngOnInit() {
-
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      this.loadPreContracts();
+    });
   }
 
-  ionViewWillEnter() {
-    this.loadPreContracts();
+  ngOnDestroy(): void {
+    this.store$.unsubscribe();
   }
 
   /**
@@ -33,11 +37,35 @@ export class ContractsListPage implements OnInit {
   private loadPreContracts = () => {
     const preContracts = this.storeService.getPreContracts();
     const preContractToRecord = this.storeService.getPreContractsToRecord();
+    const contractTypes = this.storeService.getContractTypes();
 
-    console.log({preContracts, preContractToRecord});
+    if (preContractToRecord.length > 0) {
+      const mapped = preContractToRecord.map(item => ({
+          id: item.id,
+          companyId: item.companyId,
+          workerId: item.workerId,
+          workerIdentifier: item.identifier,
+          workerName: item.name,
+          workerLastname: item.lastName,
+          workerSurname: item.sureName,
+          workerCivilStatus: item.civilStatus,
+          countryId: item.nationality,
+          retired: item.retired,
+          quadrilleId: item.quadrille,
+          creatorId: 0,
+          afpId: item.afp,
+          isapreId: item.retired,
+          remunerationContractType: item.contractType,
+          contractTypeName: contractTypes.find(type => type.id === item.contractType).name || 'NO SE ENCUENTRA'
+        })
+      );
 
-    this.contracts = preContracts;
-    this.filteredContracts = preContracts;
+      this.contracts = [...preContracts, ...mapped];
+      this.filteredContracts = [...preContracts, ...mapped];
+    } else {
+      this.contracts = preContracts;
+      this.filteredContracts = preContracts;
+    }
   };
 
   /**
@@ -67,6 +95,10 @@ export class ContractsListPage implements OnInit {
     this.filteredContracts = this.contracts;
   };
 
+  /**
+   * reSync
+   * @param event
+   */
   public reSync = (event: any) => {
     this.contracts = [];
     this.filteredContracts = [];
@@ -78,7 +110,7 @@ export class ContractsListPage implements OnInit {
    * contractForm
    */
   public contractForm = () => {
-    this.router.navigate(['contract-form']);
+    this.router.navigate(['/home-page/contract-form']);
   };
 
 }

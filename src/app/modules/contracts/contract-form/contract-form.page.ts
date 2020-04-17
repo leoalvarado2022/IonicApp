@@ -1,12 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {ValidateRut} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
-
+import {ContractsService} from '../services/contracts/contracts.service';
+import {HttpService} from '../../../shared/services/http/http.service';
+import {SyncService} from '../../../shared/services/sync/sync.service';
+import {RegulaDocumentReader} from '@ionic-native/regula-document-reader/ngx';
+import {LoaderService} from '../../../shared/services/loader/loader.service';
 @Component({
   selector: 'app-contract-form',
   templateUrl: './contract-form.page.html',
@@ -31,9 +34,13 @@ export class ContractFormPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
-    private barcodeScanner: BarcodeScanner,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private contractsService: ContractsService,
+    private httpService: HttpService,
+    private syncService: SyncService,
+    private regulaDocumentReader: RegulaDocumentReader,
+    private loaderService: LoaderService
   ) {
 
   }
@@ -63,7 +70,8 @@ export class ContractFormPage implements OnInit {
       afp: [this.afps.length === 1 ? this.afps[0].id : '', Validators.required],
       isapre: [this.isapres.length === 1 ? this.isapres[0].id : '', Validators.required],
       retired: [false, Validators.required],
-      quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required]
+      quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required],
+      creatorId: [this.activeCompany.user]
     });
   }
 
@@ -71,11 +79,29 @@ export class ContractFormPage implements OnInit {
    * openBarcodeScanner
    */
   public openBarcodeScanner = () => {
+    // this.toastService.errorToast('NO IMPLEMENTADO');
+    this.regulaDocumentReader.initReader('assets/regula.license');
+    this.regulaDocumentReader.scanDocument().then(data => {
+      console.log({data});
+    }).catch(error => {
+      console.log('error :', error);
+    });
+
+    /*
+    this.documentScanner.scanDoc({sourceType: 1}).then(data => {
+      console.log({data});
+    }).catch(err => {
+      this.toastService.errorToast(err);
+    });
+    */
+
+    /*
     this.barcodeScanner.scan().then(barcodeData => {
       console.log('Barcode data', barcodeData);
     }).catch(err => {
       this.toastService.errorToast(err);
     });
+    */
   };
 
   /**
@@ -100,10 +126,45 @@ export class ContractFormPage implements OnInit {
   public submit = () => {
     const data = Object.assign({}, this.contractForm.value);
     data.dob = moment(data.dob).format('YYYY-MM-DD');
+    data.retired = data.retired ? 1 : 0;
 
-    // RECORD TO MEMORY
     this.storeService.addPreContract(data);
     this.router.navigate(['/home-page/tarja_contrato']);
+  };
+
+  /**
+   * recordPreContract
+   * @param data
+   */
+  private recordPreContract = (data: any) => {
+    // PREPARE DATA
+    const preContracts = [];
+    preContracts.push(data);
+
+    this.loaderService.startLoader();
+    this.contractsService.storePreContracts(preContracts).subscribe(success => {
+      this.syncData();
+      this.loaderService.stopLoader();
+      this.router.navigate(['/home-page/tarja_contrato']);
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
+  };
+
+  /**
+   * syncData
+   */
+  private syncData = () => {
+    const userData = this.storeService.getUser();
+    const username = userData.username;
+    const activeConnection = this.storeService.getActiveConnection();
+
+    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
+      this.storeService.setSyncedData(success.data);
+    }, async error => {
+      this.httpService.errorHandler(error);
+    });
   };
 
   /**

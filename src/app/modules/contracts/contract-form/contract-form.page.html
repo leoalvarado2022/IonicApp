@@ -45,7 +45,7 @@
       <ion-item>
         <ion-label>Tipo de Contrato</ion-label>
         <ion-select placeholder="Tipo de Contrato" formControlName="contractType" okText="Seleccionar" cancelText="Cancelar">
-          <ion-select-option [selected]="" *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
+          <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -96,14 +96,20 @@
           <ion-col>
             <ion-item lines="none">
               <ion-label>Hombre</ion-label>
+              <ion-radio slot="start" value="hombre"></ion-radio>
+              <!--
               <ion-radio slot="start" value="hombre" [checked]="contractForm.get('gender').value === 'hombre'"></ion-radio>
+              -->
             </ion-item>
           </ion-col>
 
           <ion-col>
             <ion-item lines="none">
               <ion-label>Mujer</ion-label>
+              <!--
               <ion-radio slot="start" value="mujer" [checked]="contractForm.get('gender').value === 'mujer'"></ion-radio>
+              -->
+              <ion-radio slot="start" value="mujer"></ion-radio>
             </ion-item>
           </ion-col>
         </ion-row>

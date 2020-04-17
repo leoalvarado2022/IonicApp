@@ -10,6 +10,7 @@ import {FCM} from '@ionic-native/fcm/ngx';
 import {ToastService} from './shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
 import {NavigationEnd, Router} from '@angular/router';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -33,11 +34,16 @@ export class AppComponent {
   ) {
     this.initializeApp();
 
-    this.subscription$ = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.storeService.backupState();
-      }
-    });
+    /**
+     * FOR WEB DEVELOPMENT ONLY
+     */
+    if (!environment.production) {
+      this.subscription$ = this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.storeService.backupState();
+        }
+      });
+    }
   }
 
   initializeApp() {

@@ -47,5 +47,5 @@ export enum StoreActions {
   SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
   AddPreContract = 'ADD_PRECONTRACT',
   AddPreDevices = 'ADD_PREDEVICES',
-
+  ClearPreContracts = 'CLEAR_PRECONTRACTS',
 }

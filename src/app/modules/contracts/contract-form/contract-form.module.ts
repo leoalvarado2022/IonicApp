@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {ContractFormPage} from './contract-form.page';
 import {SharedModule} from '../../../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import {RegulaDocumentReader} from '@ionic-native/regula-document-reader/ngx';
 
 const routes: Routes = [
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
   ],
   declarations: [ContractFormPage],
   providers: [
-    BarcodeScanner
+    RegulaDocumentReader
   ]
 })
 export class ContractFormPageModule {

@@ -1149,6 +1149,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
+   * clearPreContractsToRecord
+   */
+  public clearPreContractsToRecord = (): void => {
+    const toRecord = {...this.getState().toRecord, preContracts: []};
+    this.setState({toRecord}, StoreActions.ClearPreContracts);
+  };
+
+  /**
    * END OF OFF-LINE STATE METHODS
    * ================================================================================================================
    * ================================================================================================================

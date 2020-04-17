@@ -91,7 +91,7 @@
         <ion-datetime formControlName="dob" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
       </ion-item>
 
-      <ion-radio-group formGroupName="gender" (ionChange)="changeGenderEvent($event.detail.value)">
+      <ion-radio-group formGroupName="gender" [value]="contractForm.get('gender').value" (ionChange)="changeGenderEvent($event.detail.value)">
         <ion-row>
           <ion-col>
             <ion-item lines="none">

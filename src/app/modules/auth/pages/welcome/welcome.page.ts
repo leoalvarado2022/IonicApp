@@ -61,6 +61,7 @@ export class WelcomePage implements OnInit {
           text: 'Si',
           handler: async () => {
             await this.cleanCache();
+            this.storeService.clearStore();
           }
         }
       ]

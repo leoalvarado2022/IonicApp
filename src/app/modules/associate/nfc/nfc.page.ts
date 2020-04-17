@@ -19,7 +19,7 @@ export class NfcPage implements OnInit, OnDestroy {
   scanned = [];
   $listener: Subscription;
   scanning = false;
-  selected = [];
+  selected;
   isDelete = false;
   list = [];
 
@@ -161,6 +161,8 @@ export class NfcPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       console.log(data, 'dataMOdal');
+
+      this.selected = undefined;
     });
 
     return await modal.present();
@@ -213,7 +215,7 @@ export class NfcPage implements OnInit, OnDestroy {
     }
 
     const devices = [];
-    for (const obj of listToRecord.data) {
+    for (const obj of listToRecord) {
       if (obj.id_device === deleted.id_device && obj.link && obj.id_link === deleted.id_link && deleted.id) {
         obj.id = obj.id * -1;
         obj.status = -1;

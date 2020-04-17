@@ -17,7 +17,7 @@
     NFC
   </h2>
 
-  <ion-grid class="ion-padding" *ngIf="selected.length > 0 || scanning">
+  <ion-grid class="ion-padding" *ngIf="selected || scanning">
     <ion-row *ngIf="!scanning">
       <ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize" (click)="associateWork()" *ngIf="!isDelete" ion-button>Asociar
         a trabajador

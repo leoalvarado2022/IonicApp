@@ -92,7 +92,7 @@ export class MenuListPage implements OnInit, OnDestroy {
       const data = success.data;
       this.storeService.setSyncedData(data);
       this.loaderService.stopLoader();
-    }, async error => {
+    }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });

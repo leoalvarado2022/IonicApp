@@ -2,12 +2,11 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {GeolocationService} from '../shared/services/geolocation/geolocation.service';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
-import {forkJoin, interval, Subscription} from 'rxjs';
+import {BehaviorSubject, interval, Subscription} from 'rxjs';
 import {ContractsService} from '../modules/contracts/services/contracts/contracts.service';
 import {ToastService} from '../shared/services/toast/toast.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
-import {LoaderService} from '../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-home-page',
@@ -17,7 +16,13 @@ import {LoaderService} from '../shared/services/loader/loader.service';
 export class HomePagePage implements OnInit, OnDestroy {
 
   private syncInterval = interval(1000 * 60 * 5);
+  private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  private removePreContracts = false;
+  private removePreContractsToRecord: Array<number> = [];
+
   private syncInterval$: Subscription;
+  private syncStepObservable$: Subscription;
 
   constructor(
     private geolocationService: GeolocationService,
@@ -26,56 +31,82 @@ export class HomePagePage implements OnInit, OnDestroy {
     private contractsService: ContractsService,
     private toastService: ToastService,
     private syncService: SyncService,
-    private httpService: HttpService,
-    private loaderService: LoaderService
+    private httpService: HttpService
   ) {
 
   }
 
   ngOnInit(): void {
     this.storePushToken();
-    this.syncData();
 
     this.syncInterval$ = this.syncInterval.subscribe(data => {
       if (this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }
     });
+
+    this.syncStepObservable$ = this.syncStepObservable.subscribe(step => {
+      if (step === 0) {
+        console.log('syncData step', step);
+        if (this.removePreContracts) {
+          this.storeService.removePreContractsToRecord(this.removePreContractsToRecord);
+          this.removePreContractsToRecord = [];
+          this.removePreContracts = false;
+        }
+        this.syncData();
+      }
+
+      if (step === 1) {
+        console.log('storePreContracts step', step);
+        this.storePreContracts();
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.syncInterval$.unsubscribe();
+    this.syncStepObservable$.unsubscribe();
   }
 
   /**
    * sendToRecord
    */
   private sendToRecord = () => {
-    // Global Object
-    const source = {};
+    this.syncStepObservable.next(1);
+  };
 
+  /**
+   * storePreContracts
+   */
+  private storePreContracts = () => {
     // Pre-Contracts Offline data
     const preContracts = this.storeService.getPreContractsToRecord();
+
     if (preContracts.length > 0) {
-      source['storeService'] = this.contractsService.storePreContracts(preContracts);
-    }
-
-    // Send to save & sync
-    if (Object.keys(source).length > 0) {
-      this.loaderService.startLoader('Guardando datos offline');
-      forkJoin(source).subscribe(success => {
-        this.toastService.successToast('Se guardaron los datos correctamente');
-
-        // CLEAR OFFLINE PRECONTRACTS
-        this.storeService.clearPreContractsToRecord();
-
-        // SYNC AGAIN
-        this.syncData();
-        this.loaderService.stopLoader();
+      this.contractsService.storePreContracts(preContracts).subscribe((success: any) => {
+        this.checkRecordedPreContracts(success.log);
+        this.syncStepObservable.next(0);
       }, error => {
-        this.loaderService.stopLoader();
         this.toastService.errorToast('Ocurrio un error al sincronizar');
       });
+    } else {
+      this.syncStepObservable.next(0);
+    }
+  };
+
+  /**
+   * checkRecordedPreContracts
+   * @param logs
+   */
+  private checkRecordedPreContracts = (logs: Array<any>) => {
+    if (logs.length > 0) {
+      for (const log of logs) {
+        if (log['respuesta'].toLowerCase() === 'ok') {
+          this.removePreContractsToRecord.push(+log['id_parametro']);
+        }
+      }
+
+      this.removePreContracts = true;
     }
   };
 
@@ -89,7 +120,7 @@ export class HomePagePage implements OnInit, OnDestroy {
 
     this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
       this.storeService.setSyncedData(success.data);
-    }, async error => {
+    }, error => {
       this.httpService.errorHandler(error);
     });
   };
@@ -107,5 +138,6 @@ export class HomePagePage implements OnInit, OnDestroy {
       // MAL
     });
   };
+
 
 }

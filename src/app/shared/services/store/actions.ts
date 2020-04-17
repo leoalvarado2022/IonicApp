@@ -43,8 +43,9 @@ export enum StoreActions {
   SetLabors = 'SET_LABORS',
   SetLaborsCostCenter = 'SET_LABORS_COST_CENTER',
   SetDeals = 'SET_DEALS',
+  SetDevices = 'SET_DEVICES',
   SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
   AddPreContract = 'ADD_PRECONTRACT',
+  AddPreDevices = 'ADD_PREDEVICES',
   ClearPreContracts = 'CLEAR_PRECONTRACTS',
-
 }

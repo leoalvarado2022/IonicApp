@@ -47,6 +47,7 @@ export interface Sync {
   laborsCostCenter: Array<any>;
   deals: Array<any>;
   costCentersCustom: Array<any>;
+  devices: Array<any>;
 }
 
 export interface ContractInterface {
@@ -71,4 +72,5 @@ export interface TicketForm {
 
 export interface ToRecord {
   preContracts: Array<any>;
+  preDevices: Array<any>;
 }

@@ -2,7 +2,25 @@ import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
-import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
+import {
+  Caliber,
+  CfgAccess,
+  Company,
+  Connection,
+  CostCenter,
+  CostCenterList,
+  EntityList,
+  Generic,
+  HarvestEstimate,
+  Note,
+  ProductContract,
+  ProductContractDetail,
+  Quadrille,
+  QualityDetail,
+  QualityEstimate,
+  TabMenu,
+  Unit
+} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +28,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({ logStateChanges: false });
+    super({logStateChanges: true});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -57,7 +75,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
         labors: [],
         laborsCostCenter: [],
         deals: [],
-        costCentersCustom: []
+        costCentersCustom: [],
+        devices: []
       },
       contract: {
         activeCostCenter: null,
@@ -80,6 +99,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
       pushToken: null,
       toRecord: {
         preContracts: [],
+        preDevices: []
       }
     };
   };
@@ -459,7 +479,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       labors,
       laborsCostCenter,
       deals,
-      costCentersCustom
+      costCentersCustom,
+      devices
     } = data;
 
     this.setCompanies(companies);
@@ -483,6 +504,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setLaborsCostCenter(laborsCostCenter);
     this.setDeals(deals);
     this.setCostCentersCustom(costCentersCustom);
+    this.setDevices(devices);
   };
 
   /**
@@ -867,6 +889,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     return this.getState().ticket.details;
   };
 
+
   /**
    * END OF TICKET STATE METHODS
    * ================================================================================================================
@@ -1021,7 +1044,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-  /**
+   /**
    * getlaborsCostCenter
    */
   public getDeals = (): Array<any> => {
@@ -1042,6 +1065,23 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public getCostCentersCustom = (): Array<any> => {
     return this.getState().sync.costCentersCustom;
   };
+
+  /**
+   * setDevices
+   * @param ticketDetails
+   */
+  public setDevices = (devices: Array<any>): void => {
+    const sync = {...this.getState().sync, devices};
+    this.setState({sync}, StoreActions.SetDevices);
+  };
+
+  /**
+   * getDevices
+   */
+  public getDevices = (): Array<any> => {
+    return this.getState().sync.devices;
+  };
+
 
   /**
    * END OF PRE-CONTRACT STATE METHODS
@@ -1080,6 +1120,31 @@ export class StoreService extends ObservableStore<StoreInterface> {
       preContracts.push(preContract);
       const toRecord = {...this.getState().toRecord, preContracts};
       this.setState({toRecord}, StoreActions.AddPreContract);
+    }
+  };
+
+
+  /**
+   * getPreDevicesToRecord
+   */
+  public getPreDevicesToRecord = (): Array<any> => {
+    return this.getState().toRecord.preDevices;
+  };
+
+  /**
+   * setPreDevices
+   * @param setPreDevices
+   */
+  public setPreDevices = (preDevice: any): void => {
+    const preDevices = this.getPreDevicesToRecord();
+
+    console.log(preDevices);
+    const checkDuplicate = preDevices.find(item => item.id_device === preDevice.id_device);
+
+    if (checkDuplicate === undefined) {
+      preDevices.push(preDevice);
+      const toRecord = {...this.getState().toRecord, preDevices};
+      this.setState({toRecord}, StoreActions.AddPreDevices);
     }
   };
 

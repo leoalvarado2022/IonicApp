@@ -33,6 +33,7 @@ export enum StoreActions {
   SetTicketPriorities = 'SET_TICKET_PRIORITIES',
   SetTicketDetails = 'SET_TICKET_DETAILS',
   SetPushToken = 'SET_PUSH_TOKEN',
+  SetTallies = 'SET_TALLIES',
 
   SetPreContracts = 'SET_PRE_CONTRACTS',
   SetCountries = 'SET_COUNTRIES',
@@ -45,6 +46,7 @@ export enum StoreActions {
   SetDeals = 'SET_DEALS',
   SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
   AddPreContract = 'ADD_PRECONTRACT',
-  ClearPreContracts = 'CLEAR_PRECONTRACTS',
+  RemovePreContracts = 'REMOVE_PRECONTRACT',
+  IncreasePreContractTempId = 'INCREASE_PRECONTRACT_TEMP_ID'
 
 }

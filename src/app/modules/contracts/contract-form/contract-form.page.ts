@@ -10,6 +10,7 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {RegulaDocumentReader} from '@ionic-native/regula-document-reader/ngx';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+
 @Component({
   selector: 'app-contract-form',
   templateUrl: './contract-form.page.html',
@@ -30,6 +31,7 @@ export class ContractFormPage implements OnInit {
   private activeCompany: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
+  private tempId: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,20 +41,13 @@ export class ContractFormPage implements OnInit {
     private contractsService: ContractsService,
     private httpService: HttpService,
     private syncService: SyncService,
-    private regulaDocumentReader: RegulaDocumentReader,
-    private loaderService: LoaderService
+    private regulaDocumentReader: RegulaDocumentReader
   ) {
 
   }
 
   ngOnInit() {
-    this.nationalities = this.storeService.getCountries();
-    this.contractTypes = this.storeService.getContractTypes();
-    this.civilStatus = this.storeService.getCivilStatus();
-    this.afps = this.storeService.getAfps();
-    this.isapres = this.storeService.getIsapres();
-    this.quadrilles = this.storeService.getQuadrilles();
-    this.activeCompany = this.storeService.getActiveCompany();
+    this.loadData();
 
     this.contractForm = this.formBuilder.group({
       id: [0],
@@ -71,9 +66,24 @@ export class ContractFormPage implements OnInit {
       isapre: [this.isapres.length === 1 ? this.isapres[0].id : '', Validators.required],
       retired: [false, Validators.required],
       quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required],
-      creatorId: [this.activeCompany.user]
+      creatorId: [this.activeCompany.user],
+      tempId: [this.tempId]
     });
   }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    this.nationalities = this.storeService.getCountries();
+    this.contractTypes = this.storeService.getContractTypes();
+    this.civilStatus = this.storeService.getCivilStatus();
+    this.afps = this.storeService.getAfps();
+    this.isapres = this.storeService.getIsapres();
+    this.quadrilles = this.storeService.getQuadrilles();
+    this.activeCompany = this.storeService.getActiveCompany();
+    this.tempId = this.storeService.getPrecontractTempId();
+  };
 
   /**
    * openBarcodeScanner
@@ -86,22 +96,6 @@ export class ContractFormPage implements OnInit {
     }).catch(error => {
       console.log('error :', error);
     });
-
-    /*
-    this.documentScanner.scanDoc({sourceType: 1}).then(data => {
-      console.log({data});
-    }).catch(err => {
-      this.toastService.errorToast(err);
-    });
-    */
-
-    /*
-    this.barcodeScanner.scan().then(barcodeData => {
-      console.log('Barcode data', barcodeData);
-    }).catch(err => {
-      this.toastService.errorToast(err);
-    });
-    */
   };
 
   /**
@@ -130,41 +124,6 @@ export class ContractFormPage implements OnInit {
 
     this.storeService.addPreContract(data);
     this.router.navigate(['/home-page/tarja_contrato']);
-  };
-
-  /**
-   * recordPreContract
-   * @param data
-   */
-  private recordPreContract = (data: any) => {
-    // PREPARE DATA
-    const preContracts = [];
-    preContracts.push(data);
-
-    this.loaderService.startLoader();
-    this.contractsService.storePreContracts(preContracts).subscribe(success => {
-      this.syncData();
-      this.loaderService.stopLoader();
-      this.router.navigate(['/home-page/tarja_contrato']);
-    }, error => {
-      this.loaderService.stopLoader();
-      this.httpService.errorHandler(error);
-    });
-  };
-
-  /**
-   * syncData
-   */
-  private syncData = () => {
-    const userData = this.storeService.getUser();
-    const username = userData.username;
-    const activeConnection = this.storeService.getActiveConnection();
-
-    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
-      this.storeService.setSyncedData(success.data);
-    }, async error => {
-      this.httpService.errorHandler(error);
-    });
   };
 
   /**

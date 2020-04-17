@@ -96,24 +96,37 @@
 
 <ion-footer>
   <ng-container *ngIf="selectedWorkers.length === 0 && quadrilles.length > 1 && activeQuadrille">
-    <ion-button color="success" expand="block" (click)="activeQuadrille = null">
+    <ion-button color="primary" expand="block" (click)="activeQuadrille = null">
       <ion-icon slot="start" name="arrow-back"></ion-icon>
       Cuadrillas
     </ion-button>
   </ng-container>
 
   <ng-container *ngIf="selectedWorkers.length > 0">
-    <ion-row>
-      <ion-col>
-        <ion-button color="success" expand="block">
-          <ion-icon slot="start" name="arrow-back"></ion-icon>
-          Agregar
+    <ion-row *ngIf="selectedWorkers.length === 1">
+      <ion-col size="6">
+        <ion-button color="primary" expand="block">
+          Agregar Jornada
         </ion-button>
       </ion-col>
-      <ion-col>
+
+      <ion-col size="6">
         <ion-button color="success" expand="block">
-          <ion-icon slot="start" name="arrow-back"></ion-icon>
-          Modificar
+          Listado de Jornadas
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="selectedWorkers.length > 1">
+      <ion-col size="6">
+        <ion-button color="primary" expand="block">
+          Agregar Masivo
+        </ion-button>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-button color="success" expand="block">
+          Modificar Masivo
         </ion-button>
       </ion-col>
     </ion-row>

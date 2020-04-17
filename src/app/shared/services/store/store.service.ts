@@ -10,7 +10,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({ logStateChanges: false });
+    super({logStateChanges: true});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -57,7 +57,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
         labors: [],
         laborsCostCenter: [],
         deals: [],
-        costCentersCustom: []
+        costCentersCustom: [],
+        tallies: []
       },
       contract: {
         activeCostCenter: null,
@@ -79,6 +80,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
       },
       pushToken: null,
       toRecord: {
+        preContractTempId: 1,
         preContracts: [],
       }
     };
@@ -434,6 +436,22 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
+   * setTallies
+   * @param tallies
+   */
+  public setTallies = (tallies: Array<any>): void => {
+    const sync = {...this.getState().sync, tallies};
+    this.setState({sync}, StoreActions.SetTallies);
+  };
+
+  /**
+   * getTallies
+   */
+  public getTallies = (): Array<any> => {
+    return this.getState().sync.tallies;
+  };
+
+  /**
    * setSyncedData
    * @param data
    */
@@ -459,7 +477,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       labors,
       laborsCostCenter,
       deals,
-      costCentersCustom
+      costCentersCustom,
+      tallies
     } = data;
 
     this.setCompanies(companies);
@@ -483,6 +502,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setLaborsCostCenter(laborsCostCenter);
     this.setDeals(deals);
     this.setCostCentersCustom(costCentersCustom);
+    this.setTallies(tallies);
   };
 
   /**
@@ -1021,7 +1041,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-  /**
+   /**
    * getlaborsCostCenter
    */
   public getDeals = (): Array<any> => {
@@ -1080,15 +1100,38 @@ export class StoreService extends ObservableStore<StoreInterface> {
       preContracts.push(preContract);
       const toRecord = {...this.getState().toRecord, preContracts};
       this.setState({toRecord}, StoreActions.AddPreContract);
+
+      this.increaseTempId();
     }
   };
 
   /**
-   * clearPreContractsToRecord
+   * getPrecontractTempId
    */
-  public clearPreContractsToRecord = (): void => {
-    const toRecord = {...this.getState().toRecord, preContracts: []};
-    this.setState({toRecord}, StoreActions.ClearPreContracts);
+  public getPrecontractTempId(): number {
+    return this.getState().toRecord.preContractTempId;
+  }
+
+  /**
+   * increaseTempId
+   */
+  public increaseTempId = (): void => {
+    const current = this.getPrecontractTempId();
+
+    const toRecord = {...this.getState().toRecord, preContractTempId: (current + 1)};
+    this.setState({toRecord}, StoreActions.IncreasePreContractTempId);
+  };
+
+  /**
+   * removePreContractsToRecord
+   * @param index
+   */
+  public removePreContractsToRecord = (indexes: Array<number>): void => {
+    const preContracts = this.getPreContractsToRecord();
+    const toRemoved = preContracts.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, preContracts: toRemoved};
+    this.setState({toRecord}, StoreActions.RemovePreContracts);
   };
 
   /**

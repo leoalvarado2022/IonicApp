@@ -20,7 +20,7 @@
         *ngFor="let company of companies"
         [ngClass]="{'company-active': company.id === selectedCompany.id, 'company-inactive': company.id !== selectedCompany.id}"
       >
-        <ion-icon [color]="company.id === selectedCompany.id ? 'success': 'danger'" name="switch" slot="start"></ion-icon>
+        <ion-icon [color]="company.id === selectedCompany.id ? 'success': 'danger'" name="business" slot="start"></ion-icon>
         <ion-label>{{ company.name }}</ion-label>
       </ion-item>
     </ion-list>

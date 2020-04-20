@@ -67,11 +67,12 @@ export class NfcPage implements OnInit, OnDestroy {
 
     // si es escritorio o web no deja
     if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      this.notSupported = true;
       return;
     }
 
     // ios no deja usar NFC
-    if (this.platform.is('ios')) {
+    if (this.platform.is('cordova')) {
       this.notSupported = true;
       return;
     } else {

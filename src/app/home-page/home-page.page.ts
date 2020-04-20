@@ -40,6 +40,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     this.storePushToken();
 
     this.syncInterval$ = this.syncInterval.subscribe(data => {
+      // agregar status de online
       if (this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }

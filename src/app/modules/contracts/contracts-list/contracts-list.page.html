@@ -15,15 +15,15 @@
 <ion-searchbar placeholder="Buscar..." (ionChange)="searchContract($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
+
   <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
     <ion-refresher-content
-      pullingIcon="arrow-dropdown"
+      pullingIcon="arrow-down"
       pullingText="Pull to refresh"
       refreshingSpinner="circles"
       refreshingText="Sincronizando...">
     </ion-refresher-content>
   </ion-refresher>
-
 
   <ion-virtual-scroll [items]="filteredContracts">
     <app-contract-list-item *virtualItem="let contract" [contract]="contract"></app-contract-list-item>

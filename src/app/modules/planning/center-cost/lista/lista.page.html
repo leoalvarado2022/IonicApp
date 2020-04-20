@@ -1,9 +1,16 @@
 <ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
-  <ng-container>
-    <ion-virtual-scroll [items]="filteredCostCenters">
-      <app-cost-center-card (cardClicked)="costCenterSelected($event)" *virtualItem="let item" [costCenter]="item"></app-cost-center-card>
-    </ion-virtual-scroll>
-  </ng-container>
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+      pullingIcon="arrow-down"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Sincronizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-virtual-scroll [items]="filteredCostCenters">
+    <app-cost-center-card (cardClicked)="costCenterSelected($event)" *virtualItem="let item" [costCenter]="item"></app-cost-center-card>
+  </ion-virtual-scroll>
 </ion-content>

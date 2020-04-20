@@ -797,12 +797,12 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
           if (index < limit) {
             return Object.assign({}, item, {
-              arrow: arr[index][field] > arr[index + 1][field] ? 'arrow-round-up' : 'arrow-round-down',
+              arrow: arr[index][field] > arr[index + 1][field] ? 'arrow-up' : 'arrow-down',
               color: arr[index][field] > arr[index + 1][field] ? 'primary' : 'danger'
             });
           } else {
             return Object.assign({}, item, {
-              arrow: '',
+              arrow: 'remove',
               color: 'default'
             });
           }

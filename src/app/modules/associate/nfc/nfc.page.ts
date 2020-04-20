@@ -19,7 +19,7 @@ export class NfcPage implements OnInit, OnDestroy {
   scanned = [];
   $listener: Subscription;
   scanning = false;
-  selected = [];
+  selected;
   isDelete = false;
   list = [];
 
@@ -37,7 +37,9 @@ export class NfcPage implements OnInit, OnDestroy {
    * desacativar audios y unsuscribe data de la lista
    */
   ngOnDestroy(): void {
-    this.$listener.unsubscribe();
+    if (this.$listener) {
+      this.$listener.unsubscribe();
+    }
     this.nativeAudio.unload('beep').then(() => {
     });
     this.nativeAudio.unload('error').then(() => {
@@ -67,16 +69,17 @@ export class NfcPage implements OnInit, OnDestroy {
 
     // si es escritorio o web no deja
     if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      this.notSupported = true;
       return;
     }
 
     // ios no deja usar NFC
-    if (this.platform.is('ios')) {
-      this.notSupported = true;
-      return;
-    } else {
-      this.openNFCScanner();
-    }
+    // if (this.platform.is('ios')) {
+    //   this.notSupported = true;
+    //   return;
+    // } else {
+    this.openNFCScanner();
+    // }
   }
 
   /**
@@ -91,15 +94,24 @@ export class NfcPage implements OnInit, OnDestroy {
     if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
       return;
     }
+
     this.$listener =
       this.nfc
-        .addTagDiscoveredListener()
+        .addTagDiscoveredListener(success => console.log(success, 'success'), onFailure => {
+          if (onFailure === 'NFC_DISABLED') {
+            this.notSupported = true;
+          }
+          console.log(onFailure, 'onFailure');
+        })
         .subscribe(event => {
           // conseguir el id del tag
           const id = this.nfc.bytesToHexString(event.tag.id);
 
           // guardar y transformar data para guardar
           this.pullDevice(id, event.type.toUpperCase());
+        }, error => {
+          console.log(error, 'error');
+          this.notSupported = true;
         });
   }
 
@@ -161,6 +173,8 @@ export class NfcPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       console.log(data, 'dataMOdal');
+
+      this.selected = undefined;
     });
 
     return await modal.present();
@@ -213,7 +227,7 @@ export class NfcPage implements OnInit, OnDestroy {
     }
 
     const devices = [];
-    for (const obj of listToRecord.data) {
+    for (const obj of listToRecord) {
       if (obj.id_device === deleted.id_device && obj.link && obj.id_link === deleted.id_link && deleted.id) {
         obj.id = obj.id * -1;
         obj.status = -1;

@@ -106,6 +106,10 @@ export class StoreService extends ObservableStore<StoreInterface> {
     };
   };
 
+  public clearStore() {
+    this.setState(this.buildInitialState, 'INIT_STATE');
+  }
+
   /**
    * @description set user remember
    * @param user

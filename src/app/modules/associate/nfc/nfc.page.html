@@ -19,10 +19,12 @@
 
   <ion-grid class="ion-padding" *ngIf="selected || scanning">
     <ion-row *ngIf="!scanning">
-      <ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize" (click)="associateWork()" *ngIf="!isDelete" ion-button>Asociar
+      <ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize" (click)="associateWork()"
+                  *ngIf="!isDelete" ion-button>Asociar
         a trabajador
       </ion-button>
-      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize" *ngIf="isDelete" ion-button (click)="deassociateWork()">Desasociar a
+      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize" *ngIf="isDelete" ion-button
+                  (click)="deassociateWork()">Desasociar a
         trabajador
       </ion-button>
     </ion-row>
@@ -33,11 +35,24 @@
   </ion-grid>
 
   <ion-grid>
-    <ion-row *ngIf="!scanned.length && !notSupported">
+    <ion-row *ngIf="!scanned.length && !notSupported; else notSupportedElse">
       <ion-col col-12>
-        <ion-button color="warning" size="large" expand="full" class="ion-text-capitalize"> <ion-spinner style="position: absolute;left: 15%;"></ion-spinner> Buscando Dispositivos</ion-button>
+        <ion-button color="warning" size="large" expand="full" class="ion-text-capitalize">
+          <ion-spinner style="position: absolute;left: 15%;"></ion-spinner>
+          Buscando Dispositivos
+        </ion-button>
       </ion-col>
     </ion-row>
+
+    <ng-template #notSupportedElse>
+      <ion-row *ngIf="notSupported">
+        <ion-col col-12>
+          <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize">
+            Dispositivo no soporta NFC
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ng-template>
   </ion-grid>
 
   <ion-grid>

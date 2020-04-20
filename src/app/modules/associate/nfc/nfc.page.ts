@@ -37,7 +37,9 @@ export class NfcPage implements OnInit, OnDestroy {
    * desacativar audios y unsuscribe data de la lista
    */
   ngOnDestroy(): void {
-    this.$listener.unsubscribe();
+    if (this.$listener) {
+      this.$listener.unsubscribe();
+    }
     this.nativeAudio.unload('beep').then(() => {
     });
     this.nativeAudio.unload('error').then(() => {
@@ -72,12 +74,12 @@ export class NfcPage implements OnInit, OnDestroy {
     }
 
     // ios no deja usar NFC
-    if (this.platform.is('cordova')) {
-      this.notSupported = true;
-      return;
-    } else {
-      this.openNFCScanner();
-    }
+    // if (this.platform.is('ios')) {
+    //   this.notSupported = true;
+    //   return;
+    // } else {
+    this.openNFCScanner();
+    // }
   }
 
   /**
@@ -92,15 +94,24 @@ export class NfcPage implements OnInit, OnDestroy {
     if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
       return;
     }
+
     this.$listener =
       this.nfc
-        .addTagDiscoveredListener()
+        .addTagDiscoveredListener(success => console.log(success, 'success'), onFailure => {
+          if (onFailure === 'NFC_DISABLED') {
+            this.notSupported = true;
+          }
+          console.log(onFailure, 'onFailure');
+        })
         .subscribe(event => {
           // conseguir el id del tag
           const id = this.nfc.bytesToHexString(event.tag.id);
 
           // guardar y transformar data para guardar
           this.pullDevice(id, event.type.toUpperCase());
+        }, error => {
+          console.log(error, 'error');
+          this.notSupported = true;
         });
   }
 

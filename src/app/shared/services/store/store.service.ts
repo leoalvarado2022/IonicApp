@@ -2,25 +2,7 @@ import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
-import {
-  Caliber,
-  CfgAccess,
-  Company,
-  Connection,
-  CostCenter,
-  CostCenterList,
-  EntityList,
-  Generic,
-  HarvestEstimate,
-  Note,
-  ProductContract,
-  ProductContractDetail,
-  Quadrille,
-  QualityDetail,
-  QualityEstimate,
-  TabMenu,
-  Unit
-} from '@primetec/primetec-angular';
+import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -1027,7 +1009,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public getIsapres = (): Array<any> => {
     return this.getState().sync.isapres;
   };
-
 
   /**
    * @param labors

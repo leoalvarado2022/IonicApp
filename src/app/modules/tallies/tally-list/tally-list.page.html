@@ -17,7 +17,7 @@
 </ng-container>
 
 <ng-container *ngIf="activeQuadrille">
-  <ion-searchbar placeholder="Buscar..." (ionChange)="searchTally($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+  <ion-searchbar placeholder="Buscar..." (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 </ng-container>
 
 <ion-content>
@@ -57,7 +57,7 @@
   </ng-container>
 
   <!-- TRABAJADORES -->
-  <ng-container *ngIf="activeQuadrille">
+  <ng-container *ngIf="activeQuadrille && !activeWorker">
     <h2 class="ion-text-center">
       Trabajadores
 
@@ -92,6 +92,44 @@
     </ion-list>
   </ng-container>
 
+  <ng-container *ngIf="activeWorker">
+    <h3 class="ion-text-center">
+      {{ activeWorker.name }}
+    </h3>
+    <h4 class="ion-text-center">
+      Total Jornadas
+      <ion-badge class="quadrille-badge" color="primary">{{ filteredTallies.length }}</ion-badge>
+    </h4>
+
+    <ion-virtual-scroll [items]="filteredTallies">
+      <ion-card *virtualItem="let tally">
+        <ion-item>
+          <ion-icon name="reader" slot="start"></ion-icon>
+          <ion-label>{{ getCostCenterName(tally.costCenter) }}</ion-label>
+          <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
+        </ion-item>
+
+        <ion-card-content>
+          <p>
+            Labor: {{ getLaborName(tally.laborId) }}
+            <ion-badge class="ion-float-end" color="primary">
+              {{ tally.hoursExtra }} Hora extra
+            </ion-badge>
+          </p>
+          <p>
+            <strong>Notas:</strong>
+            <ion-badge class="ion-float-end" color="primary">
+              {{ tally.performance }} Unidad Labor
+            </ion-badge>
+          </p>
+          <p>
+            {{ tally.notes }}
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-virtual-scroll>
+  </ng-container>
+
 </ion-content>
 
 <ion-footer>
@@ -103,23 +141,40 @@
   </ng-container>
 
   <ng-container *ngIf="selectedWorkers.length > 0">
-    <ion-row *ngIf="selectedWorkers.length === 1">
+    <!-- One worker selected -->
+    <ion-row *ngIf="selectedWorkers.length === 1 && !activeWorker">
       <ion-col size="6">
-        <ion-button color="primary" expand="block">
+        <ion-button color="primary" expand="block" (click)="createTally()">
           Agregar Jornada
         </ion-button>
       </ion-col>
 
       <ion-col size="6">
-        <ion-button color="success" expand="block">
+        <ion-button color="success" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0])">
           Listado de Jornadas
         </ion-button>
       </ion-col>
     </ion-row>
 
+    <!-- Worker tally list -->
+    <ion-row *ngIf="activeWorker">
+      <ion-col size="6">
+        <ion-button color="primary" expand="block" (click)="createTally()">
+          Agregar Jornada
+        </ion-button>
+      </ion-col>
+
+      <ion-col size="6">
+        <ion-button color="success" expand="block" (click)="activeWorker = null">
+          Listado de Trabajadores
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <!-- Several workers selected -->
     <ion-row *ngIf="selectedWorkers.length > 1">
       <ion-col size="6">
-        <ion-button color="primary" expand="block">
+        <ion-button color="primary" expand="block" (click)="createTally()">
           Agregar Masivo
         </ion-button>
       </ion-col>

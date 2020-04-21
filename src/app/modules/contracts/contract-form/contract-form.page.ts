@@ -8,8 +8,6 @@ import {Router} from '@angular/router';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
-import {RegulaDocumentReader} from '@ionic-native/regula-document-reader/ngx';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -40,8 +38,7 @@ export class ContractFormPage implements OnInit {
     private router: Router,
     private contractsService: ContractsService,
     private httpService: HttpService,
-    private syncService: SyncService,
-    private regulaDocumentReader: RegulaDocumentReader
+    private syncService: SyncService
   ) {
 
   }
@@ -90,12 +87,14 @@ export class ContractFormPage implements OnInit {
    */
   public openBarcodeScanner = () => {
     // this.toastService.errorToast('NO IMPLEMENTADO');
+    /*
     this.regulaDocumentReader.initReader('assets/regula.license');
     this.regulaDocumentReader.scanDocument().then(data => {
       console.log({data});
     }).catch(error => {
       console.log('error :', error);
     });
+    */
   };
 
   /**

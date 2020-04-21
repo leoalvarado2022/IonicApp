@@ -34,20 +34,24 @@
     </ion-item>
 
     <ion-list>
-      <ion-radio-group (ionChange)="workHolidaysEvent($event.detail.value)">
+      <ion-radio-group [value]="harvestForm.get('workHolidays').value" (ionChange)="workHolidaysEvent($event.detail.value)">
         <ion-list-header>
           <ion-label>Trabaja Festivos ?</ion-label>
         </ion-list-header>
-
-        <ion-item>
-          <ion-label>Si</ion-label>
-          <ion-radio [disabled]="isView" slot="start" value="1"></ion-radio>
-        </ion-item>
-
-        <ion-item>
-          <ion-label>No</ion-label>
-          <ion-radio [disabled]="isView" slot="start" value="0"></ion-radio>
-        </ion-item>
+        <ion-row>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-label>Si</ion-label>
+              <ion-radio [disabled]="isView" slot="start" value="1"></ion-radio>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-label>No</ion-label>
+              <ion-radio [disabled]="isView" slot="start" value="0"></ion-radio>
+            </ion-item>
+          </ion-col>
+        </ion-row>
 
         <ng-container *ngIf="harvestForm.get('workHolidays').dirty && harvestForm.get('workHolidays').hasError('required')">
           <span class="errorMsg">Indique si trabaja los feriados.</span>

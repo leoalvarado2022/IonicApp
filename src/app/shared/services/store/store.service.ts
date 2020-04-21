@@ -10,7 +10,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: true});
+    super({logStateChanges: false});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }

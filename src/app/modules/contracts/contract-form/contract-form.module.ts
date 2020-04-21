@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {ContractFormPage} from './contract-form.page';
 import {SharedModule} from '../../../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
-import {RegulaDocumentReader} from '@ionic-native/regula-document-reader/ngx';
 
 const routes: Routes = [
   {
@@ -16,10 +15,7 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [ContractFormPage],
-  providers: [
-    RegulaDocumentReader
-  ]
+  declarations: [ContractFormPage]
 })
 export class ContractFormPageModule {
 

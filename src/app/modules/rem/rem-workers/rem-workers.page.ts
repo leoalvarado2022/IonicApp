@@ -157,7 +157,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       .filter(item => item !== this.quadrille)
       .map(item => ({
         text: item.name,
-        icon: 'people',
         handler: () => {
           this.transferWorkers(item.id, WorkerStatus['POR APROBAR']);
         }

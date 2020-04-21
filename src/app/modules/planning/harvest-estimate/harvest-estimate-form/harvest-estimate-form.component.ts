@@ -25,14 +25,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   @Input() isView: boolean;
   @Input() previous: HarvestEstimate;
 
-  public readonly processPlantAction: any = {
-    header: 'Plantas de Proceso',
-    keyboardClose: false,
-    backdropDismiss: false
-  };
-
-  public readonly destinationAction: any = {
-    header: 'Destinos',
+  public readonly sheetActions: any = {
+    header: 'Seleccione',
     keyboardClose: false,
     backdropDismiss: false
   };
@@ -171,8 +165,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   public getSelectedProcessPlant = () => {
     if (this.processPlants) {
-      const id = this.harvestForm.get('processPlant').value;
-      const find = this.processPlants.find(item => item.id === id);
+      const find = this.processPlants.find(item => item.id === this.harvestForm.get('processPlant').value);
       return find ? find.name : '';
     }
 
@@ -184,8 +177,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   public getSelectedDestination = () => {
     if (this.destinations) {
-      const id = this.harvestForm.get('destination').value;
-      const find = this.destinations.find(item => item['id'] === id);
+      const find = this.destinations.find(item => item['id'] === this.harvestForm.get('destination').value);
       return find ? find['name'] : '';
     }
 

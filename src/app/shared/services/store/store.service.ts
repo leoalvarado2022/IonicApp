@@ -3,6 +3,7 @@ import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
 import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
+import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: false});
+    super({logStateChanges: !environment.production});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }

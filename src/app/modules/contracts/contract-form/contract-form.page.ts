@@ -31,6 +31,12 @@ export class ContractFormPage implements OnInit {
   public readonly maxDate = '2030';
   private tempId: number;
 
+  public readonly actionHeader: any = {
+    header: 'Seleccione',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,

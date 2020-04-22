@@ -5,9 +5,6 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 import {ValidateRut} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
-import {ContractsService} from '../services/contracts/contracts.service';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {SyncService} from '../../../shared/services/sync/sync.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -41,10 +38,7 @@ export class ContractFormPage implements OnInit {
     private formBuilder: FormBuilder,
     private storeService: StoreService,
     private toastService: ToastService,
-    private router: Router,
-    private contractsService: ContractsService,
-    private httpService: HttpService,
-    private syncService: SyncService
+    private router: Router
   ) {
 
   }
@@ -52,11 +46,14 @@ export class ContractFormPage implements OnInit {
   ngOnInit() {
     this.loadData();
 
+    const findDefault = this.nationalities.find(item => item.default);
+    const onlyOne = this.nationalities.length === 1 ? this.nationalities[0] : '';
+
     this.contractForm = this.formBuilder.group({
       id: [0],
       companyId: [this.activeCompany.id],
       workerId: [0],
-      nationality: [this.nationalities.length === 1 ? this.nationalities[0].id : '', Validators.required],
+      nationality: [findDefault ? findDefault.id : onlyOne, Validators.required],
       contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
       identifier: ['', Validators.required],
       name: ['', Validators.required],
@@ -72,6 +69,8 @@ export class ContractFormPage implements OnInit {
       creatorId: [this.activeCompany.user],
       tempId: [this.tempId]
     });
+
+    this.changeIdentifierValidation(findDefault ? findDefault.id : onlyOne);
   }
 
   /**
@@ -108,14 +107,16 @@ export class ContractFormPage implements OnInit {
    * @param nationalityId
    */
   public changeIdentifierValidation = (nationalityId: number): void => {
-    const find = this.nationalities.find(i => i.id === nationalityId);
+    if (nationalityId) {
+      const find = this.nationalities.find(i => i.id === nationalityId);
 
-    if (find && find.identifierType.toLowerCase() === 'rut') {
-      this.contractForm.get('identifier').setValidators([Validators.required, ValidateRut]);
-      this.contractForm.get('identifier').updateValueAndValidity();
-    } else {
-      this.contractForm.get('identifier').setValidators(Validators.required);
-      this.contractForm.get('identifier').updateValueAndValidity();
+      if (find && find.identifierType.toLowerCase() === 'rut') {
+        this.contractForm.get('identifier').setValidators([Validators.required, ValidateRut]);
+        this.contractForm.get('identifier').updateValueAndValidity();
+      } else {
+        this.contractForm.get('identifier').setValidators(Validators.required);
+        this.contractForm.get('identifier').updateValueAndValidity();
+      }
     }
   };
 

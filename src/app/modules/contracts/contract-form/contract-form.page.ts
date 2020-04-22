@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {ValidateRut} from '@primetec/primetec-angular';
+import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
 
@@ -117,6 +117,8 @@ export class ContractFormPage implements OnInit {
         this.contractForm.get('identifier').setValidators(Validators.required);
         this.contractForm.get('identifier').updateValueAndValidity();
       }
+
+      this.formatIdentifier(this.contractForm.get('identifier').value);
     }
   };
 
@@ -127,6 +129,7 @@ export class ContractFormPage implements OnInit {
     const data = Object.assign({}, this.contractForm.value);
     data.dob = moment(data.dob).format('YYYY-MM-DD');
     data.retired = data.retired ? 1 : 0;
+    data.identifier = cleanRut(data.identifier);
 
     this.storeService.addPreContract(data);
     this.router.navigate(['/home-page/tarja_contrato']);
@@ -140,4 +143,20 @@ export class ContractFormPage implements OnInit {
     this.contractForm.get('gender').patchValue(gender);
   };
 
+  /**
+   * formatIdentifier
+   * @param identifier
+   */
+  public formatIdentifier = (identifier: string): void => {
+    const nationality = this.contractForm.get('nationality').value;
+    if (nationality) {
+      const identifierType = this.nationalities.find(i => i.id === nationality);
+
+      if (identifierType && identifierType.identifierType.toLowerCase() === 'rut') {
+        this.contractForm.get('identifier').patchValue(formatRut(identifier));
+      } else {
+        this.contractForm.get('identifier').patchValue(cleanRut(identifier));
+      }
+    }
+  };
 }

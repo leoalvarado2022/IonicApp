@@ -2,14 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-import {ValidateRut} from '@primetec/primetec-angular';
-import * as moment from 'moment';
+import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
 import {Router} from '@angular/router';
-import {ContractsService} from '../services/contracts/contracts.service';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {SyncService} from '../../../shared/services/sync/sync.service';
-import {RegulaDocumentReader} from '@ionic-native/regula-document-reader/ngx';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-contract-form',
@@ -18,8 +14,8 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 })
 export class ContractFormPage implements OnInit {
 
-  public currentStep = 1;
   public contractForm: FormGroup;
+  public currentStep = 1;
 
   public nationalities: Array<any> = [];
   public contractTypes: Array<any> = [];
@@ -27,21 +23,25 @@ export class ContractFormPage implements OnInit {
   public afps: Array<any> = [];
   public isapres: Array<any> = [];
   public quadrilles: Array<any> = [];
+  public workers: Array<any> = [];
 
   private activeCompany: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
   private tempId: number;
 
+  public readonly actionHeader: any = {
+    header: 'Seleccione',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
     private toastService: ToastService,
     private router: Router,
-    private contractsService: ContractsService,
-    private httpService: HttpService,
-    private syncService: SyncService,
-    private regulaDocumentReader: RegulaDocumentReader
+    private barcodeScanner: BarcodeScanner
   ) {
 
   }
@@ -49,26 +49,37 @@ export class ContractFormPage implements OnInit {
   ngOnInit() {
     this.loadData();
 
+    const findDefault = this.nationalities.find(item => item.default);
+    const onlyOne = this.nationalities.length === 1 ? this.nationalities[0] : '';
+
     this.contractForm = this.formBuilder.group({
       id: [0],
       companyId: [this.activeCompany.id],
       workerId: [0],
-      nationality: [this.nationalities.length === 1 ? this.nationalities[0].id : '', Validators.required],
-      contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
-      identifier: ['', Validators.required],
-      name: ['', Validators.required],
-      lastName: ['', Validators.required],
-      sureName: ['', Validators.required],
-      dob: ['', Validators.required],
-      gender: ['hombre', Validators.required],
-      civilStatus: [this.civilStatus.length === 1 ? this.civilStatus[0].name : '', Validators.required],
-      afp: [this.afps.length === 1 ? this.afps[0].id : '', Validators.required],
-      isapre: [this.isapres.length === 1 ? this.isapres[0].id : '', Validators.required],
-      retired: [false, Validators.required],
-      quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required],
       creatorId: [this.activeCompany.user],
-      tempId: [this.tempId]
+      tempId: [this.tempId],
+      step1: this.formBuilder.group({
+        nationality: [findDefault ? findDefault.id : onlyOne, Validators.required],
+        identifier: ['', Validators.required]
+      }),
+      step2: this.formBuilder.group({
+        name: ['', Validators.required],
+        lastName: ['', Validators.required],
+        sureName: ['', Validators.required],
+        dob: ['', Validators.required],
+        civilStatus: [this.civilStatus.length === 1 ? this.civilStatus[0].name : '', Validators.required],
+        gender: ['hombre', Validators.required]
+      }),
+      step3: this.formBuilder.group({
+        contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
+        afp: [this.afps.length === 1 ? this.afps[0].id : '', Validators.required],
+        isapre: [this.isapres.length === 1 ? this.isapres[0].id : '', Validators.required],
+        retired: [false, Validators.required],
+        quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required]
+      })
     });
+
+    this.changeIdentifierValidation(findDefault ? findDefault.id : onlyOne);
   }
 
   /**
@@ -83,18 +94,84 @@ export class ContractFormPage implements OnInit {
     this.quadrilles = this.storeService.getQuadrilles();
     this.activeCompany = this.storeService.getActiveCompany();
     this.tempId = this.storeService.getPrecontractTempId();
+    this.workers = this.storeService.getWorkers();
   };
 
   /**
    * openBarcodeScanner
    */
   public openBarcodeScanner = () => {
-    // this.toastService.errorToast('NO IMPLEMENTADO');
-    this.regulaDocumentReader.initReader('assets/regula.license');
-    this.regulaDocumentReader.scanDocument().then(data => {
-      console.log({data});
-    }).catch(error => {
-      console.log('error :', error);
+    this.barcodeScanner.scan().then(barcodeData => {
+      const {cancelled, format, text} = barcodeData;
+      if (!cancelled) {
+        let operativeText = text;
+        if (operativeText.indexOf('registrocivil.cl') && operativeText.match(/RUN=(([0-9])+\-?([kK0-9])+)/)) {
+          operativeText = operativeText.match(/RUN=(([0-9])+\-?([kK0-9])+)/)[1];
+        }
+
+        if (operativeText.match(/^(\d|K|\s)+(\s\w+)$/)) {
+          operativeText = operativeText.trim().substr(0, 9);
+        }
+
+        if (operativeText) {
+          operativeText = operativeText.replace(/\./g, '').replace(/-/g, '');
+        }
+
+        if (operativeText.length > 0) {
+          // CHECK IF THE WORKER WAS PREVIOUSLY REGISTERED
+          const alreadyRegistered = this.workers.find(item => item.identifier.toLowerCase() === operativeText.toLowerCase());
+
+          // ACTUALIZAR DATOS
+          console.log('rut obtenido', operativeText);
+
+          if (alreadyRegistered) {
+            // INJECTAR DATOS EN FORM
+            /*
+            this.contractForm.patchValue({
+              workerId: alreadyRegistered.id,
+              nationality: 'PENDIENTE',
+              contractType: 'PENDIENTE',
+              identifier: alreadyRegistered.identifier,
+              name: alreadyRegistered.names,
+              lastName: 'PENDIENTE',
+              sureName: 'PENDIENTE',
+              dob: 'PENDIENTE',
+              gender: 'PENDIENTE',
+              civilStatus: 'PENDIENTE',
+              afp: 'PENDIENTE',
+              isapre: 'PENDIENTE',
+              retired: 'PENDIENTE',
+              quadrille: alreadyRegistered.quadrille
+            });
+            */
+          } else {
+            this.contractForm.get('step1.identifier').patchValue(operativeText);
+          }
+
+          /*
+          active: true
+          company: 1
+          dailyMax: 1
+          endDate: "2021-01-10T00:00:00.000Z"
+          firstSurname: "Troncoso"
+          id: 15
+          identifier: "16750292K"
+          name: "Troncoso Robles Jorge Andres"
+          names: "Jorge Andres"
+          quadrille: 2
+          quadrilleStatus: ""
+          quadrilleToApprove: 0
+          secondSurname: "Robles"
+          startDate: "2020-01-10T00:00:00.000Z"
+          validity: 12
+          */
+
+        } else {
+          this.toastService.errorToast('El código escaneado no es válido');
+        }
+      }
+    }).catch(err => {
+      this.toastService.errorToast(err);
     });
   };
 
@@ -103,14 +180,18 @@ export class ContractFormPage implements OnInit {
    * @param nationalityId
    */
   public changeIdentifierValidation = (nationalityId: number): void => {
-    const find = this.nationalities.find(i => i.id === nationalityId);
+    if (nationalityId) {
+      const find = this.nationalities.find(i => i.id === nationalityId);
 
-    if (find && find.identifierType.toLowerCase() === 'rut') {
-      this.contractForm.get('identifier').setValidators([Validators.required, ValidateRut]);
-      this.contractForm.get('identifier').updateValueAndValidity();
-    } else {
-      this.contractForm.get('identifier').setValidators(Validators.required);
-      this.contractForm.get('identifier').updateValueAndValidity();
+      if (find && find.identifierType.toLowerCase() === 'rut') {
+        this.contractForm.get('step1.identifier').setValidators([Validators.required, ValidateRut]);
+        this.contractForm.get('step1.identifier').updateValueAndValidity();
+      } else {
+        this.contractForm.get('step1.identifier').setValidators(Validators.required);
+        this.contractForm.get('step1.identifier').updateValueAndValidity();
+      }
+
+      this.formatIdentifier(this.contractForm.get('step1.identifier').value);
     }
   };
 
@@ -119,10 +200,18 @@ export class ContractFormPage implements OnInit {
    */
   public submit = () => {
     const data = Object.assign({}, this.contractForm.value);
-    data.dob = moment(data.dob).format('YYYY-MM-DD');
-    data.retired = data.retired ? 1 : 0;
+    const {step1, step2, step3} = data;
+    delete data.step1;
+    delete data.step2;
+    delete data.step3;
 
-    this.storeService.addPreContract(data);
+    step1.identifier = cleanRut(step1.identifier);
+    step2.dob = moment(step2.dob).format('YYYY-MM-DD');
+    step3.retired = step3.retired ? 1 : 0;
+
+    const preparedData = {...data, ...step1, ...step2, ...step3};
+
+    this.storeService.addPreContract(preparedData);
     this.router.navigate(['/home-page/tarja_contrato']);
   };
 
@@ -131,7 +220,31 @@ export class ContractFormPage implements OnInit {
    * @param gender
    */
   public changeGenderEvent = (gender: string) => {
-    this.contractForm.get('gender').patchValue(gender);
+    this.contractForm.get('step2.gender').patchValue(gender);
   };
 
+  /**
+   * formatIdentifier
+   * @param identifier
+   */
+  public formatIdentifier = (identifier: string): void => {
+    const nationality = this.contractForm.get('step1.nationality').value;
+    if (nationality) {
+      const identifierType = this.nationalities.find(i => i.id === nationality);
+
+      if (identifierType && identifierType.identifierType.toLowerCase() === 'rut') {
+        this.contractForm.get('step1.identifier').patchValue(formatRut(identifier));
+      } else {
+        this.contractForm.get('step1.identifier').patchValue(cleanRut(identifier));
+      }
+    }
+  };
+
+  /**
+   * checkNexButtonDisabled
+   */
+  public checkNexButtonDisabled = () => {
+    return (this.currentStep === 1 && this.contractForm.get('step1').invalid) ||
+      (this.currentStep === 2 && this.contractForm.get('step2').invalid);
+  };
 }

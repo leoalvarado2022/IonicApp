@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CostCenter, EntityList, Generic, HarvestEstimate, Unit} from '@primetec/primetec-angular';
@@ -11,27 +11,22 @@ import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {debounceTime} from 'rxjs/operators';
 import {StoreService} from '../../../../shared/services/store/store.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-harvest-estimate-form',
   templateUrl: './harvest-estimate-form.component.html',
   styleUrls: ['./harvest-estimate-form.component.scss']
 })
-export class HarvestEstimateFormComponent implements OnInit {
+export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
   @Input() costCenter: CostCenter;
   @Input() harvestEstimate: HarvestEstimate;
   @Input() isView: boolean;
   @Input() previous: HarvestEstimate;
 
-  public readonly processPlantAction: any = {
-    header: 'Plantas de Proceso',
-    keyboardClose: false,
-    backdropDismiss: false
-  };
-
-  public readonly destinationAction: any = {
-    header: 'Destinos',
+  public readonly sheetActions: any = {
+    header: 'Seleccione',
     keyboardClose: false,
     backdropDismiss: false
   };
@@ -46,6 +41,7 @@ export class HarvestEstimateFormComponent implements OnInit {
   public isSaving = false;
   public holidays: Array<any> = [];
   private userCompany: any;
+  private valueChanges$: Subscription;
 
   constructor(
     private modalController: ModalController,
@@ -73,7 +69,7 @@ export class HarvestEstimateFormComponent implements OnInit {
         unit: [this.costCenter.controlUnit],
         quantity: [{value: this.harvestEstimate.quantity, disabled: true}],
         dailyAmount: [{value: this.harvestEstimate.dailyAmount, disabled: true}],
-        workHolidays: [{value: this.harvestEstimate.workHolidays ? 1 : 0, disabled: true}],
+        workHolidays: [{value: this.harvestEstimate.workHolidays ? '1' : '0', disabled: true}],
         startDate: [{value: moment.utc(this.harvestEstimate.startDate).format('YYYY-MM-DD'), disabled: true}],
         endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY')],
         processPlant: [{value: this.harvestEstimate ? this.harvestEstimate.processPlant : '', disabled: true}, Validators.required],
@@ -95,21 +91,25 @@ export class HarvestEstimateFormComponent implements OnInit {
           Validators.pattern(/^([0-9.])+$/),
           Validators.min(1)
         ]],
-        workHolidays: [this.previous ? this.previous.workHolidays ? 1 : 0 : 0, Validators.required],
+        workHolidays: [this.previous ? this.previous.workHolidays ? '1' : '0' : '0', Validators.required],
         startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : this.costCenter.harvestDate, Validators.required],
         endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required],
         processPlant: [this.previous ? this.previous.processPlant : '', Validators.required],
         destination: [this.previous ? this.previous.destination : '', Validators.required]
       });
-
-      this.harvestForm.valueChanges.pipe(
-        debounceTime(1000),
-      ).subscribe((data) => {
-        this.calculateEndDate();
-      });
     }
 
+    this.valueChanges$ = this.harvestForm.valueChanges.pipe(
+      debounceTime(1000),
+    ).subscribe((data) => {
+      this.calculateEndDate();
+    });
+
     this.loadData();
+  }
+
+  ngOnDestroy(): void {
+    this.valueChanges$.unsubscribe();
   }
 
   /**
@@ -130,6 +130,7 @@ export class HarvestEstimateFormComponent implements OnInit {
       estimation.endDate = moment(estimation.endDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
       estimation.quantity = this.cleanParseNumber(estimation.quantity);
       estimation.dailyAmount = this.cleanParseNumber(estimation.dailyAmount);
+      estimation.workHolidays = estimation.workHolidays === '1' ? 1 : 0;
 
       delete this.costCenter.active;
       const data = {
@@ -156,11 +157,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    * @param event
    */
   public workHolidaysEvent = (value: string) => {
-    this.harvestForm.patchValue({
-      workHolidays: parseInt(value, 10)
-    });
-
-    this.harvestForm.updateValueAndValidity();
+    this.harvestForm.get('workHolidays').patchValue(value);
   };
 
   /**
@@ -168,8 +165,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    */
   public getSelectedProcessPlant = () => {
     if (this.processPlants) {
-      const id = this.harvestForm.get('processPlant').value;
-      const find = this.processPlants.find(item => item.id === id);
+      const find = this.processPlants.find(item => item.id === this.harvestForm.get('processPlant').value);
       return find ? find.name : '';
     }
 
@@ -181,8 +177,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    */
   public getSelectedDestination = () => {
     if (this.destinations) {
-      const id = this.harvestForm.get('destination').value;
-      const find = this.destinations.find(item => item['id'] === id);
+      const find = this.destinations.find(item => item['id'] === this.harvestForm.get('destination').value);
       return find ? find['name'] : '';
     }
 
@@ -243,11 +238,7 @@ export class HarvestEstimateFormComponent implements OnInit {
 
       momentDate = this.computeEndDate(days, daysAdded, momentDate, holidays);
 
-      this.harvestForm.patchValue({
-        endDate: momentDate.format(this.dateFormat)
-      });
-
-      this.harvestForm.updateValueAndValidity();
+      this.harvestForm.get('endDate').patchValue(momentDate.format(this.dateFormat));
     }
   };
 
@@ -295,11 +286,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    */
   private preSelectProcessPlant = () => {
     if (this.processPlants.length === 1) {
-      this.harvestForm.patchValue({
-        processPlant: this.processPlants[0].id
-      });
-
-      this.harvestForm.updateValueAndValidity();
+      this.harvestForm.get('processPlant').patchValue(this.processPlants[0].id);
     }
   };
 
@@ -308,11 +295,7 @@ export class HarvestEstimateFormComponent implements OnInit {
    */
   private preSelectDestination = () => {
     if (this.destinations.length === 1) {
-      this.harvestForm.patchValue({
-        destination: this.destinations[0].id
-      });
-
-      this.harvestForm.updateValueAndValidity();
+      this.harvestForm.get('destination').patchValue(this.destinations[0].id);
     }
   };
 

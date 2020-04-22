@@ -29,9 +29,7 @@
       class="ion-text-center card-menu row-menu">
       <div>
         <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
-        <!--
-        <ion-badge class="menu-badge">1</ion-badge>
-        -->
+        <ion-badge *ngIf="showBadge(menu) > 0" class="menu-bagde">{{ showBadge(menu) }}</ion-badge>
         <p class="title-menu ion-text-capitalize">
           {{ menu.caption }}
         </p>

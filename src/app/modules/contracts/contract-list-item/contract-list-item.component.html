@@ -1,10 +1,21 @@
-<ion-item>
-  <ion-icon name="document" slot="start"></ion-icon>
-  <ion-label>
-    <h2>{{ contract.workerName + ' ' + contract.workerLastname + ' ' + contract.workerSurname | titlecase }}</h2>
-    <p>{{ contract.contractTypeName | titlecase }}</p>
-  </ion-label>
-  <ion-badge [color]="contract.id > 0 ? 'success': 'warning'" slot="end">
-    {{ (contract.id > 0 ? 'enviado' : 'pendiente') | titlecase }}
-  </ion-badge>
-</ion-item>
+<ion-item-sliding>
+  <ion-item>
+    <ion-icon name="document" slot="start"></ion-icon>
+    <ion-label>
+      <h2>{{ contract.workerName + ' ' + contract.workerLastName + ' ' + contract.workerSurname | titlecase }}</h2>
+      <p>{{ contract.contractTypeName | titlecase }}</p>
+    </ion-label>
+    <ion-badge [color]="contract.id > 0 ? 'success': 'warning'" slot="end">
+      {{ (contract.id > 0 ? 'enviado' : 'pendiente') | titlecase }}
+    </ion-badge>
+  </ion-item>
+
+  <ion-item-options side="end">
+    <ion-item-option color="warning" (click)="editContract(contract)">
+      <ion-icon slot="icon-only" name="pencil"></ion-icon>
+    </ion-item-option>
+    <ion-item-option color="danger" (click)="deleteContract(contract)">
+      <ion-icon slot="icon-only" name="trash"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+</ion-item-sliding>

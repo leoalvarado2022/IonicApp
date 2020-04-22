@@ -5,6 +5,7 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
+import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-contract-form',
@@ -22,6 +23,7 @@ export class ContractFormPage implements OnInit {
   public afps: Array<any> = [];
   public isapres: Array<any> = [];
   public quadrilles: Array<any> = [];
+  public workers: Array<any> = [];
 
   private activeCompany: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
@@ -38,7 +40,8 @@ export class ContractFormPage implements OnInit {
     private formBuilder: FormBuilder,
     private storeService: StoreService,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private barcodeScanner: BarcodeScanner
   ) {
 
   }
@@ -85,21 +88,87 @@ export class ContractFormPage implements OnInit {
     this.quadrilles = this.storeService.getQuadrilles();
     this.activeCompany = this.storeService.getActiveCompany();
     this.tempId = this.storeService.getPrecontractTempId();
+    this.workers = this.storeService.getWorkers();
+
+    console.log('this.workers', this.workers);
   };
 
   /**
    * openBarcodeScanner
    */
   public openBarcodeScanner = () => {
-    // this.toastService.errorToast('NO IMPLEMENTADO');
-    /*
-    this.regulaDocumentReader.initReader('assets/regula.license');
-    this.regulaDocumentReader.scanDocument().then(data => {
-      console.log({data});
-    }).catch(error => {
-      console.log('error :', error);
+    this.barcodeScanner.scan().then(barcodeData => {
+      const {cancelled, format, text} = barcodeData;
+      if (!cancelled) {
+        let operativeText = text;
+        if (operativeText.indexOf('registrocivil.cl') && operativeText.match(/RUN=(([0-9])+\-?([kK0-9])+)/)) {
+          operativeText = operativeText.match(/RUN=(([0-9])+\-?([kK0-9])+)/)[1];
+        }
+
+        if (operativeText.match(/^(\d|K|\s)+(\s\w+)$/)) {
+          operativeText = operativeText.trim().substr(0, 9);
+        }
+
+        if (operativeText) {
+          operativeText = operativeText.replace(/\./g, '').replace(/-/g, '');
+        }
+
+        if (operativeText.length > 0) {
+          // CHECK IF THE WORKER WAS PREVIOUSLY REGISTERED
+          const alreadyRegistered = this.workers.find(item => item.identifier.toLowerCase() === operativeText.toLowerCase());
+
+          // ACTUALIZAR DATOS
+          console.log('rut obtenido', operativeText);
+
+          if (alreadyRegistered) {
+            // INJECTAR DATOS EN FORM
+
+            this.contractForm.patchValue({
+              workerId: alreadyRegistered.id,
+              nationality: 'PENDIENTE',
+              contractType: 'PENDIENTE',
+              identifier: alreadyRegistered.identifier,
+              name: alreadyRegistered.names,
+              lastName: 'PENDIENTE',
+              sureName: 'PENDIENTE',
+              dob: 'PENDIENTE',
+              gender: 'PENDIENTE',
+              civilStatus: 'PENDIENTE',
+              afp: 'PENDIENTE',
+              isapre: 'PENDIENTE',
+              retired: 'PENDIENTE',
+              quadrille: alreadyRegistered.quadrille
+            });
+          } else {
+            this.contractForm.get('identifier').patchValue(operativeText);
+          }
+
+          /*
+          active: true
+          company: 1
+          dailyMax: 1
+          endDate: "2021-01-10T00:00:00.000Z"
+          firstSurname: "Troncoso"
+          id: 15
+          identifier: "16750292K"
+          name: "Troncoso Robles Jorge Andres"
+          names: "Jorge Andres"
+          quadrille: 2
+          quadrilleStatus: ""
+          quadrilleToApprove: 0
+          secondSurname: "Robles"
+          startDate: "2020-01-10T00:00:00.000Z"
+          validity: 12
+          */
+
+        } else {
+          this.toastService.errorToast('El código escaneado no es válido');
+        }
+      }
+      console.log('Barcode data', barcodeData);
+    }).catch(err => {
+      this.toastService.errorToast(err);
     });
-    */
   };
 
   /**

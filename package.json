@@ -26,6 +26,7 @@
     "@codewithdan/observable-store": "^2.2.3",
     "@codewithdan/observable-store-extensions": "^2.2.7",
     "@ionic-native/app-version": "^5.19.1",
+    "@ionic-native/barcode-scanner": "^5.24.0",
     "@ionic-native/camera": "^5.19.1",
     "@ionic-native/chooser": "^5.22.0",
     "@ionic-native/core": "^5.19.1",
@@ -42,7 +43,7 @@
     "@ionic/angular": "^5.0.7",
     "@ionic/angular-toolkit": "^2.2.0",
     "@ionic/storage": "^2.2.0",
-    "@primetec/primetec-angular": "^0.0.20",
+    "@primetec/primetec-angular": "0.0.22",
     "build": "0.1.4",
     "cordova-android": "^8.1.0",
     "cordova-ios": "5.1.1",
@@ -66,6 +67,7 @@
     "ngx-echarts": "^4.2.2",
     "ngx-mask": "^9.0.1",
     "phonegap-nfc": "^1.0.4",
+    "phonegap-plugin-barcodescanner": "^8.1.0",
     "rxjs": "~6.5.5",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -137,7 +139,8 @@
       "cordova-plugin-nativeaudio": {},
       "phonegap-nfc": {
         "NFC_USAGE_DESCRIPTION": "Read NFC Tags"
-      }
+      },
+      "phonegap-plugin-barcodescanner": {}
     },
     "platforms": [
       "android",

@@ -43,13 +43,6 @@
       </ion-item>
 
       <ion-item>
-        <ion-label>Tipo de Contrato</ion-label>
-        <ion-select formControlName="contractType" placeholder="Tipo de Contrato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-item>
         <ion-label position="floating">Identificador</ion-label>
         <ion-input formControlName="identifier" (ionChange)="formatIdentifier($event.detail.value)"></ion-input>
         <ng-container *ngIf="contractForm.get('identifier').hasError('validRut')">
@@ -111,6 +104,13 @@
         <ion-datetime formControlName="dob" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
       </ion-item>
 
+      <ion-item>
+        <ion-label>Estado Civil</ion-label>
+        <ion-select formControlName="civilStatus" placeholder="Estado Civil" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+          <ion-select-option *ngFor="let status of civilStatus" [value]="status.name">{{ status.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
       <ion-radio-group formGroupName="gender" [value]="contractForm.get('gender').value" (ionChange)="changeGenderEvent($event.detail.value)">
         <ion-row>
           <ion-col>
@@ -135,9 +135,9 @@
     <ng-container *ngIf="currentStep === 3">
 
       <ion-item>
-        <ion-label>Estado Civil</ion-label>
-        <ion-select formControlName="civilStatus" placeholder="Estado Civil" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let status of civilStatus" [value]="status.name">{{ status.name }}</ion-select-option>
+        <ion-label>Tipo de Contrato</ion-label>
+        <ion-select formControlName="contractType" placeholder="Tipo de Contrato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+          <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 

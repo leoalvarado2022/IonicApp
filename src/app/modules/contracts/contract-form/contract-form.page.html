@@ -57,9 +57,29 @@
         </ng-container>
       </ion-item>
 
-      <ion-item-divider>
-        <ion-label>&nbsp;</ion-label>
-      </ion-item-divider>
+      <ion-row>
+        <ion-col size="5">
+          <ion-item lines="none">
+            <ion-label>
+              <hr class="item-divider">
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="2">
+          <ion-item lines="none" class="ion-no-padding" style="padding-left: 12px">
+            <ion-label class="ion-text-center">
+              O
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="5">
+          <ion-item lines="none">
+            <ion-label>
+              <hr class="item-divider">
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
 
       <ion-button expand="block" (click)="openBarcodeScanner()">
         Escanear Carnet

@@ -33,10 +33,10 @@
   <form class="form-container" [formGroup]="contractForm">
 
     <!-- STEP 1 -->
-    <ng-container *ngIf="currentStep === 1">
+    <ng-container *ngIf="currentStep === 1" formGroupName="step1">
 
       <ion-item>
-        <ion-label>Nacionalidad</ion-label>
+        <ion-label position="floating">Nacionalidad</ion-label>
         <ion-select formControlName="nationality" placeholder="Nacionalidad" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="changeIdentifierValidation($event.detail.value)">
           <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality.id">{{ nationality.name }}</ion-select-option>
         </ion-select>
@@ -45,7 +45,7 @@
       <ion-item>
         <ion-label position="floating">Identificador</ion-label>
         <ion-input formControlName="identifier" (ionChange)="formatIdentifier($event.detail.value)"></ion-input>
-        <ng-container *ngIf="contractForm.get('identifier').hasError('validRut')">
+        <ng-container *ngIf="contractForm.get('step1.identifier').hasError('validRut')">
           <span style="color:red">Debe ingresar un RUT valido.</span>
         </ng-container>
       </ion-item>
@@ -82,7 +82,7 @@
     </ng-container>
 
     <!-- STEP 2 -->
-    <ng-container *ngIf="currentStep === 2">
+    <ng-container *ngIf="currentStep === 2" formGroupName="step2">
 
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
@@ -105,13 +105,13 @@
       </ion-item>
 
       <ion-item>
-        <ion-label>Estado Civil</ion-label>
+        <ion-label position="floating">Estado Civil</ion-label>
         <ion-select formControlName="civilStatus" placeholder="Estado Civil" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
           <ion-select-option *ngFor="let status of civilStatus" [value]="status.name">{{ status.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
-      <ion-radio-group formGroupName="gender" [value]="contractForm.get('gender').value" (ionChange)="changeGenderEvent($event.detail.value)">
+      <ion-radio-group formGroupName="gender" [value]="contractForm.get('step2.gender').value" (ionChange)="changeGenderEvent($event.detail.value)">
         <ion-row>
           <ion-col>
             <ion-item lines="none">
@@ -132,24 +132,24 @@
     </ng-container>
 
     <!-- STEP 3 -->
-    <ng-container *ngIf="currentStep === 3">
+    <ng-container *ngIf="currentStep === 3" formGroupName="step3">
 
       <ion-item>
-        <ion-label>Tipo de Contrato</ion-label>
+        <ion-label position="floating">Tipo de Contrato</ion-label>
         <ion-select formControlName="contractType" placeholder="Tipo de Contrato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
           <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label>AFP</ion-label>
+        <ion-label position="floating">AFP</ion-label>
         <ion-select formControlName="afp" placeholder="AFP" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
           <ion-select-option *ngFor="let afp of afps" [value]="afp.id">{{ afp.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-label>ISAPRE</ion-label>
+        <ion-label position="floating">ISAPRE</ion-label>
         <ion-select formControlName="isapre" placeholder="Isapre" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
           <ion-select-option *ngFor="let isapre of isapres" [value]="isapre.id">{{ isapre.name }}</ion-select-option>
         </ion-select>
@@ -182,20 +182,15 @@
     </ion-col>
 
     <ion-col>
-      <ng-container *ngIf="currentStep < 3">
-        <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1">
-          Siguiente
-          <ion-icon slot="end" name="arrow-forward"></ion-icon>
-        </ion-button>
-      </ng-container>
+      <ion-button color="warning" expand="block" *ngIf="currentStep < 3" [disabled]="checkNexButtonDisabled()" (click)="currentStep = currentStep + 1">
+        Siguiente
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
 
-      <ng-container *ngIf="currentStep  === 3">
-        <ion-button color="success" expand="block" [disabled]="contractForm.invalid" (click)="submit()">
-          Guardar
-          <ion-icon slot="end" name="save"></ion-icon>
-        </ion-button>
-      </ng-container>
-
+      <ion-button color="success" expand="block" *ngIf="currentStep === 3" [disabled]="this.contractForm.get('step3').invalid" (click)="submit()">
+        Guardar
+        <ion-icon slot="end" name="save"></ion-icon>
+      </ion-button>
     </ion-col>
   </ion-row>
 </ion-footer>

@@ -1,12 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ContractListItem} from '../contract-interfaces';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {ContractListItem} from '../../contract-interfaces';
 
 @Component({
   selector: 'app-contract-list-item',
   templateUrl: './contract-list-item.component.html',
   styleUrls: ['./contract-list-item.component.scss'],
 })
-export class ContractListItemComponent implements OnInit {
+export class ContractListItemComponent implements OnInit, OnDestroy {
 
   @Input() contract: ContractListItem = null;
   @Output() editContractEvent: EventEmitter<any> = new EventEmitter<any>();
@@ -18,6 +18,10 @@ export class ContractListItemComponent implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  ngOnDestroy(): void {
+    this.contract = null;
   }
 
   /**

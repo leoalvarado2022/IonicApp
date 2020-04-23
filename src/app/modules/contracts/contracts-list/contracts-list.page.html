@@ -26,12 +26,13 @@
   </ion-refresher>
 
   <ion-virtual-scroll [items]="filteredContracts">
-    <app-contract-list-item
-      *virtualItem="let contract"
-      [contract]="contract"
-      (editContractEvent)="editContractEvent($event)"
-      (deleteContractEvent)="deleteContract($event)">
-    </app-contract-list-item>
+    <div *virtualItem="let contract">
+      <app-contract-list-item
+        [contract]="contract"
+        (editContractEvent)="editContractEvent($event)"
+        (deleteContractEvent)="deleteContract($event)">
+      </app-contract-list-item>
+    </div>
   </ion-virtual-scroll>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

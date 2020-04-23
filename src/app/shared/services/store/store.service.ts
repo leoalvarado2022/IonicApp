@@ -3,7 +3,6 @@ import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
 import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
-import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,7 @@ import {environment} from '../../../../environments/environment';
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: !environment.production});
+    super({logStateChanges: false});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -82,8 +81,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
       },
       pushToken: null,
       toRecord: {
-        preContractTempId: 1,
-        preContracts: [],
         preDevices: []
       }
     };
@@ -513,6 +510,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setTallies(tallies);
     this.setDevices(devices);
   };
+
 
   /**
    * setActiveCostCenter
@@ -1108,31 +1106,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
 
   /**
-   * getPreContractsToRecord
-   */
-  public getPreContractsToRecord = (): Array<any> => {
-    return this.getState().toRecord.preContracts;
-  };
-
-  /**
-   * addPreContract
-   * @param preContract
-   */
-  public addPreContract = (preContract: any): void => {
-    const preContracts = this.getPreContractsToRecord();
-    const checkDuplicate = preContracts.find(item => item.identifier === preContract.identifier);
-
-    if (checkDuplicate === undefined) {
-      preContracts.push(preContract);
-      const toRecord = {...this.getState().toRecord, preContracts};
-      this.setState({toRecord}, StoreActions.AddPreContract);
-
-      this.increaseTempId();
-    }
-  };
-
-
-  /**
    * getPreDevicesToRecord
    */
   public getPreDevicesToRecord = (): Array<any> => {
@@ -1154,35 +1127,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
       const toRecord = {...this.getState().toRecord, preDevices};
       this.setState({toRecord}, StoreActions.AddPreDevices);
     }
-  };
-
-  /**
-   * getPrecontractTempId
-   */
-  public getPrecontractTempId(): number {
-    return this.getState().toRecord.preContractTempId;
-  }
-
-  /**
-   * increaseTempId
-   */
-  public increaseTempId = (): void => {
-    const current = this.getPrecontractTempId();
-
-    const toRecord = {...this.getState().toRecord, preContractTempId: (current + 1)};
-    this.setState({toRecord}, StoreActions.IncreasePreContractTempId);
-  };
-
-  /**
-   * removePreContractsToRecord
-   * @param index
-   */
-  public removePreContractsToRecord = (indexes: Array<number>): void => {
-    const preContracts = this.getPreContractsToRecord();
-    const toRemoved = preContracts.filter(item => !indexes.includes(item.tempId));
-
-    const toRecord = {...this.getState().toRecord, preContracts: toRemoved};
-    this.setState({toRecord}, StoreActions.RemovePreContracts);
   };
 
   /**

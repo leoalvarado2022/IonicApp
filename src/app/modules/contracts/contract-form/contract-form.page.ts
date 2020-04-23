@@ -3,9 +3,12 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
 import * as moment from 'moment';
+import {ContractsService} from '../services/contracts/contracts.service';
+import {HttpService} from '../../../shared/services/http/http.service';
+import {SyncService} from '../../../shared/services/sync/sync.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -28,7 +31,7 @@ export class ContractFormPage implements OnInit {
   private activeCompany: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
-  private tempId: number;
+  private tempId = 0;
 
   public readonly actionHeader: any = {
     header: 'Seleccione',
@@ -41,7 +44,11 @@ export class ContractFormPage implements OnInit {
     private storeService: StoreService,
     private toastService: ToastService,
     private router: Router,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
+    private contractsService: ContractsService,
+    private httpService: HttpService,
+    private syncService: SyncService,
+    private activatedRoute: ActivatedRoute
   ) {
 
   }
@@ -68,7 +75,7 @@ export class ContractFormPage implements OnInit {
         sureName: ['', Validators.required],
         dob: ['', Validators.required],
         civilStatus: [this.civilStatus.length === 1 ? this.civilStatus[0].name : '', Validators.required],
-        gender: ['hombre', Validators.required]
+        gender: ['H', Validators.required]
       }),
       step3: this.formBuilder.group({
         contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
@@ -80,6 +87,38 @@ export class ContractFormPage implements OnInit {
     });
 
     this.changeIdentifierValidation(findDefault ? findDefault.id : onlyOne);
+
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+    const preContracts = this.storeService.getPreContracts();
+    const find = preContracts.find(item => item.id === +id);
+    if (find) {
+      this.contractForm.patchValue({
+        id: find.id,
+        companyId: find.companyId,
+        workerId: find.workerId,
+        creatorId: find.creatorId,
+        tempId: 0,
+        step1: {
+          nationality: find.countryId,
+          identifier: find.workerIdentifier
+        },
+        step2: {
+          name: find.workerName,
+          lastName: find.workerLastName,
+          sureName: find.workerSurname,
+          dob: find.dob,
+          civilStatus: find.workerCivilStatus,
+          gender: find.gender
+        },
+        step3: {
+          contractType: find.remunerationContractType,
+          afp: find.afpId,
+          isapre: find.isapreId,
+          retired: find.retired,
+          quadrille: find.quadrilleId
+        }
+      });
+    }
   }
 
   /**
@@ -93,7 +132,6 @@ export class ContractFormPage implements OnInit {
     this.isapres = this.storeService.getIsapres();
     this.quadrilles = this.storeService.getQuadrilles();
     this.activeCompany = this.storeService.getActiveCompany();
-    this.tempId = this.storeService.getPrecontractTempId();
     this.workers = this.storeService.getWorkers();
   };
 
@@ -210,9 +248,38 @@ export class ContractFormPage implements OnInit {
     step3.retired = step3.retired ? 1 : 0;
 
     const preparedData = {...data, ...step1, ...step2, ...step3};
+    this.storeContract(preparedData);
+  };
 
-    this.storeService.addPreContract(preparedData);
-    this.router.navigate(['/home-page/tarja_contrato']);
+  /**
+   * storeContract
+   * @param data
+   */
+  private storeContract = (data: any) => {
+    const preContracts = [];
+    preContracts.push(data);
+
+    this.contractsService.storePreContracts(preContracts).subscribe(success => {
+      this.syncData();
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
+  };
+
+  /**
+   * syncData
+   */
+  private syncData = () => {
+    const userData = this.storeService.getUser();
+    const username = userData.username;
+    const activeConnection = this.storeService.getActiveConnection();
+
+    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
+      this.storeService.setSyncedData(success.data);
+      this.router.navigate(['/home-page/tarja_contrato']);
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
   };
 
   /**

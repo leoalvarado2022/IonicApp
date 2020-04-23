@@ -15,7 +15,7 @@ import {HttpService} from '../shared/services/http/http.service';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
-  private syncInterval = interval(1000 * 60 * 5);
+  private syncInterval = interval(1000 * 60 * 1);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private removePreContracts = false;
@@ -51,19 +51,13 @@ export class HomePagePage implements OnInit, OnDestroy {
       console.log('current step: ', step);
 
       if (step === 0) {
-        console.log('sync step');
-        if (this.removePreContracts) {
-          this.storeService.removePreContractsToRecord(this.removePreContractsToRecord);
-          this.removePreContractsToRecord = [];
-          this.removePreContracts = false;
-        }
         this.syncData();
       }
 
       if (step === 1) {
-        console.log('storePreContracts step');
-        this.storePreContracts();
+        // PASO LIBRE PARA USAR
       }
+
       console.groupEnd();
     });
   }
@@ -78,41 +72,6 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private sendToRecord = () => {
     this.syncStepObservable.next(1);
-  };
-
-  /**
-   * storePreContracts
-   */
-  private storePreContracts = () => {
-    // Pre-Contracts Offline data
-    const preContracts = this.storeService.getPreContractsToRecord();
-
-    if (preContracts.length > 0) {
-      this.contractsService.storePreContracts(preContracts).subscribe((success: any) => {
-        this.checkRecordedPreContracts(success.log);
-        this.syncStepObservable.next(0);
-      }, error => {
-        this.toastService.errorToast('Ocurrio un error al sincronizar');
-      });
-    } else {
-      this.syncStepObservable.next(0);
-    }
-  };
-
-  /**
-   * checkRecordedPreContracts
-   * @param logs
-   */
-  private checkRecordedPreContracts = (logs: Array<any>) => {
-    if (logs.length > 0) {
-      for (const log of logs) {
-        if (log['respuesta'].toLowerCase() === 'ok') {
-          this.removePreContractsToRecord.push(+log['id_parametro']);
-        }
-      }
-
-      this.removePreContracts = true;
-    }
   };
 
   /**

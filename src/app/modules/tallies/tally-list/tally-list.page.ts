@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-tally-list',
@@ -34,7 +35,8 @@ export class TallyListPage implements OnInit, OnDestroy {
   private labors: Array<any> = [];
 
   constructor(
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router
   ) {
 
   }
@@ -239,5 +241,29 @@ export class TallyListPage implements OnInit, OnDestroy {
   public getLaborName = (laborId: number) => {
     const find = this.labors.find(item => item.id === laborId);
     return find ? find.name : '';
+  };
+
+  /**
+   * goBack
+   */
+  public goBack = () => {
+    if (this.quadrilles.length > 1) {
+      if (this.activeQuadrille && !this.activeWorker) {
+        this.activeQuadrille = null;
+        this.selectedWorkers = [];
+      } else if (this.activeQuadrille && this.activeWorker) {
+        this.activeWorker = null;
+        this.selectedWorkers = [];
+      } else {
+        this.router.navigate(['home-page']);
+      }
+    } else {
+      if (this.activeQuadrille && this.activeWorker) {
+        this.activeWorker = null;
+        this.selectedWorkers = [];
+      } else {
+        this.router.navigate(['home-page']);
+      }
+    }
   };
 }

@@ -3,6 +3,8 @@ import {StoreService} from '../../../shared/services/store/store.service';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
+import {ModalController} from '@ionic/angular';
+import {TallyFormComponent} from '../tally-form/tally-form.component';
 
 @Component({
   selector: 'app-tally-list',
@@ -30,13 +32,15 @@ export class TallyListPage implements OnInit, OnDestroy {
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
   public currentDate = moment(moment.utc(new Date())).local().startOf('day').toISOString();
+  public readonly originalDate = moment(moment.utc(new Date())).local().startOf('day').toISOString();
 
   private costCenters: Array<CostCenterList> = [];
   private labors: Array<any> = [];
 
   constructor(
     private storeService: StoreService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) {
 
   }
@@ -57,6 +61,8 @@ export class TallyListPage implements OnInit, OnDestroy {
 
     this.tallies = [];
     this.filteredTallies = [];
+
+    this.currentDate = null;
   }
 
   /**
@@ -74,9 +80,7 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.selectedWorkers = [];
     this.activeWorker = null;
 
-    // Tallies
-    this.tallies = this.storeService.getTallies();
-    this.filteredTallies = [];
+    this.reloadTallies();
 
     // Form data
     this.costCenters = this.storeService.getCostCenters();
@@ -187,13 +191,20 @@ export class TallyListPage implements OnInit, OnDestroy {
   };
 
   /**
-   * moveDayOnDate
-   * @param move
+   * addDayToDate
    */
-  public moveDayOnDate = (move: number) => {
-    if (this.currentDate) {
-      this.currentDate = moment(this.currentDate).add(move, 'day').toISOString();
-      this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+  public addDayToDate = (): void => {
+    if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
+      this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
+    }
+  };
+
+  /**
+   * subtractDayToDate
+   */
+  public subtractDayToDate = (): void => {
+    if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
+      this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
     }
   };
 
@@ -221,9 +232,26 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.filteredTallies = this.tallies.filter(item => item.workerId === worker.id);
   };
 
-  createTally() {
-    console.log('createTally');
-  }
+  public createTally = async () => {
+    const modal = await this.modalController.create({
+      component: TallyFormComponent,
+      componentProps: {
+        workers: this.selectedWorkers,
+        dateSelected: moment(this.currentDate).format('YYYY-MM-DD')
+      },
+      backdropDismiss: false,
+      keyboardClose: false,
+      cssClass: 'full-screen-modal'
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.reloadTallies();
+      }
+    });
+
+    return await modal.present();
+  };
 
   /**
    * getCostCenterName
@@ -265,5 +293,14 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.router.navigate(['home-page']);
       }
     }
+  };
+
+  /**
+   * reloadTallies
+   */
+  private reloadTallies = () => {
+    // Tallies
+    this.tallies = [...this.storeService.getTalliesToRecord(), ...this.storeService.getTallies()];
+    this.filteredTallies = [];
   };
 }

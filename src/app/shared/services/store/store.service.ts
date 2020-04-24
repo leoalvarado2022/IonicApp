@@ -81,7 +81,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       },
       pushToken: null,
       toRecord: {
-        preDevices: []
+        preDevices: [],
+        tallies: []
       }
     };
   };
@@ -1127,6 +1128,26 @@ export class StoreService extends ObservableStore<StoreInterface> {
       const toRecord = {...this.getState().toRecord, preDevices};
       this.setState({toRecord}, StoreActions.AddPreDevices);
     }
+  };
+
+  /**
+   * getTalliesToRecord
+   */
+  public getTalliesToRecord = (): Array<any> => {
+    return this.getState().toRecord.tallies;
+  };
+
+  /**
+   * addTalliesToRecord
+   * @param tallies
+   */
+  public addTalliesToRecord = (tallies: Array<any>): void => {
+    const talliesToRecord = this.getTalliesToRecord();
+
+    // PENDING FILTER DUPLICATES LOGIC
+
+    const toRecord = {...this.getState().toRecord, tallies: [...talliesToRecord, ...tallies]};
+    this.setState({toRecord}, StoreActions.AddTallies);
   };
 
   /**

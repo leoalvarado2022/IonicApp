@@ -101,7 +101,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
           handler: () => {
             this.selectedWorkers = [];
           }
-        }]
+        }
+      ]
     });
 
     await actionSheet.present();

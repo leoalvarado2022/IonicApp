@@ -67,7 +67,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    */
   public checkButton = () => {
     return this.currentUrl === '/home-page/harvest-estimate';
-  }
+  };
 
   /**
    * openForm
@@ -93,7 +93,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
-  }
+  };
 
   /**
    * searchHarvest
@@ -110,14 +110,14 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     } else {
       this.filteredHarvestEstimate = this.harvestEstimate;
     }
-  }
+  };
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredHarvestEstimate = this.harvestEstimate;
-  }
+  };
 
   /**
    * harvestSelected
@@ -125,7 +125,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    */
   public viewHarvest = async (harvestEstimate: HarvestEstimate) => {
     await this.openForm(harvestEstimate);
-  }
+  };
 
   /**
    * deleteHarvest
@@ -147,7 +147,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
       this.storeEstimation(data);
     }
-  }
+  };
 
   /**
    * reloadList
@@ -161,7 +161,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
+  };
 
   /**
    * storeEstimation
@@ -176,6 +176,6 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
+  };
 
 }

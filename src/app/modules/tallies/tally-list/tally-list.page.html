@@ -67,11 +67,11 @@
     </h2>
 
     <ion-item>
-      <ion-button size="small" fill="clear" slot="start" (click)="moveDayOnDate(-1)">
+      <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
       </ion-button>
       <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
-      <ion-button size="small" fill="clear" slot="end" (click)="moveDayOnDate(1)">
+      <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
         <ion-icon name="arrow-forward" slot="end"></ion-icon>
       </ion-button>
     </ion-item>

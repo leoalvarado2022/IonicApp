@@ -24,7 +24,7 @@ export class QualityEstimateFormComponent implements OnInit {
   @Input() previous: QualityEstimate;
 
   public readonly customActionSheetOptions: any = {
-    header: 'Calidades',
+    header: 'Seleccione',
     keyboardClose: false,
     backdropDismiss: false
   };
@@ -168,8 +168,7 @@ export class QualityEstimateFormComponent implements OnInit {
    */
   public getSelectedQuality = () => {
     if (this.qualities) {
-      const id = this.qualityForm.get('quality.quality').value;
-      const find = this.qualities.find(item => item.id === id);
+      const find = this.qualities.find(item => item.id === this.qualityForm.get('quality.quality').value);
       return find ? find.name : '';
     }
 

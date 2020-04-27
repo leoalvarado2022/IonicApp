@@ -32,7 +32,7 @@ export class RemQuadrillePage implements OnInit {
   public reload = (event) => {
     this.loadQuadrilles();
     event.target.complete();
-  }
+  };
 
   /**
    * goToWorkers
@@ -40,19 +40,15 @@ export class RemQuadrillePage implements OnInit {
    */
   public goToWorkers = (quadrille: any) => {
     this.router.navigate(['/home-page/rem-workers', quadrille.id]);
-  }
+  };
 
   /**
    * getQuadrilleWorkers
    * @param id
    */
-  public getQuadrilleWorkers = (id: any) => {
-    if (this.workers) {
-      return this.workers.filter(item => item.quadrille === id).length;
-    }
-
-    return 0;
-  }
+  public getQuadrilleWorkers = (id: number): number => {
+    return this.workers.filter(item => item.quadrille === id).length;
+  };
 
   /**
    * loadQuadrilles
@@ -64,5 +60,16 @@ export class RemQuadrillePage implements OnInit {
     this.quadrilles = [...quadrilles];
     this.filteredQuadrilles = [...quadrilles];
     this.workers = [...workers];
-  }
+  };
+
+  /**
+   * showBadge
+   * @param quadrille
+   */
+  public showBadge = (quadrilleId: number): number => {
+    return this.workers.filter(item => {
+      return item.quadrilleToApprove === quadrilleId && item.quadrilleStatus.toLowerCase() === 'por aprobar' ||
+        item.quadrille === quadrilleId && item.quadrilleStatus.toLowerCase() === 'rechazado';
+    }).length;
+  };
 }

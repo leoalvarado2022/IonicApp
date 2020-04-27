@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {ContractsService} from '../services/contracts/contracts.service';
+import {ContractListItem} from '../contract-interfaces';
 
 @Component({
   selector: 'app-contracts-list',
@@ -10,20 +12,24 @@ import {Subscription} from 'rxjs';
 })
 export class ContractsListPage implements OnInit, OnDestroy {
 
-  private contracts: Array<any> = [];
-  public filteredContracts: Array<any> = [];
+  private contracts: Array<ContractListItem> = [];
+  public filteredContracts: Array<ContractListItem> = [];
+  private contractTypes: Array<any> = [];
   private store$: Subscription;
 
   constructor(
     private storeService: StoreService,
-    private router: Router
+    private router: Router,
+    private contractsService: ContractsService
   ) {
 
   }
 
   ngOnInit() {
+    this.loadPreContracts();
+
     this.store$ = this.storeService.stateChanged.subscribe(data => {
-      this.loadPreContracts();
+
     });
   }
 
@@ -35,36 +41,19 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * loadPreContracts
    */
   private loadPreContracts = () => {
+    this.contractTypes = this.storeService.getContractTypes();
     const preContracts = this.storeService.getPreContracts();
+    const preContractsMapped = preContracts.map(item => this.contractsService.mapPreContractToBeListed(item, this.contractTypes));
+
     const preContractToRecord = this.storeService.getPreContractsToRecord();
-    const contractTypes = this.storeService.getContractTypes();
 
     if (preContractToRecord.length > 0) {
-      const mapped = preContractToRecord.map(item => ({
-          id: item.id,
-          companyId: item.companyId,
-          workerId: item.workerId,
-          workerIdentifier: item.identifier,
-          workerName: item.name,
-          workerLastname: item.lastName,
-          workerSurname: item.sureName,
-          workerCivilStatus: item.civilStatus,
-          countryId: item.nationality,
-          retired: item.retired,
-          quadrilleId: item.quadrille,
-          creatorId: 0,
-          afpId: item.afp,
-          isapreId: item.retired,
-          remunerationContractType: item.contractType,
-          contractTypeName: contractTypes.find(type => type.id === item.contractType).name || 'NO SE ENCUENTRA'
-        })
-      );
-
-      this.contracts = [...preContracts, ...mapped];
-      this.filteredContracts = [...preContracts, ...mapped];
+      const mapped = preContractToRecord.map(item => this.contractsService.mapPreContractToBeListed(item, this.contractTypes));
+      this.contracts = [...mapped, ...preContractsMapped];
+      this.filteredContracts = [...mapped, ...preContractsMapped];
     } else {
-      this.contracts = preContracts;
-      this.filteredContracts = preContracts;
+      this.contracts = [...preContractsMapped];
+      this.filteredContracts = [...preContractsMapped];
     }
   };
 
@@ -78,7 +67,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
         return (
           item.id.toString().includes(search.toLowerCase()) ||
           item.workerName.toLowerCase().includes(search.toLowerCase()) ||
-          item.workerLastname.toLowerCase().includes(search.toLowerCase()) ||
+          item.workerLastName.toLowerCase().includes(search.toLowerCase()) ||
           item.workerSurname.toLowerCase().includes(search.toLowerCase()) ||
           item.contractTypeName.toLowerCase().includes(search.toLowerCase())
         );
@@ -113,4 +102,19 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.router.navigate(['/home-page/contract-form']);
   };
 
+  public editContractEvent(contract: any) {
+    // console.log('editContractEvent', contract);
+  }
+
+  /**
+   * deleteContract
+   * @param contract
+   */
+  public deleteContract = (contract: any): void => {
+    /*
+    const deleteContract = Object.assign(contract, {id: contract.id * -1});
+    this.storeService.addPreContract(deleteContract);
+    this.loadPreContracts();
+    */
+  };
 }

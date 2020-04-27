@@ -98,4 +98,16 @@ export class MenuListPage implements OnInit, OnDestroy {
     });
   };
 
+  /**
+   * showBadge
+   * @param menu
+   */
+  public showBadge = (menu: TabMenu): number => {
+    if (menu.menu_url.toLowerCase() === 'tarja_cuadrillas') {
+      const workers = this.storeService.getWorkers();
+      return workers.filter(item => item.quadrilleStatus !== '').length;
+    }
+
+    return 0;
+  };
 }

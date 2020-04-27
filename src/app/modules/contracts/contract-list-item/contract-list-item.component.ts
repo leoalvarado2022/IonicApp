@@ -1,4 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ContractListItem} from '../contract-interfaces';
 
 @Component({
   selector: 'app-contract-list-item',
@@ -7,7 +8,9 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class ContractListItemComponent implements OnInit {
 
-  @Input() contract: any = null;
+  @Input() contract: ContractListItem = null;
+  @Output() editContractEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() deleteContractEvent: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() {
 
@@ -17,4 +20,19 @@ export class ContractListItemComponent implements OnInit {
 
   }
 
+  /**
+   * editContract
+   * @param contract
+   */
+  public editContract = (contract: ContractListItem): void => {
+    this.editContractEvent.emit(contract);
+  };
+
+  /**
+   * deleteContract
+   * @param contract
+   */
+  public deleteContract = (contract: ContractListItem): void => {
+    this.deleteContractEvent.emit(contract);
+  };
 }

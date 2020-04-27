@@ -47,8 +47,11 @@ export class HomePagePage implements OnInit, OnDestroy {
     });
 
     this.syncStepObservable$ = this.syncStepObservable.subscribe(step => {
+      console.group('syncStepObservable');
+      console.log('current step: ', step);
+
       if (step === 0) {
-        console.log('syncData step', step);
+        console.log('sync step');
         if (this.removePreContracts) {
           this.storeService.removePreContractsToRecord(this.removePreContractsToRecord);
           this.removePreContractsToRecord = [];
@@ -58,9 +61,10 @@ export class HomePagePage implements OnInit, OnDestroy {
       }
 
       if (step === 1) {
-        console.log('storePreContracts step', step);
+        console.log('storePreContracts step');
         this.storePreContracts();
       }
+      console.groupEnd();
     });
   }
 

@@ -33,6 +33,12 @@ export class TicketFormPage implements OnInit {
 
   public attachments: Array<any> = [];
 
+  public readonly actionHeader: any = {
+    header: 'Seleccione',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
@@ -77,7 +83,6 @@ export class TicketFormPage implements OnInit {
    * pickFiles
    */
   public pickFiles = () => {
-    this.chooser.getFile()
     this.chooser.getFile('image/*,video/*').then((data: any) => {
       this.attachments.push({
         id: 0,
@@ -90,7 +95,7 @@ export class TicketFormPage implements OnInit {
     }, error => {
       this.toastService.errorToast('Ocurrio un error');
     });
-  }
+  };
 
   /**
    * getFileExtension3
@@ -98,7 +103,7 @@ export class TicketFormPage implements OnInit {
    */
   private getFileExtension = (filename: string): string => {
     return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
-  }
+  };
 
   /**
    * submitDetail
@@ -120,7 +125,7 @@ export class TicketFormPage implements OnInit {
     };
 
     this.storeDetail(data);
-  }
+  };
 
   /**
    * storeDetail
@@ -135,7 +140,7 @@ export class TicketFormPage implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
+  };
 
   /**
    * deleteFile
@@ -147,6 +152,6 @@ export class TicketFormPage implements OnInit {
     if (findIndex > -1) {
       this.attachments = this.attachments.filter((value, index, array) => findIndex !== index);
     }
-  }
+  };
 
 }

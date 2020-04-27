@@ -3,10 +3,10 @@ import {GeolocationService} from '../shared/services/geolocation/geolocation.ser
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
 import {BehaviorSubject, interval, Subscription} from 'rxjs';
-import {ContractsService} from '../modules/contracts/services/contracts/contracts.service';
 import {ToastService} from '../shared/services/toast/toast.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
+import {TallyService} from '../modules/tallies/services/tally/tally.service';
 
 @Component({
   selector: 'app-home-page',
@@ -15,11 +15,11 @@ import {HttpService} from '../shared/services/http/http.service';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
-  private syncInterval = interval(1000 * 60 * 5);
+  private syncInterval = interval(1000 * 60 * 1);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  private removePreContracts = false;
-  private removePreContractsToRecord: Array<number> = [];
+  private removeTallies = false;
+  private removeTalliesToRecord: Array<number> = [];
 
   private syncInterval$: Subscription;
   private syncStepObservable$: Subscription;
@@ -28,7 +28,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     private geolocationService: GeolocationService,
     private authService: AuthService,
     private storeService: StoreService,
-    private contractsService: ContractsService,
+    private tallyService: TallyService,
     private toastService: ToastService,
     private syncService: SyncService,
     private httpService: HttpService
@@ -51,11 +51,17 @@ export class HomePagePage implements OnInit, OnDestroy {
       console.log('current step: ', step);
 
       if (step === 0) {
+        if (this.removeTallies) {
+          this.storeService.removeTalliesToRecord(this.removeTalliesToRecord);
+          this.removeTalliesToRecord = [];
+          this.removeTallies = false;
+        }
+
         this.syncData();
       }
 
       if (step === 1) {
-        // PASO LIBRE PARA USAR
+        this.recordTallies();
       }
 
       console.groupEnd();
@@ -103,5 +109,38 @@ export class HomePagePage implements OnInit, OnDestroy {
     });
   };
 
+  /**
+   * recordTallies
+   */
+  private recordTallies = () => {
+    const toRecord = this.storeService.getTalliesToRecord();
+
+    if (toRecord.length > 0) {
+      this.tallyService.recordTallies(toRecord).subscribe((success: any) => {
+        this.checkRecordedTallies(success.log);
+        this.syncStepObservable.next(0);
+      }, error => {
+        this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
+      });
+    } else {
+      this.syncStepObservable.next(0);
+    }
+  };
+
+  /**
+   * checkRecordedTallies
+   * @param logs
+   */
+  private checkRecordedTallies = (logs: Array<any>) => {
+    if (logs.length > 0) {
+      for (const log of logs) {
+        if (log['respuesta'].toLowerCase() === 'ok') {
+          this.removeTalliesToRecord.push(+log['id_parametro']);
+        }
+      }
+
+      this.removeTallies = true;
+    }
+  };
 
 }

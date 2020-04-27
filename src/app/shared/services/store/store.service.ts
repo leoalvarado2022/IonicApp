@@ -82,7 +82,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       pushToken: null,
       toRecord: {
         preDevices: [],
-        tallies: []
+        tallies: [],
+        tallyTempId: 0
       }
     };
   };
@@ -1138,16 +1139,45 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
+   * getTallyTempId
+   */
+  public getTallyTempId(): number {
+    return this.getState().toRecord.tallyTempId;
+  }
+
+  /**
+   * increaseTallyTempId
+   */
+  public increaseTallyTempId = (): void => {
+    const current = this.getTallyTempId();
+
+    const toRecord = {...this.getState().toRecord, tallyTempId: (current + 1)};
+    this.setState({toRecord}, StoreActions.IncreaseTallyTempId);
+  };
+
+  /**
    * addTalliesToRecord
    * @param tallies
    */
   public addTalliesToRecord = (tallies: Array<any>): void => {
     const talliesToRecord = this.getTalliesToRecord();
 
-    // PENDING FILTER DUPLICATES LOGIC
-
     const toRecord = {...this.getState().toRecord, tallies: [...talliesToRecord, ...tallies]};
     this.setState({toRecord}, StoreActions.AddTallies);
+
+    this.increaseTallyTempId();
+  };
+
+  /**
+   * removeTalliesToRecord
+   * @param indexes
+   */
+  public removeTalliesToRecord = (indexes: Array<number>): void => {
+    const tallies = this.getTalliesToRecord();
+    const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, preContracts: toRemoved};
+    this.setState({toRecord}, StoreActions.RemoveTallies);
   };
 
   /**

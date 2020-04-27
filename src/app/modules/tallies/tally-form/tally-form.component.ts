@@ -55,7 +55,7 @@ export class TallyFormComponent implements OnInit {
       performance: [''],
       unit: [{value: '', disabled: true}],
       notes: [''],
-      creatorId: [activeCompany.user, Validators.required],
+      creatorId: [activeCompany.user, Validators.required]
     });
   }
 
@@ -163,14 +163,24 @@ export class TallyFormComponent implements OnInit {
    */
   public submitForm = () => {
     const formData = Object.assign({}, this.tallyForm.value);
-    const talliesToRecord = this.workers.map(worker => {
-      return Object.assign({}, formData, {
-        workerId: worker.id,
-        contract: worker.validity,
-        deal: 0,
-        validityBonus: 0
-      });
-    });
+
+    const talliesToRecord = [];
+    for (const worker of this.workers) {
+      const tempId = this.storeService.getTallyTempId();
+
+      talliesToRecord.push(
+        Object.assign({}, formData, {
+          workerId: worker.id,
+          contract: worker.validity,
+          deal: 0,
+          validityBonus: 0,
+          tempId
+        })
+      );
+
+      this.storeService.increaseTallyTempId();
+    }
+
 
     this.storeService.addTalliesToRecord(talliesToRecord);
     this.closeModal(true);

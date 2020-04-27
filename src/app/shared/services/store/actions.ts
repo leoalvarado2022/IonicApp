@@ -47,5 +47,7 @@ export enum StoreActions {
   SetDevices = 'SET_DEVICES',
   SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
   AddPreDevices = 'ADD_PREDEVICES',
-  AddTallies = 'ADD_TALLIES'
+  AddTallies = 'ADD_TALLIES',
+  RemoveTallies = 'REMOVE_TALLIES',
+  IncreaseTallyTempId = 'INCREASE_TALLY_TEMP_ID'
 }

@@ -7,6 +7,7 @@ import {ContractListItem} from '../../contract-interfaces';
 export class ContractsService {
 
   private readonly storePreContractUrl = 'pre-contracts/record';
+  private readonly checkWorkerUrl = 'pre-contracts/check-worker';
 
   constructor(
     private httpService: HttpService,
@@ -36,6 +37,15 @@ export class ContractsService {
       workerSurname: contract.workerSurname,
       contractTypeName: contract.contractTypeName
     };
+  };
+
+  /**
+   * checkWorker
+   * @param identifier
+   */
+  public checkWorker = (identifier: string) => {
+    const url = this.httpService.buildUrl(this.checkWorkerUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({identifier}), {headers: this.httpService.getHeaders()});
   };
 
 }

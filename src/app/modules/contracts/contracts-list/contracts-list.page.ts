@@ -1,9 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {Router} from '@angular/router';
-import {Subscription} from 'rxjs';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {ContractListItem} from '../contract-interfaces';
+import {HttpService} from '../../../shared/services/http/http.service';
+import {SyncService} from '../../../shared/services/sync/sync.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-contracts-list',
@@ -14,23 +16,24 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
   private contracts: Array<ContractListItem> = [];
   public filteredContracts: Array<ContractListItem> = [];
-  private contractTypes: Array<any> = [];
   private store$: Subscription;
 
   constructor(
     private storeService: StoreService,
     private router: Router,
-    private contractsService: ContractsService
+    private contractsService: ContractsService,
+    private httpService: HttpService,
+    private syncService: SyncService,
   ) {
 
   }
 
   ngOnInit() {
-    this.loadPreContracts();
-
     this.store$ = this.storeService.stateChanged.subscribe(data => {
-
+      this.loadPreContracts();
     });
+
+    // this.loadPreContracts();
   }
 
   ngOnDestroy(): void {
@@ -41,20 +44,13 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * loadPreContracts
    */
   private loadPreContracts = () => {
-    this.contractTypes = this.storeService.getContractTypes();
     const preContracts = this.storeService.getPreContracts();
-    const preContractsMapped = preContracts.map(item => this.contractsService.mapPreContractToBeListed(item, this.contractTypes));
+    const preContractsMapped = preContracts.map(item => this.contractsService.mapPreContractToBeListed(item));
 
-    const preContractToRecord = this.storeService.getPreContractsToRecord();
-
-    if (preContractToRecord.length > 0) {
-      const mapped = preContractToRecord.map(item => this.contractsService.mapPreContractToBeListed(item, this.contractTypes));
-      this.contracts = [...mapped, ...preContractsMapped];
-      this.filteredContracts = [...mapped, ...preContractsMapped];
-    } else {
-      this.contracts = [...preContractsMapped];
-      this.filteredContracts = [...preContractsMapped];
-    }
+    this.contracts = [];
+    this.filteredContracts = [];
+    this.contracts = preContractsMapped;
+    this.filteredContracts = preContractsMapped;
   };
 
   /**
@@ -98,23 +94,59 @@ export class ContractsListPage implements OnInit, OnDestroy {
   /**
    * contractForm
    */
-  public contractForm = () => {
-    this.router.navigate(['/home-page/contract-form']);
+  public contractForm = (id: number = null) => {
+    if (id) {
+      this.router.navigate(['/home-page/contract-form', id]);
+    } else {
+      this.router.navigate(['/home-page/contract-form']);
+    }
   };
 
-  public editContractEvent(contract: any) {
-    // console.log('editContractEvent', contract);
-  }
+  /**
+   * editContractEvent
+   * @param contract
+   */
+  public editContractEvent = (contract: any) => {
+    this.contractForm(contract.id);
+  };
 
   /**
    * deleteContract
    * @param contract
    */
   public deleteContract = (contract: any): void => {
-    /*
-    const deleteContract = Object.assign(contract, {id: contract.id * -1});
-    this.storeService.addPreContract(deleteContract);
-    this.loadPreContracts();
-    */
+    const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
+    this.storeContract(deleteContract);
+  };
+
+  /**
+   * storeContract
+   * @param data
+   */
+  private storeContract = (data: any) => {
+    const preContracts = [];
+    preContracts.push(data);
+
+    this.contractsService.storePreContracts(preContracts).subscribe(success => {
+      this.syncData();
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
+  };
+
+  /**
+   * syncData
+   */
+  private syncData = () => {
+    const userData = this.storeService.getUser();
+    const username = userData.username;
+    const activeConnection = this.storeService.getActiveConnection();
+
+    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
+      this.storeService.setSyncedData(success.data);
+      this.loadPreContracts();
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
   };
 }

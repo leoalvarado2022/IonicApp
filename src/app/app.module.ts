@@ -25,7 +25,7 @@ import {LoaderService} from './shared/services/loader/loader.service';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
 import {StoreService} from './shared/services/store/store.service';
 import {FCM} from '@ionic-native/fcm/ngx';
-import {NFC, Ndef} from '@ionic-native/nfc/ngx';
+import {Ndef, NFC} from '@ionic-native/nfc/ngx';
 import {NativeAudio} from '@ionic-native/native-audio/ngx';
 
 registerLocaleData(localeCL, 'es-CL', localeCLExtra);

@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Agregar Jornada</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="tallyForm">
+
+    <ion-item>
+      <ion-label position="stacked">Centro de Costo</ion-label>
+      <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()"></ion-searchbar>
+      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
+    </ion-item>
+
+    <ion-list class="cost-centers-list" *ngIf="filteredCostCenters.length > 0">
+      <ion-list-header color="primary">
+        <ion-label>Resultados: {{ filteredCostCenters.length }} </ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
+        {{ costCenter.name  }}
+      </ion-item>
+    </ion-list>
+
+    <ion-item>
+      <ion-label position="stacked">Labor</ion-label>
+      <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()"></ion-searchbar>
+      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
+    </ion-item>
+
+    <ion-list class="labors-list" *ngIf="filteredLabors.length > 0">
+      <ion-list-header color="success">
+        <ion-label>Resultados: {{ filteredLabors.length }} </ion-label>
+      </ion-list-header>
+      <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
+        {{ labor.name  }}
+      </ion-item>
+    </ion-list>
+
+    <ion-item>
+      <ion-label position="floating">Jornada</ion-label>
+      <ion-input formControlName="workingDay"></ion-input>
+      <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
+        <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+      </ion-button>
+      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Seleccione una Jornada</ion-text>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Horas Extra</ion-label>
+      <ion-input formControlName="hoursExtra"></ion-input>
+      <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(2)">
+        <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Rendimiento</ion-label>
+      <ion-input formControlName="performance"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Unidad</ion-label>
+      <ion-input formControlName="unit"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label position="floating">Notas</ion-label>
+      <ion-textarea formControlName="notes"></ion-textarea>
+    </ion-item>
+
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col>
+      <ion-button color="danger" expand="block" (click)="closeModal()">
+        Cancelar
+      </ion-button>
+    </ion-col>
+
+    <ion-col>
+      <ion-button color="success" expand="block" [disabled]="tallyForm.invalid" (click)="submitForm()">
+        Guardar
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

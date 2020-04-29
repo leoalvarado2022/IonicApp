@@ -11,6 +11,8 @@
   </ion-refresher>
 
   <ion-virtual-scroll [items]="filteredCostCenters">
-    <app-cost-center-card (cardClicked)="costCenterSelected($event)" *virtualItem="let item" [costCenter]="item"></app-cost-center-card>
+    <div *virtualItem="let item">
+      <app-cost-center-card (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
+    </div>
   </ion-virtual-scroll>
 </ion-content>

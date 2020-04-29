@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button class="header-back-button" text=""></ion-back-button>
+      <ion-button (click)="goBack()">
+        <ion-icon style="color: white" slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
       <strong>Tarjas</strong>
@@ -65,11 +67,11 @@
     </h2>
 
     <ion-item>
-      <ion-button size="small" fill="clear" slot="start" (click)="moveDayOnDate(-1)">
+      <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
       </ion-button>
       <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
-      <ion-button size="small" fill="clear" slot="end" (click)="moveDayOnDate(1)">
+      <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
         <ion-icon name="arrow-forward" slot="end"></ion-icon>
       </ion-button>
     </ion-item>
@@ -92,6 +94,7 @@
     </ion-list>
   </ng-container>
 
+  <!-- TARJAS -->
   <ng-container *ngIf="activeWorker">
     <h3 class="ion-text-center">
       {{ activeWorker.name }}
@@ -133,40 +136,27 @@
 </ion-content>
 
 <ion-footer>
-  <ng-container *ngIf="selectedWorkers.length === 0 && quadrilles.length > 1 && activeQuadrille">
-    <ion-button color="primary" expand="block" (click)="activeQuadrille = null">
-      <ion-icon slot="start" name="arrow-back"></ion-icon>
-      Cuadrillas
-    </ion-button>
-  </ng-container>
-
   <ng-container *ngIf="selectedWorkers.length > 0">
     <!-- One worker selected -->
     <ion-row *ngIf="selectedWorkers.length === 1 && !activeWorker">
       <ion-col size="6">
-        <ion-button color="primary" expand="block" (click)="createTally()">
+        <ion-button color="success" expand="block" (click)="createTally()">
           Agregar Jornada
         </ion-button>
       </ion-col>
 
       <ion-col size="6">
-        <ion-button color="success" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0])">
-          Listado de Jornadas
+        <ion-button color="primary" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0])">
+          Ver Tarjas
         </ion-button>
       </ion-col>
     </ion-row>
 
     <!-- Worker tally list -->
     <ion-row *ngIf="activeWorker">
-      <ion-col size="6">
-        <ion-button color="primary" expand="block" (click)="createTally()">
+      <ion-col>
+        <ion-button color="success" expand="block" (click)="createTally()">
           Agregar Jornada
-        </ion-button>
-      </ion-col>
-
-      <ion-col size="6">
-        <ion-button color="success" expand="block" (click)="activeWorker = null">
-          Listado de Trabajadores
         </ion-button>
       </ion-col>
     </ion-row>
@@ -174,13 +164,13 @@
     <!-- Several workers selected -->
     <ion-row *ngIf="selectedWorkers.length > 1">
       <ion-col size="6">
-        <ion-button color="primary" expand="block" (click)="createTally()">
+        <ion-button color="success" expand="block" (click)="createTally()">
           Agregar Masivo
         </ion-button>
       </ion-col>
 
       <ion-col size="6">
-        <ion-button color="success" expand="block">
+        <ion-button color="primary" expand="block">
           Modificar Masivo
         </ion-button>
       </ion-col>

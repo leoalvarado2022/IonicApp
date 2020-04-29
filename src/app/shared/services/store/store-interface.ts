@@ -72,7 +72,7 @@ export interface TicketForm {
 }
 
 export interface ToRecord {
-  preContractTempId: number;
-  preContracts: Array<any>;
   preDevices: Array<any>;
+  tallies: Array<any>;
+  tallyTempId: number;
 }

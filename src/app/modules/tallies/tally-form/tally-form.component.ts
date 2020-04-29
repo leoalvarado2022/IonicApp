@@ -48,8 +48,8 @@ export class TallyFormComponent implements OnInit {
     this.tallyForm = this.formBuilder.group({
       id: [0, Validators.required],
       date: [this.dateSelected, Validators.required],
-      costCenter: ['', Validators.required],
-      labor: ['', Validators.required],
+      costCenterId: ['', Validators.required],
+      laborId: ['', Validators.required],
       workingDay: ['', Validators.required],
       hoursExtra: [''],
       performance: [''],
@@ -83,7 +83,7 @@ export class TallyFormComponent implements OnInit {
    * @param costCenter
    */
   public selectCostCenter = (costCenter: any): void => {
-    this.tallyForm.get('costCenter').patchValue(costCenter.id);
+    this.tallyForm.get('costCenterId').patchValue(costCenter.id);
     this.costCenterName = costCenter.name;
     this.filteredCostCenters = [];
   };
@@ -92,7 +92,7 @@ export class TallyFormComponent implements OnInit {
    * cleanCostCenterSearch
    */
   public cleanCostCenterSearch = (): void => {
-    this.tallyForm.get('costCenter').patchValue('');
+    this.tallyForm.get('costCenterId').patchValue('');
     this.filteredCostCenters = [];
   };
 
@@ -113,7 +113,7 @@ export class TallyFormComponent implements OnInit {
    * @param labor
    */
   public selectLabor = (labor: any): void => {
-    this.tallyForm.get('labor').patchValue(labor.id);
+    this.tallyForm.get('laborId').patchValue(labor.id);
     this.laborName = labor.name;
     this.filteredLabors = [];
   };
@@ -122,7 +122,7 @@ export class TallyFormComponent implements OnInit {
    * cleanLaborSearch
    */
   public cleanLaborSearch = (): void => {
-    this.tallyForm.get('labor').patchValue('');
+    this.tallyForm.get('laborId').patchValue('');
     this.filteredLabors = [];
   };
 
@@ -171,8 +171,8 @@ export class TallyFormComponent implements OnInit {
       talliesToRecord.push(
         Object.assign({}, formData, {
           workerId: worker.id,
-          contract: worker.validity,
-          deal: 0,
+          contractId: worker.validity,
+          dealId: 0,
           validityBonus: 0,
           tempId
         })
@@ -180,7 +180,6 @@ export class TallyFormComponent implements OnInit {
 
       this.storeService.increaseTallyTempId();
     }
-
 
     this.storeService.addTalliesToRecord(talliesToRecord);
     this.closeModal(true);

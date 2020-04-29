@@ -26,6 +26,7 @@ export class TallyListPage implements OnInit, OnDestroy {
 
   // Tallies
   private tallies: Array<any> = [];
+  private talliesToRecord: Array<any> = [];
   public filteredTallies: Array<any> = [];
 
   // Form dates
@@ -151,7 +152,18 @@ export class TallyListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any) => {
-    this.loadData();
+    if (this.activeWorker) {
+      this.reloadTallies();
+    } else if (this.activeQuadrille) {
+      this.workers = this.storeService.getWorkers();
+      this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+      this.selectedWorkers = [];
+    } else {
+      this.quadrilles = this.storeService.getQuadrilles();
+      this.filteredQuadrilles = this.quadrilles;
+      this.activeQuadrille = null;
+    }
+
     event.target.complete();
   };
 
@@ -229,9 +241,26 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public goToWorkerTallyList = (worker: any) => {
     this.activeWorker = worker;
-    this.filteredTallies = this.tallies.filter(item => item.workerId === worker.id);
+    const tallies = this.tallies.filter(item => {
+      const tallyDate = moment(item.date).format('YYYY-MM-DD');
+      const current = moment(this.currentDate).format('YYYY-MM-DD');
+
+      return item.workerId === worker.id && tallyDate === current;
+    });
+
+    const toRecord = this.talliesToRecord.filter(item => {
+      const tallyDate = moment(item.date).format('YYYY-MM-DD');
+      const current = moment(this.currentDate).format('YYYY-MM-DD');
+
+      return item.workerId === worker.id && tallyDate === current;
+    });
+
+    this.filteredTallies = [...toRecord, ...tallies];
   };
 
+  /**
+   * createTally
+   */
   public createTally = async () => {
     const modal = await this.modalController.create({
       component: TallyFormComponent,
@@ -299,8 +328,13 @@ export class TallyListPage implements OnInit, OnDestroy {
    * reloadTallies
    */
   private reloadTallies = () => {
-    // Tallies
-    this.tallies = [...this.storeService.getTalliesToRecord(), ...this.storeService.getTallies()];
-    this.filteredTallies = [];
+    this.tallies = this.storeService.getTallies();
+    this.talliesToRecord = this.storeService.getTalliesToRecord();
+
+    if (this.activeWorker) {
+      console.log('activeWorker', this.activeWorker);
+
+      this.goToWorkerTallyList(this.activeWorker);
+    }
   };
 }

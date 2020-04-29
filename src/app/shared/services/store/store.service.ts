@@ -10,7 +10,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: false});
+    super({logStateChanges: true});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -1172,12 +1172,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * removeTalliesToRecord
    * @param indexes
    */
-  public removeTalliesToRecord = (indexes: Array<number>): void => {
+  public removeTalliesToRecord = (indexes: Array<number>): number => {
     const tallies = this.getTalliesToRecord();
     const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
 
-    const toRecord = {...this.getState().toRecord, preContracts: toRemoved};
+    const toRecord = {...this.getState().toRecord, tallies: [...toRemoved]};
     this.setState({toRecord}, StoreActions.RemoveTallies);
+
+    return toRemoved.length;
   };
 
   /**

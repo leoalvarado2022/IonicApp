@@ -15,7 +15,7 @@
     <ion-item>
       <ion-label position="stacked">Centro de Costo</ion-label>
       <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()"></ion-searchbar>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('costCenter').hasError('required')">Seleccione un Centro de Costo</ion-text>
+      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
     </ion-item>
 
     <ion-list class="cost-centers-list" *ngIf="filteredCostCenters.length > 0">
@@ -30,7 +30,7 @@
     <ion-item>
       <ion-label position="stacked">Labor</ion-label>
       <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()"></ion-searchbar>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('labor').hasError('required')">Seleccione una Labor</ion-text>
+      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
     </ion-item>
 
     <ion-list class="labors-list" *ngIf="filteredLabors.length > 0">

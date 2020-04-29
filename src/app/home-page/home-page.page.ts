@@ -15,7 +15,7 @@ import {TallyService} from '../modules/tallies/services/tally/tally.service';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
-  private syncInterval = interval(1000 * 60 * 1);
+  private syncInterval = interval(1000 * 60 * 5);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private removeTallies = false;
@@ -52,9 +52,11 @@ export class HomePagePage implements OnInit, OnDestroy {
 
       if (step === 0) {
         if (this.removeTallies) {
-          this.storeService.removeTalliesToRecord(this.removeTalliesToRecord);
-          this.removeTalliesToRecord = [];
-          this.removeTallies = false;
+          const removed = this.storeService.removeTalliesToRecord(this.removeTalliesToRecord);
+          if (removed === 0) {
+            this.removeTalliesToRecord = [];
+            this.removeTallies = false;
+          }
         }
 
         this.syncData();
@@ -134,7 +136,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private checkRecordedTallies = (logs: Array<any>) => {
     if (logs.length > 0) {
       for (const log of logs) {
-        if (log['respuesta'].toLowerCase() === 'ok') {
+        if (log['respuesta'] && log['respuesta'].toLowerCase() === 'ok') {
           this.removeTalliesToRecord.push(+log['id_parametro']);
         }
       }

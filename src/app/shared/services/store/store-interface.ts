@@ -7,6 +7,7 @@ export interface StoreInterface {
   ticket: TicketForm;
   pushToken: string;
   toRecord: ToRecord;
+  totalTicket: number;
 }
 
 export interface Auth {

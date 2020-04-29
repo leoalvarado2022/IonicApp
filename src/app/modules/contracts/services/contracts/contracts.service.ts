@@ -7,6 +7,7 @@ import {ContractListItem} from '../../contract-interfaces';
 export class ContractsService {
 
   private readonly storePreContractUrl = 'pre-contracts/record';
+  private readonly checkWorkerUrl = 'pre-contracts/check-worker';
 
   constructor(
     private httpService: HttpService,
@@ -27,54 +28,24 @@ export class ContractsService {
   /**
    * mapPreContractToBeListed
    * @param contract
-   * @param contractTypes
    */
-  public mapPreContractToBeListed = (contract: any, contractTypes: Array<any> = []): ContractListItem => {
-    if (contract.hasOwnProperty('workerName')) {
-      return {
-        id: contract.id,
-        workerName: contract.workerName,
-        workerLastName: contract.workerLastname,
-        workerSurname: contract.workerSurname,
-        contractTypeName: contract.contractTypeName,
-        afp: contract.afpId,
-        companyId: contract.companyId,
-        nationality: contract.countryId,
-        creatorId: contract.creatorId,
-        isapre: contract.isapreId,
-        quadrille: contract.quadrilleId,
-        contractType: contract.remunerationContractType,
-        retired: contract.retired,
-        civilStatus: contract.workerCivilStatus,
-        workerId: contract.workerId,
-        identifier: contract.workerIdentifier
-      };
-    } else if (contract.hasOwnProperty('name')) {
-      const contractType = contractTypes.find(type => type.id === contract.contractType);
-      const contractTypeName = contractType ? contractType.name : 'NO SE ENCUENTRA';
+  public mapPreContractToBeListed = (contract: any): ContractListItem => {
+    return {
+      id: contract.id,
+      workerName: contract.workerName,
+      workerLastName: contract.workerLastName,
+      workerSurname: contract.workerSurname,
+      contractTypeName: contract.contractTypeName
+    };
+  };
 
-      return {
-        id: contract.id,
-        workerName: contract.name,
-        workerLastName: contract.lastName,
-        workerSurname: contract.sureName,
-        contractTypeName,
-        afp: contract.afp,
-        civilStatus: contract.civilStatus,
-        companyId: contract.companyId,
-        contractType: contract.contractType,
-        creatorId: contract.creatorId,
-        dob: contract.dob,
-        gender: contract.gender,
-        identifier: contract.identifier,
-        isapre: contract.isapre,
-        nationality: contract.nationality,
-        quadrille: contract.quadrille,
-        retired: contract.retired,
-        tempId: contract.tempId,
-        workerId: contract.workerId
-      };
-    }
+  /**
+   * checkWorker
+   * @param identifier
+   */
+  public checkWorker = (identifier: string) => {
+    const url = this.httpService.buildUrl(this.checkWorkerUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({identifier}), {headers: this.httpService.getHeaders()});
   };
 
 }

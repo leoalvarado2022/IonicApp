@@ -8,6 +8,10 @@ const routes: Routes = [
   {
     path: '',
     component: ContractFormPage
+  },
+  {
+    path: ':id',
+    component: ContractFormPage
   }
 ];
 

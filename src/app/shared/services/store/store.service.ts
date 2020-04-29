@@ -3,7 +3,6 @@ import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
 import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
-import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,7 @@ import {environment} from '../../../../environments/environment';
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: !environment.production});
+    super({logStateChanges: true});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -83,9 +82,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
       pushToken: null,
       totalTicket: null,
       toRecord: {
-        preContractTempId: 1,
-        preContracts: [],
-        preDevices: []
+        preDevices: [],
+        tallies: [],
+        tallyTempId: 0
       }
     };
   };
@@ -514,6 +513,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setTallies(tallies);
     this.setDevices(devices);
   };
+
 
   /**
    * setActiveCostCenter
@@ -1124,31 +1124,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
 
   /**
-   * getPreContractsToRecord
-   */
-  public getPreContractsToRecord = (): Array<any> => {
-    return this.getState().toRecord.preContracts;
-  };
-
-  /**
-   * addPreContract
-   * @param preContract
-   */
-  public addPreContract = (preContract: any): void => {
-    const preContracts = this.getPreContractsToRecord();
-    const checkDuplicate = preContracts.find(item => item.identifier === preContract.identifier);
-
-    if (checkDuplicate === undefined) {
-      preContracts.push(preContract);
-      const toRecord = {...this.getState().toRecord, preContracts};
-      this.setState({toRecord}, StoreActions.AddPreContract);
-
-      this.increaseTempId();
-    }
-  };
-
-
-  /**
    * getPreDevicesToRecord
    */
   public getPreDevicesToRecord = (): Array<any> => {
@@ -1173,32 +1148,54 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-   * getPrecontractTempId
+   * getTalliesToRecord
    */
-  public getPrecontractTempId(): number {
-    return this.getState().toRecord.preContractTempId;
-  }
-
-  /**
-   * increaseTempId
-   */
-  public increaseTempId = (): void => {
-    const current = this.getPrecontractTempId();
-
-    const toRecord = {...this.getState().toRecord, preContractTempId: (current + 1)};
-    this.setState({toRecord}, StoreActions.IncreasePreContractTempId);
+  public getTalliesToRecord = (): Array<any> => {
+    return this.getState().toRecord.tallies;
   };
 
   /**
-   * removePreContractsToRecord
-   * @param index
+   * getTallyTempId
    */
-  public removePreContractsToRecord = (indexes: Array<number>): void => {
-    const preContracts = this.getPreContractsToRecord();
-    const toRemoved = preContracts.filter(item => !indexes.includes(item.tempId));
+  public getTallyTempId(): number {
+    return this.getState().toRecord.tallyTempId;
+  }
 
-    const toRecord = {...this.getState().toRecord, preContracts: toRemoved};
-    this.setState({toRecord}, StoreActions.RemovePreContracts);
+  /**
+   * increaseTallyTempId
+   */
+  public increaseTallyTempId = (): void => {
+    const current = this.getTallyTempId();
+
+    const toRecord = {...this.getState().toRecord, tallyTempId: (current + 1)};
+    this.setState({toRecord}, StoreActions.IncreaseTallyTempId);
+  };
+
+  /**
+   * addTalliesToRecord
+   * @param tallies
+   */
+  public addTalliesToRecord = (tallies: Array<any>): void => {
+    const talliesToRecord = this.getTalliesToRecord();
+
+    const toRecord = {...this.getState().toRecord, tallies: [...talliesToRecord, ...tallies]};
+    this.setState({toRecord}, StoreActions.AddTallies);
+
+    this.increaseTallyTempId();
+  };
+
+  /**
+   * removeTalliesToRecord
+   * @param indexes
+   */
+  public removeTalliesToRecord = (indexes: Array<number>): number => {
+    const tallies = this.getTalliesToRecord();
+    const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, tallies: [...toRemoved]};
+    this.setState({toRecord}, StoreActions.RemoveTallies);
+
+    return toRemoved.length;
   };
 
   /**

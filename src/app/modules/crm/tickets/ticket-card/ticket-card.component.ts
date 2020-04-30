@@ -37,6 +37,11 @@ export class TicketCardComponent implements OnInit {
   public remainingTime(date: string): string {
     const _date = moment(date, 'DD/MM/YYYY HH:mm:ss');
     const difference = _date.diff(this.now, 'hours');
+
+    if (difference < 0) {
+      return;
+    }
+
     return difference + ' h';
   }
 

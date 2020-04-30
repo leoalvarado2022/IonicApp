@@ -13,7 +13,9 @@
 <!--    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>-->
     <p><strong>Estado:</strong> {{ ticket.state  }}</p>
     <p><strong>Referencia:</strong> {{ ticket.reference }}</p>
-    <p><strong>Creador:</strong> {{ ticket.user }}</p>
+    <p><strong>Creador:</strong> {{ ticket.creator }}</p>
+    <p><strong>Asignado:</strong> {{ ticket.user }}</p>
+    <p><strong>Fecha de creación:</strong> {{ ticket.createdAt }}</p>
     <p class="date-compromiso">Fecha de Compromiso: {{ ticket.clientCommitment }}</p>
   </ion-card-content>
 </ion-card>

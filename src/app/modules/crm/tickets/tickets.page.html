@@ -11,19 +11,18 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content scrollX="false" scrollY="false">
-  <ion-tabs>
+  <ion-tabs (ionTabsWillChange)="change($event)">
     <!-- Tab bar -->
     <ion-tab-bar slot="top">
       <ion-tab-button tab="me">
-        <span>Mis Tickets</span>
+        <span>Mis Tickets <span class="number" *ngIf="activeNumberTicket('me') && numberTicket > 0">{{numberTicket}}</span></span>
       </ion-tab-button>
       <ion-tab-button tab="all">
-        <span>Mi Equipo</span>
+        <span>Mi Equipo <span class="number" *ngIf="activeNumberTicket('all') && numberTicket > 0">{{numberTicket}}</span></span>
       </ion-tab-button>
       <ion-tab-button tab="active">
-        <span>Activos</span>
+        <span>Activos <span class="number" *ngIf="activeNumberTicket('active') && numberTicket > 0">{{numberTicket}}</span></span>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>

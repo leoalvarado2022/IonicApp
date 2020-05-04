@@ -4,12 +4,20 @@
     <p>Resignado: {{ detail.creatorName }}</p>
   </div>
   <ion-item *ngIf="!detail.active_assigned">
-    <ion-label>{{ detail.assignedName }}</ion-label>
-    <ion-icon color="primary" name="document" slot="end"></ion-icon>
+    <ion-label style="font-size: 12px;font-weight: bold;">
+      {{ detail.creatorName }} <br>
+      Asignado: {{ detail.assignedName }} <br>
+      <span style="color: grey;font-size: 10px;">{{detail.create}}</span>
+    </ion-label>
+    <ion-icon color="primary" name="lock-open" slot="end" *ngIf="detail.public"></ion-icon>
+    <ion-icon color="primary" name="lock-closed" slot="end" *ngIf="!detail.public"></ion-icon>
   </ion-item>
-
   <ion-card-content>
-    <p *ngIf="detail.active_state"><strong>Estado:</strong> {{ detail.state }}</p>
+    <p style="color: grey;font-size: 12px;"><span >Prioridad:</span> {{ detail.priority }}</p>
+    <p *ngIf="detail.active_state" style="color: grey;font-size: 12px;"><strong>Estado:</strong> {{ detail.state }}</p>
+    <p *ngIf="detail.commitmentAt && detail.commitmentAt !== null" style="color: grey;font-size: 12px;"><span>Fecha de compromiso Cliente:</span> {{detail.commitmentAt}}</p>
+    <p style="color: grey;font-size: 12px;"><span>Fecha de compromiso Interna:</span> {{detail.commitmentInternAt}}</p>
+    <br>
     <p>{{ detail.observations || 'Sin Observacion' }}</p>
     <p class="text-confirm" *ngIf="detail.active_commit">Fecha Compromiso: {{ detail.commitmentAt | customDate }}</p>
 

@@ -27,17 +27,18 @@
         <p class="ticket-p"><strong>Estado:</strong> {{ ticket.state  }}</p>
         <p class="ticket-p"><strong>Referencia:</strong> {{ ticket.reference }}</p>
         <p class="ticket-p"><strong>Creador:</strong> {{ ticket.creator }}</p>
-        <p class="date-compromiso ticket-p">Fecha de Compromiso: {{ ticket.clientCommitment }}</p>
+        <!--<p class="ticket-p"><strong>Asignado:</strong> {{ ticket.creatorName }}</p>-->
+        <p class="ticket-p"><strong>Fecha de Compromiso:</strong> {{ ticket.clientCommitment }}</p>
       </div>
     </ng-container>
-
     <div [class.scroll-card-custom]="openSelected" class="scroll-card">
       <ng-container *ngIf="ticket">
-        <div class="card-text">
+        <div class="card-text" style="padding-top: 0;">
           <p class="ticket-p"><strong>Periodicidad:</strong> {{ ticket.periodicity }}</p>
           <p class="ticket-p"><strong>Descripción:</strong> {{ ticket.description }}</p>
-          <p class="ticket-p"><strong>Solución:</strong> {{ ticket.Solution }}</p>
-          <p class="ticket-p"><strong>Creado:</strong> {{ ticket.createdAt }}</p>
+          <p class="ticket-p"><strong>Solución:</strong> {{ ticket.solution }}</p>
+          <p class="ticket-p"><strong>Solución:</strong> {{ ticket.solution }}</p>
+          <p class="ticket-p"><strong>Fecha de compromiso interna:</strong> {{ ticket.internalCommitment }}</p>
         </div>
       </ng-container>
     </div>

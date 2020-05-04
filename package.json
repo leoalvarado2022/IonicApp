@@ -143,8 +143,8 @@
       "phonegap-plugin-barcodescanner": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

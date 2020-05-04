@@ -52,7 +52,7 @@ export class MePage implements OnInit {
     this.ticketsService.getTickets(data).subscribe((success: any) => {
       this.myTickets = success.data.listTickets;
       this.filteredTickets = success.data.listTickets;
-
+      this.storeService.setTotalTicket(+success.data.total);
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();

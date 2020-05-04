@@ -80,6 +80,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
         details: []
       },
       pushToken: null,
+      totalTicket: null,
       toRecord: {
         preDevices: [],
         tallies: [],
@@ -715,6 +716,21 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getPushToken = (): string => {
     return this.getState().pushToken;
+  };
+
+  /**
+   * setPushToken
+   * @param token
+   */
+  public setTotalTicket = (total: number): void => {
+    this.setState({totalTicket: total}, StoreActions.AddTotalTickets);
+  };
+
+  /**
+   * getPushToken
+   */
+  public getTotalTicket = (): number => {
+    return this.getState().totalTicket;
   };
 
   /**

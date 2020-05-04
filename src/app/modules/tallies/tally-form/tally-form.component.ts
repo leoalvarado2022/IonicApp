@@ -16,6 +16,8 @@ export class TallyFormComponent implements OnInit {
   public tallyForm: FormGroup;
   private costCenters: Array<any> = [];
   private labors: Array<any> = [];
+  public currentStep = 1;
+  public split = 0;
 
   public filteredCostCenters: Array<any> = [];
   public costCenterName: string;
@@ -28,6 +30,8 @@ export class TallyFormComponent implements OnInit {
     {text: '0.25', value: 0.25},
     {text: '0.1', value: 0.1}
   ];
+
+  public multipleWorkers: Array<any> = [];
 
   constructor(
     private modalController: ModalController,
@@ -50,13 +54,19 @@ export class TallyFormComponent implements OnInit {
       date: [this.dateSelected, Validators.required],
       costCenterId: ['', Validators.required],
       laborId: ['', Validators.required],
-      workingDay: ['', Validators.required],
+      workingDay: [1, Validators.required],
       hoursExtra: [''],
       performance: [''],
       unit: [{value: '', disabled: true}],
       notes: [''],
       creatorId: [activeCompany.user, Validators.required]
     });
+
+    if (this.workers.length > 1) {
+      for (const worker of this.workers) {
+        this.multipleWorkers[worker.id] = Object.assign({}, {jr: 0, h: 0, r: 0});
+      }
+    }
   }
 
   /**
@@ -183,5 +193,28 @@ export class TallyFormComponent implements OnInit {
 
     this.storeService.addTalliesToRecord(talliesToRecord);
     this.closeModal(true);
+  };
+
+  /**
+   * setWorkerParam
+   * @param workerId
+   * @param param
+   * @param value
+   */
+  public setWorkerParam = (workerId: number, param: string, value: number) => {
+    this.multipleWorkers[workerId][param] = value;
+  };
+
+  /**
+   * splitTime
+   */
+  public splitTime = () => {
+    if (this.split > 0) {
+      const divide = this.split / this.workers.length;
+
+      for (const worker of this.workers) {
+        this.multipleWorkers[worker.id]['r'] = divide;
+      }
+    }
   };
 }

@@ -155,7 +155,7 @@
     <!-- Worker tally list -->
     <ion-row *ngIf="activeWorker">
       <ion-col>
-        <ion-button color="success" expand="block" (click)="createTally()">
+        <ion-button color="success" expand="block" (click)="createTally()" [disabled]="filteredTallies.length >= activeWorker.dailyMax">
           Agregar Jornada
         </ion-button>
       </ion-col>

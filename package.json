@@ -23,7 +23,7 @@
     "@angular/platform-browser": "~9.1.2",
     "@angular/platform-browser-dynamic": "~9.1.2",
     "@angular/router": "~9.1.2",
-    "@codewithdan/observable-store": "^2.2.3",
+    "@codewithdan/observable-store": "^2.2.8",
     "@codewithdan/observable-store-extensions": "^2.2.7",
     "@ionic-native/app-version": "^5.19.1",
     "@ionic-native/barcode-scanner": "^5.24.0",

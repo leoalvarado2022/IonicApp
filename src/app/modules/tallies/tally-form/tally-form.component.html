@@ -11,74 +11,135 @@
 
 <ion-content>
   <form [formGroup]="tallyForm">
+    <ng-container *ngIf="currentStep === 1">
 
-    <ion-item>
-      <ion-label position="stacked">Centro de Costo</ion-label>
-      <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()"></ion-searchbar>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
-    </ion-item>
 
-    <ion-list class="cost-centers-list" *ngIf="filteredCostCenters.length > 0">
-      <ion-list-header color="primary">
-        <ion-label>Resultados: {{ filteredCostCenters.length }} </ion-label>
-      </ion-list-header>
-      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
-        {{ costCenter.name  }}
+      <ion-item>
+        <ion-label position="stacked">Centro de Costo</ion-label>
+        <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()"></ion-searchbar>
+        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
       </ion-item>
-    </ion-list>
 
-    <ion-item>
-      <ion-label position="stacked">Labor</ion-label>
-      <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()"></ion-searchbar>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
-    </ion-item>
+      <ion-list class="cost-centers-list" *ngIf="filteredCostCenters.length > 0">
+        <ion-list-header color="primary">
+          <ion-label>Resultados: {{ filteredCostCenters.length }} </ion-label>
+        </ion-list-header>
+        <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
+          {{ costCenter.name  }}
+        </ion-item>
+      </ion-list>
 
-    <ion-list class="labors-list" *ngIf="filteredLabors.length > 0">
-      <ion-list-header color="success">
-        <ion-label>Resultados: {{ filteredLabors.length }} </ion-label>
-      </ion-list-header>
-      <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
-        {{ labor.name  }}
+      <ion-item>
+        <ion-label position="stacked">Labor</ion-label>
+        <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()"></ion-searchbar>
+        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
       </ion-item>
-    </ion-list>
 
-    <ion-item>
-      <ion-label position="floating">Jornada</ion-label>
-      <ion-input formControlName="workingDay"></ion-input>
-      <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
-        <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
-      </ion-button>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Seleccione una Jornada</ion-text>
-    </ion-item>
+      <ion-list class="labors-list" *ngIf="filteredLabors.length > 0">
+        <ion-list-header color="success">
+          <ion-label>Resultados: {{ filteredLabors.length }} </ion-label>
+        </ion-list-header>
+        <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
+          {{ labor.name  }}
+        </ion-item>
+      </ion-list>
 
-    <ion-item>
-      <ion-label position="floating">Horas Extra</ion-label>
-      <ion-input formControlName="hoursExtra"></ion-input>
-      <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(2)">
-        <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
-      </ion-button>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Jornada</ion-label>
+        <ion-input formControlName="workingDay"></ion-input>
+        <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
+          <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+        </ion-button>
+        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Seleccione una Jornada</ion-text>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Rendimiento</ion-label>
-      <ion-input formControlName="performance"></ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Horas Extra</ion-label>
+        <ion-input formControlName="hoursExtra"></ion-input>
+        <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(2)">
+          <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+        </ion-button>
+      </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Unidad</ion-label>
-      <ion-input formControlName="unit"></ion-input>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Rendimiento</ion-label>
+        <ion-input formControlName="performance"></ion-input>
+      </ion-item>
 
-    <ion-item lines="none">
-      <ion-label position="floating">Notas</ion-label>
-      <ion-textarea formControlName="notes"></ion-textarea>
-    </ion-item>
+      <ion-item>
+        <ion-label position="floating">Unidad</ion-label>
+        <ion-input formControlName="unit"></ion-input>
+      </ion-item>
 
+      <ion-item lines="none">
+        <ion-label position="floating">Notas</ion-label>
+        <ion-textarea formControlName="notes"></ion-textarea>
+      </ion-item>
+    </ng-container>
+
+    <ng-container *ngIf="currentStep === 2">
+      <ion-row style="font-size: 12px">
+        <ion-col size="6" class="ion-text-center">
+          <strong>Trabajador</strong>
+        </ion-col>
+        <ion-col class="ion-text-center"><strong>JR</strong></ion-col>
+        <ion-col class="ion-text-center"><strong>H</strong></ion-col>
+        <ion-col class="ion-text-center"><strong>R</strong></ion-col>
+      </ion-row>
+      <ng-container *ngFor="let worker of workers">
+        <ion-row style="font-size: 10px">
+          <ion-col size="6">{{ worker.name }}</ion-col>
+          <ion-col>
+            <ion-item class="full-border ion-no-margin">
+              <ion-input [value]="multipleWorkers[worker.id]['jr']" type="number" (ionChange)="setWorkerParam(worker.id, 'jr',  $event.detail.value)" placeholder="0"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item class="full-border ion-no-margin">
+              <ion-input [value]="multipleWorkers[worker.id]['h']" type="number" (ionChange)="setWorkerParam(worker.id, 'h',  $event.detail.value)" placeholder="0"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col>
+            <ion-item class="full-border ion-no-margin">
+              <ion-input [value]="multipleWorkers[worker.id]['r']" type="number" (ionChange)="setWorkerParam(worker.id, 'r',  $event.detail.value)" placeholder="0"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ng-container>
+
+      <ion-item-divider>
+        <ion-label></ion-label>
+      </ion-item-divider>
+
+      <ion-segment value="jornada" class="segment-back" scrollable="true">
+        <ion-segment-button value="jornada">
+          <ion-label>Jornada</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="asistencia">
+          <ion-label>Asistencia</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <ion-row>
+        <ion-col size="8">
+          <ion-item>
+            <ion-input (ionChange)="split = $event.target.value" type="number"></ion-input>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="4">
+          <ion-button (click)="splitTime()">
+            Repartir
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+    </ng-container>
   </form>
 </ion-content>
 
 <ion-footer>
-  <ion-row>
+  <ion-row *ngIf="workers.length === 1">
     <ion-col>
       <ion-button color="danger" expand="block" (click)="closeModal()">
         Cancelar
@@ -91,4 +152,34 @@
       </ion-button>
     </ion-col>
   </ion-row>
+
+  <ng-container *ngIf="workers.length > 1">
+    <ion-row *ngIf="currentStep === 1">
+      <ion-col>
+        <ion-button color="danger" expand="block" (click)="closeModal()">
+          Cancelar
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+        <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1" [disabled]="tallyForm.get('costCenterId').invalid || tallyForm.get('laborId').invalid">
+          Siguiente
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="currentStep === 2">
+      <ion-col>
+        <ion-button color="warning" expand="block" (click)="currentStep = currentStep - 1">
+          Anterior
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+        <ion-button color="success" expand="block" [disabled]="tallyForm.invalid" (click)="submitForm()">
+          Guardar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ng-container>
 </ion-footer>

@@ -164,7 +164,7 @@ export class ContractFormPage implements OnInit {
         }
 
         if (operativeText.length > 0) {
-          this.checkWorker(operativeText);
+          this.formatIdentifier(operativeText);
         } else {
           this.toastService.errorToast('El código escaneado no es válido');
         }
@@ -274,15 +274,10 @@ export class ContractFormPage implements OnInit {
    * @param identifier
    */
   public checkWorker = (identifier: string) => {
+    this.isSearching = true;
+
     const clean = identifier.replace(/[,.-]+/g, '').replace(/\s/g, '');
 
-    if (this.contractForm.get('step1.identifier').invalid) {
-      this.formatIdentifier(clean);
-
-      return;
-    }
-
-    this.isSearching = true;
     this.contractsService.checkWorker(clean).subscribe((success: any) => {
       this.loaderService.stopLoader();
       const worker = success.data;
@@ -327,5 +322,16 @@ export class ContractFormPage implements OnInit {
   public checkNexButtonDisabled = () => {
     return (this.currentStep === 1 && this.contractForm.get('step1').invalid) ||
       (this.currentStep === 2 && this.contractForm.get('step2').invalid);
+  };
+
+  /**
+   * increaseStep
+   */
+  public increaseStep = () => {
+    this.currentStep = this.currentStep + 1;
+
+    if (this.currentStep === 2) {
+      this.checkWorker(this.contractForm.get('step1.identifier').value);
+    }
   };
 }

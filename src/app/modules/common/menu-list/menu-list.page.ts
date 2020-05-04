@@ -38,21 +38,27 @@ export class MenuListPage implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private storeService: StoreService
   ) {
-
+    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      this.loadData();
+    });
   }
 
   ngOnInit() {
-    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
-      const {sync} = data;
-      this.menus = [...sync.menus];
-    });
+    this.loadData();
   }
 
   ngOnDestroy(): void {
     this.network$.unsubscribe();
     this.store$.unsubscribe();
   }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    this.menus = [...this.storeService.getMenus()];
+  };
 
   /**
    * reSync

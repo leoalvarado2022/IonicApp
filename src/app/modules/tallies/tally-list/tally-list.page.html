@@ -108,8 +108,8 @@
       <div *virtualItem="let tally">
         <ion-card class="tally">
           <ion-item>
-            <ion-icon [color]="tally.id > 0 ? 'success': 'danger' " name="reader" slot="start"></ion-icon>
-            <ion-label>{{ getCostCenterName(tally.costCenter) }}</ion-label>
+            <ion-icon (click)="showTallyError(tally)" [color]="tally.id > 0 ? 'success': 'danger' " name="reader" slot="start"></ion-icon>
+            <ion-label>{{ getCostCenterName(tally.id > 0 ? tally.costCenter : tally.costCenterId) }}</ion-label>
             <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
           </ion-item>
 

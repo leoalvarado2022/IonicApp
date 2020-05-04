@@ -5,6 +5,8 @@ import * as moment from 'moment';
 import {Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
+import {ToastService} from '../../../shared/services/toast/toast.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-tally-list',
@@ -32,18 +34,36 @@ export class TallyListPage implements OnInit, OnDestroy {
   // Form dates
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
-  public currentDate = moment(moment.utc(new Date())).local().startOf('day').toISOString();
-  public readonly originalDate = moment(moment.utc(new Date())).local().startOf('day').toISOString();
+  public currentDate: any;
+  public readonly originalDate: any;
 
   private costCenters: Array<CostCenterList> = [];
   private labors: Array<any> = [];
 
+  private store$: Subscription;
+
   constructor(
     private storeService: StoreService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastService: ToastService
   ) {
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      if (this.activeWorker) {
+        this.reloadTallies();
+      } else if (this.activeQuadrille) {
+        this.workers = this.storeService.getWorkers();
+        this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+        this.selectedWorkers = [];
+      } else {
+        this.quadrilles = this.storeService.getQuadrilles();
+        this.filteredQuadrilles = this.quadrilles;
+        this.activeQuadrille = null;
+      }
+    });
 
+    this.currentDate = moment().format('YYYY-MM-DD');
+    this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
@@ -64,6 +84,8 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.filteredTallies = [];
 
     this.currentDate = null;
+
+    this.store$.unsubscribe();
   }
 
   /**
@@ -242,6 +264,9 @@ export class TallyListPage implements OnInit, OnDestroy {
   public goToWorkerTallyList = (worker: any): void => {
     this.activeWorker = worker;
     const tallies = this.getNumberOfWorkerTallies(worker);
+
+    console.log({tallies});
+
     this.filteredTallies = [...tallies];
   };
 
@@ -251,15 +276,15 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public getNumberOfWorkerTallies = (worker: any): Array<any> => {
     const tallies = this.tallies.filter(item => {
-      const tallyDate = moment(item.date).format('YYYY-MM-DD');
-      const current = moment(this.currentDate).format('YYYY-MM-DD');
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(this.currentDate);
 
       return item.workerId === worker.id && tallyDate === current;
     });
 
     const toRecord = this.talliesToRecord.filter(item => {
-      const tallyDate = moment(item.date).format('YYYY-MM-DD');
-      const current = moment(this.currentDate).format('YYYY-MM-DD');
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(this.currentDate);
 
       return item.workerId === worker.id && tallyDate === current;
     });
@@ -343,5 +368,34 @@ export class TallyListPage implements OnInit, OnDestroy {
     if (this.activeWorker) {
       this.goToWorkerTallyList(this.activeWorker);
     }
+  };
+
+  /**
+   * showTallyError
+   * @param tally
+   */
+  public showTallyError = (tally: any): void => {
+    if (tally.id <= 0) {
+      const talliesWithErrors = this.storeService.getTalliesWithErrors();
+      const error = talliesWithErrors.find(item => item.id === tally.tempId);
+
+      if (error) {
+        this.toastService.errorToast(error.response);
+      } else {
+        this.toastService.errorToast('No sincronizado');
+      }
+    }
+  };
+
+  /**
+   * removeTimeFromDate
+   * @param date
+   */
+  private removeTimeFromDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   };
 }

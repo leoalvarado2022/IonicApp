@@ -83,7 +83,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       totalTicket: null,
       toRecord: {
         preDevices: [],
-        tallies: [],
+        talliesToRecord: [],
+        talliesWithErrors: [],
         tallyTempId: 0
       }
     };
@@ -1151,7 +1152,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * getTalliesToRecord
    */
   public getTalliesToRecord = (): Array<any> => {
-    return this.getState().toRecord.tallies;
+    return this.getState().toRecord.talliesToRecord;
   };
 
   /**
@@ -1178,7 +1179,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public addTalliesToRecord = (tallies: Array<any>): void => {
     const talliesToRecord = this.getTalliesToRecord();
 
-    const toRecord = {...this.getState().toRecord, tallies: [...talliesToRecord, ...tallies]};
+    const toRecord = {...this.getState().toRecord, talliesToRecord: [...talliesToRecord, ...tallies]};
     this.setState({toRecord}, StoreActions.AddTallies);
 
     this.increaseTallyTempId();
@@ -1192,8 +1193,42 @@ export class StoreService extends ObservableStore<StoreInterface> {
     const tallies = this.getTalliesToRecord();
     const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
 
-    const toRecord = {...this.getState().toRecord, tallies: [...toRemoved]};
+    const toRecord = {...this.getState().toRecord, talliesToRecord: [...toRemoved]};
     this.setState({toRecord}, StoreActions.RemoveTallies);
+
+    return toRemoved.length;
+  };
+
+  /**
+   * getTalliesWithErrors
+   */
+  public getTalliesWithErrors = (): Array<any> => {
+    return this.getState().toRecord.talliesWithErrors;
+  };
+
+  /**
+   * addTalliesWithErrors
+   * @param tallies
+   */
+  public addTalliesWithErrors = (tallies: Array<any>): void => {
+    const talliesWithErrors = this.getTalliesWithErrors();
+
+    const toRecord = {...this.getState().toRecord, talliesWithErrors: [...talliesWithErrors, ...tallies]};
+    this.setState({toRecord}, StoreActions.AddTalliesWithErrors);
+
+    this.increaseTallyTempId();
+  };
+
+  /**
+   * removeTalliesWithErrors
+   * @param indexes
+   */
+  public removeTalliesWithErrors = (indexes: Array<number>): number => {
+    const talliesWithErrors = this.getTalliesWithErrors();
+    const toRemoved = talliesWithErrors.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, talliesWithErrors: [...toRemoved]};
+    this.setState({toRecord}, StoreActions.RemoveTalliesWithErrors);
 
     return toRemoved.length;
   };

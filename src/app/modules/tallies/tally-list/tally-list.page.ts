@@ -239,9 +239,17 @@ export class TallyListPage implements OnInit, OnDestroy {
    * goToWorkerTallyList
    * @param worker
    */
-  public goToWorkerTallyList = (worker: any) => {
+  public goToWorkerTallyList = (worker: any): void => {
     this.activeWorker = worker;
+    const tallies = this.getNumberOfWorkerTallies(worker);
+    this.filteredTallies = [...tallies];
+  };
 
+  /**
+   * getNumberOfWorkerTallies
+   * @param worker
+   */
+  public getNumberOfWorkerTallies = (worker: any): Array<any> => {
     const tallies = this.tallies.filter(item => {
       const tallyDate = moment(item.date).format('YYYY-MM-DD');
       const current = moment(this.currentDate).format('YYYY-MM-DD');
@@ -256,7 +264,7 @@ export class TallyListPage implements OnInit, OnDestroy {
       return item.workerId === worker.id && tallyDate === current;
     });
 
-    this.filteredTallies = [...toRecord, ...tallies];
+    return [...toRecord, ...tallies];
   };
 
   /**

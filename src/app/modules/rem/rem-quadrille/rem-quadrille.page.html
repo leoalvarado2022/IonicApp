@@ -29,9 +29,9 @@
   </h2>
 
   <ng-container *ngIf="filteredQuadrilles.length > 0">
-    <ion-list>
-      <ion-virtual-scroll [items]="filteredQuadrilles">
-        <ion-item (click)="goToWorkers(quadrille)" *virtualItem="let quadrille" detail="true">
+    <ion-virtual-scroll [items]="filteredQuadrilles">
+      <div *virtualItem="let quadrille">
+        <ion-item (click)="goToWorkers(quadrille)" detail="true">
           <ion-icon *ngIf="showBadge(quadrille.id) === 0" name="clipboard" slot="start"></ion-icon>
           <ion-badge color="success" *ngIf="showBadge(quadrille.id) > 0" slot="start">{{ showBadge(quadrille.id) }}</ion-badge>
           <ion-label>
@@ -44,8 +44,8 @@
             </p>
           </ion-label>
         </ion-item>
-      </ion-virtual-scroll>
-    </ion-list>
+      </div>
+    </ion-virtual-scroll>
   </ng-container>
 
 </ion-content>

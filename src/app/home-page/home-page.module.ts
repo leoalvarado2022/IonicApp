@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
-import {MenuComponent} from '../modules/common/menu/menu.component';
+import {MenuComponent} from '../components/menu/menu.component';
 import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
 
 const routes: Routes = [
@@ -12,7 +12,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('../modules/common/menu-list/menu-list.module').then(module => module.MenuListPageModule)
+        loadChildren: () => import('../modules/menu-list/menu-list.module').then(module => module.MenuListPageModule)
       },
       {
         path: 'companies',

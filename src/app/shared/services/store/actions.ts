@@ -51,6 +51,7 @@ export enum StoreActions {
   IncreasePreContractTempId = 'INCREASE_PRECONTRACT_TEMP_ID',
   AddTotalTickets = 'ADD_TOTAL_TICKETS',
   AddPreDevices = 'ADD_PREDEVICES',
+  RemovePreDevices = 'REMOVE_PREDEVICES',
   AddTallies = 'ADD_TALLIES',
   RemoveTallies = 'REMOVE_TALLIES',
   IncreaseTallyTempId = 'INCREASE_TALLY_TEMP_ID'

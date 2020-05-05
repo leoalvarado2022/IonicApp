@@ -2,7 +2,25 @@ import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
-import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
+import {
+  Caliber,
+  CfgAccess,
+  Company,
+  Connection,
+  CostCenter,
+  CostCenterList,
+  EntityList,
+  Generic,
+  HarvestEstimate,
+  Note,
+  ProductContract,
+  ProductContractDetail,
+  Quadrille,
+  QualityDetail,
+  QualityEstimate,
+  TabMenu,
+  Unit
+} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +28,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: false});
+    super({logStateChanges: true});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -1136,15 +1154,24 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public setPreDevices = (preDevice: any): void => {
     const preDevices = this.getPreDevicesToRecord();
-
-    console.log(preDevices);
     const checkDuplicate = preDevices.find(item => item.id_device === preDevice.id_device);
 
+    // busca el duplicado si no esta entre los registro lo agrega
     if (checkDuplicate === undefined) {
       preDevices.push(preDevice);
       const toRecord = {...this.getState().toRecord, preDevices};
       this.setState({toRecord}, StoreActions.AddPreDevices);
+    } else {
+
+      // busca y eliminar de storage el id device que se va a guarda en el caso que no se ha guardado, solo funciona cuando va eliminar
+      if (preDevice.id && preDevice.id < 0) {
+        let state = this.getState();
+        const filter = state.toRecord.preDevices.filter(item => item.id_device !== preDevice.id_device);
+        state.toRecord.preDevices = filter;
+        this.setState({toRecord : state.toRecord}, StoreActions.RemovePreDevices);
+      }
     }
+
   };
 
   /**

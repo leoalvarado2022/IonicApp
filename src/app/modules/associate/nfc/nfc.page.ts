@@ -74,12 +74,12 @@ export class NfcPage implements OnInit, OnDestroy {
     }
 
     // ios no deja usar NFC
-    // if (this.platform.is('ios')) {
-    //   this.notSupported = true;
-    //   return;
-    // } else {
+    if (this.platform.is('ios')) {
+      this.notSupported = true;
+      return;
+    } else {
     this.openNFCScanner();
-    // }
+    }
   }
 
   /**
@@ -142,8 +142,13 @@ export class NfcPage implements OnInit, OnDestroy {
         console.log(ex);
       });
     } else {
-      this.scanned.unshift(exist);
-      this.nativeAudio.play('beep');
+      const scan = this.scanned.length ? this.scanned.filter(data => exist.id_device !== id) : [];
+      const filter = exist ? scan : [];
+
+      // console.log(filter, this.scanned);
+      if (filter.length || this.scanned.length === 0)
+        this.scanned.unshift(exist);
+        this.nativeAudio.play('beep');
     }
     this.ref.markForCheck();
   }
@@ -172,8 +177,6 @@ export class NfcPage implements OnInit, OnDestroy {
     });
 
     modal.onDidDismiss().then((data) => {
-      console.log(data, 'dataMOdal');
-
       this.selected = undefined;
     });
 
@@ -214,34 +217,12 @@ export class NfcPage implements OnInit, OnDestroy {
    * @param deleted
    */
   deleteDevices(deleted: any) {
-    const deviceList = this.list;
-    let listToRecord: any = this.storeService.getPreDevicesToRecord();
+    deleted.id = -1;
+    this.selected = undefined;
+    this.isDelete = false;
+    this.scanned = [];
 
-
-    if (!listToRecord.length && !deviceList.length) {
-      return;
-    }
-
-    if (deviceList.length) {
-      listToRecord.concat(deviceList);
-    }
-
-    const devices = [];
-    for (const obj of listToRecord) {
-      if (obj.id_device === deleted.id_device && obj.link && obj.id_link === deleted.id_link && deleted.id) {
-        obj.id = obj.id * -1;
-        obj.status = -1;
-        devices.push(obj);
-      }
-      if (obj.id_device !== deleted.id_device || obj.link && obj.id_link === deleted.id_link) {
-        devices.push(obj);
-      }
-    }
-
-
-    console.log(devices);
-
-    // this.storeService.setPreDevices(devices);
+    this.storeService.setPreDevices(deleted);
 
     return true;
   }

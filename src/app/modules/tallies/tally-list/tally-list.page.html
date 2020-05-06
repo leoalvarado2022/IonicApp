@@ -85,7 +85,7 @@
             <p class="label-padding">{{ worker.identifier | rut }}</p>
             <p class="label-padding">
               <ion-badge color="primary">
-                {{ getNumberOfWorkerTallies(worker).length }} JR
+                {{ getTotalWorkerWork(worker) }} JR
               </ion-badge>
             </p>
           </ion-label>
@@ -172,7 +172,7 @@
       </ion-col>
 
       <ion-col size="6">
-        <ion-button color="primary" expand="block">
+        <ion-button color="primary" expand="block"  (click)="createMultipleTally()"  [disabled]="checkNotEditableTallies()">
           Modificar Masivo
         </ion-button>
       </ion-col>

@@ -15,7 +15,7 @@ import {TallyService} from '../modules/tallies/services/tally/tally.service';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
-  private syncInterval = interval(1000 * 60 * 1);
+  private syncInterval = interval(1000 * 60 * 5);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private removeTallies = false;

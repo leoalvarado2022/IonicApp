@@ -7,6 +7,7 @@ import {ModalController} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
+import {TallyService} from '../services/tally/tally.service';
 
 @Component({
   selector: 'app-tally-list',
@@ -46,20 +47,22 @@ export class TallyListPage implements OnInit, OnDestroy {
     private storeService: StoreService,
     private router: Router,
     private modalController: ModalController,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private tallyService: TallyService
   ) {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
-      if (this.activeWorker) {
-        this.reloadTallies();
-      } else if (this.activeQuadrille) {
-        this.workers = this.storeService.getWorkers();
-        this.filteredWorkers = this.getWorkersFilteredByQuadrille();
-        this.selectedWorkers = [];
-      } else {
-        this.quadrilles = this.storeService.getQuadrilles();
-        this.filteredQuadrilles = this.quadrilles;
-        this.activeQuadrille = null;
-      }
+      console.log('asdasd', data);
+      // Load quadrilles
+      this.quadrilles = this.storeService.getQuadrilles();
+      this.filteredQuadrilles = this.quadrilles;
+
+      // Workers
+      this.workers = this.storeService.getWorkers();
+      this.reloadTallies();
+
+      // Form data
+      this.costCenters = this.storeService.getCostCenters();
+      this.labors = this.storeService.getLabors();
     });
 
     this.currentDate = moment().format('YYYY-MM-DD');
@@ -265,8 +268,6 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.activeWorker = worker;
     const tallies = this.getNumberOfWorkerTallies(worker);
 
-    console.log({tallies});
-
     this.filteredTallies = [...tallies];
   };
 
@@ -274,22 +275,31 @@ export class TallyListPage implements OnInit, OnDestroy {
    * getNumberOfWorkerTallies
    * @param worker
    */
-  public getNumberOfWorkerTallies = (worker: any): Array<any> => {
+  private getNumberOfWorkerTallies = (worker: any): Array<any> => {
     const tallies = this.tallies.filter(item => {
-      const tallyDate = this.removeTimeFromDate(item.date);
-      const current = this.removeTimeFromDate(this.currentDate);
+      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
+      const current = this.tallyService.removeTimeFromDate(this.currentDate);
 
       return item.workerId === worker.id && tallyDate === current;
     });
 
     const toRecord = this.talliesToRecord.filter(item => {
-      const tallyDate = this.removeTimeFromDate(item.date);
-      const current = this.removeTimeFromDate(this.currentDate);
+      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
+      const current = this.tallyService.removeTimeFromDate(this.currentDate);
 
       return item.workerId === worker.id && tallyDate === current;
     });
 
     return [...toRecord, ...tallies];
+  };
+
+  /**
+   * getTotalWorkerWork
+   * @param worker
+   */
+  public getTotalWorkerWork = (worker: any): number => {
+    const todayTallies = this.getNumberOfWorkerTallies(worker);
+    return todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
   };
 
   /**
@@ -388,14 +398,22 @@ export class TallyListPage implements OnInit, OnDestroy {
   };
 
   /**
-   * removeTimeFromDate
-   * @param date
+   * checkNotEditableTallies
    */
-  private removeTimeFromDate = (date: string): string => {
-    if (date.includes('T')) {
-      return date.split('T')[0];
+  public checkNotEditableTallies = (): boolean => {
+    for (let worker of this.selectedWorkers) {
+      if (this.getNumberOfWorkerTallies(worker).length === 0) {
+        return true;
+      }
     }
 
-    return date;
+    return false;
+  };
+
+  /**
+   * createMultipleTally
+   */
+  public createMultipleTally = () => {
+    console.log('pendiente por implementar');
   };
 }

@@ -37,13 +37,11 @@ export class AppComponent {
     // FOR WEB DEVELOPMENT ONLY
     if (!environment.production) {
       console.log('backupState activated');
-      /*
       this.subscription$ = this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {
           this.storeService.backupState();
         }
       });
-      */
     }
   }
 

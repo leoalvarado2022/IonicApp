@@ -48,9 +48,11 @@ export enum StoreActions {
   SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
   AddTotalTickets = 'ADD_TOTAL_TICKETS',
   AddPreDevices = 'ADD_PREDEVICES',
+  RemovePreDevices = 'REMOVE_PREDEVICES',
   AddTallies = 'ADD_TALLIES',
   RemoveTallies = 'REMOVE_TALLIES',
   IncreaseTallyTempId = 'INCREASE_TALLY_TEMP_ID',
+  IncreaseDeviceTempId = 'INCREASE_DEVICE_TEMP_ID',
   AddTalliesWithErrors = 'ADD_TALLIES_WITH_ERRORS',
   RemoveTalliesWithErrors = 'REMOVE_TALLIES_WITH_ERRORS'
 }

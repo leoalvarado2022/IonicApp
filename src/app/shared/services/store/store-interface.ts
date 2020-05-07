@@ -77,4 +77,5 @@ export interface ToRecord {
   talliesToRecord: Array<any>;
   talliesWithErrors: Array<any>;
   tallyTempId: number;
+  deviceTempId: number;
 }

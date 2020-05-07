@@ -2,7 +2,25 @@ import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
-import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
+import {
+  Caliber,
+  CfgAccess,
+  Company,
+  Connection,
+  CostCenter,
+  CostCenterList,
+  EntityList,
+  Generic,
+  HarvestEstimate,
+  Note,
+  ProductContract,
+  ProductContractDetail,
+  Quadrille,
+  QualityDetail,
+  QualityEstimate,
+  TabMenu,
+  Unit
+} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +28,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: false});
+    super({logStateChanges: true});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -83,9 +101,10 @@ export class StoreService extends ObservableStore<StoreInterface> {
       totalTicket: null,
       toRecord: {
         preDevices: [],
+        tallyTempId: 0,
+        deviceTempId: 0,
         talliesToRecord: [],
         talliesWithErrors: [],
-        tallyTempId: 0
       }
     };
   };
@@ -1132,20 +1151,59 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-   * setPreDevices
-   * @param setPreDevices
+   * addPreDevices
+   * @param preDevice
    */
-  public setPreDevices = (preDevice: any): void => {
-    const preDevices = this.getPreDevicesToRecord();
+  public addPreDevices = (preDevice: any): void => {
+    let preDevices = this.getPreDevicesToRecord();
 
-    console.log(preDevices);
-    const checkDuplicate = preDevices.find(item => item.id_device === preDevice.id_device);
-
-    if (checkDuplicate === undefined) {
+    // en el caso que voy a eliminar (deassociar)
+    if (preDevice.delete) {
+      const toRemoved = preDevices.filter(item => item.tempId !== preDevice.tempId);
+      // console.log(preDevices, toRemoved, preDevice, 'deleted');
+      const toRecord = {...this.getState().toRecord, preDevices: [...toRemoved]};
+      this.setState({toRecord}, StoreActions.RemovePreDevices);
+    } else {
+      // solo va agregar
       preDevices.push(preDevice);
       const toRecord = {...this.getState().toRecord, preDevices};
       this.setState({toRecord}, StoreActions.AddPreDevices);
+
+      this.increaseDeviceTempId();
     }
+
+
+  };
+
+  /**
+   * removePreDevicesToRecord
+   * @param indexes
+   */
+  public removePreDevicesToRecord = (indexes: Array<number>): number => {
+    const devices = this.getPreDevicesToRecord();
+    const toRemoved = devices.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, preDevices: [...toRemoved]};
+    this.setState({toRecord}, StoreActions.RemovePreDevices);
+
+    return toRemoved.length;
+  };
+
+  /**
+   * getDeviceTempId
+   */
+  public getDeviceTempId(): number {
+    return this.getState().toRecord.deviceTempId;
+  }
+
+  /**
+   * increaseDeviceTempId
+   */
+  public increaseDeviceTempId = (): void => {
+    const current = this.getDeviceTempId();
+
+    const toRecord = {...this.getState().toRecord, deviceTempId: (current + 1)};
+    this.setState({toRecord}, StoreActions.IncreaseDeviceTempId);
   };
 
   /**

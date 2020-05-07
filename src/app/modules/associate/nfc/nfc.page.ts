@@ -73,12 +73,12 @@ export class NfcPage implements OnInit, OnDestroy {
     }
 
     // ios no deja usar NFC
-    // if (this.platform.is('ios')) {
-    //   this.notSupported = true;
-    //   return;
-    // } else {
-    this.openNFCScanner();
-    // }
+    if (this.platform.is('ios')) {
+      this.notSupported = true;
+      return;
+    } else {
+      this.openNFCScanner();
+    }
   }
 
   /**
@@ -171,8 +171,6 @@ export class NfcPage implements OnInit, OnDestroy {
     });
 
     modal.onDidDismiss().then((data) => {
-      console.log(data, 'dataMOdal');
-
       this.selected = undefined;
     });
 
@@ -213,35 +211,14 @@ export class NfcPage implements OnInit, OnDestroy {
    * @param deleted
    */
   deleteDevices(deleted: any) {
-    const deviceList = this.list;
-    let listToRecord: any = this.storeService.getPreDevicesToRecord();
-
-
-    if (!listToRecord.length && !deviceList.length) {
-      return;
+    this.selected = undefined;
+    this.isDelete = false;
+    this.scanned = [];
+    deleted.delete = true;
+    if (deleted.id !== 0 && deleted.id > 0) {
+      deleted.id = deleted.id * -1;
     }
-
-    if (deviceList.length) {
-      listToRecord.concat(deviceList);
-    }
-
-    const devices = [];
-    for (const obj of listToRecord) {
-      if (obj.id_device === deleted.id_device && obj.link && obj.id_link === deleted.id_link && deleted.id) {
-        obj.id = obj.id * -1;
-        obj.status = -1;
-        devices.push(obj);
-      }
-      if (obj.id_device !== deleted.id_device || obj.link && obj.id_link === deleted.id_link) {
-        devices.push(obj);
-      }
-    }
-
-
-    console.log(devices);
-
-    // this.storeService.setPreDevices(devices);
-
+    this.storeService.addPreDevices(deleted);
     return true;
   }
 }

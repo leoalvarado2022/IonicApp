@@ -8,7 +8,7 @@ import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
 import {TallyService} from '../modules/tallies/services/tally/tally.service';
 import {NfcService} from '../shared/services/nfc/nfc.service';
-import { environment } from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
 
 @Component({
   selector: 'app-home-page',
@@ -28,6 +28,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private syncInterval$: Subscription;
   private syncStepObservable$: Subscription;
   private talliesWithErrors: Array<any> = [];
+  private devicesWithErrors: Array<any> = [];
 
   constructor(
     private geolocationService: GeolocationService,
@@ -44,8 +45,6 @@ export class HomePagePage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.storePushToken();
-
-    this.recordDevices();
 
     this.syncInterval$ = this.syncInterval.subscribe(data => {
       // agregar status de online
@@ -71,7 +70,10 @@ export class HomePagePage implements OnInit, OnDestroy {
         }
 
         if (this.removeDevices) {
-          const removed = this.storeService.removePreDevicesToRecord(this.removeDevicesToRecord);
+          this.storeService.addDevicesWithErrors(this.devicesWithErrors);
+          this.devicesWithErrors = [];
+
+          const removed = this.storeService.removeDevicesToRecord(this.removeDevicesToRecord);
           if (removed === 0) {
             this.removeDevicesToRecord = [];
             this.removeDevices = false;
@@ -86,7 +88,7 @@ export class HomePagePage implements OnInit, OnDestroy {
       }
 
       if (step === 2) {
-        // this.recordDevices();
+        this.recordDevices();
       }
 
       console.groupEnd();
@@ -156,13 +158,13 @@ export class HomePagePage implements OnInit, OnDestroy {
    * recordDevices
    */
   private recordDevices = () => {
-    const toRecord = this.storeService.getPreDevicesToRecord();
+    const toRecord = this.storeService.getDevicesToRecord();
 
     let user = this.storeService.getUser();
     delete user.avatar;
 
     if (toRecord && toRecord.length > 0) {
-      this.nfcService.savePreDevices(toRecord, user).subscribe((success: any) => {
+      this.nfcService.saveDevicesToRecord(toRecord, user).subscribe((success: any) => {
         this.checkRecordedDevices(success.log);
         this.syncStepObservable.next(0);
       }, error => {
@@ -206,12 +208,21 @@ export class HomePagePage implements OnInit, OnDestroy {
   private checkRecordedDevices = (logs: Array<any>) => {
     if (logs.length > 0) {
       for (const log of logs) {
-        if (log['respuesta'] && log['respuesta'].toLowerCase() === 'ok') {
-          this.removeDevicesToRecord.push(+log['id_parametro']);
+        if (log.hasOwnProperty('respuesta')) {
+          if (log['respuesta'].toLowerCase() === 'ok') {
+            this.removeDevicesToRecord.push(+log['id_parametro']);
+          } else {
+            const checkDuplicity = this.devicesWithErrors.find(item => item.id === +log['id_parametro']);
+            if (!checkDuplicity) {
+              this.devicesWithErrors.push({
+                id: +log['id_parametro'],
+                response: log['respuesta']
+              });
+            }
+          }
         }
       }
       this.removeDevices = true;
     }
   };
-
 }

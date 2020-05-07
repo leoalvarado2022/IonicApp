@@ -94,7 +94,7 @@ export class AssociateWorkPage implements OnInit {
     body.tempId = tempId;
 
     if (body) {
-      this.storeService.addPreDevices(body);
+      this.storeService.addDevicesToRecord(body);
     }
 
     await this.closeWork(body);

@@ -78,7 +78,7 @@ export class NfcPage implements OnInit, OnDestroy {
       this.notSupported = true;
       return;
     } else {
-    this.openNFCScanner();
+      this.openNFCScanner();
     }
   }
 
@@ -142,13 +142,8 @@ export class NfcPage implements OnInit, OnDestroy {
         console.log(ex);
       });
     } else {
-      const scan = this.scanned.length ? this.scanned.filter(data => exist.id_device !== id) : [];
-      const filter = exist ? scan : [];
-
-      // console.log(filter, this.scanned);
-      if (filter.length || this.scanned.length === 0)
-        this.scanned.unshift(exist);
-        this.nativeAudio.play('beep');
+      this.scanned.unshift(exist);
+      this.nativeAudio.play('beep');
     }
     this.ref.markForCheck();
   }
@@ -217,13 +212,14 @@ export class NfcPage implements OnInit, OnDestroy {
    * @param deleted
    */
   deleteDevices(deleted: any) {
-    deleted.id = -1;
     this.selected = undefined;
     this.isDelete = false;
     this.scanned = [];
-
-    this.storeService.setPreDevices(deleted);
-
+    deleted.delete = true;
+    if (deleted.id !== 0 && deleted.id > 0) {
+      deleted.id = deleted.id * -1;
+    }
+    this.storeService.addPreDevices(deleted);
     return true;
   }
 }

@@ -54,5 +54,6 @@ export enum StoreActions {
   RemovePreDevices = 'REMOVE_PREDEVICES',
   AddTallies = 'ADD_TALLIES',
   RemoveTallies = 'REMOVE_TALLIES',
-  IncreaseTallyTempId = 'INCREASE_TALLY_TEMP_ID'
+  IncreaseTallyTempId = 'INCREASE_TALLY_TEMP_ID',
+  IncreaseDeviceTempId = 'INCREASE_DEVICE_TEMP_ID'
 }

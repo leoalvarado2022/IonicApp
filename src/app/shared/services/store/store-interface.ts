@@ -76,4 +76,5 @@ export interface ToRecord {
   preDevices: Array<any>;
   tallies: Array<any>;
   tallyTempId: number;
+  deviceTempId: number;
 }

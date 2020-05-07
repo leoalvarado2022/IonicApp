@@ -27,6 +27,7 @@ import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {TicketCardComponent} from '../modules/crm/tickets/ticket-card/ticket-card.component';
 import {TicketsService} from '../modules/crm/services/tickets/tickets.service';
 import {ContractsService} from '../modules/contracts/services/contracts/contracts.service';
+import {NfcService} from './services/nfc/nfc.service';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {ContractsService} from '../modules/contracts/services/contracts/contract
     SyncService,
     FileOpener,
     TicketsService,
-    ContractsService
+    ContractsService,
+    NfcService,
   ],
   exports: [
     CommonModule,

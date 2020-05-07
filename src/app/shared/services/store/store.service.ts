@@ -102,7 +102,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       toRecord: {
         preDevices: [],
         tallies: [],
-        tallyTempId: 0
+        tallyTempId: 0,
+        deviceTempId: 0,
       }
     };
   };
@@ -1149,29 +1150,59 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-   * setPreDevices
-   * @param setPreDevices
+   * addPreDevices
+   * @param preDevice
    */
-  public setPreDevices = (preDevice: any): void => {
-    const preDevices = this.getPreDevicesToRecord();
-    const checkDuplicate = preDevices.find(item => item.id_device === preDevice.id_device);
+  public addPreDevices = (preDevice: any): void => {
+    let preDevices = this.getPreDevicesToRecord();
 
-    // busca el duplicado si no esta entre los registro lo agrega
-    if (checkDuplicate === undefined) {
+    // en el caso que voy a eliminar (deassociar)
+    if (preDevice.delete) {
+      const toRemoved = preDevices.filter(item => item.tempId !== preDevice.tempId);
+      // console.log(preDevices, toRemoved, preDevice, 'deleted');
+      const toRecord = {...this.getState().toRecord, preDevices: [...toRemoved]};
+      this.setState({toRecord}, StoreActions.RemovePreDevices);
+    } else {
+      // solo va agregar
       preDevices.push(preDevice);
       const toRecord = {...this.getState().toRecord, preDevices};
       this.setState({toRecord}, StoreActions.AddPreDevices);
-    } else {
 
-      // busca y eliminar de storage el id device que se va a guarda en el caso que no se ha guardado, solo funciona cuando va eliminar
-      if (preDevice.id && preDevice.id < 0) {
-        let state = this.getState();
-        const filter = state.toRecord.preDevices.filter(item => item.id_device !== preDevice.id_device);
-        state.toRecord.preDevices = filter;
-        this.setState({toRecord : state.toRecord}, StoreActions.RemovePreDevices);
-      }
+      this.increaseDeviceTempId();
     }
 
+
+  };
+
+  /**
+   * removePreDevicesToRecord
+   * @param indexes
+   */
+  public removePreDevicesToRecord = (indexes: Array<number>): number => {
+    const devices = this.getPreDevicesToRecord();
+    const toRemoved = devices.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, preDevices: [...toRemoved]};
+    this.setState({toRecord}, StoreActions.RemovePreDevices);
+
+    return toRemoved.length;
+  };
+
+  /**
+   * getDeviceTempId
+   */
+  public getDeviceTempId(): number {
+    return this.getState().toRecord.deviceTempId;
+  }
+
+  /**
+   * increaseDeviceTempId
+   */
+  public increaseDeviceTempId = (): void => {
+    const current = this.getDeviceTempId();
+
+    const toRecord = {...this.getState().toRecord, deviceTempId: (current + 1)};
+    this.setState({toRecord}, StoreActions.IncreaseDeviceTempId);
   };
 
   /**

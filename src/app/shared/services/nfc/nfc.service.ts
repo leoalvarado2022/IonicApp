@@ -19,7 +19,7 @@ export class NfcService {
    * @param preDevices
    * @param user
    */
-  public savePreDevices = (preDevices: any, user: any) => {
+  public saveDevicesToRecord = (preDevices: any, user: any) => {
     const url = this.httpService.buildUrl(this.associateUrl);
     return this.httpClient.post(url, this.httpService.buildBody({preDevices, user}), {
       headers: this.httpService.getHeaders()

@@ -6,6 +6,7 @@ import {Ndef, NFC} from '@ionic-native/nfc/ngx';
 import {Device} from './device';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {AssociateWorkPage} from './associate-work/associate-work.page';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-nfc',
@@ -21,6 +22,8 @@ export class NfcPage implements OnInit, OnDestroy {
   selected;
   isDelete = false;
   list = [];
+  error = false;
+  sync = false;
 
   constructor(public nativeAudio: NativeAudio,
               private platform: Platform,
@@ -29,7 +32,8 @@ export class NfcPage implements OnInit, OnDestroy {
               private ref: ChangeDetectorRef,
               public storeService: StoreService,
               public modalController: ModalController,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private toastService: ToastService) {
   }
 
   /**
@@ -120,6 +124,12 @@ export class NfcPage implements OnInit, OnDestroy {
    * @param type
    */
   pullDevice(id, type) {
+
+    // reiniciar todo
+    this.error = false;
+    this.sync = false;
+    this.selected = undefined;
+
     let exist = this.list.find(value => value.id_device === id);
 
     if (!exist) {
@@ -127,9 +137,21 @@ export class NfcPage implements OnInit, OnDestroy {
     }
 
     if (!exist) {
-      exist = this.storeService.getPreDevicesToRecord();
-      exist = exist.find(value => value.id_device === id);
+      exist = this.storeService.getDevicesToRecord();
+      exist = exist.find(value => value.id_device === id && value.id === 0);
     }
+
+    if (exist) {
+      const findRecord = this.storeService.getDevicesToRecord();
+      const row = findRecord.find(value => value.id_device === id);
+
+      if (row) {
+        if (exist.id > 0 && row.id < 0 && row.id_device === exist.id_device) {
+          exist = undefined;
+        }
+      }
+    }
+
 
     if (!exist) {
       let device = new Device();
@@ -141,6 +163,7 @@ export class NfcPage implements OnInit, OnDestroy {
         console.log(ex);
       });
     } else {
+      this.errors(exist);
       this.scanned.unshift(exist);
       this.nativeAudio.play('beep');
     }
@@ -159,6 +182,31 @@ export class NfcPage implements OnInit, OnDestroy {
       return;
     }
     this.selected = device;
+  }
+
+  errors(device: any)
+  {
+    const devicesWithErrors = this.storeService.getDevicesWithErrors();
+    const devicesToRecord = this.storeService.getDevicesToRecord();
+    const noSync = devicesToRecord.find(item => item.tempId === device.tempId);
+
+    // console.log(devicesWithErrors, 'devicesWithErrors');
+
+    const error = devicesWithErrors.find(item => item.id === device.tempId);
+
+    // console.log(devicesWithErrors, device, error, noSync);
+
+    if (error) {
+      this.error = true;
+      this.toastService.errorToast(error.response);
+    } else {
+      if (noSync){
+        this.sync = true;
+        this.toastService.warningToast('No sincronizado');
+      }
+    }
+
+
   }
 
   /**
@@ -211,14 +259,22 @@ export class NfcPage implements OnInit, OnDestroy {
    * @param deleted
    */
   deleteDevices(deleted: any) {
+
     this.selected = undefined;
     this.isDelete = false;
     this.scanned = [];
-    deleted.delete = true;
-    if (deleted.id !== 0 && deleted.id > 0) {
+
+    if (deleted.id && deleted.id > 0) {
+      const tempId = this.storeService.getDeviceTempId();
       deleted.id = deleted.id * -1;
+      deleted.tempId = tempId;
+    } else {
+      deleted.delete = true;
     }
-    this.storeService.addPreDevices(deleted);
+
+    // console.log(deleted, 'deleted');
+
+    this.storeService.addDevicesToRecord(deleted);
     return true;
   }
 }

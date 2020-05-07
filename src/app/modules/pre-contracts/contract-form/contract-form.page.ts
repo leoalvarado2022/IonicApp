@@ -274,13 +274,10 @@ export class ContractFormPage implements OnInit {
   public checkWorker = (identifier: string) => {
     this.isSearching = true;
 
-    const clean = identifier.replace(/[,.-]+/g, '').replace(/\s/g, '');
+    const clean = this.cleanCharactersFromIdentifier(identifier);
 
     this.contractsService.checkWorker(clean).subscribe((success: any) => {
       const worker = success.data;
-
-      console.log('worker.dob', worker.dob);
-      console.log('worker.dob moment', moment.utc(worker.dob).format('DD/MM/YYYY'));
 
       if (worker) {
         this.contractForm.patchValue({
@@ -320,9 +317,9 @@ export class ContractFormPage implements OnInit {
   /**
    * checkNexButtonDisabled
    */
-  public checkNexButtonDisabled = () => {
+  public checkNexButtonDisabled = (): boolean => {
     return (this.currentStep === 1 && this.contractForm.get('step1').invalid) ||
-      (this.currentStep === 2 && this.contractForm.get('step2').invalid);
+      (this.currentStep === 2 && (this.contractForm.get('step2').invalid || this.checkIfIdentifierAlreadyExistsOnWorkers()));
   };
 
   /**
@@ -335,5 +332,28 @@ export class ContractFormPage implements OnInit {
       this.checkWorker(this.contractForm.get('step1.identifier').value);
     }
   };
+
+  /**
+   * cleanCharactersFromIdentifier
+   */
+  private cleanCharactersFromIdentifier = (toClean: string): string => {
+    return toClean.replace(/[,.-]+/g, '').replace(/\s/g, '');
+  }
+
+  /**
+   * checkIfIdentifierAlreadyExistsOnWorkers
+   */
+  public checkIfIdentifierAlreadyExistsOnWorkers = (): boolean => {
+    const identifier = this.contractForm.get('step1.identifier').value;
+
+    if (identifier) {
+      const workers = this.storeService.getWorkers();
+      const alreadyValid = workers.find(item => this.cleanCharactersFromIdentifier(item.identifier).toLowerCase() === this.cleanCharactersFromIdentifier(identifier).toLowerCase());
+
+      return !!alreadyValid;
+    }
+
+    return false;
+  }
 
 }

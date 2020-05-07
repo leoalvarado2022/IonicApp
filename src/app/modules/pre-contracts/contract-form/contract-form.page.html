@@ -83,7 +83,7 @@
 
     <!-- STEP 2 -->
     <ng-container *ngIf="currentStep === 2" formGroupName="step2">
-  
+
       <ng-container *ngIf="isSearching">
         <ion-item  lines="none" color="warning">
           <ion-label>Buscando...</ion-label>
@@ -91,6 +91,11 @@
       </ng-container>
 
       <ng-container *ngIf="!isSearching">
+
+        <ion-item *ngIf="checkIfIdentifierAlreadyExistsOnWorkers()" lines="none" color="danger">
+          <ion-label>Trabajador posee contrato activo</ion-label>
+        </ion-item>
+
         <ion-item>
           <ion-label position="floating">Nombre</ion-label>
           <ion-input formControlName="name"></ion-input>

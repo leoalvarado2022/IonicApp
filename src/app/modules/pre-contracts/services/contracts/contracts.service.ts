@@ -32,6 +32,7 @@ export class ContractsService {
   public mapPreContractToBeListed = (contract: any): ContractListItem => {
     return {
       id: contract.id,
+      workerId: contract.workerId,
       workerName: contract.workerName,
       workerLastName: contract.workerLastName,
       workerSurname: contract.workerSurname,

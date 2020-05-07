@@ -112,7 +112,7 @@ export class ContractFormPage implements OnInit {
           sureName: ['', Validators.required],
           dob: ['', Validators.required],
           civilStatus: [this.civilStatus.length === 1 ? this.civilStatus[0].name : '', Validators.required],
-          gender: ['H', Validators.required]
+          gender: ['M', Validators.required]
         }),
         step3: this.formBuilder.group({
           contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],

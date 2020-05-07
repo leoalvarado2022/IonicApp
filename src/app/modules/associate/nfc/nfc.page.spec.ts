@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {IonicModule} from '@ionic/angular';
 
-import { NfcPage } from './nfc.page';
+import {NfcPage} from './nfc.page';
 
 describe('NfcPage', () => {
   let component: NfcPage;

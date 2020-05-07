@@ -1,16 +1,16 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
-import {StorageService} from '../../../shared/services/storage/storage.service';
-import {UserService} from '../../../shared/services/user/user.service';
-import {SyncService} from '../../../shared/services/sync/sync.service';
-import {AuthService} from '../../../shared/services/auth/auth.service';
-import {ToastService} from '../../../shared/services/toast/toast.service';
+import {StorageService} from '../../shared/services/storage/storage.service';
+import {UserService} from '../../shared/services/user/user.service';
+import {SyncService} from '../../shared/services/sync/sync.service';
+import {AuthService} from '../../shared/services/auth/auth.service';
+import {ToastService} from '../../shared/services/toast/toast.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NetworkService} from '../../../shared/services/network/network.service';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {NetworkService} from '../../shared/services/network/network.service';
+import {HttpService} from '../../shared/services/http/http.service';
+import {LoaderService} from '../../shared/services/loader/loader.service';
 import {Subscription} from 'rxjs';
-import {StoreService} from '../../../shared/services/store/store.service';
+import {StoreService} from '../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-menu-list',

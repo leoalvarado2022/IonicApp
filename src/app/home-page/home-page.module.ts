@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
-import {MenuComponent} from '../modules/common/menu/menu.component';
+import {MenuComponent} from '../components/menu/menu.component';
 import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
 
 const routes: Routes = [
@@ -12,7 +12,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('../modules/common/menu-list/menu-list.module').then(module => module.MenuListPageModule)
+        loadChildren: () => import('../modules/menu-list/menu-list.module').then(module => module.MenuListPageModule)
       },
       {
         path: 'companies',
@@ -68,11 +68,11 @@ const routes: Routes = [
       },
       {
         path: 'tarja_contrato',
-        loadChildren: () => import('../modules/contracts/contracts-list/contracts-list.module').then(module => module.ContractsListPageModule)
+        loadChildren: () => import('../modules/pre-contracts/contracts-list/contracts-list.module').then(module => module.ContractsListPageModule)
       },
       {
         path: 'contract-form',
-        loadChildren: () => import('../modules/contracts/contract-form/contract-form.module').then(module => module.ContractFormPageModule)
+        loadChildren: () => import('../modules/pre-contracts/contract-form/contract-form.module').then(module => module.ContractFormPageModule)
       },
       {
         path: 'tarja_asociarnfc',

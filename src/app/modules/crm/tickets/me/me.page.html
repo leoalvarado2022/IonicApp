@@ -12,12 +12,13 @@
   </ion-refresher>
 
   <ion-virtual-scroll [items]="filteredTickets">
-    <app-ticket-card
-      *virtualItem="let ticket"
-      [ticket]="ticket"
-      (ticketSelected)="ticketSelected($event)"
-      (deleteTicketEvent)="deleteTicket($event)">
-    </app-ticket-card>
+    <div *virtualItem="let ticket">
+      <app-ticket-card
+        (deleteTicketEvent)="deleteTicket($event)"
+        (ticketSelected)="ticketSelected($event)"
+        [ticket]="ticket">
+      </app-ticket-card>
+    </div>
   </ion-virtual-scroll>
 
 </ion-content>

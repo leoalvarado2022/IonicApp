@@ -1,11 +1,10 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NativeAudio} from '@ionic-native/native-audio/ngx';
-import {AlertController, Platform} from '@ionic/angular';
+import {AlertController, ModalController, Platform} from '@ionic/angular';
 import {Ndef, NFC} from '@ionic-native/nfc/ngx';
 import {Device} from './device';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {ModalController} from '@ionic/angular';
 import {AssociateWorkPage} from './associate-work/associate-work.page';
 
 @Component({

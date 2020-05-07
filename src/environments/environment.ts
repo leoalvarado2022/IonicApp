@@ -11,7 +11,8 @@ export const environment = {
   api_url: 'http://127.0.0.1:5572',
   appVersion: 'v1.0.60',
   tz: 'America/Santiago',
-  iosDeviceNames
+  iosDeviceNames,
+  syncTimer: 1
 };
 
 /*

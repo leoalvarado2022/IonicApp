@@ -282,6 +282,8 @@ export class ContractFormPage implements OnInit {
       this.loaderService.stopLoader();
       const worker = success.data;
 
+      console.log({ worker });
+
       if (worker) {
         this.contractForm.patchValue({
           workerId: worker.id,
@@ -294,7 +296,8 @@ export class ContractFormPage implements OnInit {
             lastName: worker.lastName,
             sureName: worker.surName,
             dob: worker.dob,
-            gender: worker.gender
+            gender: worker.gender,
+            civilStatus: worker.civilStatus
           },
           step3: {
             afp: worker.afpId,

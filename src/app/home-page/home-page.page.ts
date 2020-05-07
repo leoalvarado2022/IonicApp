@@ -7,6 +7,7 @@ import {ToastService} from '../shared/services/toast/toast.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
 import {TallyService} from '../modules/tallies/services/tally/tally.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home-page',
@@ -15,7 +16,7 @@ import {TallyService} from '../modules/tallies/services/tally/tally.service';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
-  private syncInterval = interval(1000 * 60 * 5);
+  private syncInterval = interval(1000 * 60 * environment.syncTimer);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private removeTallies = false;

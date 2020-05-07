@@ -6,5 +6,6 @@ export const environment = {
   api_url: 'https://apiqa.fx360.cl',
   appVersion: 'v1.0.60',
   tz: 'America/Santiago',
-  iosDeviceNames
+  iosDeviceNames,
+  syncTimer: 5
 };

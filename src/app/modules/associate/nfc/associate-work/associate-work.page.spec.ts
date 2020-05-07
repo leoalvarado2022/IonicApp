@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {IonicModule} from '@ionic/angular';
 
-import { AssociateWorkPage } from './associate-work.page';
+import {AssociateWorkPage} from './associate-work.page';
 
 describe('AssociateWorkPage', () => {
   let component: AssociateWorkPage;

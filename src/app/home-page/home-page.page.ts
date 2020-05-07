@@ -8,6 +8,7 @@ import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
 import {TallyService} from '../modules/tallies/services/tally/tally.service';
 import {NfcService} from '../shared/services/nfc/nfc.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home-page',
@@ -16,7 +17,7 @@ import {NfcService} from '../shared/services/nfc/nfc.service';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
-  private syncInterval = interval(1000 * 60 * 5);
+  private syncInterval = interval(1000 * 60 * environment.syncTimer);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private removeTallies = false;
@@ -26,6 +27,7 @@ export class HomePagePage implements OnInit, OnDestroy {
 
   private syncInterval$: Subscription;
   private syncStepObservable$: Subscription;
+  private talliesWithErrors: Array<any> = [];
 
   constructor(
     private geolocationService: GeolocationService,
@@ -58,6 +60,9 @@ export class HomePagePage implements OnInit, OnDestroy {
 
       if (step === 0) {
         if (this.removeTallies) {
+          this.storeService.addTalliesWithErrors(this.talliesWithErrors);
+          this.talliesWithErrors = [];
+
           const removed = this.storeService.removeTalliesToRecord(this.removeTalliesToRecord);
           if (removed === 0) {
             this.removeTalliesToRecord = [];
@@ -96,14 +101,14 @@ export class HomePagePage implements OnInit, OnDestroy {
   /**
    * sendToRecord
    */
-  private sendToRecord = () => {
+  private sendToRecord = (): void => {
     this.syncStepObservable.next(1);
   };
 
   /**
    * syncData
    */
-  private syncData = () => {
+  private syncData = (): void => {
     const userData = this.storeService.getUser();
     const username = userData.username;
     const activeConnection = this.storeService.getActiveConnection();
@@ -118,7 +123,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   /**
    * storePushToken
    */
-  private storePushToken = () => {
+  private storePushToken = (): void => {
     const user = this.storeService.getUser();
     const token = this.storeService.getPushToken();
 
@@ -132,7 +137,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   /**
    * recordTallies
    */
-  private recordTallies = () => {
+  private recordTallies = (): void => {
     const toRecord = this.storeService.getTalliesToRecord();
 
     if (toRecord && toRecord.length > 0) {
@@ -172,11 +177,21 @@ export class HomePagePage implements OnInit, OnDestroy {
    * checkRecordedTallies
    * @param logs
    */
-  private checkRecordedTallies = (logs: Array<any>) => {
+  private checkRecordedTallies = (logs: Array<any>): void => {
     if (logs.length > 0) {
       for (const log of logs) {
-        if (log['respuesta'] && log['respuesta'].toLowerCase() === 'ok') {
-          this.removeTalliesToRecord.push(+log['id_parametro']);
+        if (log.hasOwnProperty('respuesta')) {
+          if (log['respuesta'].toLowerCase() === 'ok') {
+            this.removeTalliesToRecord.push(+log['id_parametro']);
+          } else {
+            const checkDuplicity = this.talliesWithErrors.find(item => item.id === +log['id_parametro']);
+            if (!checkDuplicity) {
+              this.talliesWithErrors.push({
+                id: +log['id_parametro'],
+                response: log['respuesta']
+              });
+            }
+          }
         }
       }
 

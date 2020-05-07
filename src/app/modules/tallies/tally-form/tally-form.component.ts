@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActionSheetController, ModalController} from '@ionic/angular';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
+import {TallyService} from '../services/tally/tally.service';
 
 @Component({
   selector: 'app-tally-form',
@@ -32,42 +33,75 @@ export class TallyFormComponent implements OnInit {
   ];
 
   public multipleWorkers: Array<any> = [];
+  public tallies: Array<any> = [];
+  public talliesToRecord: Array<any> = [];
+  public workersOverMax: Array<any> = [];
 
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private storeService: StoreService,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private tallyService: TallyService
   ) {
 
   }
 
   ngOnInit() {
+    const activeCompany = this.storeService.getActiveCompany();
+
     this.costCenters = this.storeService.getCostCenters();
     this.filteredCostCenters = [];
     this.labors = this.storeService.getLabors();
     this.filteredLabors = [];
-    const activeCompany = this.storeService.getActiveCompany();
+    this.tallies = this.storeService.getTallies();
+    this.talliesToRecord = this.storeService.getTalliesToRecord();
 
     this.tallyForm = this.formBuilder.group({
       id: [0, Validators.required],
       date: [this.dateSelected, Validators.required],
       costCenterId: ['', Validators.required],
       laborId: ['', Validators.required],
-      workingDay: [1, Validators.required],
+      workingDay: [1, Validators.min(0)],
       hoursExtra: [''],
       performance: [''],
       unit: [{value: '', disabled: true}],
       notes: [''],
-      creatorId: [activeCompany.user, Validators.required]
+      creatorId: [activeCompany.user, Validators.required],
+      multiple: this.formBuilder.array([])
     });
 
+    this.checkWorkersDailyMax(1);
+    this.addWorkers();
+  }
+
+  /**
+   * addWorkers
+   */
+  private addWorkers = (): void => {
     if (this.workers.length > 1) {
       for (const worker of this.workers) {
-        this.multipleWorkers[worker.id] = Object.assign({}, {jr: 0, h: 0, r: 0});
+        const workers = this.tallyForm.get('multiple') as FormArray;
+        workers.push(this.addWokerRow(worker.id));
       }
     }
-  }
+  };
+
+  /**
+   * addWokerRow
+   * @param workerId
+   */
+  private addWokerRow = (workerId: number): FormGroup => {
+    return this.formBuilder.group({
+      id: [workerId],
+      jr: [0, [
+        Validators.required,
+        Validators.min(0.1)
+      ]],
+      h: [0, Validators.min(0)],
+      r: [0, Validators.min(0)]
+    });
+  };
 
   /**
    * closeModal
@@ -175,20 +209,44 @@ export class TallyFormComponent implements OnInit {
     const formData = Object.assign({}, this.tallyForm.value);
 
     const talliesToRecord = [];
-    for (const worker of this.workers) {
-      const tempId = this.storeService.getTallyTempId();
+    if (this.multipleWorkers.length > 0) {
+      for (const worker of this.workers) {
 
-      talliesToRecord.push(
-        Object.assign({}, formData, {
-          workerId: worker.id,
-          contractId: worker.validity,
-          dealId: 0,
-          validityBonus: 0,
-          tempId
-        })
-      );
+        const tempId = this.storeService.getTallyTempId();
 
-      this.storeService.increaseTallyTempId();
+        const data = formData.multiple.find(i => i.id === worker.id);
+
+        talliesToRecord.push(
+          Object.assign({}, formData, {
+            workerId: worker.id,
+            contractId: worker.validity,
+            dealId: 0,
+            validityBonus: 0,
+            tempId,
+            workingDay: data['jr'],
+            hoursExtra: data['h'],
+            performance: data['r']
+          })
+        );
+
+        this.storeService.increaseTallyTempId();
+      }
+    } else {
+      for (const worker of this.workers) {
+        const tempId = this.storeService.getTallyTempId();
+
+        talliesToRecord.push(
+          Object.assign({}, formData, {
+            workerId: worker.id,
+            contractId: worker.validity,
+            dealId: 0,
+            validityBonus: 0,
+            tempId
+          })
+        );
+
+        this.storeService.increaseTallyTempId();
+      }
     }
 
     this.storeService.addTalliesToRecord(talliesToRecord);
@@ -197,12 +255,14 @@ export class TallyFormComponent implements OnInit {
 
   /**
    * setWorkerParam
-   * @param workerId
+   * @param worker
    * @param param
    * @param value
    */
-  public setWorkerParam = (workerId: number, param: string, value: number) => {
-    this.multipleWorkers[workerId][param] = value;
+  public setWorkerParam = (worker: any, param: string, value: number) => {
+    if (param === 'jr') {
+      this.checkWorkerDailyMax(worker, value);
+    }
   };
 
   /**
@@ -212,9 +272,89 @@ export class TallyFormComponent implements OnInit {
     if (this.split > 0) {
       const divide = this.split / this.workers.length;
 
-      for (const worker of this.workers) {
-        this.multipleWorkers[worker.id]['r'] = divide;
+      const workers = this.tallyForm.get('multiple') as FormArray;
+      for (let i = 0; i < workers.length; i++) {
+        workers.at(i).patchValue({'r': divide});
       }
+    }
+  };
+
+  /**
+   * getNumberOfWorkerTallies
+   * @param worker
+   */
+  private getNumberOfWorkerTallies = (worker: any): Array<any> => {
+    const tallies = this.tallies.filter(item => {
+      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
+      const current = this.tallyService.removeTimeFromDate(this.dateSelected);
+
+      return item.workerId === worker.id && tallyDate === current;
+    });
+
+    const toRecord = this.talliesToRecord.filter(item => {
+      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
+      const current = this.tallyService.removeTimeFromDate(this.dateSelected);
+
+      return item.workerId === worker.id && tallyDate === current;
+    });
+
+    return [...toRecord, ...tallies];
+  };
+
+  /**
+   * checkWorkersDailyMax
+   * @param workingDay
+   */
+  public checkWorkersDailyMax = (workingDay) => {
+    this.workersOverMax = [];
+
+    for (let worker of this.workers) {
+      this.checkWorkerDailyMax(worker, workingDay);
+    }
+  };
+
+  /**
+   * checkWorkerDailyMax
+   * @param worker
+   * @param workingDay
+   */
+  public checkWorkerDailyMax = (worker: any, workingDay) => {
+    const todayTallies = this.getNumberOfWorkerTallies(worker);
+    const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+
+    const total = parseFloat(workingDay) + parseFloat(totalWorked);
+    if (total > parseFloat(worker.dailyMax)) {
+
+      this.deleteWorkerOnOverMaxArray(worker.name);
+
+      this.workersOverMax.push({
+        name: worker.name,
+        value: total
+      });
+    } else {
+      this.deleteWorkerOnOverMaxArray(worker.name);
+    }
+  };
+
+  /**
+   * deleteWorkerOnOverMaxArray
+   * @param workerName
+   */
+  private deleteWorkerOnOverMaxArray = (workerName: string) => {
+    const validateDuplicity = this.workersOverMax.findIndex(item => item.name === workerName);
+
+    if (validateDuplicity > -1) {
+      this.workersOverMax.splice(validateDuplicity, 1);
+    }
+  };
+
+  /**
+   * workingDayChanged
+   * @param value
+   */
+  public workingDayChanged = (value: number) => {
+    if (value) {
+      this.checkWorkersDailyMax(value);
     }
   };
 }

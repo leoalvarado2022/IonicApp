@@ -29,9 +29,9 @@
     </h2>
 
     <ng-container *ngIf="filteredWorkers.length > 0">
-      <ion-list lines="none">
-        <ion-virtual-scroll [items]="filteredWorkers">
-          <ion-item (click)="markWorker(worker)" *virtualItem="let worker" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+      <ion-virtual-scroll [items]="filteredWorkers">
+        <div *virtualItem="let worker">
+          <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
             <ion-icon name="person" slot="start"></ion-icon>
             <ion-label>
               <h3 class="label-padding">{{ worker.name }}</h3>
@@ -56,11 +56,10 @@
               </div>
             </ion-label>
           </ion-item>
-        </ion-virtual-scroll>
-      </ion-list>
+        </div>
+      </ion-virtual-scroll>
     </ng-container>
   </ng-container>
-
 </ion-content>
 
 <ion-footer>

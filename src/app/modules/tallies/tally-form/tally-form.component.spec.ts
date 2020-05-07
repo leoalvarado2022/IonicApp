@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {IonicModule} from '@ionic/angular';
 
-import { TallyFormComponent } from './tally-form.component';
+import {TallyFormComponent} from './tally-form.component';
 
 describe('TallyFormComponent', () => {
   let component: TallyFormComponent;

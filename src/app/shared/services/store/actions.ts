@@ -46,14 +46,13 @@ export enum StoreActions {
   SetDeals = 'SET_DEALS',
   SetDevices = 'SET_DEVICES',
   SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
-  AddPreContract = 'ADD_PRECONTRACT',
-  RemovePreContracts = 'REMOVE_PRECONTRACT',
-  IncreasePreContractTempId = 'INCREASE_PRECONTRACT_TEMP_ID',
   AddTotalTickets = 'ADD_TOTAL_TICKETS',
   AddPreDevices = 'ADD_PREDEVICES',
   RemovePreDevices = 'REMOVE_PREDEVICES',
   AddTallies = 'ADD_TALLIES',
   RemoveTallies = 'REMOVE_TALLIES',
   IncreaseTallyTempId = 'INCREASE_TALLY_TEMP_ID',
-  IncreaseDeviceTempId = 'INCREASE_DEVICE_TEMP_ID'
+  IncreaseDeviceTempId = 'INCREASE_DEVICE_TEMP_ID',
+  AddTalliesWithErrors = 'ADD_TALLIES_WITH_ERRORS',
+  RemoveTalliesWithErrors = 'REMOVE_TALLIES_WITH_ERRORS'
 }

@@ -5,6 +5,9 @@ import * as moment from 'moment';
 import {Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
+import {ToastService} from '../../../shared/services/toast/toast.service';
+import {Subscription} from 'rxjs';
+import {TallyService} from '../services/tally/tally.service';
 
 @Component({
   selector: 'app-tally-list',
@@ -32,18 +35,38 @@ export class TallyListPage implements OnInit, OnDestroy {
   // Form dates
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
-  public currentDate = moment(moment.utc(new Date())).local().startOf('day').toISOString();
-  public readonly originalDate = moment(moment.utc(new Date())).local().startOf('day').toISOString();
+  public currentDate: any;
+  public readonly originalDate: any;
 
   private costCenters: Array<CostCenterList> = [];
   private labors: Array<any> = [];
 
+  private store$: Subscription;
+
   constructor(
     private storeService: StoreService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastService: ToastService,
+    private tallyService: TallyService
   ) {
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      console.log('asdasd', data);
+      // Load quadrilles
+      this.quadrilles = this.storeService.getQuadrilles();
+      this.filteredQuadrilles = this.quadrilles;
 
+      // Workers
+      this.workers = this.storeService.getWorkers();
+      this.reloadTallies();
+
+      // Form data
+      this.costCenters = this.storeService.getCostCenters();
+      this.labors = this.storeService.getLabors();
+    });
+
+    this.currentDate = moment().format('YYYY-MM-DD');
+    this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
@@ -64,6 +87,8 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.filteredTallies = [];
 
     this.currentDate = null;
+
+    this.store$.unsubscribe();
   }
 
   /**
@@ -239,24 +264,42 @@ export class TallyListPage implements OnInit, OnDestroy {
    * goToWorkerTallyList
    * @param worker
    */
-  public goToWorkerTallyList = (worker: any) => {
+  public goToWorkerTallyList = (worker: any): void => {
     this.activeWorker = worker;
+    const tallies = this.getNumberOfWorkerTallies(worker);
 
+    this.filteredTallies = [...tallies];
+  };
+
+  /**
+   * getNumberOfWorkerTallies
+   * @param worker
+   */
+  private getNumberOfWorkerTallies = (worker: any): Array<any> => {
     const tallies = this.tallies.filter(item => {
-      const tallyDate = moment(item.date).format('YYYY-MM-DD');
-      const current = moment(this.currentDate).format('YYYY-MM-DD');
+      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
+      const current = this.tallyService.removeTimeFromDate(this.currentDate);
 
       return item.workerId === worker.id && tallyDate === current;
     });
 
     const toRecord = this.talliesToRecord.filter(item => {
-      const tallyDate = moment(item.date).format('YYYY-MM-DD');
-      const current = moment(this.currentDate).format('YYYY-MM-DD');
+      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
+      const current = this.tallyService.removeTimeFromDate(this.currentDate);
 
       return item.workerId === worker.id && tallyDate === current;
     });
 
-    this.filteredTallies = [...toRecord, ...tallies];
+    return [...toRecord, ...tallies];
+  };
+
+  /**
+   * getTotalWorkerWork
+   * @param worker
+   */
+  public getTotalWorkerWork = (worker: any): number => {
+    const todayTallies = this.getNumberOfWorkerTallies(worker);
+    return todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
   };
 
   /**
@@ -335,5 +378,42 @@ export class TallyListPage implements OnInit, OnDestroy {
     if (this.activeWorker) {
       this.goToWorkerTallyList(this.activeWorker);
     }
+  };
+
+  /**
+   * showTallyError
+   * @param tally
+   */
+  public showTallyError = (tally: any): void => {
+    if (tally.id <= 0) {
+      const talliesWithErrors = this.storeService.getTalliesWithErrors();
+      const error = talliesWithErrors.find(item => item.id === tally.tempId);
+
+      if (error) {
+        this.toastService.errorToast(error.response);
+      } else {
+        this.toastService.errorToast('No sincronizado');
+      }
+    }
+  };
+
+  /**
+   * checkNotEditableTallies
+   */
+  public checkNotEditableTallies = (): boolean => {
+    for (let worker of this.selectedWorkers) {
+      if (this.getNumberOfWorkerTallies(worker).length === 0) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  /**
+   * createMultipleTally
+   */
+  public createMultipleTally = () => {
+    console.log('pendiente por implementar');
   };
 }

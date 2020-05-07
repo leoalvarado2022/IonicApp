@@ -11,16 +11,16 @@
 
 <ion-content>
   <form [formGroup]="tallyForm">
+
+    <!-- STEP 1 -->
     <ng-container *ngIf="currentStep === 1">
-
-
       <ion-item>
         <ion-label position="stacked">Centro de Costo</ion-label>
         <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()"></ion-searchbar>
         <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
       </ion-item>
 
-      <ion-list class="cost-centers-list" *ngIf="filteredCostCenters.length > 0">
+      <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
         <ion-list-header color="primary">
           <ion-label>Resultados: {{ filteredCostCenters.length }} </ion-label>
         </ion-list-header>
@@ -35,7 +35,7 @@
         <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
       </ion-item>
 
-      <ion-list class="labors-list" *ngIf="filteredLabors.length > 0">
+      <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
         <ion-list-header color="success">
           <ion-label>Resultados: {{ filteredLabors.length }} </ion-label>
         </ion-list-header>
@@ -46,12 +46,21 @@
 
       <ion-item>
         <ion-label position="floating">Jornada</ion-label>
-        <ion-input formControlName="workingDay"></ion-input>
+        <ion-input type="number" formControlName="workingDay" (ionChange)="workingDayChanged($event.target.value)"></ion-input>
         <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
           <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
         </ion-button>
         <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Seleccione una Jornada</ion-text>
       </ion-item>
+
+      <ng-container *ngIf="workersOverMax.length > 0">
+        <p style="color: red">
+          El valor ingrado supera el maximo de jornada permitida para los trabajadores
+        </p>
+        <ul>
+          <li style="color: red" *ngFor="let worker of workersOverMax">{{ worker.name }} ({{ worker.value | number }})</li>
+        </ul>
+      </ng-container>
 
       <ion-item>
         <ion-label position="floating">Horas Extra</ion-label>
@@ -77,6 +86,7 @@
       </ion-item>
     </ng-container>
 
+    <!-- STEP 2 -->
     <ng-container *ngIf="currentStep === 2">
       <ion-row style="font-size: 12px">
         <ion-col size="6" class="ion-text-center">
@@ -86,22 +96,22 @@
         <ion-col class="ion-text-center"><strong>H</strong></ion-col>
         <ion-col class="ion-text-center"><strong>R</strong></ion-col>
       </ion-row>
-      <ng-container *ngFor="let worker of workers">
+      <ng-container formArrayName="multiple" *ngFor="let worker of workers; let i = index">
         <ion-row style="font-size: 10px">
           <ion-col size="6">{{ worker.name }}</ion-col>
-          <ion-col>
+          <ion-col [formGroupName]="i">
             <ion-item class="full-border ion-no-margin">
-              <ion-input [value]="multipleWorkers[worker.id]['jr']" type="number" (ionChange)="setWorkerParam(worker.id, 'jr',  $event.detail.value)" placeholder="0"></ion-input>
+              <ion-input formControlName="jr" type="number" (ionChange)="setWorkerParam(worker, 'jr',  $event.detail.value)"></ion-input>
             </ion-item>
           </ion-col>
-          <ion-col>
+          <ion-col [formGroupName]="i">
             <ion-item class="full-border ion-no-margin">
-              <ion-input [value]="multipleWorkers[worker.id]['h']" type="number" (ionChange)="setWorkerParam(worker.id, 'h',  $event.detail.value)" placeholder="0"></ion-input>
+              <ion-input formControlName="h" type="number" (ionChange)="setWorkerParam(worker, 'h',  $event.detail.value)"></ion-input>
             </ion-item>
           </ion-col>
-          <ion-col>
+          <ion-col [formGroupName]="i">
             <ion-item class="full-border ion-no-margin">
-              <ion-input [value]="multipleWorkers[worker.id]['r']" type="number" (ionChange)="setWorkerParam(worker.id, 'r',  $event.detail.value)" placeholder="0"></ion-input>
+              <ion-input formControlName="r" type="number" (ionChange)="setWorkerParam(worker, 'r',  $event.detail.value)"></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -110,6 +120,15 @@
       <ion-item-divider>
         <ion-label></ion-label>
       </ion-item-divider>
+
+      <ng-container *ngIf="workersOverMax.length > 0">
+        <p style="color: red">
+          El valor ingrado supera el maximo de jornada permitida para los trabajadores
+        </p>
+        <ul>
+          <li style="color: red" *ngFor="let worker of workersOverMax">{{ worker.name }} ({{ worker.value | number }})</li>
+        </ul>
+      </ng-container>
 
       <ion-segment value="jornada" class="segment-back" scrollable="true">
         <ion-segment-button value="jornada">
@@ -135,6 +154,7 @@
       </ion-row>
 
     </ng-container>
+
   </form>
 </ion-content>
 
@@ -162,7 +182,7 @@
       </ion-col>
 
       <ion-col>
-        <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1" [disabled]="tallyForm.get('costCenterId').invalid || tallyForm.get('laborId').invalid">
+        <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1" [disabled]="tallyForm.get('costCenterId').invalid || tallyForm.get('laborId').invalid || workersOverMax.length > 0 ">
           Siguiente
         </ion-button>
       </ion-col>

@@ -40,9 +40,9 @@
       <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
     </h2>
 
-    <ion-list>
-      <ion-virtual-scroll [items]="filteredQuadrilles">
-        <ion-item (click)="selectQuadrille(quadrille)" *virtualItem="let quadrille" detail="true">
+    <ion-virtual-scroll [items]="filteredQuadrilles">
+      <div *virtualItem="let quadrille">
+        <ion-item (click)="selectQuadrille(quadrille)" detail="true">
           <ion-icon name="clipboard" slot="start"></ion-icon>
           <ion-label>
             <h2>{{ quadrille.name }}</h2>
@@ -54,8 +54,8 @@
             </p>
           </ion-label>
         </ion-item>
-      </ion-virtual-scroll>
-    </ion-list>
+      </div>
+    </ion-virtual-scroll>
   </ng-container>
 
   <!-- TRABAJADORES -->
@@ -76,22 +76,22 @@
       </ion-button>
     </ion-item>
 
-    <ion-list>
-      <ion-virtual-scroll [items]="filteredWorkers">
-        <ion-item (click)="markWorker(worker)" *virtualItem="let worker" detail="true" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+    <ion-virtual-scroll [items]="filteredWorkers">
+      <div *virtualItem="let worker">
+        <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
           <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>
             <h2>{{ worker.name }}</h2>
             <p class="label-padding">{{ worker.identifier | rut }}</p>
             <p class="label-padding">
               <ion-badge color="primary">
-                0 JR
+                {{ getTotalWorkerWork(worker) }} JR
               </ion-badge>
             </p>
           </ion-label>
         </ion-item>
-      </ion-virtual-scroll>
-    </ion-list>
+      </div>
+    </ion-virtual-scroll>
   </ng-container>
 
   <!-- TARJAS -->
@@ -105,31 +105,33 @@
     </h4>
 
     <ion-virtual-scroll [items]="filteredTallies">
-      <ion-card *virtualItem="let tally">
-        <ion-item>
-          <ion-icon name="reader" slot="start"></ion-icon>
-          <ion-label>{{ getCostCenterName(tally.costCenter) }}</ion-label>
-          <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
-        </ion-item>
+      <div *virtualItem="let tally">
+        <ion-card class="tally">
+          <ion-item>
+            <ion-icon (click)="showTallyError(tally)" [color]="tally.id > 0 ? 'success': 'danger' " name="reader" slot="start"></ion-icon>
+            <ion-label>{{ getCostCenterName(tally.id > 0 ? tally.costCenter : tally.costCenterId) }}</ion-label>
+            <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
+          </ion-item>
 
-        <ion-card-content>
-          <p>
-            Labor: {{ getLaborName(tally.laborId) }}
-            <ion-badge class="ion-float-end" color="primary">
-              {{ tally.hoursExtra }} Hora extra
-            </ion-badge>
-          </p>
-          <p>
-            <strong>Notas:</strong>
-            <ion-badge class="ion-float-end" color="primary">
-              {{ tally.performance }} Unidad Labor
-            </ion-badge>
-          </p>
-          <p>
-            {{ tally.notes }}
-          </p>
-        </ion-card-content>
-      </ion-card>
+          <ion-card-content>
+            <p>
+              Labor: {{ getLaborName(tally.laborId) }}
+              <ion-badge class="ion-float-end" color="primary">
+                {{ tally.hoursExtra }} Hora extra
+              </ion-badge>
+            </p>
+            <p>
+              <strong>Notas:</strong>
+              <ion-badge class="ion-float-end" color="primary">
+                {{ tally.performance }} Unidad Labor
+              </ion-badge>
+            </p>
+            <p>
+              {{ tally.notes }}
+            </p>
+          </ion-card-content>
+        </ion-card>
+      </div>
     </ion-virtual-scroll>
   </ng-container>
 
@@ -170,7 +172,7 @@
       </ion-col>
 
       <ion-col size="6">
-        <ion-button color="primary" expand="block">
+        <ion-button color="primary" expand="block"  (click)="createMultipleTally()"  [disabled]="checkNotEditableTallies()">
           Modificar Masivo
         </ion-button>
       </ion-col>

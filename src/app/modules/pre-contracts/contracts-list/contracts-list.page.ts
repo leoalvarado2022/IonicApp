@@ -6,6 +6,7 @@ import {ContractListItem} from '../contract-interfaces';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Subscription} from 'rxjs';
+import { IonItemSliding } from '@ionic/angular';
 
 @Component({
   selector: 'app-contracts-list',
@@ -32,8 +33,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
       this.loadPreContracts();
     });
-
-    // this.loadPreContracts();
   }
 
   ngOnDestroy(): void {
@@ -104,17 +103,23 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
   /**
    * editContractEvent
-   * @param contract
+   * @param data
    */
-  public editContractEvent = (contract: any) => {
+  public editContractEvent = (data: any) => {
+    const {contract, slide} = data;
+    slide.close();
+
     this.contractForm(contract.id);
   };
 
   /**
    * deleteContract
-   * @param contract
+   * @param data
    */
-  public deleteContract = (contract: any): void => {
+  public deleteContract = (data: any): void => {
+    const {contract, slide} = data;
+    slide.close();
+
     const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
     this.storeContract(deleteContract);
   };
@@ -148,5 +153,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
     }, error => {
       this.httpService.errorHandler(error);
     });
-  };
+  }
+
 }

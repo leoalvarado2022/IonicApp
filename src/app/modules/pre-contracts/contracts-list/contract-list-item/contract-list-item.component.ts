@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, AfterViewInit} from '@angular/core';
 import {ContractListItem} from '../../contract-interfaces';
+import { IonItemSliding } from '@ionic/angular';
 
 @Component({
   selector: 'app-contract-list-item',
@@ -7,6 +8,8 @@ import {ContractListItem} from '../../contract-interfaces';
   styleUrls: ['./contract-list-item.component.scss'],
 })
 export class ContractListItemComponent implements OnInit, OnDestroy {
+
+  @ViewChild('slide') slide: IonItemSliding;
 
   @Input() contract: ContractListItem = null;
   @Output() editContractEvent: EventEmitter<any> = new EventEmitter<any>();
@@ -29,14 +32,15 @@ export class ContractListItemComponent implements OnInit, OnDestroy {
    * @param contract
    */
   public editContract = (contract: ContractListItem): void => {
-    this.editContractEvent.emit(contract);
-  };
+    this.editContractEvent.emit({contract, slide: this.slide});
+  }
 
   /**
    * deleteContract
    * @param contract
    */
   public deleteContract = (contract: ContractListItem): void => {
-    this.deleteContractEvent.emit(contract);
-  };
+    this.deleteContractEvent.emit({contract, slide: this.slide});
+  }
+
 }

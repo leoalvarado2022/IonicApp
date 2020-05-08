@@ -1,4 +1,4 @@
-<ion-item-sliding>
+<ion-item-sliding #slide >
   <ion-item>
     <ion-icon name="document" slot="start"></ion-icon>
     <ion-label>
@@ -10,7 +10,7 @@
     </ion-badge>
   </ion-item>
 
-  <ion-item-options side="end">
+  <ion-item-options side="end" close>
     <ion-item-option color="warning" (click)="editContract(contract)">
       <ion-icon slot="icon-only" name="pencil"></ion-icon>
     </ion-item-option>

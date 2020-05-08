@@ -28,7 +28,7 @@
     <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
   </h2>
 
-  <ng-container *ngIf="filteredQuadrilles.length > 0">
+
     <ion-virtual-scroll [items]="filteredQuadrilles">
       <div *virtualItem="let quadrille">
         <ion-item (click)="goToWorkers(quadrille)" detail="true">
@@ -46,6 +46,5 @@
         </ion-item>
       </div>
     </ion-virtual-scroll>
-  </ng-container>
 
 </ion-content>

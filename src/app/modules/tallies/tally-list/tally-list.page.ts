@@ -51,7 +51,6 @@ export class TallyListPage implements OnInit, OnDestroy {
     private tallyService: TallyService
   ) {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
-      console.log('asdasd', data);
       // Load quadrilles
       this.quadrilles = this.storeService.getQuadrilles();
       this.filteredQuadrilles = this.quadrilles;

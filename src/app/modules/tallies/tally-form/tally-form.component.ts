@@ -62,9 +62,9 @@ export class TallyFormComponent implements OnInit {
       date: [this.dateSelected, Validators.required],
       costCenterId: ['', Validators.required],
       laborId: ['', Validators.required],
-      workingDay: [1, Validators.min(0)],
-      hoursExtra: [''],
-      performance: [''],
+      workingDay: [1, Validators.min(0.1)],
+      hoursExtra: ['', Validators.min(0.1)],
+      performance: ['', Validators.min(0.1)],
       unit: [{value: '', disabled: true}],
       notes: [''],
       creatorId: [activeCompany.user, Validators.required],
@@ -94,12 +94,12 @@ export class TallyFormComponent implements OnInit {
   private addWokerRow = (workerId: number): FormGroup => {
     return this.formBuilder.group({
       id: [workerId],
-      jr: [0, [
+      jr: ['', [
         Validators.required,
         Validators.min(0.1)
       ]],
-      h: [0, Validators.min(0)],
-      r: [0, Validators.min(0)]
+      h: ['', Validators.min(0.1)],
+      r: ['', Validators.min(0.1)]
     });
   };
 
@@ -241,7 +241,9 @@ export class TallyFormComponent implements OnInit {
             contractId: worker.validity,
             dealId: 0,
             validityBonus: 0,
-            tempId
+            tempId,
+            hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
+            performance: formData.hoursExtra ? formData.performance : 0
           })
         );
 
@@ -274,10 +276,20 @@ export class TallyFormComponent implements OnInit {
 
       const workers = this.tallyForm.get('multiple') as FormArray;
       for (let i = 0; i < workers.length; i++) {
-        workers.at(i).patchValue({'r': divide});
+        workers.at(i).patchValue({r: divide});
       }
     }
   };
+
+  /**
+   * setWorkingDay
+   */
+  private setWorkingDay = (workingDay: number) => {
+    const workers = this.tallyForm.get('multiple') as FormArray;
+    for (let i = 0; i < workers.length; i++) {
+      workers.at(i).patchValue({jr: workingDay});
+    }
+  }
 
   /**
    * getNumberOfWorkerTallies
@@ -355,6 +367,11 @@ export class TallyFormComponent implements OnInit {
   public workingDayChanged = (value: number) => {
     if (value) {
       this.checkWorkersDailyMax(value);
+
+      if (this.workers.length > 1) {
+        this.setWorkingDay(value);
+      }
     }
-  };
+  }
+
 }

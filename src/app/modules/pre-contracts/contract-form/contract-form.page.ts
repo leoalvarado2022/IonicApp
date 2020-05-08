@@ -9,7 +9,6 @@ import * as moment from 'moment';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {SyncService} from '../../../shared/services/sync/sync.service';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -50,8 +49,7 @@ export class ContractFormPage implements OnInit {
     private contractsService: ContractsService,
     private httpService: HttpService,
     private syncService: SyncService,
-    private activatedRoute: ActivatedRoute,
-    private loaderService: LoaderService
+    private activatedRoute: ActivatedRoute
   ) {
 
   }
@@ -79,7 +77,7 @@ export class ContractFormPage implements OnInit {
             name: [find.workerName, Validators.required],
             lastName: [find.workerLastName, Validators.required],
             sureName: [find.workerSurname, Validators.required],
-            dob: [find.dob, Validators.required],
+            dob: [moment.utc(find.dob, 'YYYY-MM-DD').format('DD/MM/YYYY') , Validators.required],
             civilStatus: [find.workerCivilStatus, Validators.required],
             gender: [find.gender, Validators.required]
           }),
@@ -114,7 +112,7 @@ export class ContractFormPage implements OnInit {
           sureName: ['', Validators.required],
           dob: ['', Validators.required],
           civilStatus: [this.civilStatus.length === 1 ? this.civilStatus[0].name : '', Validators.required],
-          gender: ['H', Validators.required]
+          gender: ['M', Validators.required]
         }),
         step3: this.formBuilder.group({
           contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
@@ -205,7 +203,7 @@ export class ContractFormPage implements OnInit {
     delete data.step3;
 
     step1.identifier = cleanRut(step1.identifier);
-    step2.dob = moment(step2.dob).format('YYYY-MM-DD');
+    step2.dob = moment.utc(step2.dob).format('YYYY-MM-DD');
     step3.retired = step3.retired ? 1 : 0;
 
     const preparedData = {...data, ...step1, ...step2, ...step3};
@@ -276,13 +274,10 @@ export class ContractFormPage implements OnInit {
   public checkWorker = (identifier: string) => {
     this.isSearching = true;
 
-    const clean = identifier.replace(/[,.-]+/g, '').replace(/\s/g, '');
+    const clean = this.cleanCharactersFromIdentifier(identifier);
 
     this.contractsService.checkWorker(clean).subscribe((success: any) => {
-      this.loaderService.stopLoader();
       const worker = success.data;
-
-      console.log({ worker });
 
       if (worker) {
         this.contractForm.patchValue({
@@ -295,7 +290,7 @@ export class ContractFormPage implements OnInit {
             name: worker.names,
             lastName: worker.lastName,
             sureName: worker.surName,
-            dob: worker.dob,
+            dob: worker.dob ? moment.utc(worker.dob).format('DD/MM/YYYY') : '',
             gender: worker.gender,
             civilStatus: worker.civilStatus
           },
@@ -307,11 +302,11 @@ export class ContractFormPage implements OnInit {
         });
 
         this.formatIdentifier(worker.identifier);
+        this.isSearching = false;
       } else {
         this.formatIdentifier(clean);
+        this.isSearching = false;
       }
-
-      this.isSearching = false;
     }, error => {
       this.formatIdentifier(clean);
       this.isSearching = false;
@@ -322,9 +317,9 @@ export class ContractFormPage implements OnInit {
   /**
    * checkNexButtonDisabled
    */
-  public checkNexButtonDisabled = () => {
+  public checkNexButtonDisabled = (): boolean => {
     return (this.currentStep === 1 && this.contractForm.get('step1').invalid) ||
-      (this.currentStep === 2 && this.contractForm.get('step2').invalid);
+      (this.currentStep === 2 && (this.contractForm.get('step2').invalid || this.checkIfIdentifierAlreadyExistsOnWorkers()));
   };
 
   /**
@@ -337,4 +332,28 @@ export class ContractFormPage implements OnInit {
       this.checkWorker(this.contractForm.get('step1.identifier').value);
     }
   };
+
+  /**
+   * cleanCharactersFromIdentifier
+   */
+  private cleanCharactersFromIdentifier = (toClean: string): string => {
+    return toClean.replace(/[,.-]+/g, '').replace(/\s/g, '');
+  }
+
+  /**
+   * checkIfIdentifierAlreadyExistsOnWorkers
+   */
+  public checkIfIdentifierAlreadyExistsOnWorkers = (): boolean => {
+    const identifier = this.contractForm.get('step1.identifier').value;
+
+    if (identifier) {
+      const workers = this.storeService.getWorkers();
+      const alreadyValid = workers.find(item => this.cleanCharactersFromIdentifier(item.identifier).toLowerCase() === this.cleanCharactersFromIdentifier(identifier).toLowerCase());
+
+      return !!alreadyValid;
+    }
+
+    return false;
+  }
+
 }

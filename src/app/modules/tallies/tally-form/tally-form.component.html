@@ -126,7 +126,7 @@
           El valor ingrado supera el maximo de jornada permitida para los trabajadores
         </p>
         <ul>
-          <li style="color: red" *ngFor="let worker of workersOverMax">{{ worker.name }} ({{ worker.value | number }})</li>
+          <li style="color: red" *ngFor="let worker of workersOverMax">{{ worker.name }} ({{ worker.value }})</li>
         </ul>
       </ng-container>
 

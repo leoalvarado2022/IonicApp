@@ -73,8 +73,10 @@ export interface TicketForm {
 }
 
 export interface ToRecord {
-  preDevices: Array<any>;
+  devicesToRecord: Array<any>;
+  devicesWithErrors: Array<any>;
   talliesToRecord: Array<any>;
   talliesWithErrors: Array<any>;
   tallyTempId: number;
+  deviceTempId: number;
 }

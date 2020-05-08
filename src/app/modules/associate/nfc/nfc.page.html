@@ -58,7 +58,9 @@
   <ion-grid>
     <ion-row *ngIf="scanned.length">
       <ion-card *ngFor="let device of scanned" (click)="onPress(device)"
-                [class.selected]="selected === device">
+                [class.selected]="selected === device"
+                [class.error]="error && device.id < 1"
+                [class.sync]="sync && device.id < 1">
         <ion-card-content>
           <ion-row class="ion-align-items-center">
             <ion-col size="2">

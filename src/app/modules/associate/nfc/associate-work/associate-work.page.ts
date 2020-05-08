@@ -83,15 +83,21 @@ export class AssociateWorkPage implements OnInit {
    * @param worker
    */
   async onPress(worker) {
+
+    const tempId = this.storeService.getDeviceTempId();
+
     let body: any;
     body = this.tag;
+    body.id = 0;
     body.id_link = worker.id;
     body.link = worker.names;
+    body.tempId = tempId;
 
     if (body) {
-      this.storeService.setPreDevices(body);
+      this.storeService.addDevicesToRecord(body);
     }
-    this.closeWork(body);
+
+    await this.closeWork(body);
   }
 
 }

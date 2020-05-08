@@ -26,6 +26,7 @@ import {SyncService} from './services/sync/sync.service';
 import {FileOpener} from '@ionic-native/file-opener/ngx';
 import {TicketCardComponent} from '../modules/crm/tickets/ticket-card/ticket-card.component';
 import {TicketsService} from '../modules/crm/services/tickets/tickets.service';
+import {NfcService} from './services/nfc/nfc.service';
 import {ContractsService} from '../modules/pre-contracts/services/contracts/contracts.service';
 
 @NgModule({
@@ -61,7 +62,8 @@ import {ContractsService} from '../modules/pre-contracts/services/contracts/cont
     SyncService,
     FileOpener,
     TicketsService,
-    ContractsService
+    ContractsService,
+    NfcService,
   ],
   exports: [
     CommonModule,

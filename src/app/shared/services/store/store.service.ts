@@ -2,7 +2,25 @@ import {Injectable} from '@angular/core';
 import {ObservableStore} from '@codewithdan/observable-store';
 import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
 import {StoreActions} from './actions';
-import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
+import {
+  Caliber,
+  CfgAccess,
+  Company,
+  Connection,
+  CostCenter,
+  CostCenterList,
+  EntityList,
+  Generic,
+  HarvestEstimate,
+  Note,
+  ProductContract,
+  ProductContractDetail,
+  Quadrille,
+  QualityDetail,
+  QualityEstimate,
+  TabMenu,
+  Unit
+} from '@primetec/primetec-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +28,7 @@ import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, Ent
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: false});
+    super({logStateChanges: true, trackStateHistory: true});
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
@@ -82,10 +100,12 @@ export class StoreService extends ObservableStore<StoreInterface> {
       pushToken: null,
       totalTicket: null,
       toRecord: {
-        preDevices: [],
+        deviceTempId: 0,
+        devicesToRecord: [],
+        devicesWithErrors: [],
+        tallyTempId: 0,
         talliesToRecord: [],
         talliesWithErrors: [],
-        tallyTempId: 0
       }
     };
   };
@@ -1125,27 +1145,96 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
 
   /**
-   * getPreDevicesToRecord
+   * getDevicesToRecord
    */
-  public getPreDevicesToRecord = (): Array<any> => {
-    return this.getState().toRecord.preDevices;
+  public getDevicesToRecord = (): Array<any> => {
+    return this.getState().toRecord.devicesToRecord;
   };
 
   /**
-   * setPreDevices
-   * @param setPreDevices
+   * addDevicesToRecord
+   * @param preDevice
    */
-  public setPreDevices = (preDevice: any): void => {
-    const preDevices = this.getPreDevicesToRecord();
-
-    console.log(preDevices);
-    const checkDuplicate = preDevices.find(item => item.id_device === preDevice.id_device);
-
-    if (checkDuplicate === undefined) {
-      preDevices.push(preDevice);
-      const toRecord = {...this.getState().toRecord, preDevices};
+  public addDevicesToRecord = (preDevice: any): void => {
+    let devicesToRecord = this.getDevicesToRecord();
+    // en el caso que voy a eliminar (deassociar)
+    if (preDevice.delete) {
+      const toRemoved = devicesToRecord.filter(item => item.tempId !== preDevice.tempId);
+      const toRecord = {...this.getState().toRecord, devicesToRecord: [...toRemoved]};
+      this.setState({toRecord}, StoreActions.RemovePreDevices);
+    } else {
+      // solo va agregar
+      devicesToRecord.push(preDevice);
+      const toRecord = {...this.getState().toRecord, devicesToRecord};
       this.setState({toRecord}, StoreActions.AddPreDevices);
+
+      this.increaseDeviceTempId();
     }
+  };
+
+  /**
+   * removeDevicesToRecord
+   * @param indexes
+   */
+  public removeDevicesToRecord = (indexes: Array<number>): number => {
+    const devices = this.getDevicesToRecord();
+    const toRemoved = devices.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, devicesToRecord: [...toRemoved]};
+    this.setState({toRecord}, StoreActions.RemovePreDevices);
+
+    return toRemoved.length;
+  };
+
+  /**
+   * getDeviceTempId
+   */
+  public getDeviceTempId(): number {
+    return this.getState().toRecord.deviceTempId;
+  }
+
+  /**
+   * increaseDeviceTempId
+   */
+  public increaseDeviceTempId = (): void => {
+    const current = this.getDeviceTempId();
+
+    const toRecord = {...this.getState().toRecord, deviceTempId: (current + 1)};
+    this.setState({toRecord}, StoreActions.IncreaseDeviceTempId);
+  };
+
+  /**
+   * getDevicesWithErrors
+   */
+  public getDevicesWithErrors = (): Array<any> => {
+    return this.getState().toRecord.devicesWithErrors;
+  };
+
+  /**
+   * addDevicesWithErrors
+   * @param tallies
+   */
+  public addDevicesWithErrors = (devices: Array<any>): void => {
+    const devicesWithErrors = this.getDevicesWithErrors();
+
+    const toRecord = {...this.getState().toRecord, devicesWithErrors: [...devicesWithErrors, ...devices]};
+    this.setState({toRecord}, StoreActions.AddDevicessWithErrors);
+
+    this.increaseDeviceTempId();
+  };
+
+  /**
+   * removeDevicesWithErrors
+   * @param indexes
+   */
+  public removeDevicesWithErrors = (indexes: Array<number>): number => {
+    const devicesWithErrors = this.getDevicesWithErrors();
+    const toRemoved = devicesWithErrors.filter(item => !indexes.includes(item.tempId));
+
+    const toRecord = {...this.getState().toRecord, devicesWithErrors: [...toRemoved]};
+    this.setState({toRecord}, StoreActions.RemoveDevicesWithErrors);
+
+    return toRemoved.length;
   };
 
   /**

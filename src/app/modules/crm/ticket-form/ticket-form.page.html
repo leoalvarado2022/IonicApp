@@ -10,25 +10,27 @@
       <app-notifications></app-notifications>
     </ion-buttons>
   </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-tabs>
+      <!-- Tab bar -->
+      <ion-tab-bar slot="top">
+        <ion-tab-button (click)="activeTab = 1" [selected]="activeTab === 1">
+          <span>Detalle</span>
+        </ion-tab-button>
+        <ion-tab-button (click)="activeTab = 2" [selected]="activeTab === 2">
+          <span>Adjuntos</span>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-tabs class="ticket-detail-tabs">
-    <!-- Tab bar -->
-    <ion-tab-bar slot="top">
-      <ion-tab-button (click)="activeTab = 1" [selected]="activeTab === 1">
-        <span>Detalle</span>
-      </ion-tab-button>
-      <ion-tab-button (click)="activeTab = 2" [selected]="activeTab === 2">
-        <span>Adjuntos</span>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
-
-  <div class="detail-content-tab">
     <form [formGroup]="ticketForm">
-      <ng-container *ngIf="activeTab === 1">
 
+      <!-- FORM DATA-->
+      <ng-container *ngIf="activeTab === 1">
         <ion-item>
           <ion-label position="stacked">Observaciones</ion-label>
           <ion-textarea rows="5" formControlName="observations"></ion-textarea>
@@ -82,11 +84,18 @@
 
       </ng-container>
 
+      <!-- FORM ATTACHMENTS -->
       <ng-container *ngIf="activeTab === 2">
-        <!-- [disabled]="ticketForm.invalid" -->
-        <ion-button expand="block" color="warning" (click)="pickFiles()">
-          Agregar Archivos
-        </ion-button>
+
+        <ion-item>
+          <ion-button (click)="openCamera()" slot="start">
+            <ion-icon name="camera" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-label>Agregar Archivos</ion-label>
+          <ion-button (click)="openGallery()" slot="end">
+            <ion-icon name="image" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
 
         <!-- List of Sliding Items -->
         <ion-list *ngIf="attachments.length > 0">
@@ -100,11 +109,11 @@
           </ion-item-sliding>
         </ion-list>
       </ng-container>
-
-      <ion-button expand="block" (click)="submitDetail()" [disabled]="ticketForm.invalid">
-        Crear Detalle
-      </ion-button>
     </form>
-  </div>
-
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="submitDetail()" [disabled]="ticketForm.invalid">
+    Crear Detalle
+  </ion-button>
+</ion-footer>

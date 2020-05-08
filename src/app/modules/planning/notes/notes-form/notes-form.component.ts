@@ -1,6 +1,5 @@
 import {AfterContentInit, Component, Input, OnInit} from '@angular/core';
 import {CostCenter, Note} from '@primetec/primetec-angular';
-import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
@@ -30,7 +29,6 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
     private httpService: HttpService,
     private contractDetailService: ContractDetailService,
     private toastService: ToastService,
@@ -88,7 +86,6 @@ export class NotesFormComponent implements OnInit, AfterContentInit {
    */
   public openCamera = async () => {
     const image = await this.cameraService.openCamera();
-
     if (image) {
       this.getImage(image);
     }

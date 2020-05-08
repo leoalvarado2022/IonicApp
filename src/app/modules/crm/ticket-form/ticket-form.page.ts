@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {Chooser} from '@ionic-native/chooser/ngx';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {TicketsService} from '../services/tickets/tickets.service';
 import {HttpService} from '../../../shared/services/http/http.service';
+import { CameraService } from '../../../shared/services/camera/camera.service';
 import {Router} from '@angular/router';
 import * as moment from 'moment';
 
@@ -42,12 +42,12 @@ export class TicketFormPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
-    private chooser: Chooser,
     private toastService: ToastService,
     private loaderService: LoaderService,
     private ticketsService: TicketsService,
     private httpService: HttpService,
-    private router: Router
+    private router: Router,
+    private cameraService: CameraService
   ) {
 
   }
@@ -80,30 +80,34 @@ export class TicketFormPage implements OnInit {
   }
 
   /**
-   * pickFiles
+   * openCamera
    */
-  public pickFiles = () => {
-    this.chooser.getFile('image/*,video/*').then((data: any) => {
-      this.attachments.push({
-        id: 0,
-        file: data.dataURI.replace(/^data:.*,/, ''),
-        name: data.name,
-        application: data.mediaType,
-        type: this.getFileExtension(data.name),
-        detail: this.activeTicket.id
-      });
-    }, error => {
-      this.toastService.errorToast('Ocurrio un error');
-    });
-  };
+  public openCamera = async () => {
+    const base64 = await this.cameraService.openCamera();
+    this.addAttachment(base64);
+  }
 
   /**
-   * getFileExtension3
-   * @param filename
+   * openGallery
    */
-  private getFileExtension = (filename: string): string => {
-    return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
-  };
+  public openGallery  = async () => {
+    const base64 = await this.cameraService.openGallery();
+    this.addAttachment(base64);
+  }
+
+  /**
+   * addAttachment
+   */
+  private addAttachment = (base64: string): void => {
+    this.attachments.push({
+      id: 0,
+      file: base64.replace(/^data:.*,/, ''),
+      name: 'Adjunto ' + this.attachments.length + 1 ,
+      application: 'image/jpeg',
+      type: '.jpg',
+      detail: this.activeTicket.id
+    });
+  }
 
   /**
    * submitDetail
@@ -125,7 +129,7 @@ export class TicketFormPage implements OnInit {
     };
 
     this.storeDetail(data);
-  };
+  }
 
   /**
    * storeDetail
@@ -140,7 +144,7 @@ export class TicketFormPage implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * deleteFile
@@ -152,6 +156,6 @@ export class TicketFormPage implements OnInit {
     if (findIndex > -1) {
       this.attachments = this.attachments.filter((value, index, array) => findIndex !== index);
     }
-  };
+  }
 
 }

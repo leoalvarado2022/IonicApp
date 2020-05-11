@@ -105,7 +105,7 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private sendToRecord = (): void => {
     this.syncStepObservable.next(1);
-  };
+  }
 
   /**
    * syncData
@@ -120,7 +120,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     }, error => {
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * storePushToken
@@ -134,7 +134,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     }, error => {
       // MAL
     });
-  };
+  }
 
   /**
    * recordTallies
@@ -152,7 +152,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     } else {
       this.syncStepObservable.next(2);
     }
-  };
+  }
 
   /**
    * recordDevices
@@ -160,7 +160,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private recordDevices = () => {
     const toRecord = this.storeService.getDevicesToRecord();
 
-    let user = this.storeService.getUser();
+    const user = this.storeService.getUser();
     delete user.avatar;
 
     if (toRecord && toRecord.length > 0) {
@@ -173,7 +173,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     } else {
       this.syncStepObservable.next(0);
     }
-  };
+  }
 
   /**
    * checkRecordedTallies
@@ -199,7 +199,7 @@ export class HomePagePage implements OnInit, OnDestroy {
 
       this.removeTallies = true;
     }
-  };
+  }
 
   /**
    * checkRecordedTallies
@@ -224,5 +224,5 @@ export class HomePagePage implements OnInit, OnDestroy {
       }
       this.removeDevices = true;
     }
-  };
+  }
 }

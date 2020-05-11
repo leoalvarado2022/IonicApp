@@ -23,7 +23,7 @@ export class ContractsService {
   public storePreContracts = (preContracts: Array<any>) => {
     const url = this.httpService.buildUrl(this.storePreContractUrl);
     return this.httpClient.post(url, this.httpService.buildBody({preContracts}), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * mapPreContractToBeListed
@@ -38,7 +38,7 @@ export class ContractsService {
       workerSurname: contract.workerSurname,
       contractTypeName: contract.contractTypeName
     };
-  };
+  }
 
   /**
    * checkWorker
@@ -47,6 +47,6 @@ export class ContractsService {
   public checkWorker = (identifier: string) => {
     const url = this.httpService.buildUrl(this.checkWorkerUrl);
     return this.httpClient.post(url, this.httpService.buildBody({identifier}), {headers: this.httpService.getHeaders()});
-  };
+  }
 
 }

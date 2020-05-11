@@ -28,7 +28,7 @@ export class TicketCardComponent implements OnInit {
    */
   public viewTicket = (ticket: any) => {
     this.ticketSelected.emit(ticket);
-  };
+  }
 
   /**
    * @description tiempo restante

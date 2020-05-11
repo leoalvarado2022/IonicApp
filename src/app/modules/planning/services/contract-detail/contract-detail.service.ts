@@ -26,7 +26,7 @@ export class ContractDetailService {
   public storeHarvest = (data: any) => {
     const url = this.httpService.buildUrl(this.storeHarvestUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * storeQuality
@@ -35,7 +35,7 @@ export class ContractDetailService {
   public storeQuality = (data: any) => {
     const url = this.httpService.buildUrl(this.storeQualityUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * storeNote
@@ -44,7 +44,7 @@ export class ContractDetailService {
   public storeNote = (data: any) => {
     const url = this.httpService.buildUrl(this.storeNoteUrl);
     return this.httpClient.post(url, this.httpService.buildBody({note: data}), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * updateGeolocationCostCenter
@@ -53,7 +53,7 @@ export class ContractDetailService {
   public updateGeolocationCostCenter = (data: any) => {
     const url = this.httpService.buildUrl(this.storeCostCenterGeolocation);
     return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * getCostCenterDetail
@@ -62,7 +62,7 @@ export class ContractDetailService {
   public getCostCenterDetail = (id: string) => {
     const url = this.httpService.buildUrl(this.getCostCenterUrl, id);
     return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()});
-  };
+  }
 
   /**
    * getNoteImage
@@ -71,6 +71,6 @@ export class ContractDetailService {
   public getNoteImage = (id: string) => {
     const url = this.httpService.buildUrl(this.getNoteImageUrl, id);
     return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()});
-  };
+  }
 
 }

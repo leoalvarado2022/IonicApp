@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Note} from '@primetec/primetec-angular';
-import {ModalController, Platform} from '@ionic/angular';
+import {Platform} from '@ionic/angular';
 import {File} from '@ionic-native/file/ngx';
 import {PreviewAnyFile} from '@ionic-native/preview-any-file/ngx';
 import {Device} from '@ionic-native/device/ngx';
@@ -22,7 +22,6 @@ export class NoteItemComponent implements OnInit {
   public iOs: boolean;
 
   constructor(
-    private modalController: ModalController,
     private file: File,
     private previewAnyFile: PreviewAnyFile,
     private device: Device,

@@ -41,7 +41,7 @@ export class WelcomePage implements OnInit {
    */
   public getVersion = (): string => {
     return environment.appVersion;
-  };
+  }
 
   /**
    * confirmClean
@@ -68,7 +68,7 @@ export class WelcomePage implements OnInit {
     });
 
     await alert.present();
-  };
+  }
 
   /**
    * cleanCache
@@ -90,7 +90,7 @@ export class WelcomePage implements OnInit {
 
     this.storeService.setUserLocaStorage(user);
     this.toastService.successToast('Datos eliminados');
-  };
+  }
 
   /**
    * getUUIDLast8
@@ -101,7 +101,7 @@ export class WelcomePage implements OnInit {
     }
 
     return '';
-  };
+  }
 
   /**
    * showFullUUID
@@ -116,7 +116,7 @@ export class WelcomePage implements OnInit {
 
       await alert.present();
     }
-  };
+  }
 
   /**
    * showDeviceData
@@ -137,5 +137,5 @@ export class WelcomePage implements OnInit {
     });
 
     await alert.present();
-  };
+  }
 }

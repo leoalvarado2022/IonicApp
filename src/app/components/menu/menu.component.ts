@@ -41,14 +41,14 @@ export class MenuComponent implements OnInit {
   public routerLink = (router: string) => {
     this.closeMenu();
     this.router.navigate(['home-page/' + router]);
-  };
+  }
 
   /**
    * closeMenu
    */
   public closeMenu = () => {
     this.menu.close('menu');
-  };
+  }
 
   /**
    * close
@@ -57,7 +57,7 @@ export class MenuComponent implements OnInit {
     this.closeMenu();
     this.storeService.logout();
     this.router.navigate(['auth/login']);
-  };
+  }
 
   /**
    * menuReload
@@ -65,7 +65,7 @@ export class MenuComponent implements OnInit {
    */
   public menuReload = (event: any) => {
     this.loadData();
-  };
+  }
 
   /**
    * getAvatar
@@ -76,7 +76,7 @@ export class MenuComponent implements OnInit {
     }
 
     return null;
-  };
+  }
 
   /**
    *
@@ -89,5 +89,5 @@ export class MenuComponent implements OnInit {
     this.profile = user;
     this.connections = [...connections];
     this.companies = [...companies];
-  };
+  }
 }

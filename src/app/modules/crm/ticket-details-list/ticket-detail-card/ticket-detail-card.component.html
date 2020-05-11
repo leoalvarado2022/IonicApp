@@ -13,9 +13,9 @@
     <ion-icon color="primary" name="lock-closed" slot="end" *ngIf="!detail.public"></ion-icon>
   </ion-item>
   <ion-card-content>
-    <p style="color: grey;font-size: 12px;"><span >Prioridad:</span> {{ detail.priority }}</p>
-    <p *ngIf="detail.active_state" style="color: grey;font-size: 12px;"><strong>Estado:</strong> {{ detail.state }}</p>
-    <p *ngIf="detail.commitmentAt && detail.commitmentAt !== null" style="color: grey;font-size: 12px;"><span>Fecha de compromiso Cliente:</span> {{detail.commitmentAt}}</p>
+    <p *ngIf="detail.priorityChange" style="color: grey;font-size: 12px;"><span >Prioridad:</span> {{ detail.priority }}</p>
+    <p *ngIf="detail.stateChange" style="color: grey;font-size: 12px;"><strong>Estado:</strong> {{ detail.state }}</p>
+    <p *ngIf="detail.commitmentDateChange" style="color: grey;font-size: 12px;"><span>Fecha de compromiso Cliente:</span> {{detail.commitmentAt}}</p>
     <p style="color: grey;font-size: 12px;"><span>Fecha de compromiso Interna:</span> {{detail.commitmentInternAt}}</p>
     <br>
     <p>{{ detail.observations || 'Sin Observacion' }}</p>

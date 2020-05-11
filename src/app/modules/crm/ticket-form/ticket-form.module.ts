@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {TicketFormPage} from './ticket-form.page';
 import {SharedModule} from '../../../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
-import {Chooser} from '@ionic-native/chooser/ngx';
+import { CameraService } from 'src/app/shared/services/camera/camera.service';
 
 const routes: Routes = [
   {
@@ -17,7 +17,7 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [TicketFormPage],
-  providers: [Chooser]
+  providers: [CameraService]
 })
 export class TicketFormPageModule {
 

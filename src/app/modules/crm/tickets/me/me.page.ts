@@ -26,7 +26,7 @@ export class MePage implements OnInit {
   }
 
   ngOnInit() {
-    this.loadTickets();
+
   }
 
   ionViewDidEnter() {

@@ -48,8 +48,8 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
     this.contracts = [];
     this.filteredContracts = [];
-    this.contracts = preContractsMapped;
-    this.filteredContracts = preContractsMapped;
+    this.contracts = [...preContractsMapped];
+    this.filteredContracts = [...preContractsMapped];
   };
 
   /**

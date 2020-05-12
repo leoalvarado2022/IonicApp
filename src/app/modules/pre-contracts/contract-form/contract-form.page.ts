@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
@@ -15,7 +15,7 @@ import {SyncService} from '../../../shared/services/sync/sync.service';
   templateUrl: './contract-form.page.html',
   styleUrls: ['./contract-form.page.scss'],
 })
-export class ContractFormPage implements OnInit {
+export class ContractFormPage implements OnInit, OnDestroy {
 
   public contractForm: FormGroup;
   public currentStep = 1;

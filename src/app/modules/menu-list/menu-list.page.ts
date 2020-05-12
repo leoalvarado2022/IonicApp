@@ -58,7 +58,7 @@ export class MenuListPage implements OnInit, OnDestroy {
    */
   private loadData = () => {
     this.menus = [...this.storeService.getMenus()];
-  };
+  }
 
   /**
    * reSync
@@ -67,7 +67,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   public reSync = (event) => {
     this.syncData();
     event.target.complete();
-  };
+  }
 
   /**
    * navigate
@@ -77,14 +77,14 @@ export class MenuListPage implements OnInit, OnDestroy {
     if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
       this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
     }
-  };
+  }
 
   /**
    * checkDisabled
    */
   public checkDisabled = (menu: TabMenu) => {
     return !this.isOnline && !menu.offlineMenu;
-  };
+  }
 
   /**
    * syncData
@@ -102,7 +102,7 @@ export class MenuListPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * showBadge
@@ -115,5 +115,5 @@ export class MenuListPage implements OnInit, OnDestroy {
     }
 
     return 0;
-  };
+  }
 }

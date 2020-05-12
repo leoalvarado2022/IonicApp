@@ -24,5 +24,5 @@ export class NfcService {
     return this.httpClient.post(url, this.httpService.buildBody({preDevices, user}), {
       headers: this.httpService.getHeaders()
     });
-  };
+  }
 }

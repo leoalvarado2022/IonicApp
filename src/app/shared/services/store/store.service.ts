@@ -21,6 +21,7 @@ import {
   TabMenu,
   Unit
 } from '@primetec/primetec-angular';
+import { Tally } from 'src/app/modules/tallies/tally.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -467,7 +468,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * setTallies
    * @param tallies
    */
-  public setTallies = (tallies: Array<any>): void => {
+  public setTallies = (tallies: Array<Tally>): void => {
     const sync = {...this.getState().sync, tallies};
     this.setState({sync}, StoreActions.SetTallies);
   }
@@ -475,7 +476,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   /**
    * getTallies
    */
-  public getTallies = (): Array<any> => {
+  public getTallies = (): Array<Tally> => {
     return this.getState().sync.tallies;
   }
 
@@ -1265,7 +1266,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * addTalliesToRecord
    * @param tallies
    */
-  public addTalliesToRecord = (tallies: Array<any>): void => {
+  public addTalliesToRecord = (tallies: Array<Tally>): void => {
     const talliesToRecord = this.getTalliesToRecord();
 
     const toRecord = {...this.getState().toRecord, talliesToRecord: [...talliesToRecord, ...tallies]};

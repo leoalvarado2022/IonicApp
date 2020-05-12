@@ -9,8 +9,6 @@ import { IonItemSliding } from '@ionic/angular';
 })
 export class ContractListItemComponent implements OnInit, OnDestroy {
 
-  @ViewChild('slide') slide: IonItemSliding;
-
   @Input() contract: ContractListItem = null;
   @Output() editContractEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() deleteContractEvent: EventEmitter<any> = new EventEmitter<any>();
@@ -31,16 +29,16 @@ export class ContractListItemComponent implements OnInit, OnDestroy {
    * editContract
    * @param contract
    */
-  public editContract = (contract: ContractListItem): void => {
-    this.editContractEvent.emit({contract, slide: this.slide});
+  public editContract = (contract: ContractListItem, slide: IonItemSliding): void => {
+    this.editContractEvent.emit({contract, slide});
   }
 
   /**
    * deleteContract
    * @param contract
    */
-  public deleteContract = (contract: ContractListItem): void => {
-    this.deleteContractEvent.emit({contract, slide: this.slide});
+  public deleteContract = (contract: ContractListItem, slide: IonItemSliding): void => {
+    this.deleteContractEvent.emit({contract, slide});
   }
 
 }

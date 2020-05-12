@@ -3,11 +3,13 @@ import {StoreService} from '../../../shared/services/store/store.service';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
-import {ModalController} from '@ionic/angular';
+import {ModalController, IonItemSliding} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
 import {TallyService} from '../services/tally/tally.service';
+import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import { Tally } from '../tally.interface';
 
 @Component({
   selector: 'app-tally-list',
@@ -28,9 +30,9 @@ export class TallyListPage implements OnInit, OnDestroy {
   public activeWorker: any = null;
 
   // Tallies
-  private tallies: Array<any> = [];
-  private talliesToRecord: Array<any> = [];
-  public filteredTallies: Array<any> = [];
+  private tallies: Array<Tally> = [];
+  private talliesToRecord: Array<Tally> = [];
+  public filteredTallies: Array<Tally> = [];
 
   // Form dates
   public readonly dateFormat = 'DD/MM/YYYY';
@@ -48,20 +50,13 @@ export class TallyListPage implements OnInit, OnDestroy {
     private router: Router,
     private modalController: ModalController,
     private toastService: ToastService,
-    private tallyService: TallyService
+    private tallyService: TallyService,
+    private alertService: AlertService
   ) {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
-      // Load quadrilles
-      this.quadrilles = this.storeService.getQuadrilles();
-      this.filteredQuadrilles = this.quadrilles;
-
-      // Workers
-      this.workers = this.storeService.getWorkers();
+      this.reloadQuadrilles();
+      this.reloadWorkers();
       this.reloadTallies();
-
-      // Form data
-      this.costCenters = this.storeService.getCostCenters();
-      this.labors = this.storeService.getLabors();
     });
 
     this.currentDate = moment().format('YYYY-MM-DD');
@@ -95,44 +90,42 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   private loadData = () => {
     // Load quadrilles
-    this.quadrilles = this.storeService.getQuadrilles();
-    this.filteredQuadrilles = this.quadrilles;
+    this.reloadQuadrilles();
     this.activeQuadrille = null;
 
     // Workers
-    this.workers = this.storeService.getWorkers();
-    this.filteredWorkers = [];
+    this.reloadWorkers();
     this.selectedWorkers = [];
     this.activeWorker = null;
 
     this.reloadTallies();
 
     // Form data
-    this.costCenters = this.storeService.getCostCenters();
-    this.labors = this.storeService.getLabors();
+    this.costCenters = [...this.storeService.getCostCenters()];
+    this.labors = [...this.storeService.getLabors()];
 
     if (this.quadrilles.length === 1) {
       this.selectQuadrille(this.quadrilles[0]);
     }
-  };
+  }
 
   /**
    * getQuadrilleWorkers
    * @param id
    */
-  public getQuadrilleWorkers = (id: any) => {
+  public getQuadrilleWorkers = (id: number): number => {
     if (this.workers) {
       return this.workers.filter(item => item.quadrille === id).length;
     }
 
     return 0;
-  };
+  }
 
   /**
    * searchQuadrille
    * @param search
    */
-  public searchQuadrille = (search: string) => {
+  public searchQuadrille = (search: string): void => {
     if (search) {
       this.filteredQuadrilles = this.quadrilles.filter(item => {
         return (
@@ -144,13 +137,13 @@ export class TallyListPage implements OnInit, OnDestroy {
     } else {
       this.filteredQuadrilles = this.quadrilles;
     }
-  };
+  }
 
   /**
    * searchWorker
    * @param search
    */
-  public searchWorker = (search: string) => {
+  public searchWorker = (search: string): void => {
     if (search) {
       this.filteredWorkers = this.getWorkersFilteredByQuadrille().filter(item => {
         return (
@@ -162,45 +155,43 @@ export class TallyListPage implements OnInit, OnDestroy {
     } else {
       this.filteredWorkers = this.getWorkersFilteredByQuadrille();
     }
-  };
+  }
 
   /**
    * cancelSearch
    */
-  public cancelSearch = () => {
+  public cancelSearch = (): void => {
     this.filteredQuadrilles = this.quadrilles;
-  };
+  }
 
   /**
    * reload
    * @param event
    */
-  public reload = (event: any) => {
+  public reload = (event: any): void => {
     if (this.activeWorker) {
       this.reloadTallies();
     } else if (this.activeQuadrille) {
-      this.workers = this.storeService.getWorkers();
-      this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+      this.reloadWorkers();
       this.selectedWorkers = [];
     } else {
-      this.quadrilles = this.storeService.getQuadrilles();
-      this.filteredQuadrilles = this.quadrilles;
+      this.reloadQuadrilles();
       this.activeQuadrille = null;
     }
 
     event.target.complete();
-  };
+  }
 
   /**
    * selectQuadrille
    * @param quadrille
    */
-  public selectQuadrille = (quadrille: Quadrille) => {
+  public selectQuadrille = (quadrille: Quadrille): void => {
     this.activeQuadrille = quadrille;
-    this.filteredQuadrilles = this.quadrilles;
+    this.filteredQuadrilles = [...this.quadrilles];
     this.selectedWorkers = [];
     this.filteredWorkers = this.getWorkersFilteredByQuadrille();
-  };
+  }
 
   /**
    * getWorkersFilteredByQuadrille
@@ -211,20 +202,20 @@ export class TallyListPage implements OnInit, OnDestroy {
     }
 
     return [];
-  };
+  }
 
   /**
    * markWorker
    * @param worker
    */
-  public markWorker = (worker: any) => {
+  public markWorker = (worker: any): void => {
     if (this.selectedWorkers.includes(worker)) {
       const index = this.selectedWorkers.indexOf(worker);
       this.selectedWorkers.splice(index, 1);
     } else {
       this.selectedWorkers.push(worker);
     }
-  };
+  }
 
   /**
    * addDayToDate
@@ -233,7 +224,7 @@ export class TallyListPage implements OnInit, OnDestroy {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
     }
-  };
+  }
 
   /**
    * subtractDayToDate
@@ -242,7 +233,7 @@ export class TallyListPage implements OnInit, OnDestroy {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
     }
-  };
+  }
 
   /**
    * validContractDate
@@ -257,7 +248,7 @@ export class TallyListPage implements OnInit, OnDestroy {
     }
 
     return false;
-  };
+  }
 
   /**
    * goToWorkerTallyList
@@ -268,29 +259,17 @@ export class TallyListPage implements OnInit, OnDestroy {
     const tallies = this.getNumberOfWorkerTallies(worker);
 
     this.filteredTallies = [...tallies];
-  };
+
+    console.log('filteredTallies', this.filteredTallies);
+  }
 
   /**
    * getNumberOfWorkerTallies
    * @param worker
    */
-  private getNumberOfWorkerTallies = (worker: any): Array<any> => {
-    const tallies = this.tallies.filter(item => {
-      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
-      const current = this.tallyService.removeTimeFromDate(this.currentDate);
-
-      return item.workerId === worker.id && tallyDate === current;
-    });
-
-    const toRecord = this.talliesToRecord.filter(item => {
-      const tallyDate = this.tallyService.removeTimeFromDate(item.date);
-      const current = this.tallyService.removeTimeFromDate(this.currentDate);
-
-      return item.workerId === worker.id && tallyDate === current;
-    });
-
-    return [...toRecord, ...tallies];
-  };
+  private getNumberOfWorkerTallies = (worker: any): Array<Tally> => {
+    return this.tallyService.getNumberOfWorkerTallies(worker, this.tallies, this.talliesToRecord, this.currentDate);
+  }
 
   /**
    * getTotalWorkerWork
@@ -299,17 +278,18 @@ export class TallyListPage implements OnInit, OnDestroy {
   public getTotalWorkerWork = (worker: any): number => {
     const todayTallies = this.getNumberOfWorkerTallies(worker);
     return todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
-  };
+  }
 
   /**
    * createTally
    */
-  public createTally = async () => {
+  public createTally = async (tally: Tally = null) => {
     const modal = await this.modalController.create({
       component: TallyFormComponent,
       componentProps: {
         workers: this.selectedWorkers,
-        dateSelected: moment(this.currentDate).format('YYYY-MM-DD')
+        dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
+        editTally: tally
       },
       backdropDismiss: false,
       keyboardClose: false,
@@ -323,7 +303,7 @@ export class TallyListPage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
-  };
+  }
 
   /**
    * getCostCenterName
@@ -332,7 +312,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public getCostCenterName = (costCenterId: number) => {
     const find = this.costCenters.find(item => item.id === costCenterId);
     return find ? find.name : '';
-  };
+  }
 
   /**
    * getLaborName
@@ -341,7 +321,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public getLaborName = (laborId: number) => {
     const find = this.labors.find(item => item.id === laborId);
     return find ? find.name : '';
-  };
+  }
 
   /**
    * goBack
@@ -365,19 +345,36 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.router.navigate(['home-page']);
       }
     }
-  };
+  }
 
   /**
    * reloadTallies
    */
-  private reloadTallies = () => {
-    this.tallies = this.storeService.getTallies();
-    this.talliesToRecord = this.storeService.getTalliesToRecord();
+  private reloadTallies = (): void => {
+    this.tallies = [...this.storeService.getTallies()];
+    this.talliesToRecord = [...this.storeService.getTalliesToRecord()];
 
     if (this.activeWorker) {
       this.goToWorkerTallyList(this.activeWorker);
     }
-  };
+  }
+
+  /**
+   * reloadWorkers
+   */
+  private reloadWorkers = (): void => {
+    this.workers = [...this.storeService.getWorkers()];
+    this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
+  }
+
+  /**
+   * reloadQuadrilles
+   */
+  private reloadQuadrilles = (): void => {
+    const quadrilles = this.storeService.getQuadrilles();
+    this.quadrilles = [...quadrilles] ;
+    this.filteredQuadrilles = [...quadrilles];
+  }
 
   /**
    * showTallyError
@@ -394,25 +391,50 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.toastService.errorToast('No sincronizado');
       }
     }
-  };
+  }
 
   /**
    * checkNotEditableTallies
    */
   public checkNotEditableTallies = (): boolean => {
-    for (let worker of this.selectedWorkers) {
+    for (const worker of this.selectedWorkers) {
       if (this.getNumberOfWorkerTallies(worker).length === 0) {
         return true;
       }
     }
 
     return false;
-  };
+  }
 
   /**
    * createMultipleTally
    */
   public createMultipleTally = () => {
     console.log('pendiente por implementar');
-  };
+  }
+
+  /**
+   * editTally
+   */
+  public editTally = (tally: Tally, slide: IonItemSliding): void => {
+    slide.close();
+
+    this.createTally(tally);
+  }
+
+  /**
+   * deleteTally
+   */
+  public deleteTally = async (tally: Tally, slide: IonItemSliding) => {
+    const response = await this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?');
+    slide.close();
+
+    if (response) {
+      const toDelete = Object.assign({}, tally, {id: tally.id * -1});
+      const deleteTallies = [];
+      deleteTallies.push(toDelete);
+      this.storeService.addTalliesToRecord(deleteTallies);
+    }
+  }
+
 }

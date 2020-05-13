@@ -44,7 +44,7 @@ export class TallyFormComponent implements OnInit {
     private actionSheetController: ActionSheetController,
     private tallyService: TallyService
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -53,7 +53,7 @@ export class TallyFormComponent implements OnInit {
     this.filteredCostCenters = [];
     this.labors = [...this.storeService.getLabors()];
     this.filteredLabors = [];
-      
+
     this.tallyForm = this.formBuilder.group({
       id: [0, Validators.required],
       date: [this.dateSelected, Validators.required],
@@ -347,7 +347,7 @@ export class TallyFormComponent implements OnInit {
    * @param worker
    * @param workingDay
    */
-  public checkWorkerDailyMax = (worker: any, workingDay) => {    
+  public checkWorkerDailyMax = (worker: any, workingDay) => {
     const todayTallies = this.storeService.getNumberOfWorkerTallies(worker, this.dateSelected, this.editTally ? this.editTally.tempId : null);
     const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 

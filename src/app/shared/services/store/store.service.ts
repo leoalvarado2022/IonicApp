@@ -1334,12 +1334,12 @@ export class StoreService extends ObservableStore<StoreInterface> {
     return toRemoved.length;
   }
 
-   /**
-    * getNumberOfWorkerTallies
-    * - Filter tallies of a worker by date
-    * - Filter tallies of a worker that are marked to delete
-    * - Filter tallies to record that are being edited
-    */
+  /**
+   * getNumberOfWorkerTallies
+   * - Filter tallies of a worker by date
+   * - Filter tallies of a worker that are marked to delete
+   * - Filter tallies to record that are being edited
+   */
   public getNumberOfWorkerTallies = (worker: any, currentDate: string, ignoreTempId: number = null): Array<Tally> => {
     // Get the tallys to be deleted and convert the ID to positive for comparison use
     const markedToDelete = this.getTalliesToRecord().map(item => item.id < 0 ? item.id * -1 : item.id );

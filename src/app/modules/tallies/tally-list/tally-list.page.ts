@@ -56,7 +56,6 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
       this.reloadQuadrilles();
       this.reloadWorkers();
-      this.selectedWorkers = [];
       this.reloadTallies();
     });
 
@@ -256,12 +255,9 @@ export class TallyListPage implements OnInit, OnDestroy {
    * @param worker
    */
   public goToWorkerTallyList = (worker: any): void => {
-    this.activeWorker = worker;
+    this.activeWorker = worker;    
     const tallies = this.getNumberOfWorkerTallies(worker);
-
     this.filteredTallies = [...tallies];
-
-    console.log('filteredTallies', this.filteredTallies);
   }
 
   /**
@@ -269,7 +265,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    * @param worker
    */
   private getNumberOfWorkerTallies = (worker: any): Array<Tally> => {
-    return this.tallyService.getNumberOfWorkerTallies(worker, this.tallies, this.talliesToRecord, this.currentDate);
+    return this.storeService.getNumberOfWorkerTallies(worker, this.currentDate);
   }
 
   /**

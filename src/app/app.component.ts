@@ -8,9 +8,6 @@ import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
 import {FCM} from '@ionic-native/fcm/ngx';
 import {ToastService} from './shared/services/toast/toast.service';
-import {Subscription} from 'rxjs';
-import {NavigationEnd, Router} from '@angular/router';
-import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -20,8 +17,6 @@ import {environment} from '../environments/environment';
 })
 export class AppComponent {
 
-  private subscription$: Subscription;
-
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -29,20 +24,10 @@ export class AppComponent {
     private networkService: NetworkService,
     private storeService: StoreService,
     private fcm: FCM,
-    private toastService: ToastService,
-    private router: Router
+    private toastService: ToastService
   ) {
     this.initializeApp();
 
-    // FOR WEB DEVELOPMENT ONLY
-    if (!environment.production) {
-      console.log('backupState activated');
-      this.subscription$ = this.router.events.subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          this.storeService.backupState();
-        }
-      });
-    }
   }
 
   initializeApp() {

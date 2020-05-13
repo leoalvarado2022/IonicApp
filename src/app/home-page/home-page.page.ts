@@ -17,7 +17,7 @@ import {environment} from 'src/environments/environment';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
-  private syncInterval = interval(1000 * 60 * environment.syncTimer);
+  private syncInterval = interval(1000 * 60 * environment.syncTimerMinutes);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private removeTallies = false;

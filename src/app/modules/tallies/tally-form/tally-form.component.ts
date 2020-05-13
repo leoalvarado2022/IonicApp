@@ -34,8 +34,6 @@ export class TallyFormComponent implements OnInit {
     {text: '0.1', value: 0.1}
   ];
 
-  public tallies: Array<Tally> = [];
-  public talliesToRecord: Array<Tally> = [];
   public multipleWorkers: Array<any> = [];
   public workersOverMax: Array<any> = [];
 
@@ -46,19 +44,16 @@ export class TallyFormComponent implements OnInit {
     private actionSheetController: ActionSheetController,
     private tallyService: TallyService
   ) {
-
+    
   }
 
   ngOnInit() {
     const activeCompany = this.storeService.getActiveCompany();
-
-    this.costCenters = this.storeService.getCostCenters();
+    this.costCenters = [...this.storeService.getCostCenters()];
     this.filteredCostCenters = [];
-    this.labors = this.storeService.getLabors();
+    this.labors = [...this.storeService.getLabors()];
     this.filteredLabors = [];
-    this.tallies = this.storeService.getTallies();
-    this.talliesToRecord = this.storeService.getTalliesToRecord();
-
+      
     this.tallyForm = this.formBuilder.group({
       id: [0, Validators.required],
       date: [this.dateSelected, Validators.required],
@@ -81,7 +76,8 @@ export class TallyFormComponent implements OnInit {
         workingDay: this.editTally.workingDay ? this.editTally.workingDay : '',
         hoursExtra: this.editTally.hoursExtra ? this.editTally.hoursExtra : '',
         performance: this.editTally.performance ? this.editTally.performance : '',
-        notes: this.editTally.notes
+        notes: this.editTally.notes,
+        tempId: this.editTally.tempId
       });
 
       const costCenter = this.costCenters.find(item => item.id === this.editTally.costCenterId);
@@ -256,26 +252,46 @@ export class TallyFormComponent implements OnInit {
       }
     } else {
       for (const worker of this.workers) {
-        const tempId = this.storeService.getTallyTempId();
-
-        talliesToRecord.push(
-          Object.assign({}, formData, {
-            workerId: worker.id,
-            validity: worker.validity,
-            dealId: 0,
-            validityBonus: 0,
-            tempId,
-            hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
-            performance: formData.hoursExtra ? formData.performance : 0
-          })
-        );
-
-        this.storeService.increaseTallyTempId();
+        const newTally = this.editTally ? this.editSingleTally(worker, formData) : this.newSingleTally(worker, formData);
+        talliesToRecord.push(newTally);
       }
     }
 
     this.storeService.addTalliesToRecord(talliesToRecord);
     this.closeModal(true);
+  }
+
+  /**
+   * newSingleTally
+   */
+  private newSingleTally = (worker: any, formData: any): object => {
+    const tempId = this.storeService.getTallyTempId();
+    this.storeService.increaseTallyTempId();
+
+    return Object.assign({}, formData, {
+      workerId: worker.id,
+      validity: worker.validity,
+      dealId: 0,
+      validityBonus: 0,
+      tempId,
+      hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
+      performance: formData.hoursExtra ? formData.performance : 0
+    });
+  }
+
+  /**
+   * editSingleTally
+   */
+  private editSingleTally = (worker: any, formData: any) => {
+    return Object.assign({}, formData, {
+      workerId: worker.id,
+      validity: worker.validity,
+      dealId: 0,
+      validityBonus: 0,
+      tempId: this.editTally.tempId,
+      hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
+      performance: formData.hoursExtra ? formData.performance : 0
+    });
   }
 
   /**
@@ -331,8 +347,8 @@ export class TallyFormComponent implements OnInit {
    * @param worker
    * @param workingDay
    */
-  public checkWorkerDailyMax = (worker: any, workingDay) => {
-    const todayTallies = this.tallyService.getNumberOfWorkerTallies(worker, this.tallies, this.talliesToRecord, this.dateSelected);
+  public checkWorkerDailyMax = (worker: any, workingDay) => {    
+    const todayTallies = this.storeService.getNumberOfWorkerTallies(worker, this.dateSelected, this.editTally ? this.editTally.tempId : null);
     const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 
     const total = parseFloat(workingDay) + parseFloat(totalWorked);

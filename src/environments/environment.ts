@@ -12,7 +12,7 @@ export const environment = {
   appVersion: 'v1.0.62',
   tz: 'America/Santiago',
   iosDeviceNames,
-  syncTimer: 1
+  syncTimerMinutes: 30
 };
 
 /*

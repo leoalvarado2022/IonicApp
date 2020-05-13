@@ -100,7 +100,7 @@
     </h3>
     <h4 class="ion-text-center">
       Total Jornadas
-      <ion-badge class="quadrille-badge" color="primary">{{ filteredTallies.length }}</ion-badge>
+      <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork(activeWorker) | number }}</ion-badge>
     </h4>
 
     <ion-virtual-scroll [items]="filteredTallies">

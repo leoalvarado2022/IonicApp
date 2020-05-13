@@ -56,6 +56,7 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
       this.reloadQuadrilles();
       this.reloadWorkers();
+      this.selectedWorkers = [];
       this.reloadTallies();
     });
 

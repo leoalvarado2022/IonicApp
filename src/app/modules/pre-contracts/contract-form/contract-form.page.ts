@@ -115,7 +115,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
           name: find.workerName,
           lastName: find.workerLastName,
           sureName: find.workerSurname,
-          dob: moment.utc(find.dob, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+          dob: moment(moment.utc(find.dob)).format('YYYY-MM-DD'),
           civilStatus: find.workerCivilStatus,
           gender: find.gender,
         });
@@ -365,6 +365,17 @@ export class ContractFormPage implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  /**
+   * removeTimeFromDate
+   */
+  private removeTimeFromDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   }
 
 }

@@ -29,7 +29,10 @@ import { Tally } from 'src/app/modules/tallies/tally.interface';
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: true, trackStateHistory: true});
+    super({
+      logStateChanges: false,
+      trackStateHistory: false
+    });
 
     this.setState(this.buildInitialState, 'INIT_STATE');
   }

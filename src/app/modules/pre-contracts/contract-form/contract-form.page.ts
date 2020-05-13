@@ -367,15 +367,4 @@ export class ContractFormPage implements OnInit, OnDestroy {
     return false;
   }
 
-  /**
-   * removeTimeFromDate
-   */
-  private removeTimeFromDate = (date: string): string => {
-    if (date.includes('T')) {
-      return date.split('T')[0];
-    }
-
-    return date;
-  }
-
 }

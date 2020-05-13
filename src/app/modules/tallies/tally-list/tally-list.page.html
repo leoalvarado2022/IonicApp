@@ -84,7 +84,7 @@
             <p class="label-padding">{{ worker.identifier | rut }}</p>
             <p class="label-padding">
               <ion-badge color="primary">
-                {{ getTotalWorkerWork(worker) }} JR
+                {{ getTotalWorkerWork(worker) | number }} JR
               </ion-badge>
             </p>
           </ion-label>

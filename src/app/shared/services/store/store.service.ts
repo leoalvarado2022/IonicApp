@@ -23,6 +23,7 @@ import {
 } from '@primetec/primetec-angular';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { environment } from 'src/environments/environment';
+import { debounceTime } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState(this.buildInitialState, 'INIT_STATE');
 
     if (!environment.production) {
-      this.stateChanged.subscribe( () => {
+      this.stateChanged.pipe(
+        debounceTime(500)
+      ).subscribe(() => {
         this.backupState();
       });
     }

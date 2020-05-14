@@ -136,8 +136,8 @@ export class TallyFormComponent implements OnInit {
         Validators.required,
         Validators.min(0.1)
       ]],
-      h: ['', Validators.min(0.1)],
-      r: ['', Validators.min(0.1)]
+      h: ['', Validators.min(0)],
+      r: ['', Validators.min(0)]
     });
   }
 
@@ -171,6 +171,9 @@ export class TallyFormComponent implements OnInit {
   public cleanCostCenterSearch = (): void => {
     this.tallyForm.get('costCenterId').patchValue('');
     this.filteredCostCenters = [];
+
+    this.availableDeals = [];
+    this.cleanDealSearch();
   }
 
   /**
@@ -203,6 +206,9 @@ export class TallyFormComponent implements OnInit {
   public cleanLaborSearch = (): void => {
     this.tallyForm.get('laborId').patchValue('');
     this.filteredLabors = [];
+
+    this.availableDeals = [];
+    this.cleanDealSearch();
   }
 
   /**
@@ -246,25 +252,7 @@ export class TallyFormComponent implements OnInit {
     const talliesToRecord = [];
     if (this.multipleWorkers.length > 0) {
       for (const worker of this.workers) {
-
-        const tempId = this.storeService.getTallyTempId();
-
-        const data = formData.multiple.find(i => i.id === worker.id);
-
-        talliesToRecord.push(
-          Object.assign({}, formData, {
-            workerId: worker.id,
-            validity: worker.validity,
-            dealId: 0,
-            validityBonus: 0,
-            tempId,
-            workingDay: data['jr'],
-            hoursExtra: data['h'],
-            performance: data['r']
-          })
-        );
-
-        this.storeService.increaseTallyTempId();
+        talliesToRecord.push(this.newMultipleTally(worker, formData));
       }
     } else {
       for (const worker of this.workers) {
@@ -307,6 +295,42 @@ export class TallyFormComponent implements OnInit {
       tempId: this.editTally.tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
       performance: formData.hoursExtra ? formData.performance : 0
+    });
+  }
+
+  /**
+   * newMultipleTally
+   */
+  private newMultipleTally = (worker: any, formData: any): object => {
+    const tempId = this.storeService.getTallyTempId();
+    this.storeService.increaseTallyTempId();
+    const data = formData.multiple.find(i => i.id === worker.id);
+
+    return Object.assign({}, formData, {
+      workerId: worker.id,
+      validity: worker.validity,
+      validityBonus: 0,
+      tempId,
+      workingDay: data['jr'],
+      hoursExtra: data['h'],
+      performance: data['r']
+    });
+  }
+
+  /**
+   * editMultipleTally
+   */
+  private editMultipleTally = (worker: any, formData: any): object => {
+    const data = formData.multiple.find(i => i.id === worker.id);
+
+    return Object.assign({}, formData, {
+      workerId: worker.id,
+      validity: worker.validity,
+      validityBonus: 0,
+      tempId: formData.tempId,
+      workingDay: data['jr'],
+      hoursExtra: data['h'],
+      performance: data['r']
     });
   }
 
@@ -459,8 +483,8 @@ export class TallyFormComponent implements OnInit {
   public selectDeal = (deal: any): void => {
     this.tallyForm.get('dealId').patchValue(deal.id);
     this.tallyForm.get('unit').patchValue(deal.unit_control);
-    this.dealName = deal.name_deal;
     this.filteredDeals = [];
+    this.dealName = deal.name_deal;
   }
 
   /**

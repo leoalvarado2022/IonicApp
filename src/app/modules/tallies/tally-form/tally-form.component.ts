@@ -64,7 +64,10 @@ export class TallyFormComponent implements OnInit {
       date: [this.dateSelected, Validators.required],
       costCenterId: ['', Validators.required],
       laborId: ['', Validators.required],
-      workingDay: [workingDayStartValue, Validators.min(0.1)],
+      workingDay: [workingDayStartValue, [
+        Validators.required,
+        Validators.min(0.1),
+      ]],
       hoursExtra: ['', Validators.min(0.1)],
       performance: ['', Validators.min(0.1)],
       unit: [{value: '', disabled: true}],

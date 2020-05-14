@@ -154,7 +154,7 @@ export class NfcPage implements OnInit, OnDestroy {
 
 
     if (!exist) {
-      let device = new Device();
+      const device = new Device();
       device.id_device = id;
       device.type = type;
       this.scanned.unshift(device);
@@ -184,8 +184,7 @@ export class NfcPage implements OnInit, OnDestroy {
     this.selected = device;
   }
 
-  errors(device: any)
-  {
+  errors(device: any) {
     const devicesWithErrors = this.storeService.getDevicesWithErrors();
     const devicesToRecord = this.storeService.getDevicesToRecord();
     const noSync = devicesToRecord.find(item => item.tempId === device.tempId);
@@ -200,7 +199,7 @@ export class NfcPage implements OnInit, OnDestroy {
       this.error = true;
       this.toastService.errorToast(error.response);
     } else {
-      if (noSync){
+      if (noSync) {
         this.sync = true;
         this.toastService.warningToast('No sincronizado');
       }
@@ -245,7 +244,7 @@ export class NfcPage implements OnInit, OnDestroy {
       }
     };
 
-    let alert = await this.alertCtrl.create({
+    const alert = await this.alertCtrl.create({
       header: '¿Seguro que desea desasociar este trabajador?',
       buttons: [cancelButton, deleteButton]
     });

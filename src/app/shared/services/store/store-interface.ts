@@ -1,4 +1,5 @@
 import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
+import { Tally } from 'src/app/modules/tallies/tally.interface';
 
 export interface StoreInterface {
   auth: Auth;
@@ -48,7 +49,7 @@ export interface Sync {
   laborsCostCenter: Array<any>;
   deals: Array<any>;
   costCentersCustom: Array<any>;
-  tallies: Array<any>;
+  tallies: Array<Tally>;
   devices: Array<any>;
 }
 
@@ -75,7 +76,7 @@ export interface TicketForm {
 export interface ToRecord {
   devicesToRecord: Array<any>;
   devicesWithErrors: Array<any>;
-  talliesToRecord: Array<any>;
+  talliesToRecord: Array<Tally>;
   talliesWithErrors: Array<any>;
   tallyTempId: number;
   deviceTempId: number;

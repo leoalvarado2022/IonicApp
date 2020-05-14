@@ -48,9 +48,9 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
     this.contracts = [];
     this.filteredContracts = [];
-    this.contracts = preContractsMapped;
-    this.filteredContracts = preContractsMapped;
-  };
+    this.contracts = [...preContractsMapped];
+    this.filteredContracts = [...preContractsMapped];
+  }
 
   /**
    * searchContract
@@ -70,14 +70,14 @@ export class ContractsListPage implements OnInit, OnDestroy {
     } else {
       this.filteredContracts = this.contracts;
     }
-  };
+  }
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
     this.filteredContracts = this.contracts;
-  };
+  }
 
   /**
    * reSync
@@ -88,7 +88,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.filteredContracts = [];
     this.loadPreContracts();
     event.target.complete();
-  };
+  }
 
   /**
    * contractForm
@@ -99,7 +99,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/home-page/contract-form']);
     }
-  };
+  }
 
   /**
    * editContractEvent
@@ -110,7 +110,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     slide.close();
 
     this.contractForm(contract.id);
-  };
+  }
 
   /**
    * deleteContract
@@ -122,7 +122,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
     const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
     this.storeContract(deleteContract);
-  };
+  }
 
   /**
    * storeContract
@@ -137,7 +137,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     }, error => {
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * syncData

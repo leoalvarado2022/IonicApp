@@ -25,16 +25,4 @@ export class TallyService {
     return this.httpClient.post(url, this.httpService.buildBody({tallies}), {headers: this.httpService.getHeaders()});
   }
 
-  /**
-   * removeTimeFromDate
-   * @param date
-   */
-  public removeTimeFromDate = (date: string): string => {
-    if (date.includes('T')) {
-      return date.split('T')[0];
-    }
-
-    return date;
-  }
-
 }

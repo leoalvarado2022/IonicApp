@@ -21,6 +21,8 @@ import {
   TabMenu,
   Unit
 } from '@primetec/primetec-angular';
+import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,9 +30,18 @@ import {
 export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
-    super({logStateChanges: true, trackStateHistory: true});
+    super({
+      logStateChanges: false,
+      trackStateHistory: false
+    });
 
     this.setState(this.buildInitialState, 'INIT_STATE');
+
+    if (!environment.production) {
+      this.stateChanged.subscribe( () => {
+        this.backupState();
+      });
+    }
   }
 
   /**
@@ -140,8 +151,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * backupState
    */
   public backupState = (): void => {
-    const currentState = this.getState();
-    localStorage.setItem('fx11StateBackup', JSON.stringify(currentState));
+    localStorage.setItem('fx11StateBackup', JSON.stringify(this.getState()));
   }
 
   /**
@@ -467,7 +477,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * setTallies
    * @param tallies
    */
-  public setTallies = (tallies: Array<any>): void => {
+  public setTallies = (tallies: Array<Tally>): void => {
     const sync = {...this.getState().sync, tallies};
     this.setState({sync}, StoreActions.SetTallies);
   }
@@ -475,7 +485,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   /**
    * getTallies
    */
-  public getTallies = (): Array<any> => {
+  public getTallies = (): Array<Tally> => {
     return this.getState().sync.tallies;
   }
 
@@ -1265,10 +1275,12 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * addTalliesToRecord
    * @param tallies
    */
-  public addTalliesToRecord = (tallies: Array<any>): void => {
-    const talliesToRecord = this.getTalliesToRecord();
+  public addTalliesToRecord = (talliesToRecord: Array<Tally>): void => {
+    const currentTallies = this.getTalliesToRecord();
+    const toSearch = talliesToRecord.map(x => x.tempId);
+    const toRemove = currentTallies.filter(current => !toSearch.includes(current.tempId));
 
-    const toRecord = {...this.getState().toRecord, talliesToRecord: [...talliesToRecord, ...tallies]};
+    const toRecord = {...this.getState().toRecord, talliesToRecord: [...talliesToRecord, ...toRemove]};
     this.setState({toRecord}, StoreActions.AddTallies);
 
     this.increaseTallyTempId();
@@ -1320,6 +1332,48 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({toRecord}, StoreActions.RemoveTalliesWithErrors);
 
     return toRemoved.length;
+  }
+
+  /**
+   * getNumberOfWorkerTallies
+   * - Filter tallies of a worker by date
+   * - Filter tallies of a worker that are marked to delete
+   * - Filter tallies to record that are being edited
+   */
+  public getNumberOfWorkerTallies = (worker: any, currentDate: string, ignoreTempId: number = null): Array<Tally> => {
+    // Get the tallys to be deleted and convert the ID to positive for comparison use
+    const markedToDelete = this.getTalliesToRecord().map(item => item.id < 0 ? item.id * -1 : item.id );
+
+    // Filter synced tallies by current date and not marked for delete
+    const filteredTallies = this.getTallies() .filter(item => {
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.workerId === worker.id && tallyDate === current && !markedToDelete.includes(item.id);
+    });
+
+    // Filter tallies to record by current date and that are not being edited
+    const toRecord = this.getTalliesToRecord().filter(item => {
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.workerId === worker.id && tallyDate === current && item.tempId !== ignoreTempId;
+    });
+
+    // Return joined lists
+    return [...toRecord, ...filteredTallies];
+  }
+
+  /**
+   * removeTimeFromDate
+   * @param date
+   */
+  public removeTimeFromDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   }
 
   /**

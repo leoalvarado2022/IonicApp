@@ -10,7 +10,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class TicketsPage implements OnInit, OnDestroy {
 
-  numberTicket: number = 0;
+  numberTicket = 0;
   private store$: Subscription;
 
   constructor(private storeService: StoreService,

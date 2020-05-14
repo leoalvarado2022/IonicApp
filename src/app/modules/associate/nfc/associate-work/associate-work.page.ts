@@ -39,23 +39,23 @@ export class AssociateWorkPage implements OnInit {
     });
 
     return workers;
-  };
+  }
 
   /**
    * cancelWork
    */
   public cancelWork = () => {
     this.filtered = this.workers;
-  };
+  }
 
   /**
    * closeModal
    */
   public closeWork = async (data: any = null) => {
     await this.modalController.dismiss({
-      'data': data
+      data
     });
-  };
+  }
 
 
   /**
@@ -75,7 +75,7 @@ export class AssociateWorkPage implements OnInit {
         const matchName = worker.names ? worker.names.toLowerCase().indexOf(filter.toLowerCase()) > -1 : true;
         return (matchIdentified || matchName) && index < 5;
       });
-  };
+  }
 
 
   /**

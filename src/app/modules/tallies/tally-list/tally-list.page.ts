@@ -7,7 +7,6 @@ import {ModalController, IonItemSliding} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
-import {TallyService} from '../services/tally/tally.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { Tally } from '../tally.interface';
 
@@ -50,7 +49,6 @@ export class TallyListPage implements OnInit, OnDestroy {
     private router: Router,
     private modalController: ModalController,
     private toastService: ToastService,
-    private tallyService: TallyService,
     private alertService: AlertService
   ) {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
@@ -256,8 +254,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public goToWorkerTallyList = (worker: any): void => {
     this.activeWorker = worker;
-    const tallies = this.getNumberOfWorkerTallies(worker);
-    this.filteredTallies = [...tallies];
+    this.filteredTallies = this.getNumberOfWorkerTallies(worker);
   }
 
   /**

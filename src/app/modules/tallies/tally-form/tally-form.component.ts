@@ -54,12 +54,17 @@ export class TallyFormComponent implements OnInit {
     this.labors = [...this.storeService.getLabors()];
     this.filteredLabors = [];
 
+    let workingDayStartValue = 1;
+    if (this.workers.length === 1) {
+      workingDayStartValue = this.getWorkerRemainingWorkingDay(this.workers[0]);
+    }
+
     this.tallyForm = this.formBuilder.group({
       id: [0, Validators.required],
       date: [this.dateSelected, Validators.required],
       costCenterId: ['', Validators.required],
       laborId: ['', Validators.required],
-      workingDay: [1, Validators.min(0.1)],
+      workingDay: [workingDayStartValue, Validators.min(0.1)],
       hoursExtra: ['', Validators.min(0.1)],
       performance: ['', Validators.min(0.1)],
       unit: [{value: '', disabled: true}],
@@ -87,10 +92,9 @@ export class TallyFormComponent implements OnInit {
       this.laborName = labor.name;
 
       this.checkWorkersDailyMax(this.editTally.workingDay);
-    } else {
-      this.checkWorkersDailyMax(1);
     }
 
+    this.checkWorkersDailyMax(workingDayStartValue);
     this.addWorkers();
   }
 
@@ -120,13 +124,6 @@ export class TallyFormComponent implements OnInit {
       h: ['', Validators.min(0.1)],
       r: ['', Validators.min(0.1)]
     });
-  }
-
-  /**
-   * closeModal
-   */
-  public closeModal = (status: boolean = false): void => {
-    this.modalController.dismiss(status);
   }
 
   /**
@@ -389,6 +386,23 @@ export class TallyFormComponent implements OnInit {
         this.setWorkingDay(value);
       }
     }
+  }
+
+  /**
+   * closeModal
+   */
+  public closeModal = (status: boolean = false): void => {
+    this.modalController.dismiss(status);
+  }
+
+  /**
+   * getWorkerRemainingWorkingDay
+   */
+  private getWorkerRemainingWorkingDay = (worker: any): number => {
+    const todayTallies = this.storeService.getNumberOfWorkerTallies(worker, this.dateSelected);
+    const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+
+    return worker.dailyMax - totalWorked > 0 ? worker.dailyMax - totalWorked : 0;
   }
 
 }

@@ -2,8 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ActionSheetController, ModalController} from '@ionic/angular';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {TallyService} from '../services/tally/tally.service';
 import { Tally } from '../tally.interface';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-tally-form',
@@ -17,15 +17,22 @@ export class TallyFormComponent implements OnInit {
   @Input() editTally: Tally;
 
   public tallyForm: FormGroup;
-  private costCenters: Array<any> = [];
-  private labors: Array<any> = [];
   public currentStep = 1;
   public split = 0;
 
+  private costCenters: Array<any> = [];
+  private labors: Array<any> = [];
+  private deals: Array<any> = [];
+
   public filteredCostCenters: Array<any> = [];
-  public costCenterName: string;
   public filteredLabors: Array<any> = [];
+  public availableDeals: Array<any> = [];
+  public filteredDeals: Array<any> = [];
+
+  public costCenterName: string;
   public laborName: string;
+  public dealName: string;
+
   public readonly workingDays: Array<any> = [
     {text: '1', value: 1},
     {text: '0.75', value: 0.75},
@@ -41,18 +48,21 @@ export class TallyFormComponent implements OnInit {
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private storeService: StoreService,
-    private actionSheetController: ActionSheetController,
-    private tallyService: TallyService
+    private actionSheetController: ActionSheetController
   ) {
 
   }
 
   ngOnInit() {
     const activeCompany = this.storeService.getActiveCompany();
+
     this.costCenters = [...this.storeService.getCostCenters()];
-    this.filteredCostCenters = [];
     this.labors = [...this.storeService.getLabors()];
+    this.deals = [...this.storeService.getDeals()];
+
+    this.filteredCostCenters = [];
     this.filteredLabors = [];
+    this.filteredDeals = [];
 
     let workingDayStartValue = 1;
     if (this.workers.length === 1) {
@@ -64,6 +74,7 @@ export class TallyFormComponent implements OnInit {
       date: [this.dateSelected, Validators.required],
       costCenterId: ['', Validators.required],
       laborId: ['', Validators.required],
+      dealId: [''],
       workingDay: [workingDayStartValue, [
         Validators.required,
         Validators.min(0.1),
@@ -81,6 +92,7 @@ export class TallyFormComponent implements OnInit {
         id: this.editTally.id,
         costCenterId: this.editTally.costCenterId,
         laborId: this.editTally.laborId,
+        dealId: this.editTally.dealId,
         workingDay: this.editTally.workingDay ? this.editTally.workingDay : '',
         hoursExtra: this.editTally.hoursExtra ? this.editTally.hoursExtra : '',
         performance: this.editTally.performance ? this.editTally.performance : '',
@@ -149,6 +161,8 @@ export class TallyFormComponent implements OnInit {
     this.tallyForm.get('costCenterId').patchValue(costCenter.id);
     this.costCenterName = costCenter.name;
     this.filteredCostCenters = [];
+
+    this.getDeals();
   }
 
   /**
@@ -179,6 +193,8 @@ export class TallyFormComponent implements OnInit {
     this.tallyForm.get('laborId').patchValue(labor.id);
     this.laborName = labor.name;
     this.filteredLabors = [];
+
+    this.getDeals();
   }
 
   /**
@@ -406,6 +422,55 @@ export class TallyFormComponent implements OnInit {
     const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 
     return worker.dailyMax - totalWorked > 0 ? worker.dailyMax - totalWorked : 0;
+  }
+
+  /**
+   * getDeals
+   */
+  public getDeals = (): void => {
+    const costCenterId = this.tallyForm.get('costCenterId').value;
+    const laborId = this.tallyForm.get('laborId').value;
+
+    this.availableDeals = [];
+    if (costCenterId && laborId) {
+      this.availableDeals = this.deals.filter(item => {
+        const start = moment(item.date_init).toISOString();
+        const end = moment(item.date_end).toISOString();
+
+        return item.id_costCenter === costCenterId && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
+      });
+    }
+  }
+
+  /**
+   * searchDealsearchDeal
+   */
+  public searchDeal = (search: string): void => {
+    if (search) {
+      this.filteredDeals = this.availableDeals.filter(item => item.name_deal.toLowerCase().includes(search.toLowerCase()));
+    } else {
+      this.filteredDeals = [];
+    }
+  }
+
+  /**
+   * selectDeal
+   */
+  public selectDeal = (deal: any): void => {
+    this.tallyForm.get('dealId').patchValue(deal.id);
+    this.tallyForm.get('unit').patchValue(deal.unit_control);
+    this.dealName = deal.name_deal;
+    this.filteredDeals = [];
+  }
+
+  /**
+   * cleanDealSearch
+   */
+  public cleanDealSearch = (): void => {
+    this.tallyForm.get('dealId').patchValue('');
+    this.tallyForm.get('unit').patchValue('');
+    this.dealName = null;
+    this.filteredDeals = [];
   }
 
 }

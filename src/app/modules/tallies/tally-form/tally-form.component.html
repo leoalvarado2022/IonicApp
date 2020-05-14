@@ -36,13 +36,29 @@
       </ion-item>
 
       <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
-        <ion-list-header color="success">
+        <ion-list-header color="primary">
           <ion-label>Resultados: {{ filteredLabors.length }} </ion-label>
         </ion-list-header>
         <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
           {{ labor.name  }}
         </ion-item>
       </ion-list>
+
+      <ng-container *ngIf="availableDeals.length > 0">
+        <ion-item>
+          <ion-label position="stacked">Trato</ion-label>
+          <ion-searchbar [value]="dealName" (keyup)="searchDeal($event.target.value)" (ionClear)="cleanDealSearch()"></ion-searchbar>
+        </ion-item>
+
+        <ion-list class="searchbar-results-list" *ngIf="filteredDeals.length > 0">
+          <ion-list-header color="primary">
+            <ion-label>Resultados: {{ filteredDeals.length }} </ion-label>
+          </ion-list-header>
+          <ion-item *ngFor="let deal of filteredDeals" (click)="selectDeal(deal)">
+            {{ deal.name_deal  }}
+          </ion-item>
+        </ion-list>
+      </ng-container>
 
       <ion-item>
         <ion-label position="floating">Jornada</ion-label>

@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Nombre trato</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <p class="ion-text-center">
+          <span style="font-size: 12px;">Labor: Formacion</span>
+        </p>
+        <ion-item>
+          <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
+            <ion-icon name="arrow-back" slot="start"></ion-icon>
+          </ion-button>
+          <ion-datetime style="margin-left: 25px;" [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
+          <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
+            <ion-icon name="arrow-forward" slot="end"></ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-item style="width: 100%;">
+          <ion-label position="floating">Centro de Costo</ion-label>
+          <ion-select value="" interface="action-sheet">
+            <ion-select-option value="enable">Enable</ion-select-option>
+            <ion-select-option value="mute">Mute</ion-select-option>
+            <ion-select-option value="mute_week">Mute for a week</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item>
+          <ion-label position="floating">Plantas</ion-label>
+          <ion-input></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item style="width: 100%;">
+          <ion-label>Grabación automatica</ion-label>
+          <ion-checkbox slot="end"></ion-checkbox>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button color="warning" expand="block">Escanear</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+</ion-content>

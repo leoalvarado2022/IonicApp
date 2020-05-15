@@ -27,12 +27,7 @@ const routes: Routes = [
   {
     path: 'testing-icons',
     loadChildren: () => import('./testing-icons/testing-icons.module').then( m => m.TestingIconsPageModule)
-  },
-  {
-    path: 'tratos-list',
-    loadChildren: () => import('./modules/tratos/tratos-list/tratos-list.module').then(m => m.TratosListPageModule)
-  },
-
+  }
 ];
 
 @NgModule({

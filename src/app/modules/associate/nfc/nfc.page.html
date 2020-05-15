@@ -4,7 +4,7 @@
       <ion-back-button class="header-back-button" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>
-      <strong>Asociar NFC</strong>
+      <strong>Dispositivos NFC</strong>
     </ion-title>
     <ion-buttons slot="end">
       <app-notifications></app-notifications>
@@ -17,7 +17,7 @@
     NFC
   </h2>
 
-  <ion-grid class="ion-padding" *ngIf="selected || scanning">
+  <!--<ion-grid class="ion-padding" *ngIf="selected || scanning">
     <ion-row *ngIf="!scanning">
       <ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize" (click)="associateWork()"
                   *ngIf="!isDelete" ion-button>Asociar
@@ -28,11 +28,7 @@
         trabajador
       </ion-button>
     </ion-row>
-    <!--<ion-row *ngIf="scanning">
-      <button ion-button text-capitalize block color="danger">Cancelar Scanning
-      </button>
-    </ion-row>-->
-  </ion-grid>
+  </ion-grid>-->
 
   <ion-grid>
     <ion-row *ngIf="!scanned.length && !notSupported; else notSupportedElse">
@@ -67,7 +63,7 @@
               <img src="assets/imgs/deals-icon-item.png">
             </ion-col>
             <ion-col size="10">
-              <div class="title-row">Tipo: {{device.type}}</div>
+              <!--<div class="title-row">Tipo: {{device.type}}</div>-->
               <div class="subtitle-row">ID: {{device.id_device}}</div>
               <div class="subtitle-row" *ngIf="device.link">Trabajador: {{device.link}}</div>
             </ion-col>

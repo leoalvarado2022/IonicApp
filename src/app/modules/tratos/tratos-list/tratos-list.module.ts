@@ -1,20 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
 
-import { IonicModule } from '@ionic/angular';
+import {TratosListPageRoutingModule} from './tratos-list-routing.module';
 
-import { TratosListPageRoutingModule } from './tratos-list-routing.module';
-
-import { TratosListPage } from './tratos-list.page';
+import {TratosListPage} from './tratos-list.page';
+import {SharedModule} from '../../../shared/shared.module';
+import {AddTratoPage} from '../add-trato/add-trato.page';
+import {AddCenterCostPage} from '../add-center-cost/add-center-cost.page';
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    TratosListPageRoutingModule
+    SharedModule,
+    TratosListPageRoutingModule,
   ],
-  declarations: [TratosListPage]
+  declarations: [TratosListPage, AddTratoPage, AddCenterCostPage]
 })
-export class TratosListPageModule {}
+export class TratosListPageModule {
+}

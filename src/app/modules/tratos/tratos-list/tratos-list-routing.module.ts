@@ -1,12 +1,17 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule} from '@angular/router';
 
-import { TratosListPage } from './tratos-list.page';
+import {TratosListPage} from './tratos-list.page';
+import {AddCenterCostPage} from '../add-center-cost/add-center-cost.page';
 
 const routes: Routes = [
   {
     path: '',
     component: TratosListPage
+  },
+  {
+    path: 'add-center-cost',
+    component: AddCenterCostPage
   }
 ];
 
@@ -14,4 +19,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TratosListPageRoutingModule {}
+export class TratosListPageRoutingModule {
+}

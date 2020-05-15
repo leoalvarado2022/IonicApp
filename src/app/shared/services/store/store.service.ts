@@ -91,7 +91,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
         deals: [],
         costCentersCustom: [],
         tallies: [],
-        devices: []
+        devices: [],
+        bonds: []
       },
       contract: {
         activeCostCenter: null,
@@ -520,7 +521,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
       deals,
       costCentersCustom,
       tallies,
-      devices
+      devices,
+      bonds
     } = data;
 
     this.setCompanies(companies);
@@ -546,8 +548,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setCostCentersCustom(costCentersCustom);
     this.setTallies(tallies);
     this.setDevices(devices);
+    this.setBonds(bonds);
   }
-
 
   /**
    * setActiveCostCenter
@@ -1138,6 +1140,20 @@ export class StoreService extends ObservableStore<StoreInterface> {
     return this.getState().sync.devices;
   }
 
+  /**
+   * setBonds
+   */
+  public setBonds = (bonds: Array<any>): void => {
+    const sync = {...this.getState().sync, bonds};
+    this.setState({sync}, StoreActions.SetBonds);
+  }
+
+  /**
+   * getBonds
+   */
+  public getBonds = (): Array<any> => {
+    return this.getState().sync.bonds;
+  }
 
   /**
    * END OF PRE-CONTRACT STATE METHODS
@@ -1343,12 +1359,12 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * - Filter tallies of a worker that are marked to delete
    * - Filter tallies to record that are being edited
    */
-  public getNumberOfWorkerTallies = (worker: any, currentDate: string, ignoreTempId: number = null): Array<Tally> => {
+  public getNumberOfWorkerTallies = (worker: any, currentDate: string, ignoreId: number = null): Array<Tally> => {
     // Get the tallys to be deleted and convert the ID to positive for comparison use
-    const markedToDelete = this.getTalliesToRecord().map(item => item.id < 0 ? item.id * -1 : item.id );
+    const markedToDelete = this.getTalliesToRecord().map(item => item.id < 0 ? item.id * -1 : item.id);
 
     // Filter synced tallies by current date and not marked for delete
-    const filteredTallies = this.getTallies() .filter(item => {
+    const filteredTallies = this.getTallies().filter(item => {
       const tallyDate = this.removeTimeFromDate(item.date);
       const current = this.removeTimeFromDate(currentDate);
 
@@ -1360,7 +1376,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
       const tallyDate = this.removeTimeFromDate(item.date);
       const current = this.removeTimeFromDate(currentDate);
 
-      return item.workerId === worker.id && tallyDate === current && item.tempId !== ignoreTempId;
+      return item.workerId === worker.id && tallyDate === current && item.tempId !== ignoreId;
     });
 
     // Return joined lists

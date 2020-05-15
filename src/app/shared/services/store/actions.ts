@@ -45,6 +45,7 @@ export enum StoreActions {
   SetLaborsCostCenter = 'SET_LABORS_COST_CENTER',
   SetDeals = 'SET_DEALS',
   SetDevices = 'SET_DEVICES',
+  SetBonds = 'SET_BONDS',
   SetCostCentersCustom = 'SET_COST_CENTERS_CUSTOM',
   AddTotalTickets = 'ADD_TOTAL_TICKETS',
   AddPreDevices = 'ADD_PREDEVICES',

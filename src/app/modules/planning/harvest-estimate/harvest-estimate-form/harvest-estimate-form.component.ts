@@ -117,7 +117,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   public closeModal = (status: boolean = false) => {
     this.modalController.dismiss(status);
-  };
+  }
 
   /**
    * submit
@@ -142,7 +142,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     } else {
       this.isSaving = false;
     }
-  };
+  }
 
   /**
    * showUnitName
@@ -150,7 +150,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public showUnitName = () => {
     const find = this.units.find(item => item.id === this.costCenter.controlUnit);
     return find ? find.code : 'N/A';
-  };
+  }
 
   /**
    * workHolidaysEvent
@@ -158,7 +158,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   public workHolidaysEvent = (value: string) => {
     this.harvestForm.get('workHolidays').patchValue(value);
-  };
+  }
 
   /**
    * getSelectedProcessPlant
@@ -170,7 +170,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
 
     return '';
-  };
+  }
 
   /**
    * getSelectedDestination
@@ -182,7 +182,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
 
     return '';
-  };
+  }
 
   /**
    * loadData
@@ -194,7 +194,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
     this.preSelectProcessPlant();
     this.preSelectDestination();
-  };
+  }
 
   /**
    * storeEstimation
@@ -211,7 +211,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
       this.isSaving = false;
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * calculateEndDate
@@ -240,7 +240,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
       this.harvestForm.get('endDate').patchValue(momentDate.format(this.dateFormat));
     }
-  };
+  }
 
   /**
    * cleanDate
@@ -252,7 +252,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
 
     return date;
-  };
+  }
 
   /**
    * computeEndDate
@@ -271,7 +271,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
 
     return momentDate;
-  };
+  }
 
   /**
    * cleanParseNumber
@@ -279,7 +279,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    */
   private cleanParseNumber = (value: string): number => {
     return parseInt(String(value).replace('.', ''), 10);
-  };
+  }
 
   /**
    * preSelectProcessPlant
@@ -288,7 +288,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (this.processPlants.length === 1) {
       this.harvestForm.get('processPlant').patchValue(this.processPlants[0].id);
     }
-  };
+  }
 
   /**
    * preSelectDestination
@@ -297,6 +297,6 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (this.destinations.length === 1) {
       this.harvestForm.get('destination').patchValue(this.destinations[0].id);
     }
-  };
+  }
 
 }

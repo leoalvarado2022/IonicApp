@@ -102,7 +102,7 @@ export class TicketFormPage implements OnInit {
     this.attachments.push({
       id: 0,
       file: base64.replace(/^data:.*,/, ''),
-      name: 'Adjunto ' + this.attachments.length + 1 ,
+      name: 'Adjunto ' + (this.attachments.length + 1),
       application: 'image/jpeg',
       type: '.jpg',
       detail: this.activeTicket.id

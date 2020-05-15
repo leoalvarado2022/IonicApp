@@ -24,7 +24,9 @@
     <ng-container *ngIf="detail.attached && detail.attached.length">
       Adjuntos:
       <ng-container *ngFor="let file of detail.attached">
-        <a [href]="buildLink(file)" target="_blank">{{ file.name }}</a>
+        <p>
+          <a [href]="buildLink(file)" target="_blank">{{ file.name }}</a>
+        </p>
       </ng-container>
     </ng-container>
 

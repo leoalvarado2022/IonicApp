@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
@@ -15,7 +15,7 @@ import {SyncService} from '../../../shared/services/sync/sync.service';
   templateUrl: './contract-form.page.html',
   styleUrls: ['./contract-form.page.scss'],
 })
-export class ContractFormPage implements OnInit {
+export class ContractFormPage implements OnInit, OnDestroy {
 
   public contractForm: FormGroup;
   public currentStep = 1;
@@ -29,6 +29,7 @@ export class ContractFormPage implements OnInit {
   public quadrilles: Array<any> = [];
   public workers: Array<any> = [];
 
+  private editPreContrat: any = null;
   private activeCompany: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
@@ -56,75 +57,84 @@ export class ContractFormPage implements OnInit {
 
   ngOnInit() {
     this.loadData();
-
     const id = this.activatedRoute.snapshot.paramMap.get('id');
+
+    const findDefault = this.nationalities.find(item => item.default);
+    const onlyOne = this.nationalities.length === 1 ? this.nationalities[0] : '';
+
+    this.contractForm = this.formBuilder.group({
+      id: [0],
+      companyId: [this.activeCompany.id],
+      workerId: [0],
+      creatorId: [this.activeCompany.user],
+      tempId: [this.tempId],
+      step1: this.formBuilder.group({
+        nationality: [findDefault ? findDefault.id : onlyOne, Validators.required],
+        identifier: ['', Validators.required]
+      }),
+      step2: this.formBuilder.group({
+        name: ['', Validators.required],
+        lastName: ['', Validators.required],
+        sureName: ['', Validators.required],
+        dob: ['', Validators.required],
+        civilStatus: [this.civilStatus.length === 1 ? this.civilStatus[0].name : '', Validators.required],
+        gender: ['M', Validators.required]
+      }),
+      step3: this.formBuilder.group({
+        contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
+        afp: [this.afps.length === 1 ? this.afps[0].id : '', Validators.required],
+        isapre: [this.isapres.length === 1 ? this.isapres[0].id : '', Validators.required],
+        retired: [false, Validators.required],
+        quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required]
+      })
+    });
+
+    this.changeIdentifierValidation(findDefault ? findDefault.id : onlyOne);
+
     if (id) {
       const preContracts = this.storeService.getPreContracts();
       const find = preContracts.find(item => item.id === +id);
 
       if (find) {
-        this.contractForm = this.formBuilder.group({
-          id: [find.id],
-          companyId: [find.companyId],
-          workerId: [find.workerId],
-          creatorId: [find.creatorId],
-          tempId: [0],
-          step1: this.formBuilder.group({
-            nationality: [find.countryId, Validators.required],
-            identifier: [find.workerIdentifier, Validators.required]
-          }),
-          step2: this.formBuilder.group({
-            name: [find.workerName, Validators.required],
-            lastName: [find.workerLastName, Validators.required],
-            sureName: [find.workerSurname, Validators.required],
-            dob: [moment.utc(find.dob, 'YYYY-MM-DD').format('DD/MM/YYYY') , Validators.required],
-            civilStatus: [find.workerCivilStatus, Validators.required],
-            gender: [find.gender, Validators.required]
-          }),
-          step3: this.formBuilder.group({
-            contractType: [find.remunerationContractType, Validators.required],
-            afp: [find.afpId, Validators.required],
-            isapre: [find.isapreId, Validators.required],
-            retired: [find.retired, Validators.required],
-            quadrille: [find.quadrilleId, Validators.required]
-          })
+        this.editPreContrat = find;
+
+        this.contractForm.patchValue({
+          id: find.id,
+          companyId: find.companyId,
+          workerId: find.workerId,
+          creatorId: find.creatorId,
+          tempId: find.id
+        });
+
+        this.contractForm.get('step1').patchValue({
+          nationality: find.countryId,
+          identifier: find.workerIdentifier,
+        });
+
+        this.contractForm.get('step2').patchValue({
+          name: find.workerName,
+          lastName: find.workerLastName,
+          sureName: find.workerSurname,
+          dob: moment(moment.utc(find.dob)).format('YYYY-MM-DD'),
+          civilStatus: find.workerCivilStatus,
+          gender: find.gender,
+        });
+
+        this.contractForm.get('step3').patchValue({
+          contractType: find.remunerationContractType,
+          afp: find.afpId,
+          isapre: find.isapreId,
+          retired: find.retired,
+          quadrille: find.quadrilleId
         });
 
         this.changeIdentifierValidation(find.countryId);
       }
-    } else {
-      const findDefault = this.nationalities.find(item => item.default);
-      const onlyOne = this.nationalities.length === 1 ? this.nationalities[0] : '';
-
-      this.contractForm = this.formBuilder.group({
-        id: [0],
-        companyId: [this.activeCompany.id],
-        workerId: [0],
-        creatorId: [this.activeCompany.user],
-        tempId: [this.tempId],
-        step1: this.formBuilder.group({
-          nationality: [findDefault ? findDefault.id : onlyOne, Validators.required],
-          identifier: ['', Validators.required]
-        }),
-        step2: this.formBuilder.group({
-          name: ['', Validators.required],
-          lastName: ['', Validators.required],
-          sureName: ['', Validators.required],
-          dob: ['', Validators.required],
-          civilStatus: [this.civilStatus.length === 1 ? this.civilStatus[0].name : '', Validators.required],
-          gender: ['M', Validators.required]
-        }),
-        step3: this.formBuilder.group({
-          contractType: [this.contractTypes.length === 1 ? this.contractTypes[0].id : '', Validators.required],
-          afp: [this.afps.length === 1 ? this.afps[0].id : '', Validators.required],
-          isapre: [this.isapres.length === 1 ? this.isapres[0].id : '', Validators.required],
-          retired: [false, Validators.required],
-          quadrille: [this.quadrilles.length === 1 ? this.quadrilles[0].id : '', Validators.required]
-        })
-      });
-
-      this.changeIdentifierValidation(findDefault ? findDefault.id : onlyOne);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.currentStep = 1;
   }
 
   /**
@@ -139,7 +149,7 @@ export class ContractFormPage implements OnInit {
     this.quadrilles = this.storeService.getQuadrilles();
     this.activeCompany = this.storeService.getActiveCompany();
     this.workers = this.storeService.getWorkers();
-  };
+  }
 
   /**
    * openBarcodeScanner
@@ -163,6 +173,7 @@ export class ContractFormPage implements OnInit {
 
         if (operativeText.length > 0) {
           this.formatIdentifier(operativeText);
+          this.increaseStep();
         } else {
           this.toastService.errorToast('El código escaneado no es válido');
         }
@@ -170,7 +181,7 @@ export class ContractFormPage implements OnInit {
     }).catch(err => {
       this.toastService.errorToast(err);
     });
-  };
+  }
 
   /**
    * changeIdentifierValidation
@@ -190,7 +201,7 @@ export class ContractFormPage implements OnInit {
 
       this.formatIdentifier(this.contractForm.get('step1.identifier').value);
     }
-  };
+  }
 
   /**
    * submit
@@ -208,7 +219,7 @@ export class ContractFormPage implements OnInit {
 
     const preparedData = {...data, ...step1, ...step2, ...step3};
     this.storeContract(preparedData);
-  };
+  }
 
   /**
    * storeContract
@@ -223,7 +234,7 @@ export class ContractFormPage implements OnInit {
     }, error => {
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * syncData
@@ -239,7 +250,7 @@ export class ContractFormPage implements OnInit {
     }, error => {
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * changeGenderEvent
@@ -247,7 +258,7 @@ export class ContractFormPage implements OnInit {
    */
   public changeGenderEvent = (gender: string) => {
     this.contractForm.get('step2.gender').patchValue(gender);
-  };
+  }
 
   /**
    * formatIdentifier
@@ -265,7 +276,7 @@ export class ContractFormPage implements OnInit {
         this.contractForm.get('step1.identifier').patchValue(clean, {emitEvent: false});
       }
     }
-  };
+  }
 
   /**
    * checkWorker
@@ -312,7 +323,7 @@ export class ContractFormPage implements OnInit {
       this.isSearching = false;
       this.httpService.errorHandler(error);
     });
-  };
+  }
 
   /**
    * checkNexButtonDisabled
@@ -320,7 +331,7 @@ export class ContractFormPage implements OnInit {
   public checkNexButtonDisabled = (): boolean => {
     return (this.currentStep === 1 && this.contractForm.get('step1').invalid) ||
       (this.currentStep === 2 && (this.contractForm.get('step2').invalid || this.checkIfIdentifierAlreadyExistsOnWorkers()));
-  };
+  }
 
   /**
    * increaseStep
@@ -328,10 +339,10 @@ export class ContractFormPage implements OnInit {
   public increaseStep = () => {
     this.currentStep = this.currentStep + 1;
 
-    if (this.currentStep === 2) {
+    if (this.currentStep === 2 && !this.editPreContrat) {
       this.checkWorker(this.contractForm.get('step1.identifier').value);
     }
-  };
+  }
 
   /**
    * cleanCharactersFromIdentifier

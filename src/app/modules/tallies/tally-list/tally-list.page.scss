@@ -29,7 +29,18 @@ ion-tab-bar {
   --color: var(--ion-color-light);
 }
 
-.tally {
-  margin-right: 2px;
-  margin-left: 2px;
+.tally-card {
+  width: 100%;
+}
+
+.no-padding-item {
+  --padding-end: 0;
+  --padding-start: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --inner-border-width: 0;
+  --inner-padding-bottom: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-top: 0;
 }

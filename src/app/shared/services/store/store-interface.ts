@@ -51,6 +51,7 @@ export interface Sync {
   costCentersCustom: Array<any>;
   tallies: Array<Tally>;
   devices: Array<any>;
+  bonds: Array<any>;
 }
 
 export interface ContractInterface {

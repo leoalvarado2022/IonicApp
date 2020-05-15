@@ -7,7 +7,6 @@ import {ModalController, IonItemSliding} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
-import {TallyService} from '../services/tally/tally.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { Tally } from '../tally.interface';
 
@@ -29,9 +28,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public selectedWorkers: Array<any> = [];
   public activeWorker: any = null;
 
-  // Tallies
-  private tallies: Array<Tally> = [];
-  private talliesToRecord: Array<Tally> = [];
+  // Tallies  
   public filteredTallies: Array<Tally> = [];
 
   // Form dates
@@ -42,6 +39,8 @@ export class TallyListPage implements OnInit, OnDestroy {
 
   private costCenters: Array<CostCenterList> = [];
   private labors: Array<any> = [];
+  private deals: Array<any> = [];
+  private bonds: Array<any> = [];
 
   private store$: Subscription;
 
@@ -50,7 +49,6 @@ export class TallyListPage implements OnInit, OnDestroy {
     private router: Router,
     private modalController: ModalController,
     private toastService: ToastService,
-    private tallyService: TallyService,
     private alertService: AlertService
   ) {
     this.store$ = this.storeService.stateChanged.subscribe(data => {
@@ -77,7 +75,6 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.selectedWorkers = [];
     this.activeWorker = [];
 
-    this.tallies = [];
     this.filteredTallies = [];
 
     this.currentDate = null;
@@ -88,7 +85,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * loadData
    */
-  private loadData = () => {
+  private loadData = (): void => {
     // Load quadrilles
     this.reloadQuadrilles();
     this.activeQuadrille = null;
@@ -103,6 +100,8 @@ export class TallyListPage implements OnInit, OnDestroy {
     // Form data
     this.costCenters = [...this.storeService.getCostCenters()];
     this.labors = [...this.storeService.getLabors()];
+    this.deals = [...this.storeService.getDeals()];
+    this.bonds = [...this.storeService.getBonds()];
 
     if (this.quadrilles.length === 1) {
       this.selectQuadrille(this.quadrilles[0]);
@@ -256,8 +255,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public goToWorkerTallyList = (worker: any): void => {
     this.activeWorker = worker;
-    const tallies = this.getNumberOfWorkerTallies(worker);
-    this.filteredTallies = [...tallies];
+    this.filteredTallies = this.getNumberOfWorkerTallies(worker);
   }
 
   /**
@@ -306,7 +304,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    * getCostCenterName
    * @param costCenterId
    */
-  public getCostCenterName = (costCenterId: number) => {
+  public getCostCenterName = (costCenterId: number): string => {
     const find = this.costCenters.find(item => item.id === costCenterId);
     return find ? find.name : '';
   }
@@ -315,7 +313,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    * getLaborName
    * @param laborId
    */
-  public getLaborName = (laborId: number) => {
+  public getLaborName = (laborId: number): string => {
     const find = this.labors.find(item => item.id === laborId);
     return find ? find.name : '';
   }
@@ -323,7 +321,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * goBack
    */
-  public goBack = () => {
+  public goBack = (): void => {
     if (this.quadrilles.length > 1) {
       if (this.activeQuadrille && !this.activeWorker) {
         this.activeQuadrille = null;
@@ -348,9 +346,6 @@ export class TallyListPage implements OnInit, OnDestroy {
    * reloadTallies
    */
   private reloadTallies = (): void => {
-    this.tallies = [...this.storeService.getTallies()];
-    this.talliesToRecord = [...this.storeService.getTalliesToRecord()];
-
     if (this.activeWorker) {
       this.goToWorkerTallyList(this.activeWorker);
     }
@@ -432,6 +427,22 @@ export class TallyListPage implements OnInit, OnDestroy {
       deleteTallies.push(toDelete);
       this.storeService.addTalliesToRecord(deleteTallies);
     }
+  }
+
+  /**
+   * getDealName
+   */
+  public getDealName = (dealValidity: number): string => {
+    const find = this.deals.find(item => item.id_deal_validity === dealValidity);
+    return find ? find.name_deal : '';
+  }
+
+  /**
+   * getBondName
+   */
+  public getBondName = (bondValidity: number): string => {
+    const find = this.bonds.find(item => item.bondValidity === bondValidity);
+    return find ? find.bondName : '';
   }
 
 }

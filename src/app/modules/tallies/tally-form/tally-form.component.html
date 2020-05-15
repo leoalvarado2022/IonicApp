@@ -14,6 +14,7 @@
 
     <!-- STEP 1 -->
     <ng-container *ngIf="currentStep === 1">
+      <!-- COST CENTER -->
       <ion-item>
         <ion-label position="stacked">Centro de Costo</ion-label>
         <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()"></ion-searchbar>
@@ -29,6 +30,7 @@
         </ion-item>
       </ion-list>
 
+      <!-- LABOR -->
       <ion-item>
         <ion-label position="stacked">Labor</ion-label>
         <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()"></ion-searchbar>
@@ -36,13 +38,47 @@
       </ion-item>
 
       <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
-        <ion-list-header color="success">
+        <ion-list-header color="primary">
           <ion-label>Resultados: {{ filteredLabors.length }} </ion-label>
         </ion-list-header>
         <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
           {{ labor.name  }}
         </ion-item>
       </ion-list>
+
+      <!-- DEALS -->
+      <ng-container *ngIf="availableDeals.length > 0">
+        <ion-item>
+          <ion-label position="stacked">Trato</ion-label>
+          <ion-searchbar [value]="dealName" (keyup)="searchDeal($event.target.value)" (ionClear)="cleanDealSearch()"></ion-searchbar>
+        </ion-item>
+
+        <ion-list class="searchbar-results-list" *ngIf="filteredDeals.length > 0">
+          <ion-list-header color="primary">
+            <ion-label>Resultados: {{ filteredDeals.length }} </ion-label>
+          </ion-list-header>
+          <ion-item *ngFor="let deal of filteredDeals" (click)="selectDeal(deal)">
+            {{ deal.name_deal  }}
+          </ion-item>
+        </ion-list>
+      </ng-container>
+
+      <!-- BONDS -->
+      <ng-container *ngIf="availableBonds.length > 0">
+        <ion-item>
+          <ion-label position="stacked">Bono</ion-label>
+          <ion-searchbar [value]="bondName" (keyup)="searchBond($event.target.value)" (ionClear)="cleanBondSearch()"></ion-searchbar>
+        </ion-item>
+
+        <ion-list class="searchbar-results-list" *ngIf="filteredBonds.length > 0">
+          <ion-list-header color="primary">
+            <ion-label>Resultados: {{ filteredBonds.length }} </ion-label>
+          </ion-list-header>
+          <ion-item *ngFor="let bond of filteredBonds" (click)="selectBond(bond)">
+            {{ bond.bondName  }}
+          </ion-item>
+        </ion-list>
+      </ng-container>
 
       <ion-item>
         <ion-label position="floating">Jornada</ion-label>
@@ -101,17 +137,17 @@
           <ion-col size="6">{{ worker.name }}</ion-col>
           <ion-col [formGroupName]="i">
             <ion-item class="full-border ion-no-margin">
-              <ion-input formControlName="jr" type="number" (ionChange)="setWorkerParam(worker, 'jr',  $event.detail.value)"></ion-input>
+              <ion-input formControlName="jr" type="number" (ionChange)="checkWorkerDailyMax(worker, $event.target.value)"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col [formGroupName]="i">
             <ion-item class="full-border ion-no-margin">
-              <ion-input formControlName="h" type="number" (ionChange)="setWorkerParam(worker, 'h',  $event.detail.value)"></ion-input>
+              <ion-input formControlName="h" type="number"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col [formGroupName]="i">
             <ion-item class="full-border ion-no-margin">
-              <ion-input formControlName="r" type="number" (ionChange)="setWorkerParam(worker, 'r',  $event.detail.value)"></ion-input>
+              <ion-input formControlName="r" type="number"></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -130,7 +166,7 @@
         </ul>
       </ng-container>
 
-      <ion-segment value="jornada" class="segment-back" scrollable="true">
+      <ion-segment #segment value="jornada" class="segment-back" scrollable="true">
         <ion-segment-button value="jornada">
           <ion-label>Jornada</ion-label>
         </ion-segment-button>
@@ -147,7 +183,7 @@
         </ion-col>
 
         <ion-col size="4">
-          <ion-button (click)="splitTime()">
+          <ion-button (click)="splitTime(segment.value)">
             Repartir
           </ion-button>
         </ion-col>

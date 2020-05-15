@@ -116,21 +116,44 @@
               </ion-item>
 
               <ion-card-content>
-                <p>
-                  Labor: {{ getLaborName(tally.laborId) }}
-                  <ion-badge class="ion-float-end" color="primary">
-                    {{ tally.hoursExtra }} Hora extra
-                  </ion-badge>
-                </p>
-                <p>
-                  <strong>Notas:</strong>
-                  <ion-badge class="ion-float-end" color="primary">
-                    {{ tally.performance }} Unidad Labor
-                  </ion-badge>
-                </p>
-                <p>
-                  {{ tally.notes }}
-                </p>
+                <ion-row>
+                  <ion-col>
+                    Labor: {{ getLaborName(tally.laborId) }}
+                  </ion-col>
+                  <ion-col>
+                    <ion-badge *ngIf="tally.hoursExtra" class="ion-float-end" color="primary">
+                      {{ tally.hoursExtra }} Hora extra
+                    </ion-badge>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="tally.performance">
+                  <ion-col></ion-col>
+                  <ion-col>
+                    <ion-badge class="ion-float-end" color="primary">
+                      {{ tally.performance }} Unidad Labor
+                    </ion-badge>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="tally.dealValidity || tally.bondValidity">
+                  <ion-col size="6" *ngIf="tally.dealValidity">
+                    Trato:
+                    <ion-badge color="primary">
+                      {{ getDealName(tally.dealValidity) }}
+                    </ion-badge>
+                  </ion-col>
+                  <ion-col size="6" *ngIf="tally.bondValidity">
+                    Bono:
+                    <ion-badge color="primary">
+                      {{ getBondName(tally.bondValidity) }}
+                    </ion-badge>                    
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col><strong>Notas:</strong></ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>{{ tally.notes }}</ion-col>
+                </ion-row>
               </ion-card-content>
             </ion-card>
           </ion-item>

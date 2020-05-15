@@ -81,7 +81,11 @@ const routes: Routes = [
       {
         path: 'tarja_tarjas',
         loadChildren: () => import('../modules/tallies/tally-list/tally-list.module').then(module => module.TallyListPageModule)
-      }
+      },
+      {
+        path: 'tarja_tratos',
+        loadChildren: () => import('../modules/tratos/tratos-list/tratos-list.module').then(m => m.TratosListPageModule)
+      },
     ]
   },
 ];

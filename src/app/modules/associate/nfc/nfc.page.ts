@@ -7,6 +7,7 @@ import {Device} from './device';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {AssociateWorkPage} from './associate-work/associate-work.page';
 import {ToastService} from '../../../shared/services/toast/toast.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-nfc',
@@ -163,9 +164,17 @@ export class NfcPage implements OnInit, OnDestroy {
         console.log(ex);
       });
     } else {
-      this.errors(exist);
-      this.scanned.unshift(exist);
-      this.nativeAudio.play('beep');
+      // this.errors(exist);
+      console.log(this.scanned, 'scanned');
+      console.log(exist, 'exist');
+
+      const indexScanned = this.scanned.find(item => item.id_device === exist.id_device);
+      console.log(indexScanned, 'indexScanned');
+
+      if (!indexScanned) {
+        this.scanned.unshift(exist);
+        this.nativeAudio.play('beep');
+      }
     }
     this.ref.markForCheck();
   }
@@ -179,9 +188,12 @@ export class NfcPage implements OnInit, OnDestroy {
     if (device.link && device.id_link) {
       this.isDelete = true;
       this.selected = device;
+      this.deassociateWork();
       return;
     }
     this.selected = device;
+
+    this.associateWork();
   }
 
   errors(device: any) {
@@ -270,6 +282,8 @@ export class NfcPage implements OnInit, OnDestroy {
     } else {
       deleted.delete = true;
     }
+
+    deleted.date = moment().format('YYYY-MM-DD HH:mm:ss');
 
     // console.log(deleted, 'deleted');
 

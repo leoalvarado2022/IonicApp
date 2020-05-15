@@ -92,6 +92,8 @@ export class AssociateWorkPage implements OnInit {
     body.id_link = worker.id;
     body.link = worker.names;
     body.tempId = tempId;
+    body.tempId = tempId;
+    body.date = moment().format('YYYY-MM-DD HH:mm:ss');
 
     if (body) {
       this.storeService.addDevicesToRecord(body);

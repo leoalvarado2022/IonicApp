@@ -27,7 +27,7 @@ const routes: Routes = [
   {
     path: 'testing-icons',
     loadChildren: () => import('./testing-icons/testing-icons.module').then( m => m.TestingIconsPageModule)
-  },
+  }
 ];
 
 @NgModule({

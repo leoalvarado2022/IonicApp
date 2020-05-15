@@ -255,7 +255,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public goToWorkerTallyList = (worker: any): void => {
     this.activeWorker = worker;
-    this.filteredTallies = this.getNumberOfWorkerTallies(worker);    
+    this.filteredTallies = this.getNumberOfWorkerTallies(worker);
   }
 
   /**

@@ -41,7 +41,7 @@ export class QualityEstimateFormComponent implements OnInit {
     private loaderService: LoaderService,
     private storeService: StoreService
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -83,7 +83,7 @@ export class QualityEstimateFormComponent implements OnInit {
     this.loadCalibers();
 
     this.qualityForm.valueChanges.subscribe(() => {
-      console.log('this.qualityForm.errors', this.qualityForm.get('quality')); 
+      console.log('this.qualityForm.errors', this.qualityForm.get('quality'));
     });
   }
 

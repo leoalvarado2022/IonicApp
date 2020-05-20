@@ -43,12 +43,12 @@ export class TratosListPage implements OnInit {
    */
   public reload = (event) => {
     event.target.complete();
-  };
+  }
 
   goToRegister = (item: any) => {
     console.log(item, 'item');
     this._router.navigate(['home-page/tarja_tratos/add-center-cost']);
-  };
+  }
 
   activeTrato = async () => {
     const modal = await this.modalController.create({
@@ -60,5 +60,5 @@ export class TratosListPage implements OnInit {
     });
 
     return await modal.present();
-  };
+  }
 }

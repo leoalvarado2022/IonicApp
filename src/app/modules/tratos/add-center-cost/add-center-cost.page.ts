@@ -17,7 +17,7 @@ export class AddCenterCostPage implements OnInit {
 
   constructor() {
     this.currentDate = moment().format('YYYY-MM-DD');
-    this.originalDate = moment().format('YYYY-MM-DD')
+    this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
@@ -32,7 +32,7 @@ export class AddCenterCostPage implements OnInit {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
     }
-  };
+  }
 
   /**
    * addDayToDate
@@ -41,7 +41,7 @@ export class AddCenterCostPage implements OnInit {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
     }
-  };
+  }
 
 
 }

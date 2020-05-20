@@ -39,7 +39,7 @@
       <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
     </h2>
 
-    <ion-virtual-scroll [items]="filteredQuadrilles">
+    <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder">
       <div *virtualItem="let quadrille">
         <ion-item (click)="selectQuadrille(quadrille)" detail="true">
           <ion-icon name="clipboard" slot="start"></ion-icon>
@@ -75,7 +75,7 @@
       </ion-button>
     </ion-item>
 
-    <ion-virtual-scroll [items]="filteredWorkers">
+    <ion-virtual-scroll [items]="filteredWorkers | alphabeticalOrder">
       <div *virtualItem="let worker">
         <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
           <ion-icon name="person" slot="start"></ion-icon>

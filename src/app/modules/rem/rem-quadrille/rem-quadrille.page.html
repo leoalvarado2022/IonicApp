@@ -28,23 +28,22 @@
     <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
   </h2>
 
-
-    <ion-virtual-scroll [items]="filteredQuadrilles">
-      <div *virtualItem="let quadrille">
-        <ion-item (click)="goToWorkers(quadrille)" detail="true">
-          <ion-icon *ngIf="showBadge(quadrille.id) === 0" name="clipboard" slot="start"></ion-icon>
-          <ion-badge color="success" *ngIf="showBadge(quadrille.id) > 0" slot="start">{{ showBadge(quadrille.id) }}</ion-badge>
-          <ion-label>
-            <h2>{{ quadrille.name }}</h2>
-            <p class="label-padding">{{ quadrille.responsibleName }}</p>
-            <p class="label-padding">
-              <ion-badge color="primary">
-                {{ getQuadrilleWorkers(quadrille.id) }} Personas
-              </ion-badge>
-            </p>
-          </ion-label>
-        </ion-item>
-      </div>
-    </ion-virtual-scroll>
+  <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder">
+    <div *virtualItem="let quadrille">
+      <ion-item (click)="goToWorkers(quadrille)" detail="true">
+        <ion-icon *ngIf="showBadge(quadrille.id) === 0" name="clipboard" slot="start"></ion-icon>
+        <ion-badge color="success" *ngIf="showBadge(quadrille.id) > 0" slot="start">{{ showBadge(quadrille.id) }}</ion-badge>
+        <ion-label>
+          <h2>{{ quadrille.name }}</h2>
+          <p class="label-padding">{{ quadrille.responsibleName }}</p>
+          <p class="label-padding">
+            <ion-badge color="primary">
+              {{ getQuadrilleWorkers(quadrille.id) }} Personas
+            </ion-badge>
+          </p>
+        </ion-label>
+      </ion-item>
+    </div>
+  </ion-virtual-scroll>
 
 </ion-content>

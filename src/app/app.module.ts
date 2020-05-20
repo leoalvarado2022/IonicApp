@@ -24,11 +24,16 @@ import {StoreService} from './shared/services/store/store.service';
 import {FCM} from '@ionic-native/fcm/ngx';
 import {Ndef, NFC} from '@ionic-native/nfc/ngx';
 import {NativeAudio} from '@ionic-native/native-audio/ngx';
+import localeCL from '@angular/common/locales/es-CL';
+import localeCLExtra from '@angular/common/locales/extra/es-CL';
+import {registerLocaleData} from '@angular/common';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
   decimalMarker: ','
 };
+
+registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
 @NgModule({
   declarations: [

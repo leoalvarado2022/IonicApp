@@ -28,6 +28,8 @@ import {TicketCardComponent} from '../modules/crm/tickets/ticket-card/ticket-car
 import {TicketsService} from '../modules/crm/services/tickets/tickets.service';
 import {NfcService} from './services/nfc/nfc.service';
 import {ContractsService} from '../modules/pre-contracts/services/contracts/contracts.service';
+import { AlphabeticalOrderPipe } from './pipes/alphabetical-order/alphabetical-order.pipe';
+import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import {ContractsService} from '../modules/pre-contracts/services/contracts/cont
     ImageViewerComponent,
     CustomDatetimePipe,
     RutPipe,
-    TicketCardComponent
+    TicketCardComponent,
+    AlphabeticalOrderPipe,
+    NumericOrderPipe
   ],
   imports: [
     CommonModule,
@@ -79,7 +83,9 @@ import {ContractsService} from '../modules/pre-contracts/services/contracts/cont
     ImageViewerComponent,
     CustomDatetimePipe,
     RutPipe,
-    TicketCardComponent
+    TicketCardComponent,
+    AlphabeticalOrderPipe,
+    NumericOrderPipe
   ],
   entryComponents: [
     ImageViewerComponent

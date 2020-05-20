@@ -427,10 +427,8 @@ export class TallyListPage implements OnInit, OnDestroy {
       if (tally.id === 0) {
         this.storeService.removeTalliesToRecord([tally.tempId]);
       } else {
-        const toDelete = Object.assign({}, tally, {id: tally.id * -1});
-        const deleteTallies = [];
-        deleteTallies.push(toDelete);
-        this.storeService.addTalliesToRecord(deleteTallies);
+        const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete'});
+        this.storeService.addTalliesToRecord(toDelete);
       }
     }
   }

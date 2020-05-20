@@ -110,7 +110,7 @@
           <ion-item class="no-padding-item" lines="none">
             <ion-card class="tally-card">
               <ion-item>
-                <ion-icon (click)="showTallyError(tally)" [color]="tally.hasOwnProperty('tempId') || tally.edit === true ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
+                <ion-icon (click)="showTallyError(tally)" [color]="tally.status === 'new' || tally.status === 'edit' ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
                 <ion-label>{{ getCostCenterName(tally.costCenterId) }}</ion-label>
                 <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
               </ion-item>

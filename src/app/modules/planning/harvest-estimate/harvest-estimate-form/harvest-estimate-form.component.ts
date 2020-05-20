@@ -2,11 +2,8 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CostCenter, EntityList, Generic, HarvestEstimate, Unit} from '@primetec/primetec-angular';
-import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
-import {AuthService} from '../../../../shared/services/auth/auth.service';
-import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {debounceTime} from 'rxjs/operators';
@@ -46,10 +43,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
-    private syncService: SyncService,
     private contractDetailService: ContractDetailService,
-    private authService: AuthService,
-    private toastService: ToastService,
     private httpService: HttpService,
     private loaderService: LoaderService,
     private storeService: StoreService

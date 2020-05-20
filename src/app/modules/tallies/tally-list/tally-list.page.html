@@ -110,7 +110,7 @@
           <ion-item class="no-padding-item" lines="none">
             <ion-card class="tally-card">
               <ion-item>
-                <ion-icon (click)="showTallyError(tally)" [color]="tally.hasOwnProperty('tempId') ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
+                <ion-icon (click)="showTallyError(tally)" [color]="tally.hasOwnProperty('tempId') || tally.edit === true ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
                 <ion-label>{{ getCostCenterName(tally.costCenterId) }}</ion-label>
                 <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
               </ion-item>
@@ -175,44 +175,42 @@
 </ion-content>
 
 <ion-footer>
-  <ng-container *ngIf="selectedWorkers.length > 0">
-    <!-- One worker selected -->
-    <ion-row *ngIf="selectedWorkers.length === 1 && !activeWorker">
-      <ion-col size="6">
-        <ion-button color="success" expand="block" (click)="createTally()">
-          Agregar Jornada
-        </ion-button>
-      </ion-col>
+  <!-- One worker selected -->
+  <ion-row *ngIf="selectedWorkers.length === 1 && !activeWorker">
+    <ion-col size="6">
+      <ion-button color="success" expand="block" (click)="createTally()">
+        Agregar Jornada
+      </ion-button>
+    </ion-col>
 
-      <ion-col size="6">
-        <ion-button color="primary" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0])">
-          Ver Tarjas
-        </ion-button>
-      </ion-col>
-    </ion-row>
+    <ion-col size="6">
+      <ion-button color="primary" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0])">
+        Ver Tarjas
+      </ion-button>
+    </ion-col>
+  </ion-row>    
 
-    <!-- Worker tally list -->
-    <ion-row *ngIf="activeWorker">
-      <ion-col>
-        <ion-button color="success" expand="block" (click)="createTally()" [disabled]="getTotalWorkerWork(activeWorker) >= activeWorker.dailyMax">
-          Agregar Jornada
-        </ion-button>
-      </ion-col>
-    </ion-row>
+  <!-- Several workers selected -->
+  <ion-row *ngIf="selectedWorkers.length > 1">
+    <ion-col size="6">
+      <ion-button color="success" expand="block" (click)="createTally()">
+        Agregar Masivo
+      </ion-button>
+    </ion-col>
 
-    <!-- Several workers selected -->
-    <ion-row *ngIf="selectedWorkers.length > 1">
-      <ion-col size="6">
-        <ion-button color="success" expand="block" (click)="createTally()">
-          Agregar Masivo
-        </ion-button>
-      </ion-col>
+    <ion-col size="6">
+      <ion-button color="primary" expand="block"  (click)="createMultipleTally()"  [disabled]="checkNotEditableTallies()">
+        Modificar Masivo
+      </ion-button>
+    </ion-col>
+  </ion-row>
 
-      <ion-col size="6">
-        <ion-button color="primary" expand="block"  (click)="createMultipleTally()"  [disabled]="checkNotEditableTallies()">
-          Modificar Masivo
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ng-container>
+  <!-- Worker tally list -->
+  <ion-row *ngIf="activeWorker">
+    <ion-col>
+      <ion-button color="success" expand="block" (click)="createTally()" [disabled]="getTotalWorkerWork(activeWorker) >= activeWorker.dailyMax">
+        Agregar Jornada
+      </ion-button>
+    </ion-col>
+  </ion-row>  
 </ion-footer>

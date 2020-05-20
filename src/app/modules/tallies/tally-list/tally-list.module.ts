@@ -4,6 +4,7 @@ import {TallyListPage} from './tally-list.page';
 import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../../../shared/shared.module';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 const routes: Routes = [
   {
@@ -15,10 +16,14 @@ const routes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    NgxMaskModule
   ],
   declarations: [
     TallyListPage,
+    TallyFormComponent
+  ],
+  entryComponents: [
     TallyFormComponent
   ]
 })

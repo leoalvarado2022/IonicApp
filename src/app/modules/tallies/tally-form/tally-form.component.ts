@@ -61,7 +61,7 @@ export class TallyFormComponent implements OnInit {
   ngOnInit() {
     const activeCompany = this.storeService.getActiveCompany();
 
-    this.costCenters = [...this.storeService.getCostCenters()];
+    this.costCenters = [...this.storeService.getCostCentersCustom()];
     this.labors = [...this.storeService.getLabors()];
     this.deals = [...this.storeService.getDeals()];
     this.bonds = [...this.storeService.getBonds()];
@@ -305,7 +305,7 @@ export class TallyFormComponent implements OnInit {
       validity: worker.validity,
       tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
-      performance: formData.hoursExtra ? formData.performance : 0
+      performance: formData.performance ? formData.performance : 0
     });
   }
 
@@ -318,7 +318,8 @@ export class TallyFormComponent implements OnInit {
       validity: worker.validity,
       tempId: this.editTally.tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
-      performance: formData.hoursExtra ? formData.performance : 0
+      performance: formData.performance ? formData.performance : 0,
+      edit: true
     });
   }
 
@@ -472,7 +473,9 @@ export class TallyFormComponent implements OnInit {
     const todayTallies = this.storeService.getNumberOfWorkerTallies(worker, this.dateSelected);
     const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 
-    return worker.dailyMax - totalWorked > 0 ? worker.dailyMax - totalWorked : 0;
+    const total = worker.dailyMax - totalWorked > 0 ? worker.dailyMax - totalWorked : 0;
+
+    return parseFloat(total.toFixed(2));
   }
 
   /**
@@ -490,6 +493,8 @@ export class TallyFormComponent implements OnInit {
 
         return item.id_costCenter === costCenterId && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
       });
+
+      console.log('this.availableDeals', this.availableDeals);
     }
   }
 
@@ -508,7 +513,7 @@ export class TallyFormComponent implements OnInit {
    * selectDeal
    */
   public selectDeal = (deal: any): void => {
-    this.tallyForm.get('dealId').patchValue(deal.id);
+    this.tallyForm.get('dealId').patchValue(deal.id_deal_validity);
     this.tallyForm.get('unit').patchValue(deal.unit_control);
     this.filteredDeals = [];
     this.dealName = deal.name_deal;

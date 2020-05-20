@@ -2,10 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Caliber, CostCenter, Generic, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
-import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
-import {SyncService} from '../../../../shared/services/sync/sync.service';
-import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {StoreService} from '../../../../shared/services/store/store.service';
@@ -39,15 +36,12 @@ export class QualityEstimateFormComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
     private contractDetailService: ContractDetailService,
-    private syncService: SyncService,
-    private toastService: ToastService,
     private httpService: HttpService,
     private loaderService: LoaderService,
     private storeService: StoreService
   ) {
-
+    
   }
 
   ngOnInit() {
@@ -87,6 +81,10 @@ export class QualityEstimateFormComponent implements OnInit {
     }
 
     this.loadCalibers();
+
+    this.qualityForm.valueChanges.subscribe(() => {
+      console.log('this.qualityForm.errors', this.qualityForm.get('quality')); 
+    });
   }
 
   /**
@@ -154,7 +152,7 @@ export class QualityEstimateFormComponent implements OnInit {
 
     let accum = 0;
     for (const item of items.controls) {
-      const percentage = item.get('percentage').value ? item.get('percentage').value : 0;
+      const percentage = item.get('percentage').value ? parseFloat(item.get('percentage').value) : 0;
       if (percentage && percentage > 0) {
         accum = accum + percentage;
       }

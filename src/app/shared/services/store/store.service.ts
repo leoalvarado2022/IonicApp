@@ -1294,15 +1294,28 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * addTalliesToRecord
    * @param tallies
    */
-  public addTalliesToRecord = (talliesToRecord: Array<Tally>): void => {
+  public addTalliesToRecord = (tallyToRecord: Tally): void => {
     const currentTallies = this.getTalliesToRecord();
-    const toSearch = talliesToRecord.map(x => x.tempId);
-    const toRemove = currentTallies.filter(current => !toSearch.includes(current.tempId));
+    currentTallies.push(tallyToRecord);
 
-    const toRecord = {...this.getState().toRecord, talliesToRecord: [...talliesToRecord, ...toRemove]};
+    const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
     this.setState({toRecord}, StoreActions.AddTallies);
 
     this.increaseTallyTempId();
+  }
+
+  /**
+   * editTallyToRecord
+   */
+  public editTallyToRecord = (tallyToRecord: any): void => {
+    const currentTallies = this.getTalliesToRecord();
+    const index = currentTallies.findIndex(item => item.tempId === tallyToRecord.tempId);
+
+    currentTallies.splice(index, 1);
+    currentTallies.push(tallyToRecord);
+
+    const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
+    this.setState({toRecord}, StoreActions.AddTallies);
   }
 
   /**
@@ -1313,7 +1326,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     const tallies = this.getTalliesToRecord();
     const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
 
-    const toRecord = {...this.getState().toRecord, talliesToRecord: [...toRemoved]};
+    const toRecord = {...this.getState().toRecord, talliesToRecord: toRemoved};
     this.setState({toRecord}, StoreActions.RemoveTallies);
 
     return toRemoved.length;
@@ -1361,7 +1374,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getNumberOfWorkerTallies = (worker: any, currentDate: string, ignoreId: number = null): Array<Tally> => {
     // Get the tallys to be deleted and convert the ID to positive for comparison use
-    const markedToDelete = this.getTalliesToRecord().map(item => item.id < 0 ? item.id * -1 : item.id);
+    const markedToDelete = this.getTalliesToRecord().filter(item => item.status === 'delete').map(item => item.id * -1);
 
     // Filter synced tallies by current date and not marked for delete
     const filteredTallies = this.getTallies().filter(item => {
@@ -1376,7 +1389,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
       const tallyDate = this.removeTimeFromDate(item.date);
       const current = this.removeTimeFromDate(currentDate);
 
-      return item.workerId === worker.id && tallyDate === current && item.id > -1 && item.tempId !== ignoreId ;
+      return item.workerId === worker.id && tallyDate === current && item.status !== 'delete' && item.tempId !== ignoreId;
     });
 
     // Return joined lists
@@ -1388,7 +1401,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param date
    */
   public removeTimeFromDate = (date: string): string => {
-    if (date.includes('T')) {
+    if (date && date.includes('T')) {
       return date.split('T')[0];
     }
 

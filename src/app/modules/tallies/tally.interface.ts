@@ -15,5 +15,5 @@ export interface Tally {
   notes: string;
   creatorId?: number;
   tempId?: number;
-  edit: boolean;
+  status?: 'new' | 'edit' | 'delete';
 }

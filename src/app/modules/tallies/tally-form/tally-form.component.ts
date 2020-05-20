@@ -81,7 +81,7 @@ export class TallyFormComponent implements OnInit {
       date: [this.dateSelected, Validators.required],
       costCenterId: ['', Validators.required],
       laborId: ['', Validators.required],
-      dealId: [''],
+      dealValidity: [''],
       bondValidity: [''],
       workingDay: [workingDayStartValue, [
         Validators.required,
@@ -100,7 +100,8 @@ export class TallyFormComponent implements OnInit {
         id: this.editTally.id,
         costCenterId: this.editTally.costCenterId,
         laborId: this.editTally.laborId,
-        dealId: this.editTally.dealId,
+        dealValidity: this.editTally.dealValidity,
+        bondValidity: this.editTally.bondValidity,
         workingDay: this.editTally.workingDay ? this.editTally.workingDay : '',
         hoursExtra: this.editTally.hoursExtra ? this.editTally.hoursExtra : '',
         performance: this.editTally.performance ? this.editTally.performance : '',
@@ -114,10 +115,10 @@ export class TallyFormComponent implements OnInit {
       const labor = this.labors.find(item => item.id === this.editTally.laborId);
       this.laborName = labor.name;
 
-      const deal = this.deals.find(item => item.id === this.editTally.dealId);
+      const deal = this.deals.find(item => item.id_deal_validity === this.editTally.dealValidity);
       this.dealName = deal ? deal.name_deal : '';
 
-      const bond = this.bonds.find(item => item.id === this.editTally.bondValidity);
+      const bond = this.bonds.find(item => item.bondValidity === this.editTally.bondValidity);
       this.bondName = bond ? bond.bondName : '';
 
       this.getDeals();
@@ -280,23 +281,27 @@ export class TallyFormComponent implements OnInit {
     const talliesToRecord = [];
     if (this.multipleWorkers.length > 0) {
       for (const worker of this.workers) {
-        talliesToRecord.push(this.newMultipleTally(worker, formData));
+        this.storeService.addTalliesToRecord(this.newMultipleTally(worker, formData));
       }
     } else {
       for (const worker of this.workers) {
-        const newTally = this.editTally ? this.editSingleTally(worker, formData) : this.newSingleTally(worker, formData);
-        talliesToRecord.push(newTally);
+        if (this.editTally ) {
+          const newTally = this.editSingleTally(worker, formData);
+          this.storeService.editTallyToRecord(newTally);
+        } else {
+          const newTally = this.newSingleTally(worker, formData);
+          this.storeService.addTalliesToRecord(newTally);
+        }        
       }
     }
 
-    this.storeService.addTalliesToRecord(talliesToRecord);
     this.closeModal(true);
   }
 
   /**
    * newSingleTally
    */
-  private newSingleTally = (worker: any, formData: any): object => {
+  private newSingleTally = (worker: any, formData: any): Tally => {
     const tempId = this.storeService.getTallyTempId();
     this.storeService.increaseTallyTempId();
 
@@ -305,28 +310,29 @@ export class TallyFormComponent implements OnInit {
       validity: worker.validity,
       tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
-      performance: formData.performance ? formData.performance : 0
+      performance: formData.performance ? formData.performance : 0,
+      status: 'new'
     });
   }
 
   /**
    * editSingleTally
    */
-  private editSingleTally = (worker: any, formData: any) => {
+  private editSingleTally = (worker: any, formData: any): Tally => {
     return Object.assign({}, formData, {
       workerId: worker.id,
       validity: worker.validity,
       tempId: this.editTally.tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
       performance: formData.performance ? formData.performance : 0,
-      edit: true
+      status: 'edit'
     });
   }
 
   /**
    * newMultipleTally
    */
-  private newMultipleTally = (worker: any, formData: any): object => {
+  private newMultipleTally = (worker: any, formData: any): Tally => {
     const tempId = this.storeService.getTallyTempId();
     this.storeService.increaseTallyTempId();
     const data = formData.multiple.find(i => i.id === worker.id);
@@ -337,7 +343,8 @@ export class TallyFormComponent implements OnInit {
       tempId,
       workingDay: data['jr'],
       hoursExtra: data['h'] || 0,
-      performance: data['r'] || 0
+      performance: data['r'] || 0,
+      status: 'new'
     });
   }
 
@@ -491,10 +498,8 @@ export class TallyFormComponent implements OnInit {
         const start = moment(item.date_init).toISOString();
         const end = moment(item.date_end).toISOString();
 
-        return item.id_costCenter === costCenterId && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
+        return (item.allCostCenters || item.id_costCenter === costCenterId) && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
       });
-
-      console.log('this.availableDeals', this.availableDeals);
     }
   }
 
@@ -513,7 +518,7 @@ export class TallyFormComponent implements OnInit {
    * selectDeal
    */
   public selectDeal = (deal: any): void => {
-    this.tallyForm.get('dealId').patchValue(deal.id_deal_validity);
+    this.tallyForm.get('dealValidity').patchValue(deal.id_deal_validity);
     this.tallyForm.get('unit').patchValue(deal.unit_control);
     this.filteredDeals = [];
     this.dealName = deal.name_deal;
@@ -523,7 +528,7 @@ export class TallyFormComponent implements OnInit {
    * cleanDealSearch
    */
   public cleanDealSearch = (): void => {
-    this.tallyForm.get('dealId').patchValue('');
+    this.tallyForm.get('dealValidity').patchValue('');
     this.tallyForm.get('unit').patchValue('');
     this.dealName = null;
     this.filteredDeals = [];
@@ -562,7 +567,7 @@ export class TallyFormComponent implements OnInit {
    * selectBond
    */
   public selectBond = (bond: any): void => {
-    this.tallyForm.get('bondValidity').patchValue(bond.id);
+    this.tallyForm.get('bondValidity').patchValue(bond.bondValidity);
     this.filteredBonds = [];
     this.bondName = bond.bondName;
   }

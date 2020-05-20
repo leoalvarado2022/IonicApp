@@ -21,9 +21,9 @@ export class AddTratoPage implements OnInit {
    */
   public closeWork = async (data: any = null) => {
     await this.modalController.dismiss({
-      'data': data
+      data
     });
-  };
+  }
 
 
   /**

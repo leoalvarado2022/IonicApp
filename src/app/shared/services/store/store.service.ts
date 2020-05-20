@@ -1376,7 +1376,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
       const tallyDate = this.removeTimeFromDate(item.date);
       const current = this.removeTimeFromDate(currentDate);
 
-      return item.workerId === worker.id && tallyDate === current && item.tempId !== ignoreId;
+      return item.workerId === worker.id && tallyDate === current && item.id > -1 && item.tempId !== ignoreId ;
     });
 
     // Return joined lists

@@ -52,7 +52,7 @@
           <div class="card-text-one">
             <p>{{ contract.totalQuantity }} {{ showUnitName() | uppercase }}</p>
             <p># {{ contract.documentNumber }}</p>
-            <p>{{ contract.date| customDate }}</p>
+            <p>{{ contract.date | customDate }}</p>
             <p>{{ contract.responsibleName }}</p>
           </div>
         </div>
@@ -61,7 +61,7 @@
   </ng-container>
 </div>
 
-<!--  header-->
+<!-- header-->
 <ion-content>
 
   <!--  estimaciones-->
@@ -70,7 +70,7 @@
       <p>{{ showUnitName() | uppercase }} CONTRATADOS</p>
       <p>
         <ion-icon color="danger" name="arrow-up"></ion-icon>&nbsp;
-        <span>{{ getTotal() | number:'1.0-0':'es-CL' }}</span>
+        <span>{{ getTotal() | number:'1.0-0':'es-CL' }}</span>        
       </p>
     </div>
     <div>

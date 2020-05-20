@@ -13,9 +13,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {Device} from '@ionic-native/device/ngx';
 import {SharedModule} from './shared/shared.module';
 import {Camera} from '@ionic-native/camera/ngx';
-import localeCL from '@angular/common/locales/es-CL';
-import localeCLExtra from '@angular/common/locales/extra/es-CL';
-import {registerLocaleData} from '@angular/common';
 import {NetworkService} from './shared/services/network/network.service';
 import {RouteReuseStrategy} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
@@ -27,13 +24,16 @@ import {StoreService} from './shared/services/store/store.service';
 import {FCM} from '@ionic-native/fcm/ngx';
 import {Ndef, NFC} from '@ionic-native/nfc/ngx';
 import {NativeAudio} from '@ionic-native/native-audio/ngx';
-
-registerLocaleData(localeCL, 'es-CL', localeCLExtra);
+import localeCL from '@angular/common/locales/es-CL';
+import localeCLExtra from '@angular/common/locales/extra/es-CL';
+import {registerLocaleData} from '@angular/common';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
   decimalMarker: ','
 };
+
+registerLocaleData(localeCL, 'es-CL', localeCLExtra);
 
 @NgModule({
   declarations: [

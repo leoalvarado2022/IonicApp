@@ -27,7 +27,6 @@ export class AppComponent {
     private toastService: ToastService
   ) {
     this.initializeApp();
-
   }
 
   initializeApp() {

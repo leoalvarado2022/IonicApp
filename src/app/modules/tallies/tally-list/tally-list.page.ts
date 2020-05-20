@@ -28,7 +28,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public selectedWorkers: Array<any> = [];
   public activeWorker: any = null;
 
-  // Tallies  
+  // Tallies
   public filteredTallies: Array<Tally> = [];
 
   // Form dates
@@ -98,7 +98,7 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.reloadTallies();
 
     // Form data
-    this.costCenters = [...this.storeService.getCostCenters()];
+    this.costCenters = [...this.storeService.getCostCentersCustom()];
     this.labors = [...this.storeService.getLabors()];
     this.deals = [...this.storeService.getDeals()];
     this.bonds = [...this.storeService.getBonds()];
@@ -255,7 +255,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public goToWorkerTallyList = (worker: any): void => {
     this.activeWorker = worker;
-    this.filteredTallies = this.getNumberOfWorkerTallies(worker);
+    this.filteredTallies = [...this.getNumberOfWorkerTallies(worker)];
   }
 
   /**
@@ -287,13 +287,15 @@ export class TallyListPage implements OnInit, OnDestroy {
         editTally: tally
       },
       backdropDismiss: false,
-      keyboardClose: false,
-      cssClass: 'full-screen-modal'
+      keyboardClose: false
     });
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.reloadTallies();
+        this.selectedWorkers = [];
+        if (this.activeWorker) {
+          this.selectedWorkers.push(this.activeWorker);
+        }
       }
     });
 
@@ -422,10 +424,14 @@ export class TallyListPage implements OnInit, OnDestroy {
     slide.close();
 
     if (response) {
-      const toDelete = Object.assign({}, tally, {id: tally.id * -1});
-      const deleteTallies = [];
-      deleteTallies.push(toDelete);
-      this.storeService.addTalliesToRecord(deleteTallies);
+      if (tally.id === 0) {
+        this.storeService.removeTalliesToRecord([tally.tempId]);
+      } else {
+        const toDelete = Object.assign({}, tally, {id: tally.id * -1});
+        const deleteTallies = [];
+        deleteTallies.push(toDelete);
+        this.storeService.addTalliesToRecord(deleteTallies);
+      }
     }
   }
 

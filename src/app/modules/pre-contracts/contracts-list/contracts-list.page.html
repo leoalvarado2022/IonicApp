@@ -25,7 +25,7 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-virtual-scroll [items]="filteredContracts">
+  <ion-virtual-scroll [items]="filteredContracts | numericOrder:'id':true ">
     <div *virtualItem="let contract">
       <app-contract-list-item
         [contract]="contract"

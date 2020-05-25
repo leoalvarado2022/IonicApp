@@ -39,28 +39,28 @@
         <ion-item>
           <ion-label>Estado</ion-label>
           <ion-select formControlName="state" placeholder="Estado" cancelText="Cancelar" interface="action-sheet" [interfaceOptions]="actionHeader">
-            <ion-select-option *ngFor="let state of states" [value]="state.name">{{ state.name | titlecase }}</ion-select-option>
+            <ion-select-option *ngFor="let state of states | alphabeticalOrder" [value]="state.name">{{ state.name | titlecase }}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item>
           <ion-label>Asignado</ion-label>
           <ion-select formControlName="assigned_id" placeholder="Asignado" cancelText="Cancelar" interface="action-sheet" [interfaceOptions]="actionHeader">
-            <ion-select-option *ngFor="let user of users" [value]="user.id">{{ user.name | titlecase }}</ion-select-option>
+            <ion-select-option *ngFor="let user of users | alphabeticalOrder" [value]="user.id">{{ user.name | titlecase }}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item>
           <ion-label>Prioridad</ion-label>
           <ion-select formControlName="priority" placeholder="Prioridad" cancelText="Cancelar" interface="action-sheet" [interfaceOptions]="actionHeader">
-            <ion-select-option *ngFor="let priority of priorities" [value]="priority.name">{{ priority.name | titlecase }}</ion-select-option>
+            <ion-select-option *ngFor="let priority of priorities | alphabeticalOrder" [value]="priority.name">{{ priority.name | titlecase }}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item>
           <ion-label>Dificultad</ion-label>
           <ion-select formControlName="difficulty" placeholder="Dificultad" cancelText="Cancelar" interface="action-sheet" [interfaceOptions]="actionHeader">
-            <ion-select-option *ngFor="let difficulty of difficulties" [value]="difficulty.level">{{ difficulty.name | titlecase }}</ion-select-option>
+            <ion-select-option *ngFor="let difficulty of difficulties | alphabeticalOrder" [value]="difficulty.level">{{ difficulty.name | titlecase }}</ion-select-option>
           </ion-select>
         </ion-item>
 

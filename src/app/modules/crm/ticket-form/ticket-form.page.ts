@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {ToastService} from '../../../shared/services/toast/toast.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {TicketsService} from '../services/tickets/tickets.service';
 import {HttpService} from '../../../shared/services/http/http.service';
@@ -42,7 +41,6 @@ export class TicketFormPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
-    private toastService: ToastService,
     private loaderService: LoaderService,
     private ticketsService: TicketsService,
     private httpService: HttpService,
@@ -115,7 +113,7 @@ export class TicketFormPage implements OnInit {
   public submitDetail = () => {
     const formData = Object.assign({}, this.ticketForm.value);
     const userSelected = this.users.find(i => i.id === formData.assigned_id);
-    formData.assign_client = userSelected.clientContact === 0 ? false : true;
+    formData.assign_client = userSelected.clientContact;
     formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt).format('YYYY-MM-DD') : '';
     formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt).format('YYYY-MM-DD') : '';
     this.activeTicket.maxResolution = moment(this.activeTicket.maxResolution).format('YYYY-MM-DD HH:mm:ss');

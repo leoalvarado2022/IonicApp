@@ -1,5 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ValidateRut} from '@primetec/primetec-angular';
 
 @Component({
   selector: 'app-associate-work',
@@ -8,12 +10,24 @@ import {ModalController} from '@ionic/angular';
 })
 export class AddTratoPage implements OnInit {
 
-  constructor(public modalController: ModalController) {
+  @Input() deals: any;
+  public activeForm: FormGroup;
+
+  constructor(public modalController: ModalController,
+              private formBuilder: FormBuilder) {
   }
 
 
   ngOnInit() {
+    console.log(this.deals, 'deal modal');
 
+    this.activeForm = this.formBuilder.group({
+      id: ['', Validators.required],
+      option: ['', Validators.required],
+      automatico: [true, Validators.required],
+      name_labor: ['', Validators.required],
+      unit_control: ['', Validators.required],
+    });
   }
 
   /**
@@ -23,7 +37,7 @@ export class AddTratoPage implements OnInit {
     await this.modalController.dismiss({
       data
     });
-  }
+  };
 
 
   /**
@@ -36,4 +50,29 @@ export class AddTratoPage implements OnInit {
     await this.closeWork();
   }
 
+
+  /**
+   * onSubmit
+   */
+  public onSubmit() {
+    const data = Object.assign({}, this.activeForm.value);
+
+    console.log(data, 'data');
+  }
+
+  /**
+   * @description select change value
+   * @param event
+   */
+  public change(event: any) {
+
+    const deal = this.deals.find(data => data.id === event.target.value);
+
+    if (deal) {
+      this.activeForm.patchValue({
+        name_labor: deal.name_labor,
+        unit_control: deal.unit_control
+      });
+    }
+  }
 }

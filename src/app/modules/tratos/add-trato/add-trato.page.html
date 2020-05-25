@@ -1,13 +1,13 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
-    <ion-buttons slot="start">
-      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    <ion-buttons slot="start" (click)="closeWork()" class="arrow-left">
+      <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-buttons>
     <ion-title>
-      <strong>Activar Trato</strong>
+      <strong>Buscar Trabajador</strong>
     </ion-title>
-    <ion-buttons slot="end" (click)="closeWork()" class="closeModal closeModalWork">
-      <ion-icon name="close-circle-outline"></ion-icon>
+    <ion-buttons slot="end">
+      <app-notifications></app-notifications>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -18,51 +18,65 @@
     <ion-row>
       <ion-card>
         <ion-card-content>
-          <ion-grid>
-            <ion-row>
-              <ion-col size="12">
-                <ion-item style="width: 100%;">
-                  <ion-label position="floating">Elegir tratos</ion-label>
-                  <ion-select value="" interface="action-sheet">
-                    <ion-select-option value="enable">Enable</ion-select-option>
-                    <ion-select-option value="mute">Mute</ion-select-option>
-                    <ion-select-option value="mute_week">Mute for a week</ion-select-option>
-                  </ion-select>
-                </ion-item>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col size="7">
-                <ion-item>
-                  <ion-label position="floating">Labor</ion-label>
-                  <ion-input value="Labor" readonly></ion-input>
-                </ion-item>
-              </ion-col>
-              <ion-col size="5">
-                <ion-item>
-                  <ion-label position="floating">Unidad</ion-label>
-                  <ion-input value="Kg" readonly></ion-input>
-                </ion-item>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-             <ion-col size="12">
-               <ion-item style="width: 100%;">
-                 <ion-label position="floating">Metodo de Registro</ion-label>
-                 <ion-select value="enable" interface="action-sheet">
-                   <ion-select-option value="enable">Peso</ion-select-option>
-                   <ion-select-option value="mute">Conteo</ion-select-option>
-                   <ion-select-option value="mute_week">Rendimiento</ion-select-option>
-                 </ion-select>
-               </ion-item>
-             </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col size="12">
-                <ion-button expand="block" (click)="onPress()">Activar</ion-button>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+          <form (ngSubmit)="onSubmit()" [formGroup]="activeForm">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item style="width: 100%;">
+                    <ion-label position="floating">Elegir tratos</ion-label>
+                    <ion-select formControlName="id" interface="action-sheet" (ionChange)="change($event)">
+                      <ion-select-option [value]="deal.id" *ngFor="let deal of deals">{{deal.name_deal}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <ng-container *ngIf="activeForm.get('id').errors && !activeForm.invalid">
+                    <span *ngIf="activeForm.get('id').hasError('required')" style="color: red">Debe elegir un trato.</span>
+                  </ng-container>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="7">
+                  <ion-item>
+                    <ion-label position="floating">Labor</ion-label>
+                    <ion-input formControlName="name_labor" readonly></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="5">
+                  <ion-item>
+                    <ion-label position="floating">Unidad</ion-label>
+                    <ion-input formControlName="unit_control" readonly></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item style="width: 100%;">
+                    <ion-label position="floating">Metodo de Registro</ion-label>
+                    <ion-select formControlName="option" interface="action-sheet">
+                      <ion-select-option value="0">Peso</ion-select-option>
+                      <ion-select-option value="1">Conteo</ion-select-option>
+                      <ion-select-option value="2">Rendimiento</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <ng-container *ngIf="activeForm.get('option').errors && !activeForm.invalid">
+                    <span *ngIf="activeForm.get('option').hasError('required')" style="color: red">Debe elegir un método.</span>
+                  </ng-container>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-item>
+                    <ion-label>Automatico</ion-label>
+                    <ion-checkbox slot="end" formControlName="automatico"></ion-checkbox>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="12">
+                  <ion-button expand="block" [disabled]="activeForm.invalid">Activar</ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </form>
         </ion-card-content>
       </ion-card>
 

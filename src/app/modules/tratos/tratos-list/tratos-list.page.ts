@@ -14,28 +14,12 @@ export class TratosListPage implements OnInit {
   constructor(public modalController: ModalController,
               private _router: Router,
               private _DealService: DealsService) { }
-
-   images = [
-    'bandit',
-    'batmobile',
-    'blues-brothers',
-    'bueller',
-    'delorean',
-    'eleanor',
-    'general-lee',
-    'ghostbusters',
-    'knight-rider',
-    'mirth-mobile'
-  ];
-
   deals: any;
 
   ngOnInit() {
+    const deals = this._DealService.getDeals();
 
-    this.deals = this._DealService.getDeals();
-
-    console.log(this.deals, 'deals');
-
+    this.deals = deals.filter(data => data.nfc);
   }
 
   /**
@@ -51,8 +35,10 @@ export class TratosListPage implements OnInit {
   }
 
   activeTrato = async () => {
+    const deals = this._DealService.getDeals();
     const modal = await this.modalController.create({
-      component: AddTratoPage
+      component: AddTratoPage,
+      componentProps: {deals}
     });
 
     modal.onDidDismiss().then((data) => {

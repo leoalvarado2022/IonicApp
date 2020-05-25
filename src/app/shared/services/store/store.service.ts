@@ -1300,8 +1300,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
     this.setState({toRecord}, StoreActions.AddTallies);
-
-    this.increaseTallyTempId();
   }
 
   /**
@@ -1310,12 +1308,25 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public editTallyToRecord = (tallyToRecord: any): void => {
     const currentTallies = this.getTalliesToRecord();
     const index = currentTallies.findIndex(item => item.tempId === tallyToRecord.tempId);
-
-    currentTallies.splice(index, 1);
-    currentTallies.push(tallyToRecord);
+    if (index > -1) {
+      currentTallies[index] = tallyToRecord;
+    } else {
+      currentTallies.push(tallyToRecord);
+    }
 
     const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
-    this.setState({toRecord}, StoreActions.AddTallies);
+    this.setState({toRecord}, StoreActions.EditTallies);
+  }
+
+  /**
+   * removeTallyToRecord
+   */
+  public removeTallyToRecord = (tallyToRecord: any): void => {
+    let currentTallies = this.getTalliesToRecord();
+    currentTallies = currentTallies.filter(item => item.id !== tallyToRecord.id);
+
+    const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
+    this.setState({toRecord}, StoreActions.DeleteTallies);
   }
 
   /**
@@ -1324,9 +1335,10 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public removeTalliesToRecord = (indexes: Array<number>): number => {
     const tallies = this.getTalliesToRecord();
-    const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
 
+    const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
     const toRecord = {...this.getState().toRecord, talliesToRecord: toRemoved};
+
     this.setState({toRecord}, StoreActions.RemoveTallies);
 
     return toRemoved.length;
@@ -1348,8 +1360,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, talliesWithErrors: [...talliesWithErrors, ...tallies]};
     this.setState({toRecord}, StoreActions.AddTalliesWithErrors);
-
-    this.increaseTallyTempId();
   }
 
   /**
@@ -1376,12 +1386,15 @@ export class StoreService extends ObservableStore<StoreInterface> {
     // Get the tallys to be deleted and convert the ID to positive for comparison use
     const markedToDelete = this.getTalliesToRecord().filter(item => item.status === 'delete').map(item => item.id * -1);
 
+    // Get the tallys to be edited
+    const markedToEdit = this.getTalliesToRecord().filter(item => item.status === 'edit').map(item => item.id);
+
     // Filter synced tallies by current date and not marked for delete
     const filteredTallies = this.getTallies().filter(item => {
       const tallyDate = this.removeTimeFromDate(item.date);
       const current = this.removeTimeFromDate(currentDate);
 
-      return item.workerId === worker.id && tallyDate === current && !markedToDelete.includes(item.id);
+      return item.workerId === worker.id && tallyDate === current && !markedToDelete.includes(item.id) && !markedToEdit.includes(item.id);
     });
 
     // Filter tallies to record by current date and that are not being edited

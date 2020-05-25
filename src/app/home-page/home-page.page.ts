@@ -142,8 +142,24 @@ export class HomePagePage implements OnInit, OnDestroy {
   private recordTallies = (): void => {
     const toRecord = this.storeService.getTalliesToRecord();
 
-    if (toRecord && toRecord.length > 0) {
-      this.tallyService.recordTallies(toRecord).subscribe((success: any) => {
+    const mapStatus = toRecord.map(item => {
+      if (item.status === 'delete') {
+        return Object.assign({}, item, { order: 1});
+      }
+
+      if (item.status === 'edit') {
+        return Object.assign({}, item, { order: 2});
+      }
+
+      if (item.status === 'new') {
+        return Object.assign({}, item, { order: 3});
+      }
+
+      return item;
+    });
+
+    if (mapStatus && mapStatus.length > 0) {
+      this.tallyService.recordTallies(mapStatus).subscribe((success: any) => {
         this.checkRecordedTallies(success.log);
         this.syncStepObservable.next(2);
       }, error => {

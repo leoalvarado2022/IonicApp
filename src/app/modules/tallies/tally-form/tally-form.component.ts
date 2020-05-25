@@ -20,6 +20,12 @@ export class TallyFormComponent implements OnInit {
   public currentStep = 1;
   public split = 0;
 
+  public readonly actionHeader: any = {
+    header: 'Seleccione',
+    keyboardClose: false,
+    backdropDismiss: false
+  };
+
   private costCenters: Array<any> = [];
   public filteredCostCenters: Array<any> = [];
   public costCenterName: string;
@@ -30,13 +36,9 @@ export class TallyFormComponent implements OnInit {
 
   private deals: Array<any> = [];
   public availableDeals: Array<any> = [];
-  public filteredDeals: Array<any> = [];
-  public dealName: string;
 
   private bonds: Array<any> = [];
   public availableBonds: Array<any> = [];
-  public filteredBonds: Array<any> = [];
-  public bondName: string;
 
   public readonly workingDays: Array<any> = [
     {text: '1', value: 1},
@@ -68,8 +70,6 @@ export class TallyFormComponent implements OnInit {
 
     this.filteredCostCenters = [];
     this.filteredLabors = [];
-    this.filteredDeals = [];
-    this.filteredBonds = [];
 
     let workingDayStartValue = 1;
     if (this.workers.length === 1) {
@@ -114,12 +114,6 @@ export class TallyFormComponent implements OnInit {
 
       const labor = this.labors.find(item => item.id === this.editTally.laborId);
       this.laborName = labor.name;
-
-      const deal = this.deals.find(item => item.id_deal_validity === this.editTally.dealValidity);
-      this.dealName = deal ? deal.name_deal : '';
-
-      const bond = this.bonds.find(item => item.bondValidity === this.editTally.bondValidity);
-      this.bondName = bond ? bond.bondName : '';
 
       this.getDeals();
       this.getBonds();
@@ -194,10 +188,7 @@ export class TallyFormComponent implements OnInit {
     this.costCenterName = null;
 
     this.availableDeals = [];
-    this.cleanDealSearch();
-
     this.availableBonds = [];
-    this.cleanBondSearch();
   }
 
   /**
@@ -234,10 +225,7 @@ export class TallyFormComponent implements OnInit {
     this.laborName = null;
 
     this.availableDeals = [];
-    this.cleanDealSearch();
-
     this.availableBonds = [];
-    this.cleanBondSearch();
   }
 
   /**
@@ -285,13 +273,14 @@ export class TallyFormComponent implements OnInit {
       }
     } else {
       for (const worker of this.workers) {
-        if (this.editTally ) {
-          const newTally = this.editSingleTally(worker, formData);
-          this.storeService.editTallyToRecord(newTally);
+        if (this.editTally) {
+          const editTally = this.editSingleTally(worker, formData);
+          this.storeService.editTallyToRecord(editTally);
         } else {
           const newTally = this.newSingleTally(worker, formData);
+          console.log('newTally', newTally);
           this.storeService.addTalliesToRecord(newTally);
-        }        
+        }
       }
     }
 
@@ -319,10 +308,18 @@ export class TallyFormComponent implements OnInit {
    * editSingleTally
    */
   private editSingleTally = (worker: any, formData: any): Tally => {
+    let tempId = null;
+    if (this.editTally.tempId) {
+      tempId = this.editTally.tempId;
+    } else {
+      tempId = this.storeService.getTallyTempId();
+      this.storeService.increaseTallyTempId();
+    }
+
     return Object.assign({}, formData, {
       workerId: worker.id,
       validity: worker.validity,
-      tempId: this.editTally.tempId,
+      tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
       performance: formData.performance ? formData.performance : 0,
       status: 'edit'
@@ -353,11 +350,13 @@ export class TallyFormComponent implements OnInit {
    */
   private editMultipleTally = (worker: any, formData: any): object => {
     const data = formData.multiple.find(i => i.id === worker.id);
+    const tempId = this.storeService.getTallyTempId();
+    this.storeService.increaseTallyTempId();
 
     return Object.assign({}, formData, {
       workerId: worker.id,
       validity: worker.validity,
-      tempId: formData.tempId,
+      tempId,
       workingDay: data['jr'],
       hoursExtra: data['h'],
       performance: data['r']
@@ -500,17 +499,11 @@ export class TallyFormComponent implements OnInit {
 
         return (item.allCostCenters || item.id_costCenter === costCenterId) && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
       });
-    }
-  }
 
-  /**
-   * searchDealsearchDeal
-   */
-  public searchDeal = (search: string): void => {
-    if (search) {
-      this.filteredDeals = this.availableDeals.filter(item => item.name_deal.toLowerCase().includes(search.toLowerCase()));
-    } else {
-      this.filteredDeals = [];
+      if (this.availableDeals.length === 1) {
+        this.tallyForm.get('dealValidity').patchValue(this.availableDeals[0].id_deal_validity);
+        this.tallyForm.get('unit').patchValue(this.availableDeals[0].unit_control);
+      }
     }
   }
 
@@ -518,20 +511,11 @@ export class TallyFormComponent implements OnInit {
    * selectDeal
    */
   public selectDeal = (deal: any): void => {
-    this.tallyForm.get('dealValidity').patchValue(deal.id_deal_validity);
-    this.tallyForm.get('unit').patchValue(deal.unit_control);
-    this.filteredDeals = [];
-    this.dealName = deal.name_deal;
-  }
+    const findDeal = this.availableDeals.find(item => item.id_deal_validity === deal);
 
-  /**
-   * cleanDealSearch
-   */
-  public cleanDealSearch = (): void => {
-    this.tallyForm.get('dealValidity').patchValue('');
-    this.tallyForm.get('unit').patchValue('');
-    this.dealName = null;
-    this.filteredDeals = [];
+    if (findDeal) {
+      this.tallyForm.get('unit').patchValue(findDeal.unit_control);
+    }
   }
 
   /**
@@ -549,36 +533,11 @@ export class TallyFormComponent implements OnInit {
 
         return item.costCenterId === costCenterId && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
       });
+
+      if (this.availableBonds.length === 1) {
+        this.tallyForm.get('bondValidity').patchValue(this.availableBonds[0].bondValidity);
+      }
     }
-  }
-
-  /**
-   * searchBond
-   */
-  public searchBond = (search: string): void => {
-    if (search) {
-      this.filteredBonds = this.availableBonds.filter(item => item.bondName.toLowerCase().includes(search.toLowerCase()));
-    } else {
-      this.filteredBonds = [];
-    }
-  }
-
-  /**
-   * selectBond
-   */
-  public selectBond = (bond: any): void => {
-    this.tallyForm.get('bondValidity').patchValue(bond.bondValidity);
-    this.filteredBonds = [];
-    this.bondName = bond.bondName;
-  }
-
-  /**
-   * cleanBondSearch
-   */
-  public cleanBondSearch = (): void => {
-    this.tallyForm.get('bondValidity').patchValue('');
-    this.bondName = null;
-    this.filteredBonds = [];
   }
 
 }

@@ -39,8 +39,8 @@
       <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
     </h2>
 
-    <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder">
-      <div *virtualItem="let quadrille">
+    <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder" approxItemHeight="100px">
+      <div *virtualItem="let quadrille; let itemBounds = bounds">
         <ion-item (click)="selectQuadrille(quadrille)" detail="true">
           <ion-icon name="clipboard" slot="start"></ion-icon>
           <ion-label>
@@ -75,8 +75,8 @@
       </ion-button>
     </ion-item>
 
-    <ion-virtual-scroll [items]="filteredWorkers | alphabeticalOrder">
-      <div *virtualItem="let worker">
+    <ion-virtual-scroll [items]="filteredWorkers | alphabeticalOrder" approxItemHeight="100px">
+      <div *virtualItem="let worker; let itemBounds = bounds">
         <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
           <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>
@@ -100,11 +100,11 @@
     </h3>
     <h4 class="ion-text-center">
       Total Jornadas
-      <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork(activeWorker) | number }}</ion-badge>
+      <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork(activeWorker) | number }} Jr</ion-badge>
     </h4>
 
-    <ion-virtual-scroll [items]="filteredTallies">
-      <div *virtualItem="let tally">
+    <ion-virtual-scroll [items]="filteredTallies" approxItemHeight="150px">
+      <div *virtualItem="let tally; let itemBounds = bounds">
 
         <ion-item-sliding #slide>
           <ion-item class="no-padding-item" lines="none">

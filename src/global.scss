@@ -212,3 +212,10 @@ ion-menu-button {
   color: white;
   margin-top: 8px;
 }
+
+.action-sheet-group-cancel.sc-ion-action-sheet-md{
+  background: rgba(255, 0, 0, 0.58) !important;
+  button {
+    color: white;
+  }
+}

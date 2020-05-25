@@ -23,6 +23,7 @@ export class SyncService {
   /**
    * syncData
    * @param username
+   * @param superuser
    */
   public syncData = (username: string, superuser: number) => {
     const url = this.httpService.buildUrl(this.syncUrl);

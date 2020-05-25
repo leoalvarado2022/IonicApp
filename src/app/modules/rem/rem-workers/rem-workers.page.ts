@@ -8,6 +8,7 @@ import {UserService} from '../../../shared/services/user/user.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {Subscription} from 'rxjs';
+import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -41,7 +42,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private quadrilleService: QuadrilleService,
     private userService: UserService,
     private httpService: HttpService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe
   ) {
 
   }
@@ -154,7 +156,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * buildButtons
    */
   private buildButtons = () => {
-    this.buttons = this.quadrilles
+    const orderedQuadrilles = this.alphabeticalOrderPipe.transform(this.quadrilles);
+
+    this.buttons = orderedQuadrilles
       .filter(item => item !== this.quadrille)
       .map(item => ({
         text: item.name,

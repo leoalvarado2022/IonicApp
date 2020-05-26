@@ -30,6 +30,9 @@ import {NfcService} from './services/nfc/nfc.service';
 import {ContractsService} from '../modules/pre-contracts/services/contracts/contracts.service';
 import { AlphabeticalOrderPipe } from './pipes/alphabetical-order/alphabetical-order.pipe';
 import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
+import { CheckConnectionComponent } from './components/check-connection/check-connection.component';
+import { AuthService } from './services/auth/auth.service';
+import { TallyService } from '../modules/tallies/services/tally/tally.service';
 
 @NgModule({
   declarations: [
@@ -43,7 +46,8 @@ import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
     RutPipe,
     TicketCardComponent,
     AlphabeticalOrderPipe,
-    NumericOrderPipe
+    NumericOrderPipe,
+    CheckConnectionComponent
   ],
   imports: [
     CommonModule,
@@ -68,6 +72,9 @@ import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
     TicketsService,
     ContractsService,
     NfcService,
+    AlphabeticalOrderPipe,
+    AuthService,
+    TallyService
   ],
   exports: [
     CommonModule,
@@ -85,7 +92,8 @@ import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
     RutPipe,
     TicketCardComponent,
     AlphabeticalOrderPipe,
-    NumericOrderPipe
+    NumericOrderPipe,
+    CheckConnectionComponent
   ],
   entryComponents: [
     ImageViewerComponent

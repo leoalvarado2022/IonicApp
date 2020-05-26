@@ -1,7 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AuthService} from '../auth/auth.service';
 import {HttpClient} from '@angular/common/http';
-import {StorageService} from '../storage/storage.service';
 import {HttpService} from '../http/http.service';
 
 @Injectable({
@@ -12,9 +10,7 @@ export class SyncService {
   private readonly syncUrl = 'sync/mobile';
 
   constructor(
-    private authService: AuthService,
     private httpClient: HttpClient,
-    private storageService: StorageService,
     private httpService: HttpService
   ) {
 
@@ -23,6 +19,7 @@ export class SyncService {
   /**
    * syncData
    * @param username
+   * @param superuser
    */
   public syncData = (username: string, superuser: number) => {
     const url = this.httpService.buildUrl(this.syncUrl);
@@ -30,5 +27,3 @@ export class SyncService {
   }
 
 }
-
-

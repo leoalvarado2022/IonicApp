@@ -424,10 +424,20 @@ export class TallyListPage implements OnInit, OnDestroy {
     slide.close();
 
     if (response) {
-      if (tally.id === 0) {
-        this.storeService.removeTalliesToRecord([tally.tempId]);
+      if (tally.status) {
+        if (tally.status === 'new') {
+          this.storeService.removeTalliesToRecord([tally.tempId]);
+        } else if (tally.status === 'edit') {
+          this.storeService.removeTallyToRecord(tally);
+        } else if (tally.status === 'delete') {
+          console.log('no deberia entrar aqui');
+          this.storeService.removeTallyToRecord(tally);
+        }
       } else {
-        const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete'});
+        const tempId = this.storeService.getTallyTempId();
+        this.storeService.increaseTallyTempId();
+
+        const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
         this.storeService.addTalliesToRecord(toDelete);
       }
     }

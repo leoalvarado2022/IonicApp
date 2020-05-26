@@ -39,33 +39,25 @@
           {{ labor.name  }}
         </ion-item>
       </ion-list>
-
-      <!-- DEALS -->
+      
+      <!-- DEAL -->
       <ng-container *ngIf="availableDeals.length > 0">
         <ion-item>
           <ion-label position="stacked">Trato</ion-label>
-          <ion-searchbar [value]="dealName" (keyup)="searchDeal($event.target.value)" (ionClear)="cleanDealSearch()" placeholder="Buscar"></ion-searchbar>
-        </ion-item>
-
-        <ion-list class="searchbar-results-list" *ngIf="filteredDeals.length > 0">          
-          <ion-item *ngFor="let deal of filteredDeals | alphabeticalOrder:'name_deal'" (click)="selectDeal(deal)">
-            {{ deal.name_deal  }}
-          </ion-item>
-        </ion-list>
+          <ion-select formControlName="dealValidity" placeholder="Trato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectDeal($event.detail.value)">
+            <ion-select-option *ngFor="let deal of availableDeals | alphabeticalOrder:'name_deal'" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
+          </ion-select>
+        </ion-item>   
       </ng-container>
 
-      <!-- BONDS -->
+      <!-- BOND -->
       <ng-container *ngIf="availableBonds.length > 0">
         <ion-item>
           <ion-label position="stacked">Bono</ion-label>
-          <ion-searchbar [value]="bondName" (keyup)="searchBond($event.target.value)" (ionClear)="cleanBondSearch()" placeholder="Buscar"></ion-searchbar>
+          <ion-select formControlName="bondValidity" placeholder="Bono" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+            <ion-select-option *ngFor="let bond of availableBonds | alphabeticalOrder:'bondName'" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
+          </ion-select>
         </ion-item>
-
-        <ion-list class="searchbar-results-list" *ngIf="filteredBonds.length > 0">          
-          <ion-item *ngFor="let bond of filteredBonds | alphabeticalOrder:'bondName'" (click)="selectBond(bond)">
-            {{ bond.bondName  }}
-          </ion-item>
-        </ion-list>
       </ng-container>
 
       <ion-item>

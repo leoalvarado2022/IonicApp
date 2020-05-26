@@ -23,10 +23,6 @@ const routes: Routes = [
     path: 'home-page',
     loadChildren: () => import('./home-page/home-page.module').then(module => module.HomePagePageModule),
     canActivate: [AuthGuard]
-  },
-  {
-    path: 'testing-icons',
-    loadChildren: () => import('./testing-icons/testing-icons.module').then( m => m.TestingIconsPageModule)
   }
 ];
 

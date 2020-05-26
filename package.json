@@ -1,6 +1,6 @@
 {
   "name": "fx360_movil",
-  "version": "1.0.69",
+  "version": "1.0.71",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -11,7 +11,8 @@
     "build-ios": "ionic cordova build ios --prod",
     "test": "ng test",
     "lint": "ng lint --fix",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "analyze": "source-map-explorer www/*"
   },
   "private": true,
   "dependencies": {

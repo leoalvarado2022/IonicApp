@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {WelcomePage} from './welcome.page';
 import {SharedModule} from '../../../../shared/shared.module';
+import { Device } from '@ionic-native/device/ngx';
 
 const routes: Routes = [
   {
@@ -29,7 +30,11 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [WelcomePage]
+  declarations: [WelcomePage],
+  providers: [
+    Device
+  ]
 })
 export class WelcomePageModule {
+
 }

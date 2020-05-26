@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {GeolocationService} from '../shared/services/geolocation/geolocation.service';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
 import {BehaviorSubject, interval, Subscription} from 'rxjs';
@@ -9,6 +8,8 @@ import {HttpService} from '../shared/services/http/http.service';
 import {TallyService} from '../modules/tallies/services/tally/tally.service';
 import {NfcService} from '../shared/services/nfc/nfc.service';
 import {environment} from 'src/environments/environment';
+import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.service';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-home-page',
@@ -17,28 +18,34 @@ import {environment} from 'src/environments/environment';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
+  // Interval & Stepper
   private syncInterval = interval(1000 * 60 * environment.syncTimerMinutes);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
+  // Tallies
   private removeTallies = false;
   private removeTalliesToRecord: Array<number> = [];
+  private talliesWithErrors: Array<any> = [];
+
+  // Devices
   private removeDevices = false;
   private removeDevicesToRecord: Array<number> = [];
-
-  private syncInterval$: Subscription;
-  private syncStepObservable$: Subscription;
-  private talliesWithErrors: Array<any> = [];
   private devicesWithErrors: Array<any> = [];
 
+  // Unsubscribers
+  private syncInterval$: Subscription;
+  private syncStepObservable$: Subscription;
+  private manualSync$: Subscription;
+
   constructor(
-    private geolocationService: GeolocationService,
     private authService: AuthService,
     private storeService: StoreService,
     private tallyService: TallyService,
     private toastService: ToastService,
     private syncService: SyncService,
     private httpService: HttpService,
-    private nfcService: NfcService
+    private nfcService: NfcService,
+    private manualSyncService: ManualSyncService
   ) {
 
   }
@@ -46,8 +53,13 @@ export class HomePagePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.storePushToken();
 
-    this.syncInterval$ = this.syncInterval.subscribe(data => {
-      // agregar status de online
+    this.manualSync$ = this.manualSyncService.eventSubscription().subscribe(status => {
+      if (status) {
+        this.sendToRecord();
+      }
+    });
+
+    this.syncInterval$ = this.syncInterval.subscribe(() => {
       if (this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }
@@ -98,6 +110,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.syncInterval$.unsubscribe();
     this.syncStepObservable$.unsubscribe();
+    this.manualSync$.unsubscribe();
   }
 
   /**
@@ -129,9 +142,9 @@ export class HomePagePage implements OnInit, OnDestroy {
     const user = this.storeService.getUser();
     const token = this.storeService.getPushToken();
 
-    this.authService.savePushToken(user.id, token).subscribe(success => {
+    this.authService.savePushToken(user.id, token).subscribe(() => {
       // BIEN
-    }, error => {
+    }, () => {
       // MAL
     });
   }
@@ -162,7 +175,7 @@ export class HomePagePage implements OnInit, OnDestroy {
       this.tallyService.recordTallies(mapStatus).subscribe((success: any) => {
         this.checkRecordedTallies(success.log);
         this.syncStepObservable.next(2);
-      }, error => {
+      }, () => {
         this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
       });
     } else {
@@ -183,7 +196,7 @@ export class HomePagePage implements OnInit, OnDestroy {
       this.nfcService.saveDevicesToRecord(toRecord, user).subscribe((success: any) => {
         this.checkRecordedDevices(success.log);
         this.syncStepObservable.next(0);
-      }, error => {
+      }, () => {
         this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
       });
     } else {

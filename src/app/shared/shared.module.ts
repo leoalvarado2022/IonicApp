@@ -31,6 +31,8 @@ import {ContractsService} from '../modules/pre-contracts/services/contracts/cont
 import { AlphabeticalOrderPipe } from './pipes/alphabetical-order/alphabetical-order.pipe';
 import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
 import { CheckConnectionComponent } from './components/check-connection/check-connection.component';
+import { AuthService } from './services/auth/auth.service';
+import { TallyService } from '../modules/tallies/services/tally/tally.service';
 
 @NgModule({
   declarations: [
@@ -70,7 +72,9 @@ import { CheckConnectionComponent } from './components/check-connection/check-co
     TicketsService,
     ContractsService,
     NfcService,
-    AlphabeticalOrderPipe
+    AlphabeticalOrderPipe,
+    AuthService,
+    TallyService
   ],
   exports: [
     CommonModule,

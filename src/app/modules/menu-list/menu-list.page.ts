@@ -1,10 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
-import {StorageService} from '../../shared/services/storage/storage.service';
-import {UserService} from '../../shared/services/user/user.service';
 import {SyncService} from '../../shared/services/sync/sync.service';
-import {AuthService} from '../../shared/services/auth/auth.service';
-import {ToastService} from '../../shared/services/toast/toast.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NetworkService} from '../../shared/services/network/network.service';
 import {HttpService} from '../../shared/services/http/http.service';
@@ -26,11 +22,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   private store$: Subscription;
 
   constructor(
-    private storage: StorageService,
-    private userService: UserService,
     public syncService: SyncService,
-    private authService: AuthService,
-    private toastService: ToastService,
     private router: Router,
     private networkService: NetworkService,
     private activatedRoute: ActivatedRoute,
@@ -44,7 +36,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
 
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
+    this.store$ = this.storeService.stateChanged.subscribe(() => {
       this.loadData();
     });
 

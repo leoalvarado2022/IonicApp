@@ -8,16 +8,12 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppVersion} from '@ionic-native/app-version/ngx';
 import {IonicStorageModule} from '@ionic/storage';
 import {LoaderComponent} from './shared/components/loader/loader.component';
-import {AuthService} from './shared/services/auth/auth.service';
-import {HttpClientModule} from '@angular/common/http';
 import {Device} from '@ionic-native/device/ngx';
-import {SharedModule} from './shared/shared.module';
 import {Camera} from '@ionic-native/camera/ngx';
 import {NetworkService} from './shared/services/network/network.service';
 import {RouteReuseStrategy} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {GeolocationService} from './shared/services/geolocation/geolocation.service';
-import {SyncService} from './shared/services/sync/sync.service';
 import {LoaderService} from './shared/services/loader/loader.service';
 import {IConfig, NgxMaskModule} from 'ngx-mask';
 import {StoreService} from './shared/services/store/store.service';
@@ -27,6 +23,7 @@ import {NativeAudio} from '@ionic-native/native-audio/ngx';
 import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
+import { ManualSyncService } from './shared/services/manual-sync/manual-sync.service';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
@@ -49,8 +46,6 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     }),
     IonicStorageModule.forRoot(),
     NgxMaskModule.forRoot(ngxMaskOptions),
-    SharedModule,
-    HttpClientModule
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
@@ -60,16 +55,15 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     Device,
     Camera,
     LoaderService,
-    AuthService,
     NetworkService,
     Geolocation,
     GeolocationService,
-    SyncService,
     StoreService,
     FCM,
     NFC,
     Ndef,
-    NativeAudio
+    NativeAudio,
+    ManualSyncService
   ],
   bootstrap: [AppComponent]
 })

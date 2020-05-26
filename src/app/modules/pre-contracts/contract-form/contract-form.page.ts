@@ -111,6 +111,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
           identifier: find.workerIdentifier,
         });
 
+        this.contractForm.get('step1.identifier').disable();
+
         this.contractForm.get('step2').patchValue({
           name: find.workerName,
           lastName: find.workerLastName,
@@ -213,7 +215,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     delete data.step2;
     delete data.step3;
 
-    step1.identifier = cleanRut(step1.identifier);
+    step1.identifier = this.editPreContrat ? cleanRut(this.editPreContrat.workerIdentifier) : cleanRut(step1.identifier);
     step2.dob = moment.utc(step2.dob).format('YYYY-MM-DD');
     step3.retired = step3.retired ? 1 : 0;
 
@@ -357,11 +359,15 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public checkIfIdentifierAlreadyExistsOnWorkers = (): boolean => {
     const identifier = this.contractForm.get('step1.identifier').value;
 
-    if (identifier) {
-      const workers = this.storeService.getWorkers();
-      const alreadyValid = workers.find(item => this.cleanCharactersFromIdentifier(item.identifier).toLowerCase() === this.cleanCharactersFromIdentifier(identifier).toLowerCase());
+    if (this.editPreContrat) {
+      return this.cleanCharactersFromIdentifier(this.editPreContrat.workerIdentifier).toLowerCase() !== this.cleanCharactersFromIdentifier(identifier).toLowerCase();
+    } else {
+      if (identifier) {
+        const workers = this.storeService.getWorkers();
+        const alreadyValid = workers.find(item => this.cleanCharactersFromIdentifier(item.identifier).toLowerCase() === this.cleanCharactersFromIdentifier(identifier).toLowerCase());
 
-      return !!alreadyValid;
+        return !!alreadyValid;
+      }
     }
 
     return false;

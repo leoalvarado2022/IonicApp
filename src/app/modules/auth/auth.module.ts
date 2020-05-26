@@ -1,8 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthPage} from './auth.page';
-import {SharedModule} from '../../shared/shared.module';
-import {Device} from '@ionic-native/device/ngx';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -30,13 +29,10 @@ const routes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
   declarations: [
     AuthPage
-  ],
-  providers: [
-    Device
   ]
 })
 export class AuthPageModule {

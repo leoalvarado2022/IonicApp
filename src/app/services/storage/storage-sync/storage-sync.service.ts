@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Sync } from 'src/app/shared/services/store/store-interface';
-import { StorageKeys } from '../storage-keys';
 import { Quadrille } from '@primetec/primetec-angular';
+import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { MainSyncService } from '../main/main-sync.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SyncStorageService {
+export class StorageSyncService extends MainSyncService {
 
   constructor(private storage: Storage) {
-
+    super();
   }
 
   /**
@@ -55,6 +56,9 @@ export class SyncStorageService {
       this.setBonds(bonds)
     ]).then(data => {
       console.log('todo grabado', data);
+
+      // AVISAR QUE CAMBIO EL SYNC
+      this.syncChangedEvent();
     });
   }
 
@@ -154,6 +158,6 @@ export class SyncStorageService {
    */
   public getBonds = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.Bonds);
-  }
-  
+  } 
+
 }

@@ -1,4 +1,7 @@
 import { NgModule } from '@angular/core';
+
+import { IonicStorageModule } from '@ionic/storage';
+
 import { LoaderService } from '../shared/services/loader/loader.service';
 import { NetworkService } from '../shared/services/network/network.service';
 import { GeolocationService } from '../shared/services/geolocation/geolocation.service';
@@ -7,9 +10,9 @@ import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.se
 import { ToastService } from '../shared/services/toast/toast.service';
 import { HttpService } from '../shared/services/http/http.service';
 import { AlertService } from '../shared/services/alert/alert.service';
-import { SyncStorageService } from './storage/sync-storage/sync-storage.service';
-
-import { IonicStorageModule } from '@ionic/storage';
+import { StorageSyncService } from './storage/storage-sync/storage-sync.service';
+import { MainSyncService } from './storage/main/main-sync.service';
+import { TallySyncService } from './storage/tally-sync/tally-sync.service';
 
 @NgModule({
   imports: [
@@ -29,7 +32,9 @@ import { IonicStorageModule } from '@ionic/storage';
     AlertService,
 
     // Storage Services Block
-    SyncStorageService
+    MainSyncService,
+    StorageSyncService,
+    TallySyncService
   ],
 })
 export class CoreServicesModule {

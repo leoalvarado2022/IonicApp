@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SyncStorageService } from './sync-storage.service';
+import { TallySyncService } from './tally-sync.service';
 
-describe('SyncStorageService', () => {
-  let service: SyncStorageService;
+describe('TallySyncService', () => {
+  let service: TallySyncService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SyncStorageService);
+    service = TestBed.inject(TallySyncService);
   });
 
   it('should be created', () => {

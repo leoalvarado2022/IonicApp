@@ -6,4 +6,8 @@ export enum StorageKeys {
   Labors = 'labors',
   Deals = 'deals',
   Bonds = 'bonds',
+
+  // On memory data
+  TalliesToRecord = 'talliesToRecord',
+  TalliesWithErrors = 'talliesWithErrors',
 }

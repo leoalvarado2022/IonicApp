@@ -9,7 +9,8 @@ import {TallyService} from '../modules/tallies/services/tally/tally.service';
 import {NfcService} from '../shared/services/nfc/nfc.service';
 import {environment} from 'src/environments/environment';
 import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.service';
-import { SyncStorageService } from '../services/storage/sync-storage/sync-storage.service';
+import { StorageSyncService } from '../services/storage/storage-sync/storage-sync.service';
+import { TallySyncService } from '../services/storage/tally-sync/tally-sync.service';
 
 @Component({
   selector: 'app-home-page',
@@ -23,7 +24,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   // Tallies
-  private removeTallies = false;
+  private removeTalliesToRecordFlag = false;
   private removeTalliesToRecord: Array<number> = [];
   private talliesWithErrors: Array<any> = [];
 
@@ -36,6 +37,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private syncInterval$: Subscription;
   private syncStepObservable$: Subscription;
   private manualSync$: Subscription;
+  private authToken$: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -46,60 +48,93 @@ export class HomePagePage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private nfcService: NfcService,
     private manualSyncService: ManualSyncService,
-    private syncStorageService: SyncStorageService
+    private storageSyncService: StorageSyncService,
+    private tallySyncService: TallySyncService
   ) {
 
   }
 
   ngOnInit(): void {
+    // Store push token
     this.storePushToken();
 
+    // Manual sync observable
+    this.startManualSyncObservable();
+
+    // Sync timer observable
+    this.startSyncIntervalObservable();
+
+    // Sync Stepper Observable
+    this.startSyncStepperObservable();
+  }
+
+  ngOnDestroy(): void {
+    this.syncInterval$.unsubscribe();
+    this.syncStepObservable$.unsubscribe();
+    this.manualSync$.unsubscribe();
+    this.authToken$.unsubscribe();
+  }
+
+  /**
+   * storePushToken
+   */
+  private storePushToken = (): void => {
+    const user = this.storeService.getUser();
+    const token = this.storeService.getPushToken();
+
+    this.authToken$ = this.authService.savePushToken(user.id, token).subscribe(() => {
+      // BIEN
+    }, () => {
+      // MAL
+    });
+  }
+
+  /**
+   * startManualSyncObservable
+   */
+  private startManualSyncObservable = () => {
     this.manualSync$ = this.manualSyncService.eventSubscription().subscribe(status => {
       if (status) {
         this.sendToRecord();
       }
     });
+  }
 
+  /**
+   * startSyncIntervalObservable
+   */
+  private startSyncIntervalObservable = () => {
     this.syncInterval$ = this.syncInterval.subscribe(() => {
       if (this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }
     });
+  }
 
+  /**
+   * startSyncStepperObservable
+   */
+  private startSyncStepperObservable = () => {
     this.syncStepObservable$ = this.syncStepObservable.subscribe(step => {
-      console.group('syncStepObservable');
       console.log('current step: ', step);
 
       if (step === 0) {
-        if (this.removeTallies) {
-          this.storeService.addTalliesWithErrors(this.talliesWithErrors);
-          this.talliesWithErrors = [];
+        // Remove from "talliesToRecord" the tallies that were recorded successful
+        this.checkIfRemoveTalliesToRecord();
 
-          const removed = this.storeService.removeTalliesToRecord(this.removeTalliesToRecord);
-          if (removed === 0) {
-            this.removeTalliesToRecord = [];
-            this.removeTallies = false;
-          }
-        }
+        // Remove from "devices" the devices that were recorded successful
+        this.checkIfRemoveDevicesToRecord();
 
-        if (this.removeDevices) {
-          this.storeService.addDevicesWithErrors(this.devicesWithErrors);
-          this.devicesWithErrors = [];
-
-          const removed = this.storeService.removeDevicesToRecord(this.removeDevicesToRecord);
-          if (removed === 0) {
-            this.removeDevicesToRecord = [];
-            this.removeDevices = false;
-          }
-        }
-
+        // Sync data
         this.syncData();
       }
 
+      // Sync step 1
       if (step === 1) {
         this.recordTallies();
       }
 
+      // Sync step 2
       if (step === 2) {
         this.recordDevices();
       }
@@ -108,17 +143,36 @@ export class HomePagePage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.syncInterval$.unsubscribe();
-    this.syncStepObservable$.unsubscribe();
-    this.manualSync$.unsubscribe();
+  /**
+   * checkIfRemoveTalliesToRecord
+   */
+  private checkIfRemoveTalliesToRecord  = (): void => {
+    if (this.removeTalliesToRecordFlag) {
+      this.storeService.addTalliesWithErrors(this.talliesWithErrors);
+      this.talliesWithErrors = [];
+
+      const removed = this.storeService.removeTalliesToRecord(this.removeTalliesToRecord);
+      if (removed === 0) {
+        this.removeTalliesToRecord = [];
+        this.removeTalliesToRecordFlag = false;
+      }
+    }
   }
 
   /**
-   * sendToRecord
+   * checkIfRemoveDevicesToRecord
    */
-  private sendToRecord = (): void => {
-    this.syncStepObservable.next(1);
+  private checkIfRemoveDevicesToRecord = () => {
+    if (this.removeDevices) {
+      this.storeService.addDevicesWithErrors(this.devicesWithErrors);
+      this.devicesWithErrors = [];
+
+      const removed = this.storeService.removeDevicesToRecord(this.removeDevicesToRecord);
+      if (removed === 0) {
+        this.removeDevicesToRecord = [];
+        this.removeDevices = false;
+      }
+    }
   }
 
   /**
@@ -133,24 +187,17 @@ export class HomePagePage implements OnInit, OnDestroy {
       this.storeService.setSyncedData(success.data);
 
       // NEW STORAGE TEST
-      this.syncStorageService.storeSyncedData(success.data);
+      this.storageSyncService.storeSyncedData(success.data);
     }, error => {
       this.httpService.errorHandler(error);
     });
   }
 
   /**
-   * storePushToken
+   * sendToRecord
    */
-  private storePushToken = (): void => {
-    const user = this.storeService.getUser();
-    const token = this.storeService.getPushToken();
-
-    this.authService.savePushToken(user.id, token).subscribe(() => {
-      // BIEN
-    }, () => {
-      // MAL
-    });
+  private sendToRecord = (): void => {
+    this.syncStepObservable.next(1);
   }
 
   /**
@@ -230,7 +277,7 @@ export class HomePagePage implements OnInit, OnDestroy {
         }
       }
 
-      this.removeTallies = true;
+      this.removeTalliesToRecordFlag = true;
     }
   }
 

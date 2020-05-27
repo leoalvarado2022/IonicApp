@@ -9,7 +9,7 @@ import {TallyService} from '../modules/tallies/services/tally/tally.service';
 import {NfcService} from '../shared/services/nfc/nfc.service';
 import {environment} from 'src/environments/environment';
 import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.service';
-import { ThrowStmt } from '@angular/compiler';
+import { SyncStorageService } from '../services/storage/sync-storage/sync-storage.service';
 
 @Component({
   selector: 'app-home-page',
@@ -45,7 +45,8 @@ export class HomePagePage implements OnInit, OnDestroy {
     private syncService: SyncService,
     private httpService: HttpService,
     private nfcService: NfcService,
-    private manualSyncService: ManualSyncService
+    private manualSyncService: ManualSyncService,
+    private syncStorageService: SyncStorageService
   ) {
 
   }
@@ -130,6 +131,9 @@ export class HomePagePage implements OnInit, OnDestroy {
 
     this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
       this.storeService.setSyncedData(success.data);
+
+      // NEW STORAGE TEST
+      this.syncStorageService.storeSyncedData(success.data);
     }, error => {
       this.httpService.errorHandler(error);
     });

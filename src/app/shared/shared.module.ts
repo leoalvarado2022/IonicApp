@@ -12,9 +12,6 @@ import {CustomDatePipe} from './pipes/custom-date/custom-date.pipe';
 import {HarvestEstimateItemComponent} from '../modules/planning/harvest-estimate/harvest-estimate-item/harvest-estimate-item.component';
 import {QualityEstimateItemComponent} from '../modules/planning/quality-estimate/quality-estimate-item/quality-estimate-item.component';
 import {NoteItemComponent} from '../modules/planning/notes/note-item/note-item.component';
-import {ToastService} from './services/toast/toast.service';
-import {HttpService} from './services/http/http.service';
-import {AlertService} from './services/alert/alert.service';
 import {ImageViewerComponent} from './components/image-viewer/image-viewer.component';
 import {CustomDatetimePipe} from './pipes/custom-datetime/custom-datetime.pipe';
 import {NgxEchartsModule} from 'ngx-echarts';
@@ -61,9 +58,6 @@ import { TallyService } from '../modules/tallies/services/tally/tally.service';
     UserService,
     DetectPlatformService,
     StorageService,
-    ToastService,
-    HttpService,
-    AlertService,
     File,
     PreviewAnyFile,
     CameraService,

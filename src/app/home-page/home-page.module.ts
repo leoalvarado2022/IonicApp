@@ -16,11 +16,11 @@ const routes: Routes = [
       },
       {
         path: 'companies',
-        loadChildren: () => import('../modules/planning/companies/companies.module').then(module => module.CompaniesPageModule)
+        loadChildren: () => import('../modules/companies/companies.module').then(module => module.CompaniesPageModule)
       },
       {
         path: 'connections',
-        loadChildren: () => import('../modules/planning/connections/connections.module').then(module => module.ConnectionsPageModule)
+        loadChildren: () => import('../modules/connections/connections.module').then(module => module.ConnectionsPageModule)
       },
       {
         path: 'profile',

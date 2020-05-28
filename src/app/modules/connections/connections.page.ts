@@ -1,13 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../../../shared/services/user/user.service';
-import {AuthService} from '../../../shared/services/auth/auth.service';
+import {AuthService} from '../../shared/services/auth/auth.service';
 import {Connection} from '@primetec/primetec-angular';
-import {SyncService} from '../../../shared/services/sync/sync.service';
-import {ToastService} from '../../../shared/services/toast/toast.service';
+import {SyncService} from '../../shared/services/sync/sync.service';
 import {Router} from '@angular/router';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {StoreService} from '../../../shared/services/store/store.service';
+import {HttpService} from '../../shared/services/http/http.service';
+import {LoaderService} from '../../shared/services/loader/loader.service';
+import {StoreService} from '../../shared/services/store/store.service';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 
 @Component({
   selector: 'app-connections',
@@ -21,14 +20,13 @@ export class ConnectionsPage implements OnInit {
   private userData = null;
 
   constructor(
-    private userService: UserService,
     private authService: AuthService,
     private syncService: SyncService,
-    private toastService: ToastService,
     private router: Router,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private storageSyncService: StorageSyncService
   ) {
 
   }
@@ -46,7 +44,7 @@ export class ConnectionsPage implements OnInit {
 
       const user = this.storeService.getUser();
 
-      this.authService.connectionChange({connection: connection.token, loggedUser: user.id}).subscribe((data: any) => {
+      this.authService.connectionChange({connection: connection.token, loggedUser: user.id}).subscribe(() => {
         this.storeService.setActiveConnection(connection);
         this.syncMobile();
       });
@@ -60,10 +58,13 @@ export class ConnectionsPage implements OnInit {
     this.loaderService.startLoader('Sincronizando...');
     this.syncService.syncData(this.userData.username, this.currentConnection.superuser ? 1 : 0).subscribe((success: any) => {
       const data = success.data;
+
       this.storeService.setSyncedData(data);
+      this.storageSyncService.storeSyncedData(data);
+
       this.loadConnections();
-      this.router.navigate(['home-page']);
       this.loaderService.stopLoader();
+      this.router.navigate(['home-page']);
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);

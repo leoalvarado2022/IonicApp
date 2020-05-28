@@ -357,8 +357,8 @@ export class TallyFormComponent implements OnInit {
    */
   private editMultipleTally = (worker: any, formData: any): object => {
     const data = formData.multiple.find(i => i.id === worker.id);
-    const tempId = this.storeService.getTallyTempId();
-    this.storeService.increaseTallyTempId();
+    const tempId = this.tallySyncService.getTallyTempId();
+    this.tallySyncService.increaseTallyTempId();
 
     return Object.assign({}, formData, {
       workerId: worker.id,

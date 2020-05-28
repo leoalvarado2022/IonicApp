@@ -11,6 +11,7 @@ import {environment} from 'src/environments/environment';
 import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.service';
 import { StorageSyncService } from '../services/storage/storage-sync/storage-sync.service';
 import { TallySyncService } from '../services/storage/tally-sync/tally-sync.service';
+import { Tally } from '../modules/tallies/tally.interface';
 
 @Component({
   selector: 'app-home-page',
@@ -24,6 +25,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   // Tallies
+  private talliesToRecord: Array<Tally> = [];
   private removeTalliesToRecordFlag = false;
   private removeTalliesToRecord: Array<number> = [];
   private talliesWithErrors: Array<any> = [];
@@ -37,6 +39,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private syncInterval$: Subscription;
   private syncStepObservable$: Subscription;
   private manualSync$: Subscription;
+  private storageSync$: Subscription;
   private authToken$: Subscription;
 
   constructor(
@@ -58,6 +61,9 @@ export class HomePagePage implements OnInit, OnDestroy {
     // Store push token
     this.storePushToken();
 
+    // ASDASDASd
+    this.loadData();
+
     // Manual sync observable
     this.startManualSyncObservable();
 
@@ -66,6 +72,9 @@ export class HomePagePage implements OnInit, OnDestroy {
 
     // Sync Stepper Observable
     this.startSyncStepperObservable();
+
+    // Storage Sync Observable
+    this.storageChangeObservable();
   }
 
   ngOnDestroy(): void {
@@ -73,6 +82,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     this.syncStepObservable$.unsubscribe();
     this.manualSync$.unsubscribe();
     this.authToken$.unsubscribe();
+    this.storageSync$.unsubscribe();
   }
 
   /**
@@ -138,8 +148,17 @@ export class HomePagePage implements OnInit, OnDestroy {
       if (step === 2) {
         this.recordDevices();
       }
+    });
+  }
 
-      console.groupEnd();
+  /**
+   * storageChangeObservable
+   */
+  private storageChangeObservable = () => {
+    this.storageSync$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
+      if (status) {
+        this.loadData();
+      }
     });
   }
 
@@ -148,14 +167,18 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private checkIfRemoveTalliesToRecord  = (): void => {
     if (this.removeTalliesToRecordFlag) {
-      this.storeService.addTalliesWithErrors(this.talliesWithErrors);
-      this.talliesWithErrors = [];
+      Promise.all([
+        this.tallySyncService.addTalliesWithErrors(this.talliesWithErrors),
+        this.tallySyncService.removeTalliesToRecord(this.talliesToRecord, this.removeTalliesToRecord)
+      ]).then( data => {
+        this.talliesWithErrors = [];
+        if (data[1].length === 0) {
+          this.removeTalliesToRecord = [];
+          this.removeTalliesToRecordFlag = false;
+        }
 
-      const removed = this.storeService.removeTalliesToRecord(this.removeTalliesToRecord);
-      if (removed === 0) {
-        this.removeTalliesToRecord = [];
-        this.removeTalliesToRecordFlag = false;
-      }
+        this.storageSyncService.syncChangedEvent();
+      });
     }
   }
 
@@ -204,9 +227,7 @@ export class HomePagePage implements OnInit, OnDestroy {
    * recordTallies
    */
   private recordTallies = (): void => {
-    const toRecord = this.storeService.getTalliesToRecord();
-
-    const mapStatus = toRecord.map(item => {
+    const mapStatus = this.talliesToRecord.map(item => {
       if (item.status === 'delete') {
         return Object.assign({}, item, { order: 1});
       }
@@ -305,4 +326,21 @@ export class HomePagePage implements OnInit, OnDestroy {
       this.removeDevices = true;
     }
   }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    console.log('load data');
+
+    Promise.all([
+      this.tallySyncService.getTalliesToRecord(),
+      this.tallySyncService.getTalliesWithErrors()
+    ]).then( data => {
+      console.log('data loaded');
+      this.talliesToRecord = data[0] || [];
+      this.talliesWithErrors = data[1] || [];
+    });
+  }
+
 }

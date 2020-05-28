@@ -20,29 +20,12 @@ export class StorageSyncService extends MainSyncService {
    */
   public storeSyncedData = (data: Sync) => {
     const {
-      companies,
-      costCenters,
-      menus,
-      units,
-      qualities,
-      calibers,
-      cfgAccess,
       quadrilles,
       workers,
-      processPlants,
-      destinations,
-      preContracts,
-      countries,
-      contractTypes,
-      civilStatus,
-      afps,
-      isapres,
       labors,
-      laborsCostCenter,
       deals,
       costCentersCustom,
       tallies,
-      devices,
       bonds
     } = data;
 
@@ -55,8 +38,7 @@ export class StorageSyncService extends MainSyncService {
       this.setDeals(deals),
       this.setBonds(bonds)
     ]).then(data => {
-      console.log('todo grabado', data);
-
+      console.log('storeSyncedData OK, event emmited');
       // AVISAR QUE CAMBIO EL SYNC
       this.syncChangedEvent();
     });
@@ -158,6 +140,6 @@ export class StorageSyncService extends MainSyncService {
    */
   public getBonds = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.Bonds);
-  } 
+  }
 
 }

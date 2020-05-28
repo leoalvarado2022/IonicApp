@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {StoreService} from '../../../shared/services/store/store.service';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
@@ -43,6 +42,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   private costCenters: Array<CostCenterList> = [];
   private syncedTallies: Array<Tally> = [];
   private talliesToRecord: Array<Tally> = [];
+  private talliesWithErrors: Array<any> = [];
   private labors: Array<any> = [];
   private deals: Array<any> = [];
   private bonds: Array<any> = [];
@@ -51,7 +51,6 @@ export class TallyListPage implements OnInit, OnDestroy {
   private firstLoad: boolean;
 
   constructor(
-    private storeService: StoreService,
     private router: Router,
     private modalController: ModalController,
     private toastService: ToastService,
@@ -76,6 +75,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.firstLoad = true;
     this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(state => {
+      console.log('syncChangedSubscribrer');
       if (state && !this.firstLoad) {
         this.loadData();
       }
@@ -88,14 +88,11 @@ export class TallyListPage implements OnInit, OnDestroy {
     this.quadrilles = [];
     this.filteredQuadrilles = [];
     this.activeQuadrille = null;
-
     this.workers = [];
     this.filteredWorkers = [];
     this.selectedWorkers = [];
     this.activeWorker = [];
-
     this.filteredTallies = [];
-
     this.currentDate = null;
 
     this.store$.unsubscribe();
@@ -116,10 +113,11 @@ export class TallyListPage implements OnInit, OnDestroy {
       this.storageSyncService.getLabors(),
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
-      this.tallySyncService.getTalliesToRecord()
+      this.tallySyncService.getTalliesToRecord(),
+      this.tallySyncService.getTalliesWithErrors()
     ]).then(data => {
 
-      console.log('data loaded', data);
+      console.log('data loaded');
 
       this.quadrilles = data[0];
       this.filteredQuadrilles = data[0];
@@ -129,6 +127,7 @@ export class TallyListPage implements OnInit, OnDestroy {
 
       this.syncedTallies = data[2];
       this.talliesToRecord = data[7] || [];
+      this.talliesWithErrors = data[8] || [];
       this.filteredTallies = [];
 
       this.costCenters = data[3];
@@ -149,7 +148,7 @@ export class TallyListPage implements OnInit, OnDestroy {
       }
 
       this.loaderService.stopLoader();
-    }).catch(error => {
+    }).catch(() => {
       this.loaderService.stopLoader();
     });
 
@@ -268,9 +267,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    * getWorkersFilteredByQuadrille
    */
   public getWorkersFilteredByQuadrille = (): Array<any> => {
-    console.log('getWorkersFilteredByQuadrille');
     if (this.activeQuadrille) {
-      console.log('cuadrilla activa');
       return this.workers.filter(item => item.quadrille === this.activeQuadrille.id && this.validContractDate(item));
     }
 
@@ -328,9 +325,8 @@ export class TallyListPage implements OnInit, OnDestroy {
    * @param worker
    */
   public goToWorkerTallyList = (worker: any): void => {
-    console.log('goToWorkerTallyList');
-
     this.activeWorker = worker;
+    this.filteredTallies = [];
     this.filteredTallies = this.getNumberOfWorkerTallies(worker);
   }
 
@@ -429,8 +425,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public showTallyError = (tally: any): void => {
     if (tally.id <= 0) {
-      const talliesWithErrors = this.storeService.getTalliesWithErrors();
-      const error = talliesWithErrors.find(item => item.id === tally.tempId);
+      const error = this.talliesWithErrors.find(item => item.id === tally.tempId);
 
       if (error) {
         this.toastService.errorToast(error.response);
@@ -472,30 +467,33 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * deleteTally
    */
-  public deleteTally = async (tally: Tally, slide: IonItemSliding) => {
-    const response = await this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?');
+  public deleteTally = (tally: Tally, slide: IonItemSliding) => {
     slide.close();
+    this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?').then( sayYes => {
+      if (sayYes) {
+        if (tally.status) {
+          if (tally.status === 'new') {
+            this.tallySyncService.removeTalliesToRecord(this.talliesToRecord, [tally.tempId]).then( () => {
+              this.storageSyncService.syncChangedEvent();
+            });
+          } else if (tally.status === 'edit') {
+            this.tallySyncService.removeTallyToRecord(this.talliesToRecord, tally).then( () => {
+              this.storageSyncService.syncChangedEvent();
+            });
+          } else if (tally.status === 'delete') {
+            console.log('no deberia entrar aqui');
+          }
+        } else {
+          const tempId = this.tallySyncService.getTallyTempId();
+          this.tallySyncService.increaseTallyTempId();
 
-    if (response) {
-      if (tally.status) {
-        if (tally.status === 'new') {
-          await this.tallySyncService.removeTalliesToRecord(this.talliesToRecord, [tally.tempId]);
-          this.tallySyncService.syncChangedEvent();
-        } else if (tally.status === 'edit') {
-          await this.tallySyncService.removeTallyToRecord(this.talliesToRecord, tally);
-          this.tallySyncService.syncChangedEvent();
-        } else if (tally.status === 'delete') {
-          console.log('no deberia entrar aqui');
+          const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
+          this.tallySyncService.addTalliesToRecord(this.talliesToRecord, toDelete).then( () => {
+            this.storageSyncService.syncChangedEvent();
+          });
         }
-      } else {
-        const tempId = this.tallySyncService.getTallyTempId();
-        this.tallySyncService.increaseTallyTempId();
-
-        const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
-        await this.tallySyncService.addTalliesToRecord(this.talliesToRecord, toDelete);
-        this.tallySyncService.syncChangedEvent();
       }
-    }
+    });
   }
 
   /**

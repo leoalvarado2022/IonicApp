@@ -11,6 +11,7 @@ import { StorageKeys } from '../storage-keys';
 export class TallySyncService extends MainSyncService {
 
   private tallyTempId = 1;
+  private talliesToRecord: Array<Tally>  = [];
 
   constructor(private storage: Storage) {
     super();
@@ -101,13 +102,8 @@ export class TallySyncService extends MainSyncService {
    * addTalliesWithErrors
    * @param tallies
    */
-  public addTalliesWithErrors = (tallies: Array<any>): void => {
-    /*
-    const talliesWithErrors = this.getTalliesWithErrors();
-
-    const toRecord = {...this.getState().toRecord, talliesWithErrors: [...talliesWithErrors, ...tallies]};
-    this.setState({toRecord}, StoreActions.AddTalliesWithErrors);
-    */
+  public addTalliesWithErrors = (tallies: Array<any>): Promise<any> => {
+    return this.storage.set(StorageKeys.TalliesWithErrors, tallies);
   }
 
   /**

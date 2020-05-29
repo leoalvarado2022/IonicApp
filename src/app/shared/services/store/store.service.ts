@@ -37,6 +37,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     this.setState(this.buildInitialState, 'INIT_STATE');
 
+    /*
     if (!environment.production) {
       this.stateChanged.pipe(
         debounceTime(500)
@@ -44,6 +45,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
         this.backupState();
       });
     }
+    */
   }
 
   /**

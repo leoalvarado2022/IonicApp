@@ -4,9 +4,9 @@ import {Router} from '@angular/router';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {ContractListItem} from '../contract-interfaces';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {SyncService} from '../../../shared/services/sync/sync.service';
 import {Subscription} from 'rxjs';
-import { IonItemSliding } from '@ionic/angular';
+import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
+import { AlertService } from 'src/app/shared/services/alert/alert.service';
 
 @Component({
   selector: 'app-contracts-list',
@@ -24,15 +24,20 @@ export class ContractsListPage implements OnInit, OnDestroy {
     private router: Router,
     private contractsService: ContractsService,
     private httpService: HttpService,
-    private syncService: SyncService,
+    private manualSyncService: ManualSyncService,
+    private alertService: AlertService
   ) {
 
   }
 
-  ngOnInit() {
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
+  ionViewDidEnter() {
+    this.store$ = this.storeService.stateChanged.subscribe(() => {
       this.loadPreContracts();
     });
+  }
+
+  ngOnInit() {
+    this.loadPreContracts();
   }
 
   ngOnDestroy(): void {
@@ -46,8 +51,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
     const preContracts = this.storeService.getPreContracts();
     const preContractsMapped = preContracts.map(item => this.contractsService.mapPreContractToBeListed(item));
 
-    this.contracts = [];
-    this.filteredContracts = [];
     this.contracts = [...preContractsMapped];
     this.filteredContracts = [...preContractsMapped];
   }
@@ -84,8 +87,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reSync = (event: any) => {
-    this.contracts = [];
-    this.filteredContracts = [];
     this.loadPreContracts();
     event.target.complete();
   }
@@ -116,12 +117,15 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * deleteContract
    * @param data
    */
-  public deleteContract = (data: any): void => {
+  public deleteContract = async (data: any): Promise<void> => {
     const {contract, slide} = data;
     slide.close();
 
-    const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
-    this.storeContract(deleteContract);
+    const sayYes = await this.alertService.confirmAlert('Seguro que desea borrar este pre-contrato?');
+    if (sayYes) {
+      const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
+      this.storeContract(deleteContract);
+    }
   }
 
   /**
@@ -132,24 +136,10 @@ export class ContractsListPage implements OnInit, OnDestroy {
     const preContracts = [];
     preContracts.push(data);
 
-    this.contractsService.storePreContracts(preContracts).subscribe(success => {
-      this.syncData();
-    }, error => {
-      this.httpService.errorHandler(error);
-    });
-  }
+    this.contractsService.storePreContracts(preContracts).subscribe(() => {
 
-  /**
-   * syncData
-   */
-  private syncData = () => {
-    const userData = this.storeService.getUser();
-    const username = userData.username;
-    const activeConnection = this.storeService.getActiveConnection();
-
-    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
-      this.storeService.setSyncedData(success.data);
-      this.loadPreContracts();
+      // SEND TO SYNC
+      this.manualSyncService.sync();
     }, error => {
       this.httpService.errorHandler(error);
     });

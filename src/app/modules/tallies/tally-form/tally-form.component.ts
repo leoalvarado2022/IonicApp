@@ -50,7 +50,6 @@ export class TallyFormComponent implements OnInit {
     {text: '0.1', value: 0.1}
   ];
 
-  public multipleWorkers: Array<any> = [];
   public workersOverMax: Array<any> = [];
 
   constructor(
@@ -264,9 +263,10 @@ export class TallyFormComponent implements OnInit {
   public submitForm = () => {
     const formData = Object.assign({}, this.tallyForm.value);
 
-    if (this.multipleWorkers.length > 0) {
+    if (this.workers.length > 1) {
       const multpleTallies = [];
       for (const worker of this.workers) {
+        console.log('veces');
         multpleTallies.push(this.newMultipleTally(worker, formData));
       }
 

@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ValidateRut} from '@primetec/primetec-angular';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-associate-work',
@@ -14,17 +15,18 @@ export class AddTratoPage implements OnInit {
   public activeForm: FormGroup;
 
   constructor(public modalController: ModalController,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private _storeService: StoreService) {
   }
 
 
   ngOnInit() {
-    console.log(this.deals, 'deal modal');
-
+    // console.log(this.deals, 'deal modal');
     this.activeForm = this.formBuilder.group({
       id: ['', Validators.required],
       option: ['', Validators.required],
-      automatico: [true, Validators.required],
+      method: ['', Validators.required],
+      automatic: [true, Validators.required],
       name_labor: ['', Validators.required],
       unit_control: ['', Validators.required],
     });
@@ -44,9 +46,6 @@ export class AddTratoPage implements OnInit {
    * @description agregar trato
    */
   async onPress() {
-
-    console.log('tratos');
-
     await this.closeWork();
   }
 
@@ -54,10 +53,43 @@ export class AddTratoPage implements OnInit {
   /**
    * onSubmit
    */
-  public onSubmit() {
-    const data = Object.assign({}, this.activeForm.value);
+  async onSubmit() {
+    let data = Object.assign({}, this.activeForm.value);
+    const deal = this.deals.length ? this.deals.find(value => value.id === data.id) : [];
 
-    console.log(data, 'data');
+    // if exists deal , the change data
+    if (deal) {
+      data = Object.assign(deal, this.activeForm.value);
+      switch (data.option) {
+        case '0' :
+          data.count = false;
+          data.weight = true;
+          data.performance = false;
+          break;
+        case '1':
+          data.count = true;
+          data.weight = false;
+          data.performance = false;
+          break;
+        case '2':
+          data.count = false;
+          data.weight = false;
+          data.performance = true;
+          break;
+      }
+
+      if (data.method === 'nfc')
+        data.nfc = true;
+
+      data.active = true;
+    }
+
+    delete data.option;
+
+    data.user = this._storeService.getUser();
+
+    this._storeService.setDealsTemp(data);
+    await this.closeWork(data);
   }
 
   /**

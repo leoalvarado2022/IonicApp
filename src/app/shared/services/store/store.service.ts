@@ -21,9 +21,9 @@ import {
   TabMenu,
   Unit
 } from '@primetec/primetec-angular';
-import { Tally } from 'src/app/modules/tallies/tally.interface';
-import { environment } from 'src/environments/environment';
-import { debounceTime } from 'rxjs/operators';
+import {Tally} from 'src/app/modules/tallies/tally.interface';
+import {environment} from 'src/environments/environment';
+import {debounceTime} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
     super({
-      logStateChanges: false,
+      logStateChanges: true,
       trackStateHistory: false
     });
 
@@ -121,9 +121,10 @@ export class StoreService extends ObservableStore<StoreInterface> {
         tallyTempId: 0,
         talliesToRecord: [],
         talliesWithErrors: [],
+        dealsTemp: []
       }
     };
-  }
+  };
 
   public clearStore() {
     this.setState(this.buildInitialState, 'INIT_STATE');
@@ -156,7 +157,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public backupState = (): void => {
     localStorage.setItem('fx11StateBackup', JSON.stringify(this.getState()));
-  }
+  };
 
   /**
    * setRemember
@@ -165,7 +166,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setRemember = (remember: boolean): void => {
     const auth = {...this.getState().auth, remember};
     this.setState({auth}, StoreActions.SetRemember);
-  }
+  };
 
 
   /**
@@ -182,7 +183,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getRemember = (): boolean => {
     return this.getState().auth.remember;
-  }
+  };
 
   /**
    * setRememberData
@@ -191,14 +192,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setRememberData = (rememberData: RememberData): void => {
     const auth = {...this.getState().auth, rememberData};
     this.setState({auth}, StoreActions.SetRememberData);
-  }
+  };
 
   /**
    * getRememberData
    */
   public getRememberData = (): RememberData => {
     return this.getState().auth.rememberData;
-  }
+  };
 
   /**
    * setUser
@@ -206,14 +207,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setUser = (userData: any) => {
     const auth = {...this.getState().auth, userData};
     this.setState({auth}, StoreActions.SetUser);
-  }
+  };
 
   /**
    * getUser
    */
   public getUser = () => {
     return this.getState().auth.userData;
-  }
+  };
 
   /**
    * setUserConnections
@@ -232,7 +233,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
         this.setActiveConnection(userConnections[0]);
       }
     }
-  }
+  };
 
   /**
    * setActiveConnection
@@ -241,14 +242,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setActiveConnection = (activeConnection: Connection = null) => {
     const auth = {...this.getState().auth, userActiveConnection: activeConnection};
     this.setState({auth}, StoreActions.SetUserActiveConnection);
-  }
+  };
 
   /**
    * getActiveConnection
    */
   public getActiveConnection = (): Connection => {
     return this.getState().auth.userActiveConnection;
-  }
+  };
 
   /**
    * setToken
@@ -257,14 +258,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setToken = (userToken: string = null): void => {
     const auth = {...this.getState().auth, userToken};
     this.setState({auth}, StoreActions.SetUserToken);
-  }
+  };
 
   /**
    * getToken
    */
   public getToken = (): string => {
     return this.getState().auth.userToken;
-  }
+  };
 
   /**
    * setLoginStatus
@@ -273,14 +274,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setLoginStatus = (status: boolean): void => {
     const auth = {...this.getState().auth, isLogged: status};
     this.setState({auth}, StoreActions.SetLoginStatus);
-  }
+  };
 
   /**
    * getLoginStatus
    */
   public getLoginStatus = (): boolean => {
     return this.getState().auth.isLogged;
-  }
+  };
 
   /**
    * removeRememberData
@@ -288,14 +289,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public removeRememberData = (): void => {
     const auth = {...this.getState().auth, rememberData: null};
     this.setState({auth}, StoreActions.SetRememberData);
-  }
+  };
 
   /**
    * getUserConnections
    */
   public getUserConnections = (): Array<Connection> => {
     return this.getState().auth.userConnections;
-  }
+  };
 
   /**
    * logout
@@ -308,7 +309,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setLoginStatus(false);
     this.setToken();
     this.setActiveConnection();
-  }
+  };
 
   /**
    * setCompanies
@@ -321,7 +322,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     if (companies.length > 0) {
       this.setActiveCompany(companies[0]);
     }
-  }
+  };
 
   /**
    * END OF AUTH STATE METHODS
@@ -346,7 +347,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getCompanies = (): Array<Company> => {
     return this.getState().sync.companies;
-  }
+  };
 
   /**
    * setActiveCompany
@@ -355,14 +356,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setActiveCompany = (company: Company): void => {
     const auth = {...this.getState().auth, userActiveCompany: company};
     this.setState({auth}, StoreActions.SetUserActiveCompany);
-  }
+  };
 
   /**
    * getActiveCompany
    */
   public getActiveCompany = (): Company => {
     return this.getState().auth.userActiveCompany;
-  }
+  };
 
   /**
    * setCostCenters
@@ -370,14 +371,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setCostCenters = (costCenters: Array<CostCenterList>) => {
     const sync = {...this.getState().sync, costCenters};
     this.setState({sync}, StoreActions.SetCostCenters);
-  }
+  };
 
   /**
    * getCostCenters
    */
   public getCostCenters = (): Array<CostCenterList> => {
     return this.getState().sync.costCenters;
-  }
+  };
 
   /**
    * setMenus
@@ -385,14 +386,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setMenus = (menus: Array<TabMenu>) => {
     const sync = {...this.getState().sync, menus};
     this.setState({sync}, StoreActions.SetMenus);
-  }
+  };
 
   /**
    * getMenus
    */
   public getMenus = (): Array<TabMenu> => {
     return this.getState().sync.menus;
-  }
+  };
 
   /**
    * setUnits
@@ -401,14 +402,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setUnits = (units: Array<Unit>) => {
     const sync = {...this.getState().sync, units};
     this.setState({sync}, StoreActions.SetUnits);
-  }
+  };
 
   /**
    * getUnits
    */
   public getUnits = (): Array<Unit> => {
     return this.getState().sync.units;
-  }
+  };
 
   /**
    * setQualities
@@ -417,14 +418,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setQualities = (qualities: Array<Generic>) => {
     const sync = {...this.getState().sync, qualities};
     this.setState({sync}, StoreActions.SetQualities);
-  }
+  };
 
   /**
    * getQualities
    */
   public getQualities = (): Array<Generic> => {
     return this.getState().sync.qualities;
-  }
+  };
 
   /**
    * setCalibers
@@ -433,49 +434,49 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setCalibers = (calibers: Array<Caliber>) => {
     const sync = {...this.getState().sync, calibers};
     this.setState({sync}, StoreActions.SetCalibers);
-  }
+  };
 
   /**
    * getCalibers
    */
   public getCalibers = (): Array<Caliber> => {
     return this.getState().sync.calibers;
-  }
+  };
 
   /**
    * getAccess
    */
   public getAccess = (): Array<CfgAccess> => {
     return this.getState().sync.cfgAccess;
-  }
+  };
 
   /**
    * getQuadrilles
    */
   public getQuadrilles = (): Array<Quadrille> => {
     return this.getState().sync.quadrilles;
-  }
+  };
 
   /**
    * getWorkers
    */
   public getWorkers = (): Array<any> => {
     return this.getState().sync.workers;
-  }
+  };
 
   /**
    * getProcessPlants
    */
   public getProcessPlants = (): Array<EntityList> => {
     return this.getState().sync.processPlants;
-  }
+  };
 
   /**
    * getDestinations
    */
   public getDestinations = (): Array<Generic> => {
     return this.getState().sync.destinations;
-  }
+  };
 
   /**
    * setTallies
@@ -484,14 +485,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setTallies = (tallies: Array<Tally>): void => {
     const sync = {...this.getState().sync, tallies};
     this.setState({sync}, StoreActions.SetTallies);
-  }
+  };
 
   /**
    * getTallies
    */
   public getTallies = (): Array<Tally> => {
     return this.getState().sync.tallies;
-  }
+  };
 
   /**
    * setSyncedData
@@ -549,7 +550,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setTallies(tallies);
     this.setDevices(devices);
     this.setBonds(bonds);
-  }
+  };
 
   /**
    * setActiveCostCenter
@@ -558,14 +559,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setActiveCostCenter = (costCenter: CostCenterList): void => {
     const contract = {...this.getState().contract, activeCostCenter: costCenter};
     this.setState({contract}, StoreActions.SetActiveCostCenter);
-  }
+  };
 
   /**
    * getActiveCostCenter
    */
   public getActiveCostCenter = (): CostCenterList => {
     return this.getState().contract.activeCostCenter;
-  }
+  };
 
   /**
    * setCostCenter
@@ -574,14 +575,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setCostCenter = (costCenter: CostCenter): void => {
     const contract = {...this.getState().contract, costCenter};
     this.setState({contract}, StoreActions.SetCostCenter);
-  }
+  };
 
   /**
    * getCostCenter
    */
   public getCostCenter = (): CostCenter => {
     return this.getState().contract.costCenter;
-  }
+  };
 
   /**
    * setProductionContracts
@@ -590,14 +591,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setProductionContracts = (productionContracts: Array<ProductContract>): void => {
     const contract = {...this.getState().contract, productionContracts};
     this.setState({contract}, StoreActions.SetProductionContracts);
-  }
+  };
 
   /**
    * getProductionContracts
    */
   public getProductionContracts = (): Array<ProductContract> => {
     return this.getState().contract.productionContracts;
-  }
+  };
 
   /**
    * END OF SYNC STATE METHODS
@@ -624,14 +625,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setProductionContractsDetails = (productionContractsDetails: Array<ProductContractDetail>): void => {
     const contract = {...this.getState().contract, productionContractsDetails};
     this.setState({contract}, StoreActions.SetProductionContractsDetails);
-  }
+  };
 
   /**
    * getProductionContractsDetails
    */
   public getProductionContractsDetails = (): Array<ProductContractDetail> => {
     return this.getState().contract.productionContractsDetails;
-  }
+  };
 
   /**
    * setHarvestEstimate
@@ -640,14 +641,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setHarvestEstimate = (harvestEstimate: Array<HarvestEstimate>): void => {
     const contract = {...this.getState().contract, harvestEstimate};
     this.setState({contract}, StoreActions.SetHarvestEstimate);
-  }
+  };
 
   /**
    * getHarvestEstimate
    */
   public getHarvestEstimate = (): Array<HarvestEstimate> => {
     return this.getState().contract.harvestEstimate;
-  }
+  };
 
   /**
    * setQualityEstimate
@@ -656,14 +657,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setQualityEstimate = (qualityEstimate: Array<QualityEstimate>): void => {
     const contract = {...this.getState().contract, qualityEstimate};
     this.setState({contract}, StoreActions.SetQualityEstimate);
-  }
+  };
 
   /**
    * getQualityEstimate
    */
   public getQualityEstimate = (): Array<QualityEstimate> => {
     return this.getState().contract.qualityEstimate;
-  }
+  };
 
   /**
    * setQualityEstimateDetail
@@ -672,14 +673,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setQualityEstimateDetail = (qualityEstimateDetail: Array<QualityDetail>): void => {
     const contract = {...this.getState().contract, qualityEstimateDetail};
     this.setState({contract}, StoreActions.SetQualityEstimateDetail);
-  }
+  };
 
   /**
    * getQualityEstimateDetail
    */
   public getQualityEstimateDetail = (): Array<QualityDetail> => {
     return this.getState().contract.qualityEstimateDetail;
-  }
+  };
 
   /**
    * setNotes
@@ -688,14 +689,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setNotes = (notes: Array<Note>): void => {
     const contract = {...this.getState().contract, notes};
     this.setState({contract}, StoreActions.SetNotes);
-  }
+  };
 
   /**
    * getNotes
    */
   public getNotes = (): Array<Note> => {
     return this.getState().contract.notes;
-  }
+  };
 
   /**
    * setHolidays
@@ -704,14 +705,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setHolidays = (holidays: Array<any>): void => {
     const contract = {...this.getState().contract, holidays};
     this.setState({contract}, StoreActions.SetHolidays);
-  }
+  };
 
   /**
    * getHolidays
    */
   public getHolidays = (): Array<any> => {
     return this.getState().contract.holidays;
-  }
+  };
 
   /**
    * setContractData
@@ -737,7 +738,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setQualityEstimateDetail(qualityEstimateDetail);
     this.setNotes(notes);
     this.setHolidays(holidays);
-  }
+  };
 
   /**
    * setPushToken
@@ -745,14 +746,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public setPushToken = (token: string): void => {
     this.setState({pushToken: token}, StoreActions.SetPushToken);
-  }
+  };
 
   /**
    * getPushToken
    */
   public getPushToken = (): string => {
     return this.getState().pushToken;
-  }
+  };
 
   /**
    * setPushToken
@@ -760,14 +761,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public setTotalTicket = (total: number): void => {
     this.setState({totalTicket: total}, StoreActions.AddTotalTickets);
-  }
+  };
 
   /**
    * getPushToken
    */
   public getTotalTicket = (): number => {
     return this.getState().totalTicket;
-  }
+  };
 
   /**
    * setAccess
@@ -776,7 +777,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   private setAccess = (cfgAccess: Array<CfgAccess>) => {
     const sync = {...this.getState().sync, cfgAccess};
     this.setState({sync}, StoreActions.SetAccess);
-  }
+  };
 
   /**
    * setQuadrilles
@@ -785,7 +786,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   private setQuadrilles = (quadrilles: Array<Quadrille>) => {
     const sync = {...this.getState().sync, quadrilles};
     this.setState({sync}, StoreActions.SetQuadrilles);
-  }
+  };
 
   /**
    * setWorkers
@@ -794,7 +795,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   private setWorkers = (workers: Array<any>) => {
     const sync = {...this.getState().sync, workers};
     this.setState({sync}, StoreActions.SetWorkers);
-  }
+  };
 
   /**
    * setProcessPlants
@@ -803,7 +804,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   private setProcessPlants = (processPlants: Array<EntityList>) => {
     const sync = {...this.getState().sync, processPlants};
     this.setState({sync}, StoreActions.SetProcessPlants);
-  }
+  };
 
   /**
    * setDestinations
@@ -812,7 +813,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   private setDestinations = (destinations: Array<Generic>) => {
     const sync = {...this.getState().sync, destinations};
     this.setState({sync}, StoreActions.SetDestinations);
-  }
+  };
 
   /**
    * defineArrows
@@ -848,7 +849,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     }
 
     return data;
-  }
+  };
 
   /**
    * END OF CONTRACT STATE METHODS
@@ -875,14 +876,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setActiveTicket = (activeTicket: any): void => {
     const ticket = {...this.getState().ticket, activeTicket};
     this.setState({ticket}, StoreActions.SetActiveTicket);
-  }
+  };
 
   /**
    * getActiveTicket
    */
   public getActiveTicket = (): any => {
     return this.getState().ticket.activeTicket;
-  }
+  };
 
   /**
    * getTicketStates
@@ -891,14 +892,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setTicketStates = (ticketStates: Array<any>): void => {
     const ticket = {...this.getState().ticket, states: ticketStates};
     this.setState({ticket}, StoreActions.SetTicketStates);
-  }
+  };
 
   /**
    * getTicketStates
    */
   public getTicketStates = (): Array<any> => {
     return this.getState().ticket.states;
-  }
+  };
 
   /**
    * setTicketUsers
@@ -907,14 +908,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setTicketUsers = (ticketUsers: Array<any>): void => {
     const ticket = {...this.getState().ticket, users: ticketUsers};
     this.setState({ticket}, StoreActions.SetTicketUsers);
-  }
+  };
 
   /**
    * getTicketUsers
    */
   public getTicketUsers = (): Array<any> => {
     return this.getState().ticket.users;
-  }
+  };
 
   /**
    * setTicketPriorities
@@ -923,14 +924,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setTicketPriorities = (ticketPriorities: Array<any>): void => {
     const ticket = {...this.getState().ticket, priorities: ticketPriorities};
     this.setState({ticket}, StoreActions.SetTicketPriorities);
-  }
+  };
 
   /**
    * getTicketPriorities
    */
   public getTicketPriorities = (): Array<any> => {
     return this.getState().ticket.priorities;
-  }
+  };
 
   /**
    * setTicketDetails
@@ -939,14 +940,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setTicketDetails = (ticketDetails: Array<any>): void => {
     const ticket = {...this.getState().ticket, details: ticketDetails};
     this.setState({ticket}, StoreActions.SetTicketDetails);
-  }
+  };
 
   /**
    * getTicketDetails
    */
   public getTicketDetails = (): Array<any> => {
     return this.getState().ticket.details;
-  }
+  };
 
 
   /**
@@ -974,14 +975,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setPreContracts = (preContracts: Array<any> = []): void => {
     const sync = {...this.getState().sync, preContracts};
     this.setState({sync}, StoreActions.SetPreContracts);
-  }
+  };
 
   /**
    * getPreContracts
    */
   public getPreContracts = (): Array<any> => {
     return this.getState().sync.preContracts;
-  }
+  };
 
   /**
    * setCountries
@@ -990,14 +991,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setCountries = (countries: Array<any> = []): void => {
     const sync = {...this.getState().sync, countries};
     this.setState({sync}, StoreActions.SetCountries);
-  }
+  };
 
   /**
    * getCountries
    */
   public getCountries = (): Array<any> => {
     return this.getState().sync.countries;
-  }
+  };
 
   /**
    * setContractTypes
@@ -1006,7 +1007,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setContractTypes = (contractTypes: Array<any> = []): void => {
     const sync = {...this.getState().sync, contractTypes};
     this.setState({sync}, StoreActions.SetContractTypes);
-  }
+  };
 
   /**
    * getContractTypes
@@ -1029,7 +1030,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getCivilStatus = (): Array<any> => {
     return this.getState().sync.civilStatus;
-  }
+  };
 
   /**
    * setAfps
@@ -1038,14 +1039,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setAfps = (afps: Array<any> = []): void => {
     const sync = {...this.getState().sync, afps};
     this.setState({sync}, StoreActions.SetAfps);
-  }
+  };
 
   /**
    * getAfps
    */
   public getAfps = (): Array<any> => {
     return this.getState().sync.afps;
-  }
+  };
 
   /**
    * setIsapres
@@ -1054,14 +1055,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setIsapres = (isapres: Array<any> = []): void => {
     const sync = {...this.getState().sync, isapres};
     this.setState({sync}, StoreActions.SetIsapres);
-  }
+  };
 
   /**
    * getIsapres
    */
   public getIsapres = (): Array<any> => {
     return this.getState().sync.isapres;
-  }
+  };
 
   /**
    * @param labors
@@ -1069,14 +1070,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setLabors = (labors: Array<any> = []): void => {
     const sync = {...this.getState().sync, labors};
     this.setState({sync}, StoreActions.SetLabors);
-  }
+  };
 
   /**
    * getLabors
    */
   public getLabors = (): Array<any> => {
     return this.getState().sync.labors;
-  }
+  };
 
   /**
    * @param laborsCostCenter
@@ -1084,14 +1085,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setLaborsCostCenter = (laborsCostCenter: Array<any> = []): void => {
     const sync = {...this.getState().sync, laborsCostCenter};
     this.setState({sync}, StoreActions.SetLaborsCostCenter);
-  }
+  };
 
   /**
    * getlaborsCostCenter
    */
   public getLaborsCostCenter = (): Array<any> => {
     return this.getState().sync.laborsCostCenter;
-  }
+  };
 
   /**
    * @param deals
@@ -1099,7 +1100,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setDeals = (deals: Array<any> = []): void => {
     const sync = {...this.getState().sync, deals};
     this.setState({sync}, StoreActions.SetDeals);
-  }
+  };
 
   /**
    /**
@@ -1107,7 +1108,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getDeals = (): Array<any> => {
     return this.getState().sync.deals;
-  }
+  };
 
   /**
    * @param costCentersCustom
@@ -1115,14 +1116,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setCostCentersCustom = (costCentersCustom: Array<any> = []): void => {
     const sync = {...this.getState().sync, costCentersCustom};
     this.setState({sync}, StoreActions.SetCostCentersCustom);
-  }
+  };
 
   /**
    * costCentersCustom
    */
   public getCostCentersCustom = (): Array<any> => {
     return this.getState().sync.costCentersCustom;
-  }
+  };
 
   /**
    * setDevices
@@ -1131,14 +1132,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setDevices = (devices: Array<any>): void => {
     const sync = {...this.getState().sync, devices};
     this.setState({sync}, StoreActions.SetDevices);
-  }
+  };
 
   /**
    * getDevices
    */
   public getDevices = (): Array<any> => {
     return this.getState().sync.devices;
-  }
+  };
 
   /**
    * setBonds
@@ -1146,14 +1147,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public setBonds = (bonds: Array<any>): void => {
     const sync = {...this.getState().sync, bonds};
     this.setState({sync}, StoreActions.SetBonds);
-  }
+  };
 
   /**
    * getBonds
    */
   public getBonds = (): Array<any> => {
     return this.getState().sync.bonds;
-  }
+  };
 
   /**
    * END OF PRE-CONTRACT STATE METHODS
@@ -1178,7 +1179,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getDevicesToRecord = (): Array<any> => {
     return this.getState().toRecord.devicesToRecord;
-  }
+  };
 
   /**
    * addDevicesToRecord
@@ -1199,7 +1200,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
       this.increaseDeviceTempId();
     }
-  }
+  };
 
   /**
    * removeDevicesToRecord
@@ -1213,7 +1214,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({toRecord}, StoreActions.RemovePreDevices);
 
     return toRemoved.length;
-  }
+  };
 
   /**
    * getDeviceTempId
@@ -1230,14 +1231,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, deviceTempId: (current + 1)};
     this.setState({toRecord}, StoreActions.IncreaseDeviceTempId);
-  }
+  };
 
   /**
    * getDevicesWithErrors
    */
   public getDevicesWithErrors = (): Array<any> => {
     return this.getState().toRecord.devicesWithErrors;
-  }
+  };
 
   /**
    * addDevicesWithErrors
@@ -1250,7 +1251,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({toRecord}, StoreActions.AddDevicessWithErrors);
 
     this.increaseDeviceTempId();
-  }
+  };
 
   /**
    * removeDevicesWithErrors
@@ -1264,14 +1265,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({toRecord}, StoreActions.RemoveDevicesWithErrors);
 
     return toRemoved.length;
-  }
+  };
 
   /**
    * getTalliesToRecord
    */
   public getTalliesToRecord = (): Array<any> => {
     return this.getState().toRecord.talliesToRecord;
-  }
+  };
 
   /**
    * getTallyTempId
@@ -1288,7 +1289,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, tallyTempId: (current + 1)};
     this.setState({toRecord}, StoreActions.IncreaseTallyTempId);
-  }
+  };
 
   /**
    * addTalliesToRecord
@@ -1300,7 +1301,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
     this.setState({toRecord}, StoreActions.AddTallies);
-  }
+  };
 
   /**
    * editTallyToRecord
@@ -1316,7 +1317,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
     this.setState({toRecord}, StoreActions.EditTallies);
-  }
+  };
 
   /**
    * removeTallyToRecord
@@ -1327,7 +1328,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
     this.setState({toRecord}, StoreActions.DeleteTallies);
-  }
+  };
 
   /**
    * removeTalliesToRecord
@@ -1342,14 +1343,14 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({toRecord}, StoreActions.RemoveTallies);
 
     return toRemoved.length;
-  }
+  };
 
   /**
    * getTalliesWithErrors
    */
   public getTalliesWithErrors = (): Array<any> => {
     return this.getState().toRecord.talliesWithErrors;
-  }
+  };
 
   /**
    * addTalliesWithErrors
@@ -1360,7 +1361,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     const toRecord = {...this.getState().toRecord, talliesWithErrors: [...talliesWithErrors, ...tallies]};
     this.setState({toRecord}, StoreActions.AddTalliesWithErrors);
-  }
+  };
 
   /**
    * removeTalliesWithErrors
@@ -1374,7 +1375,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({toRecord}, StoreActions.RemoveTalliesWithErrors);
 
     return toRemoved.length;
-  }
+  };
 
   /**
    * getNumberOfWorkerTallies
@@ -1407,7 +1408,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     // Return joined lists
     return [...toRecord, ...filteredTallies];
-  }
+  };
 
   /**
    * removeTimeFromDate
@@ -1419,7 +1420,38 @@ export class StoreService extends ObservableStore<StoreInterface> {
     }
 
     return date;
-  }
+  };
+
+  /**
+   * setPreContracts
+   * @param preContracts
+   */
+  public setDealsTemp = (dealsToRecordRow: any): void => {
+    const row = this.getDealsTemp();
+    const filter = row.filter(value => value.id !== dealsToRecordRow.id);
+    filter.push(dealsToRecordRow);
+    const toRecord = {...this.getState().toRecord, dealsTemp: filter};
+    this.setState({toRecord}, StoreActions.SetDealsTemp);
+  };
+
+  /**
+   * getPreContracts
+   */
+  public getDealsTemp = (): Array<any> => {
+    return this.getState().toRecord.dealsTemp;
+  };
+
+  /**
+   * removeDealsToRecord
+   */
+  public removeDealsTemp = (id): void => {
+    const row = this.getDealsTemp();
+    const filter = row.filter(value => value.id !== id);
+
+    const toRecord = {...this.getState().toRecord, dealsTemp: filter};
+    this.setState({toRecord}, StoreActions.RemoveDealsTemp);
+  };
+
 
   /**
    * END OF OFF-LINE STATE METHODS

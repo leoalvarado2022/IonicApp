@@ -81,4 +81,5 @@ export interface ToRecord {
   talliesWithErrors: Array<any>;
   tallyTempId: number;
   deviceTempId: number;
+  dealsTemp: Array<any>;
 }

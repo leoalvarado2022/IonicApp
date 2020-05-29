@@ -28,11 +28,12 @@ import {TicketCardComponent} from '../modules/crm/tickets/ticket-card/ticket-car
 import {TicketsService} from '../modules/crm/services/tickets/tickets.service';
 import {NfcService} from './services/nfc/nfc.service';
 import {ContractsService} from '../modules/pre-contracts/services/contracts/contracts.service';
-import { AlphabeticalOrderPipe } from './pipes/alphabetical-order/alphabetical-order.pipe';
-import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
-import { CheckConnectionComponent } from './components/check-connection/check-connection.component';
-import { AuthService } from './services/auth/auth.service';
-import { TallyService } from '../modules/tallies/services/tally/tally.service';
+import {AlphabeticalOrderPipe} from './pipes/alphabetical-order/alphabetical-order.pipe';
+import {NumericOrderPipe} from './pipes/numeric-order/numeric-order.pipe';
+import {CheckConnectionComponent} from './components/check-connection/check-connection.component';
+import {AuthService} from './services/auth/auth.service';
+import {TallyService} from '../modules/tallies/services/tally/tally.service';
+import {DealsService} from './services/deals/deals.service';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { TallyService } from '../modules/tallies/services/tally/tally.service';
     NfcService,
     AlphabeticalOrderPipe,
     AuthService,
-    TallyService
+    TallyService,
+    DealsService
   ],
   exports: [
     CommonModule,

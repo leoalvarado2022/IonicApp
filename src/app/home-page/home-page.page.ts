@@ -101,7 +101,7 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private startManualSyncObservable = () => {
     this.manualSync$ = this.manualSyncService.eventSubscription().subscribe(status => {
-      if (status) {
+      if (status && this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }
     });

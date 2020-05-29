@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { MainSyncService } from '../main/main-sync.service';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { Storage } from '@ionic/storage';
 import { StorageKeys } from '../storage-keys';
-
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +10,100 @@ import { StorageKeys } from '../storage-keys';
 export class TallySyncService extends MainSyncService {
 
   private tallyTempId = 1;
-  private talliesToRecord: Array<Tally>  = [];
 
   constructor(private storage: Storage) {
     super();
   }
 
+  /**
+   * getTalliesToRecord
+   */
+  public getTalliesToRecord = (): Promise<Array<Tally>> => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then( (talliesToRecord: Array<Tally>) => {
+      return talliesToRecord ?  talliesToRecord : [];
+    });
+  }
+
+  /**
+   * addTallyToRecord
+   * - Add a single tally to the talliesToRecord Array
+   */
+  public addTallyToRecord = (tallyToRecord: Tally): Promise<any> => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then((talliesToRecord: Array<Tally>) => {
+      if (talliesToRecord) {
+        talliesToRecord.push(tallyToRecord);
+        return this.storage.set(StorageKeys.TalliesToRecord, talliesToRecord);
+      } else {
+        return this.storage.set(StorageKeys.TalliesToRecord, [tallyToRecord]);
+      }
+    });
+  }
+
+  /**
+   * addTalliesToRecord
+   * - Add multiple tallies to the talliesToRecord Array
+   */
+  public addTalliesToRecord = (toRecord: Array<Tally>) => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then((talliesToRecord: Array<Tally>) => {
+      if (talliesToRecord) {
+        const mergeArrays = [...toRecord, ...talliesToRecord];
+        return this.storage.set(StorageKeys.TalliesToRecord, mergeArrays);
+      } else {
+        return this.storage.set(StorageKeys.TalliesToRecord, toRecord);
+      }
+    });
+  }
+
+  /**
+   * editTallyToRecord
+   */
+  public editTallyToRecord = (tallyToEdit: Tally): Promise<any> => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then( (talliesToRecord: Array<Tally>) => {
+      if (talliesToRecord) {
+        const index = talliesToRecord.findIndex(item => item.tempId === tallyToEdit.tempId);
+
+        // - Si el ID temporal existe se actualiza el indice del array con el objecto nuevo.
+        // - Si el ID temporal no existe se inserta al array.
+        if (index > -1) {
+          talliesToRecord[index] = tallyToEdit;
+        } else {
+          talliesToRecord.push(tallyToEdit);
+        }
+
+        return this.storage.set(StorageKeys.TalliesToRecord, talliesToRecord);
+      } else {
+        return this.storage.set(StorageKeys.TalliesToRecord, [tallyToEdit]);
+      }
+    });
+  }
+
+  /**
+   * removeTallyToRecord
+   */
+  public removeTallyToRecord = (tallyToRecordTempId: number) => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then( (talliesToRecord: Array<Tally>) => {
+      if (talliesToRecord) {
+        const filtered = talliesToRecord.filter(item => item.tempId !== tallyToRecordTempId);
+        return this.storage.set(StorageKeys.TalliesToRecord, filtered);
+      }
+
+      return null;
+    });
+  }
+
+  /**
+   * removeTalliesToRecord
+   */
+  public removeTalliesToRecord = (tempIds: Array<number>) => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then( (talliesToRecord: Array<Tally>) => {
+      if (talliesToRecord) {
+        const filtered = talliesToRecord.filter(item => !tempIds.includes(item.tempId));
+        return this.storage.set(StorageKeys.TalliesToRecord, filtered);
+      }
+
+      return null;
+    });
+  }
 
   /**
    * getTallyTempId
@@ -33,95 +120,27 @@ export class TallySyncService extends MainSyncService {
   }
 
   /**
-   * getTalliesToRecord
-   */
-  public getTalliesToRecord = (): Promise<Array<Tally>> => {
-    return this.storage.get(StorageKeys.TalliesToRecord);
-  }
-
-  /**
-   * setTalliesToRecord
-   */
-  private setTalliesToRecord = (talliesToRecord: Array<Tally>): Promise<Array<Tally>> => {
-    return this.storage.set(StorageKeys.TalliesToRecord, talliesToRecord);
-  }
-
-  /**
-   * addTalliesToRecord
-   * @param tallies
-   */
-  public addTalliesToRecord = (talliesToRecord: Array<Tally>, tallyToRecord: Tally): Promise<any> => {
-    talliesToRecord.push(tallyToRecord);
-    return this.setTalliesToRecord(talliesToRecord);
-  }
-
-  /**
-   * editTallyToRecord
-   */
-  public editTallyToRecord = (talliesToRecord: Array<Tally>, tallyToRecord: Tally): Promise<any> => {
-    const index = talliesToRecord.findIndex(item => item.tempId === tallyToRecord.tempId);
-
-    // - Si el ID temporal existe en el array se actualiza el indice del array con el objecto nuevo.
-    // - Si el ID temporal no existe en el array se inserta al array.
-    if (index > -1) {
-      talliesToRecord[index] = tallyToRecord;
-    } else {
-      talliesToRecord.push(tallyToRecord);
-    }
-
-    return this.setTalliesToRecord(talliesToRecord);
-  }
-
-  /**
-   * removeTallyToRecord
-   */
-  public removeTallyToRecord = (talliesToRecord: Array<Tally>, tallyToRecord: any): Promise<any> => {
-    talliesToRecord = talliesToRecord.filter(item => item.id !== tallyToRecord.id);
-
-    return this.setTalliesToRecord(talliesToRecord);
-  }
-
-  /**
-   * removeTalliesToRecord
-   * @param indexes
-   */
-  public removeTalliesToRecord = (talliesToRecord: Array<Tally>, indexes: Array<number>): Promise<any> => {
-    const toRemoved = talliesToRecord.filter(item => !indexes.includes(item.tempId));
-
-    return this.setTalliesToRecord(toRemoved);
-  }
-
-  /**
    * getTalliesWithErrors
    */
-  public getTalliesWithErrors = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.TalliesWithErrors);
+  public getTalliesWithErrors = (): Promise<any> => {
+    return this.storage.get(StorageKeys.TalliesWithErrors).then( (talliesWithErrors: Array<any>) => {
+      return talliesWithErrors ? talliesWithErrors : [];
+    });
   }
 
   /**
    * addTalliesWithErrors
-   * @param tallies
+   * - Add multiple tallies to the talliesWithErrors Array
    */
-  public addTalliesWithErrors = (tallies: Array<any>): Promise<any> => {
-    return this.storage.set(StorageKeys.TalliesWithErrors, tallies);
-  }
-
-  /**
-   * removeTalliesWithErrors
-   * @param indexes
-   */
-  public removeTalliesWithErrors = (indexes: Array<number>): number => {
-    /*
-    const talliesWithErrors = this.getTalliesWithErrors();
-    const toRemoved = talliesWithErrors.filter(item => !indexes.includes(item.tempId));
-
-    const toRecord = {...this.getState().toRecord, talliesWithErrors: [...toRemoved]};
-    this.setState({toRecord}, StoreActions.RemoveTalliesWithErrors);
-
-    return toRemoved.length;
-    */
-
-    return 0;
+  public addTalliesWithErrors = (withErrors: Array<any>) => {
+    return this.storage.get(StorageKeys.TalliesWithErrors).then((talliesWithErrors: Array<any>) => {
+      if (talliesWithErrors) {
+        const mergeArrays = [...withErrors, ...talliesWithErrors];
+        return this.storage.set(StorageKeys.TalliesWithErrors, mergeArrays);
+      } else {
+        return this.storage.set(StorageKeys.TalliesWithErrors, withErrors);
+      }
+    });
   }
 
   /**
@@ -130,7 +149,7 @@ export class TallySyncService extends MainSyncService {
    * - Filter tallies of a worker that are marked to delete
    * - Filter tallies to record that are being edited
    */
-  public getNumberOfWorkerTallies = (syncedTallies: Array<Tally>, talliesToRecord: Array<Tally>,  worker: any, currentDate: string, ignoreId: number = null): Array<Tally> => {
+  public getNumberOfWorkerTallies = (syncedTallies: Array<Tally>, talliesToRecord: Array<Tally>, worker: any, currentDate: string, ignoreId: number = null): Array<Tally> => {
     // Get the tallys to be deleted and convert the ID to positive for comparison use
     const markedToDelete = talliesToRecord.filter(item => item.status === 'delete').map(item => item.id * -1);
 

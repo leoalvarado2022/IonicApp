@@ -37,7 +37,7 @@ export class StorageSyncService extends MainSyncService {
       this.setLabors(labors),
       this.setDeals(deals),
       this.setBonds(bonds)
-    ]).then(data => {
+    ]).then( () => {
       console.log('storeSyncedData OK, event emmited');
       // AVISAR QUE CAMBIO EL SYNC
       this.syncChangedEvent();
@@ -55,7 +55,9 @@ export class StorageSyncService extends MainSyncService {
    * getQuadrilles
    */
   public getQuadrilles = (): Promise<Array<Quadrille>> => {
-    return this.storage.get(StorageKeys.Quadrilles);
+    return this.storage.get(StorageKeys.Quadrilles).then( (quadrilles: Array<Quadrille>) => {
+      return quadrilles ? quadrilles : [];
+    });
   }
 
   /**
@@ -69,7 +71,9 @@ export class StorageSyncService extends MainSyncService {
    * getWorkers
    */
   public getWorkers = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.Workers);
+    return this.storage.get(StorageKeys.Workers).then( (workers: Array<any>) => {
+      return workers ? workers : [];
+    });
   }
 
   /**
@@ -83,13 +87,15 @@ export class StorageSyncService extends MainSyncService {
    * getTallies
    */
   public getTallies = (): Promise<Array<Tally>> => {
-    return this.storage.get(StorageKeys.Tallies);
+    return this.storage.get(StorageKeys.Tallies).then( (tallies: Array<Tally>) => {
+      return tallies ? tallies : [];
+    });
   }
 
   /**
    * setCostCentersCustom
    */
-  private setCostCentersCustom = (costCentersCustom: Array<any> = []): Promise<Array<any>> => {
+  private setCostCentersCustom = (costCentersCustom: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.CostCentersCustom, costCentersCustom);
   }
 
@@ -97,7 +103,9 @@ export class StorageSyncService extends MainSyncService {
    * costCentersCustom
    */
   public getCostCentersCustom = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.CostCentersCustom);
+    return this.storage.get(StorageKeys.CostCentersCustom).then( (costCentersCustom: Array<any>) => {
+      return  costCentersCustom ? costCentersCustom : [];
+    });
   }
 
   /**
@@ -111,7 +119,9 @@ export class StorageSyncService extends MainSyncService {
    * getLabors
    */
   public getLabors = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.Labors);
+    return this.storage.get(StorageKeys.Labors).then( (labors: Array<any>) => {
+      return labors ? labors : [];
+    });
   }
 
   /**
@@ -125,7 +135,9 @@ export class StorageSyncService extends MainSyncService {
    * getDeals
    */
   public getDeals = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.Deals);
+    return this.storage.get(StorageKeys.Deals).then( (deals: Array<any>) => {
+      return deals ? deals : [];
+    });
   }
 
   /**
@@ -139,7 +151,9 @@ export class StorageSyncService extends MainSyncService {
    * getBonds
    */
   public getBonds = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.Bonds);
+    return this.storage.get(StorageKeys.Bonds).then( (bonds: Array<any>) => {
+      return bonds ? bonds : [];
+    });
   }
 
 }

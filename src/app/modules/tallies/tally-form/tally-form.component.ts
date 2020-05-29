@@ -265,27 +265,20 @@ export class TallyFormComponent implements OnInit {
     const formData = Object.assign({}, this.tallyForm.value);
 
     if (this.multipleWorkers.length > 0) {
+      const multpleTallies = [];
       for (const worker of this.workers) {
-        const newMultiple = this.newMultipleTally(worker, formData);
-        this.tallySyncService.addTalliesToRecord(this.talliesToRecord, newMultiple).then( () => {
-          console.log('actualizar la wea');
-          this.tallySyncService.syncChangedEvent();
-        });
+        multpleTallies.push(this.newMultipleTally(worker, formData));
       }
+
+      this.tallySyncService.addTalliesToRecord(multpleTallies);
     } else {
       for (const worker of this.workers) {
         if (this.editTally) {
           const editTally = this.editSingleTally(worker, formData);
-          this.tallySyncService.editTallyToRecord(this.talliesToRecord, editTally).then( () => {
-            console.log('actualizar la wea');
-            this.tallySyncService.syncChangedEvent();
-          });
+          this.tallySyncService.editTallyToRecord(editTally);
         } else {
           const newTally = this.newSingleTally(worker, formData);
-          this.tallySyncService.addTalliesToRecord(this.talliesToRecord, newTally).then( () => {
-            console.log('actualizar la wea');
-            this.tallySyncService.syncChangedEvent();
-          });
+          this.tallySyncService.addTallyToRecord(newTally);
         }
       }
     }
@@ -429,6 +422,7 @@ export class TallyFormComponent implements OnInit {
       todayTallies = todayTallies.filter(i => i.id !== this.editTally.id);
     }
 
+    // tslint:disable-next-line: no-shadowed-variable
     const totalWorked = todayTallies.reduce((total, tally) => total + tally.workingDay, 0);
 
     const total = (+workingDay + +totalWorked);
@@ -483,6 +477,7 @@ export class TallyFormComponent implements OnInit {
    */
   private getWorkerRemainingWorkingDay = (worker: any): number => {
     const todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.dateSelected);
+    // tslint:disable-next-line: no-shadowed-variable
     const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 
     const total = worker.dailyMax - totalWorked > 0 ? worker.dailyMax - totalWorked : 0;

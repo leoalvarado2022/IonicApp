@@ -36,7 +36,7 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     BrowserModule,
     AppRoutingModule,
     IonicModule.forRoot({
-      swipeBackEnabled: false
+      swipeBackEnabled: false,
     }),
     NgxMaskModule.forRoot(ngxMaskOptions),
     CoreServicesModule

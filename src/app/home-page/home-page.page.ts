@@ -25,7 +25,6 @@ export class HomePagePage implements OnInit, OnDestroy {
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   // Tallies
-  private talliesToRecord: Array<Tally> = [];
   private removeTalliesToRecordFlag = false;
   private removeTalliesToRecord: Array<number> = [];
   private talliesWithErrors: Array<any> = [];
@@ -41,6 +40,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private manualSync$: Subscription;
   private storageSync$: Subscription;
   private authToken$: Subscription;
+  public isLoading = false;
 
   constructor(
     private authService: AuthService,
@@ -52,7 +52,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     private nfcService: NfcService,
     private manualSyncService: ManualSyncService,
     private storageSyncService: StorageSyncService,
-    private tallySyncService: TallySyncService
+    private tallySyncService: TallySyncService,
   ) {
 
   }
@@ -60,9 +60,6 @@ export class HomePagePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Store push token
     this.storePushToken();
-
-    // ASDASDASd
-    this.loadData();
 
     // Manual sync observable
     this.startManualSyncObservable();
@@ -157,7 +154,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private storageChangeObservable = () => {
     this.storageSync$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
       if (status) {
-        this.loadData();
+        this.isLoading = false;
       }
     });
   }
@@ -169,15 +166,14 @@ export class HomePagePage implements OnInit, OnDestroy {
     if (this.removeTalliesToRecordFlag) {
       Promise.all([
         this.tallySyncService.addTalliesWithErrors(this.talliesWithErrors),
-        this.tallySyncService.removeTalliesToRecord(this.talliesToRecord, this.removeTalliesToRecord)
-      ]).then( data => {
+        this.tallySyncService.removeTalliesToRecord(this.removeTalliesToRecord)
+      ]).then( (result) => {
         this.talliesWithErrors = [];
-        if (data[1].length === 0) {
+
+        if (result[1].length === 0) {
           this.removeTalliesToRecord = [];
           this.removeTalliesToRecordFlag = false;
         }
-
-        this.storageSyncService.syncChangedEvent();
       });
     }
   }
@@ -206,12 +202,14 @@ export class HomePagePage implements OnInit, OnDestroy {
     const username = userData.username;
     const activeConnection = this.storeService.getActiveConnection();
 
+    this.isLoading = true;
     this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
       this.storeService.setSyncedData(success.data);
 
       // NEW STORAGE TEST
       this.storageSyncService.storeSyncedData(success.data);
     }, error => {
+      this.isLoading = false;
       this.httpService.errorHandler(error);
     });
   }
@@ -227,32 +225,34 @@ export class HomePagePage implements OnInit, OnDestroy {
    * recordTallies
    */
   private recordTallies = (): void => {
-    const mapStatus = this.talliesToRecord.map(item => {
-      if (item.status === 'delete') {
-        return Object.assign({}, item, { order: 1});
-      }
+    this.tallySyncService.getTalliesToRecord().then((talliesToRecord: Array<Tally>) => {
+      const mapStatus = talliesToRecord.map(item => {
+        if (item.status === 'delete') {
+          return Object.assign({}, item, { order: 1});
+        }
 
-      if (item.status === 'edit') {
-        return Object.assign({}, item, { order: 2});
-      }
+        if (item.status === 'edit') {
+          return Object.assign({}, item, { order: 2});
+        }
 
-      if (item.status === 'new') {
-        return Object.assign({}, item, { order: 3});
-      }
+        if (item.status === 'new') {
+          return Object.assign({}, item, { order: 3});
+        }
 
-      return item;
-    });
-
-    if (mapStatus && mapStatus.length > 0) {
-      this.tallyService.recordTallies(mapStatus).subscribe((success: any) => {
-        this.checkRecordedTallies(success.log);
-        this.syncStepObservable.next(2);
-      }, () => {
-        this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
+        return item;
       });
-    } else {
-      this.syncStepObservable.next(2);
-    }
+
+      if (mapStatus && mapStatus.length > 0) {
+        this.tallyService.recordTallies(mapStatus).subscribe((success: any) => {
+          this.checkRecordedTallies(success.log);
+          this.syncStepObservable.next(2);
+        }, () => {
+          this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
+        });
+      } else {
+        this.syncStepObservable.next(2);
+      }
+    });
   }
 
   /**
@@ -325,22 +325,6 @@ export class HomePagePage implements OnInit, OnDestroy {
       }
       this.removeDevices = true;
     }
-  }
-
-  /**
-   * loadData
-   */
-  private loadData = () => {
-    console.log('load data');
-
-    Promise.all([
-      this.tallySyncService.getTalliesToRecord(),
-      this.tallySyncService.getTalliesWithErrors()
-    ]).then( data => {
-      console.log('data loaded');
-      this.talliesToRecord = data[0] || [];
-      this.talliesWithErrors = data[1] || [];
-    });
   }
 
 }

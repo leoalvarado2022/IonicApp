@@ -13,6 +13,8 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
 <ion-content>
   <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
     <ion-refresher-content
@@ -29,8 +31,8 @@
     <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
   </h2>
 
-  <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder">
-    <div *virtualItem="let quadrille">
+  <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder" approxItemHeight="110px">
+    <div *virtualItem="let quadrille" style="height: 110px">
       <ion-item (click)="goToWorkers(quadrille)" detail="true">
         <ion-icon *ngIf="showBadge(quadrille.id) === 0" name="clipboard" slot="start"></ion-icon>
         <ion-badge color="success" *ngIf="showBadge(quadrille.id) > 0" slot="start">{{ showBadge(quadrille.id) }}</ion-badge>

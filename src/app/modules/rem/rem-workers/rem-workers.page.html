@@ -13,6 +13,8 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-searchbar placeholder="Buscar..." (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
 <ion-content>
   <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
     <ion-refresher-content
@@ -29,8 +31,8 @@
       <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
     </h2>
 
-    <ion-virtual-scroll [items]="filteredWorkers | alphabeticalOrder">
-      <div *virtualItem="let worker">
+    <ion-virtual-scroll [items]="filteredWorkers | alphabeticalOrder" approxItemHeight="115px">
+      <div *virtualItem="let worker" style="height: 115px">
         <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
           <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>

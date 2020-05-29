@@ -18,7 +18,7 @@ import { TallySyncService } from './storage/tally-sync/tally-sync.service';
   imports: [
     IonicStorageModule.forRoot({
       name: '_fx360',
-      driverOrder: ['indexeddb', 'sqlite', 'websql']
+      driverOrder: ['indexeddb', 'sqlite', 'websql'],
     })
   ],
   providers: [

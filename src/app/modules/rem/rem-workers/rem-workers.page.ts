@@ -1,14 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {SyncService} from '../../../shared/services/sync/sync.service';
 import {ActivatedRoute} from '@angular/router';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {ActionSheetController} from '@ionic/angular';
 import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
-import {UserService} from '../../../shared/services/user/user.service';
 import {HttpService} from '../../../shared/services/http/http.service';
-import {StoreService} from '../../../shared/services/store/store.service';
 import {Subscription} from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
+import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -24,26 +23,24 @@ enum WorkerStatus {
 })
 export class RemWorkersPage implements OnInit, OnDestroy {
 
-  public filteredWorkers: Array<any> = [];
   public quadrille: any;
-  public selectedWorkers: Array<any> = [];
-  private workers: Array<any> = [];
   private quadrilles: Array<any> = [];
+  public workers: Array<any> = [];
+  public filteredWorkers: Array<any> = [];
+  public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
-  private userData = null;
 
   private store$: Subscription;
 
   constructor(
-    private syncService: SyncService,
     private route: ActivatedRoute,
     private loaderService: LoaderService,
     private actionSheetController: ActionSheetController,
     private quadrilleService: QuadrilleService,
-    private userService: UserService,
     private httpService: HttpService,
-    private storeService: StoreService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
+    private storageSyncService: StorageSyncService,
+    private manualSyncService: ManualSyncService
   ) {
 
   }
@@ -51,14 +48,64 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
 
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
-      this.userData = this.storeService.getUser();
-      this.loadWorkers(id);
+    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe( status => {
+      if (status) {
+        this.loadWorkers(id);
+      }
     });
+
+    this.loadWorkers(id);
   }
 
   ngOnDestroy(): void {
     this.store$.unsubscribe();
+  }
+
+  /**
+   * loadWorkers
+   */
+  private loadWorkers = (id: string) => {
+    Promise.all([
+      this.storageSyncService.getQuadrilles(),
+      this.storageSyncService.getWorkers()
+    ]).then((data) => {
+      if (data[0] && data[1]) {
+        this.quadrilles = [...data[0]];
+        const allWorkers = data[1];
+
+        this.quadrille = this.quadrilles.find(item => item.id === +id);
+        const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
+        this.workers =  [...workers];
+        this.filteredWorkers = [...workers];
+
+        this.buildButtons();
+      }
+    });
+  }
+
+  /**
+   * searchWorker
+   * @param search
+   */
+  public searchWorker = (search: string): void => {
+    if (search) {
+      this.filteredWorkers = this.workers.filter(item => {
+        return (
+          item.id.toString().includes(search.toLowerCase()) ||
+          item.identifier.toLowerCase().includes(search.toLowerCase()) ||
+          item.name.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    } else {
+      this.filteredWorkers = [...this.workers];
+    }
+  }
+
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = (): void => {
+    this.filteredWorkers = this.workers;
   }
 
   /**
@@ -132,27 +179,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   }
 
   /**
-   * loadWorkers
-   */
-  private loadWorkers = (id: string) => {
-    this.loaderService.startLoader();
-    const quadrilles = this.storeService.getQuadrilles();
-    const allWorkers = this.storeService.getWorkers();
-
-    if (quadrilles && allWorkers) {
-      this.quadrilles = [...quadrilles];
-      this.quadrille = quadrilles.find(item => item.id === +id);
-      const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
-      this.workers = [...workers];
-      this.filteredWorkers = [...workers];
-
-      this.buildButtons();
-    }
-
-    this.loaderService.stopLoader();
-  }
-
-  /**
    * buildButtons
    */
   private buildButtons = () => {
@@ -180,38 +206,14 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
     this.loaderService.startLoader();
 
-    this.quadrilleService.transferWorkers(data).subscribe(success => {
-      this.loaderService.stopLoader();
+    this.quadrilleService.transferWorkers(data).subscribe(() => {
       this.selectedWorkers = [];
-      this.reSync();
+      this.loaderService.stopLoader();
+
+      // BANDERA DE SINCRONIZACION
+      this.manualSyncService.sync();
     }, error => {
       this.loaderService.stopLoader();
-      this.httpService.errorHandler(error);
-    });
-  }
-
-  /**
-   * reSync
-   */
-  private reSync = () => {
-    this.loaderService.startLoader();
-    const id = this.route.snapshot.paramMap.get('id');
-    this.syncData();
-    // this.loadWorkers(id);
-    this.loaderService.stopLoader();
-  }
-
-  /**
-   * syncData
-   * @param username
-   */
-  private syncData = () => {
-    const username = this.userData.username;
-    const activeConnection = this.storeService.getActiveConnection();
-
-    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
-      this.storeService.setSyncedData(success.data);
-    }, error => {
       this.httpService.errorHandler(error);
     });
   }

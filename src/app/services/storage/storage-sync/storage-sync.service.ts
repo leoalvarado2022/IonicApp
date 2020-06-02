@@ -20,14 +20,20 @@ export class StorageSyncService extends MainSyncService {
    */
   public storeSyncedData = (data: Sync) => {
     const {
-      menus,
       quadrilles,
       workers,
       labors,
       deals,
       costCentersCustom,
       tallies,
-      bonds
+      bonds,
+      menus,
+      preContracts,
+      countries,
+      contractTypes,
+      civilStatus,
+      afps,
+      isapres,
     } = data;
 
     Promise.all([
@@ -38,7 +44,13 @@ export class StorageSyncService extends MainSyncService {
       this.setLabors(labors),
       this.setDeals(deals),
       this.setBonds(bonds),
-      this.setMenus(menus)
+      this.setMenus(menus),
+      this.setPreContracts(preContracts),
+      this.setCountries(countries),
+      this.setContractTypes(contractTypes),
+      this.setCivilStatus(civilStatus),
+      this.setAfps(afps),
+      this.setIsapres(isapres)
     ]).then( () => {
       console.log('storeSyncedData OK, event emmited');
       // AVISAR QUE CAMBIO EL SYNC
@@ -171,6 +183,107 @@ export class StorageSyncService extends MainSyncService {
   public getMenus = (): Promise<Array<TabMenu>> => {
     return this.storage.get(StorageKeys.TabMenus).then( (menus: Array<TabMenu>) => {
       return menus ? menus : [];
+    });
+  }
+
+  /**
+   * setPreContracts
+   */
+  public setPreContracts = (preContracts: Array<any>): Promise<Array<any>>  => {
+    return this.storage.set(StorageKeys.PreContracts, preContracts);
+  }
+
+  /**
+   * getPreContracts
+   */
+  public getPreContracts = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.PreContracts).then( (preContracts: Array<any>) => {
+      return preContracts ? preContracts : [];
+    });
+  }
+
+  /**
+   * setCountries
+   * @param countries
+   */
+  public setCountries = (countries: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Countries, countries);
+  }
+
+  /**
+   * getCountries
+   */
+  public getCountries = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Countries).then( (countries: Array<any>) => {
+      return countries ? countries : [];
+    });
+  }
+
+  /**
+   * setContractTypes
+   * @param contractTypes
+   */
+  public setContractTypes = (contractTypes: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.ContractTypes, contractTypes);
+  }
+
+  /**
+   * getContractTypes
+   */
+  public getContractTypes(): Promise<Array<any>> {
+    return this.storage.get(StorageKeys.ContractTypes).then( (contractTypes: Array<any>) => {
+      return contractTypes ? contractTypes : [];
+    });
+  }
+
+  /**
+   * setCivilStatus
+   * @param civilStatus
+   */
+  public setCivilStatus(civilStatus: Array<any>): Promise<Array<any>> {
+    return this.storage.set(StorageKeys.CivilStatus, civilStatus);
+  }
+
+  /**
+   * getCivilStatus
+   */
+  public getCivilStatus = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.CivilStatus).then( (civilStatus: Array<any>) => {
+      return civilStatus ? civilStatus : [];
+    });
+  }
+
+  /**
+   * setAfps
+   * @param afps
+   */
+  public setAfps = (afps: Array<any> = []): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Afp, afps);
+  }
+
+  /**
+   * getAfps
+   */
+  public getAfps = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Afp).then( (afps: Array<any>) => {
+      return afps ? afps : [];
+    });
+  }
+
+  /**
+   * setIsapres
+   * @param isapres
+   */
+  public setIsapres = (isapres: Array<any> = []): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Isapre, isapres);
+  }
+
+  /**
+   * getIsapres
+   */
+  public getIsapres = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Isapre).then( (isapres: Array<any>) => {
+      return isapres ? isapres : [];
     });
   }
 

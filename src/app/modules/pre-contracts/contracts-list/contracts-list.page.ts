@@ -1,5 +1,4 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {StoreService} from '../../../shared/services/store/store.service';
 import {Router} from '@angular/router';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {ContractListItem} from '../contract-interfaces';
@@ -10,6 +9,7 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { IonInfiniteScroll } from '@ionic/angular';
 import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 import { NumericOrderPipe } from 'src/app/shared/pipes/numeric-order/numeric-order.pipe';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 
 @Component({
   selector: 'app-contracts-list',
@@ -27,29 +27,29 @@ export class ContractsListPage implements OnInit, OnDestroy {
   private store$: Subscription;
 
   constructor(
-    private storeService: StoreService,
     private router: Router,
     private contractsService: ContractsService,
     private httpService: HttpService,
     private manualSyncService: ManualSyncService,
     private alertService: AlertService,
     public infiniteScrollPaginatorService: InfiniteScrollPaginatorService,
-    private numericOrderPipe: NumericOrderPipe
+    private numericOrderPipe: NumericOrderPipe,
+    private storageSyncService: StorageSyncService
   ) {
 
   }
 
   ngOnInit() {
     this.firstLoad = true;
-    this.store$ = this.storeService.stateChanged.subscribe(() => {
-      if (!this.firstLoad) {
+    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
+      if (status && !this.firstLoad) {
         this.loadPreContracts();
       }
     });
 
     this.loadPreContracts();
   }
-  
+
   ngOnDestroy(): void {
     this.store$.unsubscribe();
   }
@@ -58,17 +58,13 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * loadPreContracts
    */
   private loadPreContracts = () => {
-    console.log('loadPreContracts');
     this.firstLoad = false;
-    const preContracts = this.storeService.getPreContracts();
-    const preContractsMapped = preContracts.map(item => this.contractsService.mapPreContractToBeListed(item));
-
-    console.log('preContracts');
-    console.log('preContractsMapped');
-
-    this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
-    this.infiniteScrollPaginatorService.start(this.contracts, 20);
-    this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
+    this.storageSyncService.getPreContracts().then( data => {
+      const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
+      this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
+      this.infiniteScrollPaginatorService.start(this.contracts, 20);
+      this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
+    });
   }
 
   /**

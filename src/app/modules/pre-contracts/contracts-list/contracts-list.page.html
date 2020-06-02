@@ -41,20 +41,8 @@
   </ion-list>
 
   <ion-infinite-scroll #preContracts threshold="150px" (ionInfinite)="loadData($event)" [disabled]="infiniteScrollPaginatorService.disableInifiteScroll()">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas pre-contratos..."></ion-infinite-scroll-content>
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
-
-  <!--
-  <ion-virtual-scroll [items]="filteredContracts | numericOrder:'id':true ">
-    <div *virtualItem="let contract">
-      <app-contract-list-item
-        [contract]="contract"
-        (editContractEvent)="editContractEvent($event)"
-        (deleteContractEvent)="deleteContract($event)">
-      </app-contract-list-item>
-    </div>
-  </ion-virtual-scroll>
-  -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="contractForm()">

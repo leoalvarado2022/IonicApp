@@ -61,8 +61,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
       creatorId: 0,
       tempId: 0,
       step1: this.formBuilder.group({
-        nationality: '',
-        identifier: ''
+        nationality: ['', Validators.required],
+        identifier: ['', Validators.required]
       }),
       step2: this.formBuilder.group({
         name: ['', Validators.required],
@@ -83,22 +83,33 @@ export class ContractFormPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadData();
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-
-    const findDefault = this.nationalities.find(item => item.default);
-    const onlyOne = this.nationalities.length === 1 ? this.nationalities[0] : '';
+    this.activeCompany = this.storeService.getActiveCompany();
 
     Promise.all([
       this.storageSyncService.getQuadrilles(),
-      this.storageSyncService.getWorkers()
+      this.storageSyncService.getWorkers(),
+      this.storageSyncService.getPreContracts(),
+      this.storageSyncService.getCountries(),
+      this.storageSyncService.getContractTypes(),
+      this.storageSyncService.getCivilStatus(),
+      this.storageSyncService.getAfps(),
+      this.storageSyncService.getIsapres()
     ]).then( (data) => {
       this.quadrilles = [...data[0]];
       this.workers = [...data[1]];
 
+      this.nationalities = [...data[3]];
+      this.contractTypes = [...data[4]];
+      this.civilStatus = [...data[5]];
+      this.afps = [...data[6]];
+      this.isapres = [...data[7]];
+
+      const findDefault = this.nationalities.find(item => item.default);
+      const onlyOne = this.nationalities.length === 1 ? this.nationalities[0] : '';
+
       if (id) {
-        const preContracts = this.storeService.getPreContracts();
-        const find = preContracts.find(item => item.id === +id);
+        const find = data[2].find(item => item.id === +id);
 
         if (find) {
           this.editPreContrat = find;
@@ -165,18 +176,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.currentStep = 1;
-  }
-
-  /**
-   * loadData
-   */
-  private loadData = () => {
-    this.nationalities = this.storeService.getCountries();
-    this.contractTypes = this.storeService.getContractTypes();
-    this.civilStatus = this.storeService.getCivilStatus();
-    this.afps = this.storeService.getAfps();
-    this.isapres = this.storeService.getIsapres();
-    this.activeCompany = this.storeService.getActiveCompany();
   }
 
   /**
@@ -254,10 +253,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
    * @param data
    */
   private storeContract = (data: any) => {
-    const preContracts = [];
-    preContracts.push(data);
-
-    this.contractsService.storePreContracts(preContracts).subscribe(() => {
+    this.contractsService.storePreContracts([data]).subscribe(() => {
 
       this.manualSyncService.sync();
       this.router.navigate(['/home-page/tarja_contrato']);
@@ -383,6 +379,20 @@ export class ContractFormPage implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  /**
+   * getNationalityName
+   */
+  public getNationalityName = (): string => {
+    const selected = this.contractForm.get('step1.nationality').value;
+
+    if (selected) {
+      const find = this.nationalities.find(item => item.id === selected);
+      return find ? find.name : '';
+    }
+
+    return '';
   }
 
 }

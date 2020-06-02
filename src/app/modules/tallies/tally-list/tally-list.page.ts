@@ -18,8 +18,6 @@ import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync
 })
 export class TallyListPage implements OnInit, OnDestroy {
 
-  public isLoading: boolean;
-
   // Quadrille
   public quadrilles: Array<Quadrille> = [];
   public filteredQuadrilles: Array<Quadrille> = [];
@@ -59,15 +57,6 @@ export class TallyListPage implements OnInit, OnDestroy {
     private storageSyncService: StorageSyncService,
     private tallySyncService: TallySyncService
   ) {
-    // COMENTADO PARA PROBAR LA VERSION DEL STORAGE
-    /*
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
-      this.reloadQuadrilles();
-      this.reloadWorkers();
-      this.reloadTallies();
-    });
-    */
-
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
   }
@@ -85,16 +74,6 @@ export class TallyListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.quadrilles = [];
-    this.filteredQuadrilles = [];
-    this.activeQuadrille = null;
-    this.workers = [];
-    this.filteredWorkers = [];
-    this.selectedWorkers = [];
-    this.activeWorker = [];
-    this.filteredTallies = [];
-    this.currentDate = null;
-
     this.store$.unsubscribe();
   }
 
@@ -103,7 +82,6 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   private loadData = (): void => {
     this.firstLoad = false;
-    this.isLoading = true;
 
     Promise.all([
       this.storageSyncService.getQuadrilles(),
@@ -143,10 +121,6 @@ export class TallyListPage implements OnInit, OnDestroy {
           this.selectQuadrille(this.quadrilles[0]);
         }
       }
-
-      this.isLoading = false;
-    }).catch(() => {
-      this.isLoading = false;
     });
   }
 

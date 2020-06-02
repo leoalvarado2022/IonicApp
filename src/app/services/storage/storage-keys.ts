@@ -7,6 +7,12 @@ export enum StorageKeys {
   Deals = 'deals',
   Bonds = 'bonds',
   TabMenus = 'tabMenus',
+  PreContracts = 'preContracts',
+  Countries = 'countries',
+  ContractTypes = 'contractTypes',
+  CivilStatus = 'civilStatus',
+  Afp = 'afps',
+  Isapre = 'isapres',
 
   // On memory data
   TalliesToRecord = 'talliesToRecord',

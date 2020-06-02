@@ -21,6 +21,8 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class HomePagePage implements OnInit, OnDestroy {
 
+  public isLoading = false;
+
   // Interval & Stepper
   private syncInterval = interval(1000 * 60 * environment.syncTimerMinutes);
   private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -37,7 +39,6 @@ export class HomePagePage implements OnInit, OnDestroy {
 
   // Unsubscribers
   private onDestroy$: Subject<void> = new Subject<void>();
-  public isLoading = false;
 
   constructor(
     private authService: AuthService,

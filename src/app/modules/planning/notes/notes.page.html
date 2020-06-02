@@ -11,10 +11,11 @@
       <app-check-connection></app-check-connection>
     </ion-buttons>
   </ion-toolbar>
-</ion-header>
-
-<ion-searchbar placeholder="Buscar..." (ionChange)="searchNote($event.target.value)" (ionClear)="cancelSearch()" animated class="production"
+  <ion-toolbar>
+    <ion-searchbar placeholder="Buscar..." (ionChange)="searchNote($event.target.value)" (ionClear)="cancelSearch()" animated class="production"
                showCancelButton="never"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content class="content">
   <ng-container *ngFor="let item of filteredNotes">

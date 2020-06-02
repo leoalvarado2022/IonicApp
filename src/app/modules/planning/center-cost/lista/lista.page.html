@@ -1,6 +1,6 @@
-<ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
-
 <ion-content>
+  <ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
   <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-down"

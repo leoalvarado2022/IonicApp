@@ -11,9 +11,10 @@
       <app-check-connection></app-check-connection>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
-
-<ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
     <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">

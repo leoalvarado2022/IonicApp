@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
-import {ModalController, IonItemSliding} from '@ionic/angular';
+import {ModalController, IonItemSliding, IonInfiniteScroll} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
@@ -10,6 +10,8 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { Tally } from '../tally.interface';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
+import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
+import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 
 @Component({
   selector: 'app-tally-list',
@@ -55,7 +57,8 @@ export class TallyListPage implements OnInit, OnDestroy {
     private toastService: ToastService,
     private alertService: AlertService,
     private storageSyncService: StorageSyncService,
-    private tallySyncService: TallySyncService
+    private tallySyncService: TallySyncService,
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe
   ) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
@@ -64,7 +67,6 @@ export class TallyListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.firstLoad = true;
     this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(state => {
-      console.log('syncChangedSubscribrer');
       if (state && !this.firstLoad) {
         this.loadData();
       }
@@ -94,12 +96,13 @@ export class TallyListPage implements OnInit, OnDestroy {
       this.tallySyncService.getTalliesToRecord(),
       this.tallySyncService.getTalliesWithErrors()
     ]).then(data => {
-
       console.log('data loaded');
 
-      this.quadrilles = data[0] || [];
-      this.filteredQuadrilles = data[0] || [];
-      this.workers = data[1];
+      // Quadrilles
+      this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
+      this.filteredQuadrilles = [...this.quadrilles];
+
+      this.workers = this.alphabeticalOrderPipe.transform(data[1]);
       this.selectedWorkers = [];
       this.syncedTallies = data[2];
       this.filteredTallies = [];
@@ -114,7 +117,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.selectedWorkers.push(this.activeWorker);
         this.goToWorkerTallyList(this.activeWorker);
       } else if (this.activeQuadrille) {
-        this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+        this.filteredQuadrilles = [...this.quadrilles];
       } else {
         this.activeQuadrille = null;
         if (this.quadrilles.length === 1) {
@@ -150,7 +153,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.filteredQuadrilles = this.quadrilles;
+      this.filteredQuadrilles = [...this.quadrilles];
     }
   }
 
@@ -168,7 +171,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+      this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
     }
   }
 
@@ -176,7 +179,8 @@ export class TallyListPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = (): void => {
-    this.filteredQuadrilles = this.quadrilles;
+    this.filteredQuadrilles = [...this.quadrilles];
+    this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
   }
 
   /**
@@ -194,9 +198,8 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public selectQuadrille = (quadrille: Quadrille): void => {
     this.activeQuadrille = quadrille;
-    this.filteredQuadrilles = [...this.quadrilles];
     this.selectedWorkers = [];
-    this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+    this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
   }
 
   /**

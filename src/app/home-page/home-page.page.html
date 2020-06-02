@@ -1,2 +1,3 @@
 <app-menu></app-menu>
-<ion-router-outlet [swipeGesture]="false" id="loggedContent" main></ion-router-outlet>
+<app-sync-progress [hidden]="!isLoading"></app-sync-progress>
+<ion-router-outlet [swipeGesture]="false" id="loggedContent" main [hidden]="isLoading"></ion-router-outlet>

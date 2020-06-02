@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
-import {BehaviorSubject, interval, Subscription} from 'rxjs';
+import {BehaviorSubject, interval, Subject} from 'rxjs';
 import {ToastService} from '../shared/services/toast/toast.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
@@ -12,6 +12,7 @@ import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.se
 import { StorageSyncService } from '../services/storage/storage-sync/storage-sync.service';
 import { TallySyncService } from '../services/storage/tally-sync/tally-sync.service';
 import { Tally } from '../modules/tallies/tally.interface';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home-page',
@@ -35,11 +36,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   private devicesWithErrors: Array<any> = [];
 
   // Unsubscribers
-  private syncInterval$: Subscription;
-  private syncStepObservable$: Subscription;
-  private manualSync$: Subscription;
-  private storageSync$: Subscription;
-  private authToken$: Subscription;
+  private onDestroy$: Subject<void> = new Subject<void>();
   public isLoading = false;
 
   constructor(
@@ -58,6 +55,8 @@ export class HomePagePage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('home-page');
+
     // Store push token
     this.storePushToken();
 
@@ -75,11 +74,7 @@ export class HomePagePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.syncInterval$.unsubscribe();
-    this.syncStepObservable$.unsubscribe();
-    this.manualSync$.unsubscribe();
-    this.authToken$.unsubscribe();
-    this.storageSync$.unsubscribe();
+    this.onDestroy$.next();
   }
 
   /**
@@ -89,7 +84,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     const user = this.storeService.getUser();
     const token = this.storeService.getPushToken();
 
-    this.authToken$ = this.authService.savePushToken(user.id, token).subscribe(() => {
+    this.authService.savePushToken(user.id, token).subscribe(() => {
       // BIEN
     }, () => {
       // MAL
@@ -100,7 +95,11 @@ export class HomePagePage implements OnInit, OnDestroy {
    * startManualSyncObservable
    */
   private startManualSyncObservable = () => {
-    this.manualSync$ = this.manualSyncService.eventSubscription().subscribe(status => {
+    console.log('startManualSyncObservable');
+    this.manualSyncService.eventSubscription()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(status => {
+      console.log('startManualSyncObservable status', status);
       if (status && this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }
@@ -111,7 +110,10 @@ export class HomePagePage implements OnInit, OnDestroy {
    * startSyncIntervalObservable
    */
   private startSyncIntervalObservable = () => {
-    this.syncInterval$ = this.syncInterval.subscribe(() => {
+    console.log('startSyncIntervalObservable');
+    this.syncInterval
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(() => {
       if (this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }
@@ -122,7 +124,8 @@ export class HomePagePage implements OnInit, OnDestroy {
    * startSyncStepperObservable
    */
   private startSyncStepperObservable = () => {
-    this.syncStepObservable$ = this.syncStepObservable.subscribe(step => {
+    console.log('startSyncStepperObservable');
+    this.syncStepObservable.subscribe(step => {
       console.log('current step: ', step);
 
       if (step === 0) {
@@ -152,7 +155,11 @@ export class HomePagePage implements OnInit, OnDestroy {
    * storageChangeObservable
    */
   private storageChangeObservable = () => {
-    this.storageSync$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
+    console.log('storageChangeObservable');
+    this.storageSyncService.syncChangedSubscribrer()
+    .pipe(takeUntil(this.onDestroy$))
+    .subscribe(status => {
+      console.log('storageChangeObservable status', status);
       if (status) {
         this.isLoading = false;
       }

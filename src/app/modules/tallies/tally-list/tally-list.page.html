@@ -105,74 +105,71 @@
         Total Jornadas
         <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork(activeWorker) | number }} Jr</ion-badge>
       </h4>
+      
+      <ion-list>
+        <ion-item-sliding #slide *ngFor="let tally of filteredTallies">
+          <ion-item class="no-padding-item" lines="none">
+            <ion-card class="tally-card">
+              <ion-item>
+                <ion-icon (click)="showTallyError(tally)" [color]="tally.status === 'new' || tally.status === 'edit' ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
+                <ion-label>{{ getCostCenterName(tally.costCenterId) }}</ion-label>
+                <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
+              </ion-item>
 
-      <ion-virtual-scroll [items]="filteredTallies">
-        <div *virtualItem="let tally; let itemBounds = bounds">
+              <ion-card-content>
+                <ion-row>
+                  <ion-col>
+                    Labor: {{ getLaborName(tally.laborId) }}
+                  </ion-col>
+                  <ion-col>
+                    <ion-badge *ngIf="tally.hoursExtra" class="ion-float-end" color="primary">
+                      {{ tally.hoursExtra }} Hora extra
+                    </ion-badge>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="tally.performance">
+                  <ion-col></ion-col>
+                  <ion-col>
+                    <ion-badge class="ion-float-end" color="primary">
+                      {{ tally.performance }} Unidad Labor
+                    </ion-badge>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="tally.dealValidity || tally.bondValidity">
+                  <ion-col size="6" *ngIf="tally.dealValidity">
+                    Trato:
+                    <ion-badge color="primary">
+                      {{ getDealName(tally.dealValidity) }}
+                    </ion-badge>
+                  </ion-col>
+                  <ion-col size="6" *ngIf="tally.bondValidity">
+                    Bono:
+                    <ion-badge color="primary">
+                      {{ getBondName(tally.bondValidity) }}
+                    </ion-badge>                    
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col><strong>Notas:</strong></ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>{{ tally.notes }}</ion-col>
+                </ion-row>
+              </ion-card-content>
+            </ion-card>
+          </ion-item>
 
-          <ion-item-sliding #slide>
-            <ion-item class="no-padding-item" lines="none">
-              <ion-card class="tally-card">
-                <ion-item>
-                  <ion-icon (click)="showTallyError(tally)" [color]="tally.status === 'new' || tally.status === 'edit' ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
-                  <ion-label>{{ getCostCenterName(tally.costCenterId) }}</ion-label>
-                  <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
-                </ion-item>
-
-                <ion-card-content>
-                  <ion-row>
-                    <ion-col>
-                      Labor: {{ getLaborName(tally.laborId) }}
-                    </ion-col>
-                    <ion-col>
-                      <ion-badge *ngIf="tally.hoursExtra" class="ion-float-end" color="primary">
-                        {{ tally.hoursExtra }} Hora extra
-                      </ion-badge>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row *ngIf="tally.performance">
-                    <ion-col></ion-col>
-                    <ion-col>
-                      <ion-badge class="ion-float-end" color="primary">
-                        {{ tally.performance }} Unidad Labor
-                      </ion-badge>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row *ngIf="tally.dealValidity || tally.bondValidity">
-                    <ion-col size="6" *ngIf="tally.dealValidity">
-                      Trato:
-                      <ion-badge color="primary">
-                        {{ getDealName(tally.dealValidity) }}
-                      </ion-badge>
-                    </ion-col>
-                    <ion-col size="6" *ngIf="tally.bondValidity">
-                      Bono:
-                      <ion-badge color="primary">
-                        {{ getBondName(tally.bondValidity) }}
-                      </ion-badge>                    
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col><strong>Notas:</strong></ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>{{ tally.notes }}</ion-col>
-                  </ion-row>
-                </ion-card-content>
-              </ion-card>
-            </ion-item>
-
-            <ion-item-options side="end">
-              <ion-item-option color="warning" (click)="editTally(tally, slide)">
-                <ion-icon slot="icon-only" name="pencil"></ion-icon>
-              </ion-item-option>
-              <ion-item-option color="danger" (click)="deleteTally(tally, slide)">
-                <ion-icon slot="icon-only" name="trash"></ion-icon>
-              </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
-
-        </div>
-      </ion-virtual-scroll>
+          <ion-item-options side="end">
+            <ion-item-option color="warning" (click)="editTally(tally, slide)">
+              <ion-icon slot="icon-only" name="pencil"></ion-icon>
+            </ion-item-option>
+            <ion-item-option color="danger" (click)="deleteTally(tally, slide)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+      
     </ng-container>
   </ng-container>
 

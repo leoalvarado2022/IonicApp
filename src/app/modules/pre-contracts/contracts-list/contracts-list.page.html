@@ -16,7 +16,6 @@
 <ion-searchbar placeholder="Buscar..." (ionChange)="searchContract($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
-
   <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-down"
@@ -26,6 +25,26 @@
     </ion-refresher-content>
   </ion-refresher>
 
+  <h2 class="ion-text-center">
+    Pre-Contratos
+    <ion-badge class="quadrille-badge" color="primary">{{ contracts.length }}</ion-badge>
+  </h2>
+
+  <ion-list>
+    <ng-container *ngFor="let contract of filteredContracts">
+      <app-contract-list-item
+        [contract]="contract"
+        (editContractEvent)="editContractEvent($event)"
+        (deleteContractEvent)="deleteContract($event)">
+      </app-contract-list-item>
+    </ng-container>
+  </ion-list>
+
+  <ion-infinite-scroll #preContracts threshold="150px" (ionInfinite)="loadData($event)" [disabled]="infiniteScrollPaginatorService.disableInifiteScroll()">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas pre-contratos..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <!--
   <ion-virtual-scroll [items]="filteredContracts | numericOrder:'id':true ">
     <div *virtualItem="let contract">
       <app-contract-list-item
@@ -35,6 +54,7 @@
       </app-contract-list-item>
     </div>
   </ion-virtual-scroll>
+  -->
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="contractForm()">

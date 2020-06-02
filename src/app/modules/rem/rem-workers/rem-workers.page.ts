@@ -1,13 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {ActionSheetController} from '@ionic/angular';
+import {ActionSheetController, IonInfiniteScroll} from '@ionic/angular';
 import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
+import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -23,12 +24,16 @@ enum WorkerStatus {
 })
 export class RemWorkersPage implements OnInit, OnDestroy {
 
+  @ViewChild('workersInfiniteScroll') infiniteScroll: IonInfiniteScroll;
+
   public quadrille: any;
   private quadrilles: Array<any> = [];
   public workers: Array<any> = [];
   public filteredWorkers: Array<any> = [];
   public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
+
+  public firstLoad = false;
 
   private store$: Subscription;
 
@@ -38,18 +43,20 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private actionSheetController: ActionSheetController,
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
     private storageSyncService: StorageSyncService,
-    private manualSyncService: ManualSyncService
+    private manualSyncService: ManualSyncService,
+    public infiniteScrollPaginatorService: InfiniteScrollPaginatorService,
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe
   ) {
 
   }
 
   ngOnInit() {
+    this.firstLoad = true;
     const id = this.route.snapshot.paramMap.get('id');
 
     this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe( status => {
-      if (status) {
+      if (status && !this.firstLoad) {
         this.loadWorkers(id);
       }
     });
@@ -65,6 +72,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * loadWorkers
    */
   private loadWorkers = (id: string) => {
+    this.firstLoad = false;
+
     Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers()
@@ -75,8 +84,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
         this.quadrille = this.quadrilles.find(item => item.id === +id);
         const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
-        this.workers =  [...workers];
-        this.filteredWorkers = [...workers];
+        this.workers = [...this.alphabeticalOrderPipe.transform(workers)];
+        this.infiniteScrollPaginatorService.start(this.workers, 10);
+        this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
 
         this.buildButtons();
       }
@@ -97,7 +107,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.filteredWorkers = [...this.workers];
+      this.infiniteScrollPaginatorService.reset();
+      this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
     }
   }
 
@@ -105,7 +116,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = (): void => {
-    this.filteredWorkers = this.workers;
+    this.infiniteScrollPaginatorService.reset();
+    this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
   }
 
   /**
@@ -216,5 +228,15 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * loadData
+   */
+  public loadData = (event: any) => {
+    setTimeout(() => {
+      this.infiniteScrollPaginatorService.addItems();
+      event.target.complete();
+    }, 500);
   }
 }

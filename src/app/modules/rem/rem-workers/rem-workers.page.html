@@ -28,38 +28,39 @@
   <ng-container *ngIf="quadrille">
     <h2 class="ion-text-center">
       {{ quadrille.name }}
-      <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
+      <ion-badge class="quadrille-badge" color="primary"> {{ workers.length }} </ion-badge>
     </h2>
 
-    <ion-virtual-scroll [items]="filteredWorkers | alphabeticalOrder" approxItemHeight="115px">
-      <div *virtualItem="let worker" style="height: 115px">
-        <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
-          <ion-icon name="person" slot="start"></ion-icon>
-          <ion-label>
-            <h3 class="label-padding">{{ worker.name }}</h3>
-            <div class="label-padding">
-
-              <div class="ion-text-left">
-                {{ worker.identifier | rut }}
-              </div>
-              <div class="ion-text-right">
-                <ng-container *ngIf="worker.quadrilleToApprove > 0">
-                  <ion-badge *ngIf="worker.quadrilleStatus.toLowerCase() === 'por aprobar' && worker.quadrille === quadrille.id" color="warning">
-                    Traspasando
-                  </ion-badge>
-                  <ion-badge *ngIf="worker.quadrilleStatus.toLowerCase() === 'por aprobar' && worker.quadrille !== quadrille.id" color="warning">
-                    Por Aprobar
-                  </ion-badge>
-                </ng-container>
-                <ng-container *ngIf="worker.quadrilleToApprove === 0">
-                  <ion-badge color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
-                </ng-container>
-              </div>
+    <ion-list>
+      <ion-item *ngFor="let worker of filteredWorkers"  (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+        <ion-icon name="person" slot="start"></ion-icon>
+        <ion-label>
+          <h3 class="label-padding">{{ worker.name }}</h3>
+          <div class="label-padding">
+            <div class="ion-text-left">
+              {{ worker.identifier | rut }}
             </div>
-          </ion-label>
-        </ion-item>
-      </div>
-    </ion-virtual-scroll>
+            <div class="ion-text-right">
+              <ng-container *ngIf="worker.quadrilleToApprove > 0">
+                <ion-badge *ngIf="worker.quadrilleStatus.toLowerCase() === 'por aprobar' && worker.quadrille === quadrille.id" color="warning">
+                  Traspasando
+                </ion-badge>
+                <ion-badge *ngIf="worker.quadrilleStatus.toLowerCase() === 'por aprobar' && worker.quadrille !== quadrille.id" color="warning">
+                  Por Aprobar
+                </ion-badge>
+              </ng-container>
+              <ng-container *ngIf="worker.quadrilleToApprove === 0">
+                <ion-badge color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
+              </ng-container>
+            </div>
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  
+    <ion-infinite-scroll #workersInfiniteScroll threshold="150px" (ionInfinite)="loadData($event)" [disabled]="infiniteScrollPaginatorService.disableInifiteScroll()">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas trabajadores..."></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ng-container>
 </ion-content>
 

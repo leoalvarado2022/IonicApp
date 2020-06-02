@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {Router} from '@angular/router';
 import {ContractsService} from '../services/contracts/contracts.service';
@@ -7,6 +7,9 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import { IonInfiniteScroll } from '@ionic/angular';
+import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
+import { NumericOrderPipe } from 'src/app/shared/pipes/numeric-order/numeric-order.pipe';
 
 @Component({
   selector: 'app-contracts-list',
@@ -15,8 +18,12 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 })
 export class ContractsListPage implements OnInit, OnDestroy {
 
-  private contracts: Array<ContractListItem> = [];
+  @ViewChild('preContracts') infiniteScroll: IonInfiniteScroll;
+
+  public contracts: Array<ContractListItem> = [];
   public filteredContracts: Array<ContractListItem> = [];
+  private firstLoad = false;
+
   private store$: Subscription;
 
   constructor(
@@ -25,21 +32,24 @@ export class ContractsListPage implements OnInit, OnDestroy {
     private contractsService: ContractsService,
     private httpService: HttpService,
     private manualSyncService: ManualSyncService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    public infiniteScrollPaginatorService: InfiniteScrollPaginatorService,
+    private numericOrderPipe: NumericOrderPipe
   ) {
 
   }
 
-  ionViewDidEnter() {
-    this.store$ = this.storeService.stateChanged.subscribe(() => {
-      this.loadPreContracts();
-    });
-  }
-
   ngOnInit() {
+    this.firstLoad = true;
+    this.store$ = this.storeService.stateChanged.subscribe(() => {
+      if (!this.firstLoad) {
+        this.loadPreContracts();
+      }
+    });
+
     this.loadPreContracts();
   }
-
+  
   ngOnDestroy(): void {
     this.store$.unsubscribe();
   }
@@ -48,11 +58,17 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * loadPreContracts
    */
   private loadPreContracts = () => {
+    console.log('loadPreContracts');
+    this.firstLoad = false;
     const preContracts = this.storeService.getPreContracts();
     const preContractsMapped = preContracts.map(item => this.contractsService.mapPreContractToBeListed(item));
 
-    this.contracts = [...preContractsMapped];
-    this.filteredContracts = [...preContractsMapped];
+    console.log('preContracts');
+    console.log('preContractsMapped');
+
+    this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
+    this.infiniteScrollPaginatorService.start(this.contracts, 20);
+    this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
   }
 
   /**
@@ -71,7 +87,8 @@ export class ContractsListPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.filteredContracts = this.contracts;
+      this.infiniteScrollPaginatorService.reset();
+      this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
     }
   }
 
@@ -79,7 +96,8 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = () => {
-    this.filteredContracts = this.contracts;
+    this.infiniteScrollPaginatorService.reset();
+    this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
   }
 
   /**
@@ -143,6 +161,16 @@ export class ContractsListPage implements OnInit, OnDestroy {
     }, error => {
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * loadData
+   */
+  public loadData = (event: any) => {
+    setTimeout(() => {
+      this.infiniteScrollPaginatorService.addItems();
+      event.target.complete();
+    }, 500);
   }
 
 }

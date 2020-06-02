@@ -30,6 +30,7 @@ import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
 import { CheckConnectionComponent } from './components/check-connection/check-connection.component';
 import { AuthService } from './services/auth/auth.service';
 import { TallyService } from '../modules/tallies/services/tally/tally.service';
+import { InfiniteScrollPaginatorService } from './services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 
 @NgModule({
   declarations: [
@@ -67,8 +68,10 @@ import { TallyService } from '../modules/tallies/services/tally/tally.service';
     ContractsService,
     NfcService,
     AlphabeticalOrderPipe,
+    NumericOrderPipe,
     AuthService,
-    TallyService
+    TallyService,
+    InfiniteScrollPaginatorService
   ],
   exports: [
     CommonModule,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Sync } from 'src/app/shared/services/store/store-interface';
-import { Quadrille } from '@primetec/primetec-angular';
+import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { MainSyncService } from '../main/main-sync.service';
@@ -20,6 +20,7 @@ export class StorageSyncService extends MainSyncService {
    */
   public storeSyncedData = (data: Sync) => {
     const {
+      menus,
       quadrilles,
       workers,
       labors,
@@ -36,7 +37,8 @@ export class StorageSyncService extends MainSyncService {
       this.setCostCentersCustom(costCentersCustom),
       this.setLabors(labors),
       this.setDeals(deals),
-      this.setBonds(bonds)
+      this.setBonds(bonds),
+      this.setMenus(menus)
     ]).then( () => {
       console.log('storeSyncedData OK, event emmited');
       // AVISAR QUE CAMBIO EL SYNC
@@ -153,6 +155,22 @@ export class StorageSyncService extends MainSyncService {
   public getBonds = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.Bonds).then( (bonds: Array<any>) => {
       return bonds ? bonds : [];
+    });
+  }
+
+  /**
+   * setMenus
+   */
+  public setMenus = (menus: Array<TabMenu>): Promise<Array<TabMenu>> => {
+    return this.storage.set(StorageKeys.TabMenus, menus);
+  }
+
+  /**
+   * getMenus
+   */
+  public getMenus = (): Promise<Array<TabMenu>> => {
+    return this.storage.get(StorageKeys.TabMenus).then( (menus: Array<TabMenu>) => {
+      return menus ? menus : [];
     });
   }
 

@@ -16,7 +16,7 @@
 <ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
+    <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-down"
       pullingText="Pull to refresh"
@@ -27,26 +27,27 @@
 
   <h2 class="ion-text-center">
     Tus Cuadrillas
-
-    <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+    <ion-badge class="quadrille-badge" color="primary">{{ quadrilles.length }}</ion-badge>
   </h2>
 
-  <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder" approxItemHeight="110px">
-    <div *virtualItem="let quadrille" style="height: 110px">
-      <ion-item (click)="goToWorkers(quadrille)" detail="true">
-        <ion-icon *ngIf="showBadge(quadrille.id) === 0" name="clipboard" slot="start"></ion-icon>
-        <ion-badge color="success" *ngIf="showBadge(quadrille.id) > 0" slot="start">{{ showBadge(quadrille.id) }}</ion-badge>
-        <ion-label>
-          <h2>{{ quadrille.name }}</h2>
-          <p class="label-padding">{{ quadrille.responsibleName }}</p>
-          <p class="label-padding">
-            <ion-badge color="primary">
-              {{ getQuadrilleWorkers(quadrille.id) }} Personas
-            </ion-badge>
-          </p>
-        </ion-label>
-      </ion-item>
-    </div>
-  </ion-virtual-scroll>
+  <ion-list>
+    <ion-item *ngFor="let quadrille of filteredQuadrilles" (click)="goToWorkers(quadrille)" style="height: 110px" detail="true">
+      <ion-icon *ngIf="showBadge(quadrille.id) === 0" name="clipboard" slot="start"></ion-icon>
+      <ion-badge color="success" *ngIf="showBadge(quadrille.id) > 0" slot="start">{{ showBadge(quadrille.id) }}</ion-badge>
+      <ion-label>
+        <h2>{{ quadrille.name }}</h2>
+        <p class="label-padding">{{ quadrille.responsibleName }}</p>
+        <p class="label-padding">
+          <ion-badge color="primary">
+            {{ getQuadrilleWorkers(quadrille.id) }} Personas
+          </ion-badge>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll #quadrille threshold="150px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas cuadrillas..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
 </ion-content>

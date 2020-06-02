@@ -18,7 +18,6 @@ import {
   Quadrille,
   QualityDetail,
   QualityEstimate,
-  TabMenu,
   Unit
 } from '@primetec/primetec-angular';
 import { environment } from 'src/environments/environment';
@@ -37,7 +36,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     this.setState(this.buildInitialState, 'INIT_STATE');
 
-    /*
     if (!environment.production) {
       this.stateChanged.pipe(
         debounceTime(500)
@@ -45,7 +43,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
         this.backupState();
       });
     }
-    */
   }
 
   /**
@@ -378,21 +375,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
   }
 
   /**
-   * setMenus
-   */
-  public setMenus = (menus: Array<TabMenu>) => {
-    const sync = {...this.getState().sync, menus};
-    this.setState({sync}, StoreActions.SetMenus);
-  }
-
-  /**
-   * getMenus
-   */
-  public getMenus = (): Array<TabMenu> => {
-    return this.getState().sync.menus;
-  }
-
-  /**
    * setUnits
    * @param units
    */
@@ -505,7 +487,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     this.setCompanies(companies);
     this.setCostCenters(costCenters);
-    this.setMenus(menus);
     this.setUnits(units);
     this.setQualities(qualities);
     this.setCalibers(calibers);

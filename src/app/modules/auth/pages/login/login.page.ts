@@ -4,8 +4,6 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
-import {UserService} from '../../../../shared/services/user/user.service';
-import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {StoreService} from 'src/app/shared/services/store/store.service';
 import {Subscription} from 'rxjs';
@@ -30,8 +28,6 @@ export class LoginPage implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private toastService: ToastService,
-    private syncService: SyncService,
-    private userService: UserService,
     private httpService: HttpService,
     private storeService: StoreService,
   ) {
@@ -45,7 +41,7 @@ export class LoginPage implements OnInit, OnDestroy {
       }
     });
 
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
+    this.store$ = this.storeService.stateChanged.subscribe(() => {
       this.checkRemember();
     });
 

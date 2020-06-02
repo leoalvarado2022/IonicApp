@@ -4,6 +4,7 @@ import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import { Tally } from '../tally.interface';
 import * as moment from 'moment';
+import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 
 @Component({
   selector: 'app-tally-form',
@@ -15,6 +16,12 @@ export class TallyFormComponent implements OnInit {
   @Input() workers: Array<any> = [];
   @Input() dateSelected: string;
   @Input() editTally: Tally;
+  @Input() syncedTallies: Array<Tally>;
+  @Input() talliesToRecord: Array<Tally>;
+  @Input() costCenters: Array<any> = [];
+  @Input() labors: Array<any> = [];
+  @Input() deals: Array<any> = [];
+  @Input() bonds: Array<any> = [];
 
   public tallyForm: FormGroup;
   public currentStep = 1;
@@ -26,18 +33,13 @@ export class TallyFormComponent implements OnInit {
     backdropDismiss: false
   };
 
-  private costCenters: Array<any> = [];
   public filteredCostCenters: Array<any> = [];
   public costCenterName: string;
 
-  private labors: Array<any> = [];
   public filteredLabors: Array<any> = [];
   public laborName: string;
 
-  private deals: Array<any> = [];
   public availableDeals: Array<any> = [];
-
-  private bonds: Array<any> = [];
   public availableBonds: Array<any> = [];
 
   public readonly workingDays: Array<any> = [
@@ -48,25 +50,20 @@ export class TallyFormComponent implements OnInit {
     {text: '0.1', value: 0.1}
   ];
 
-  public multipleWorkers: Array<any> = [];
   public workersOverMax: Array<any> = [];
 
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private storeService: StoreService,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private tallySyncService: TallySyncService
   ) {
 
   }
 
   ngOnInit() {
     const activeCompany = this.storeService.getActiveCompany();
-
-    this.costCenters = [...this.storeService.getCostCentersCustom()];
-    this.labors = [...this.storeService.getLabors()];
-    this.deals = [...this.storeService.getDeals()];
-    this.bonds = [...this.storeService.getBonds()];
 
     this.filteredCostCenters = [];
     this.filteredLabors = [];
@@ -266,20 +263,22 @@ export class TallyFormComponent implements OnInit {
   public submitForm = () => {
     const formData = Object.assign({}, this.tallyForm.value);
 
-    const talliesToRecord = [];
-    if (this.multipleWorkers.length > 0) {
+    if (this.workers.length > 1) {
+      const multpleTallies = [];
       for (const worker of this.workers) {
-        this.storeService.addTalliesToRecord(this.newMultipleTally(worker, formData));
+        console.log('veces');
+        multpleTallies.push(this.newMultipleTally(worker, formData));
       }
+
+      this.tallySyncService.addTalliesToRecord(multpleTallies);
     } else {
       for (const worker of this.workers) {
         if (this.editTally) {
           const editTally = this.editSingleTally(worker, formData);
-          this.storeService.editTallyToRecord(editTally);
+          this.tallySyncService.editTallyToRecord(editTally);
         } else {
           const newTally = this.newSingleTally(worker, formData);
-          console.log('newTally', newTally);
-          this.storeService.addTalliesToRecord(newTally);
+          this.tallySyncService.addTallyToRecord(newTally);
         }
       }
     }
@@ -291,8 +290,8 @@ export class TallyFormComponent implements OnInit {
    * newSingleTally
    */
   private newSingleTally = (worker: any, formData: any): Tally => {
-    const tempId = this.storeService.getTallyTempId();
-    this.storeService.increaseTallyTempId();
+    const tempId = this.tallySyncService.getTallyTempId();
+    this.tallySyncService.increaseTallyTempId();
 
     return Object.assign({}, formData, {
       workerId: worker.id,
@@ -312,8 +311,8 @@ export class TallyFormComponent implements OnInit {
     if (this.editTally.tempId) {
       tempId = this.editTally.tempId;
     } else {
-      tempId = this.storeService.getTallyTempId();
-      this.storeService.increaseTallyTempId();
+      tempId = this.tallySyncService.getTallyTempId();
+      this.tallySyncService.increaseTallyTempId();
     }
 
     return Object.assign({}, formData, {
@@ -330,8 +329,9 @@ export class TallyFormComponent implements OnInit {
    * newMultipleTally
    */
   private newMultipleTally = (worker: any, formData: any): Tally => {
-    const tempId = this.storeService.getTallyTempId();
-    this.storeService.increaseTallyTempId();
+    const tempId = this.tallySyncService.getTallyTempId();
+    this.tallySyncService.increaseTallyTempId();
+
     const data = formData.multiple.find(i => i.id === worker.id);
 
     return Object.assign({}, formData, {
@@ -350,8 +350,8 @@ export class TallyFormComponent implements OnInit {
    */
   private editMultipleTally = (worker: any, formData: any): object => {
     const data = formData.multiple.find(i => i.id === worker.id);
-    const tempId = this.storeService.getTallyTempId();
-    this.storeService.increaseTallyTempId();
+    const tempId = this.tallySyncService.getTallyTempId();
+    this.tallySyncService.increaseTallyTempId();
 
     return Object.assign({}, formData, {
       workerId: worker.id,
@@ -416,13 +416,13 @@ export class TallyFormComponent implements OnInit {
    * @param workingDay
    */
   public checkWorkerDailyMax = (worker: any, workingDay: number) => {
-
-    let todayTallies = this.storeService.getNumberOfWorkerTallies(worker, this.dateSelected, this.editTally ? this.editTally.tempId : null);
+    let todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.dateSelected, this.editTally ? this.editTally.tempId : null);
 
     if (this.editTally && !this.editTally.tempId) {
       todayTallies = todayTallies.filter(i => i.id !== this.editTally.id);
     }
 
+    // tslint:disable-next-line: no-shadowed-variable
     const totalWorked = todayTallies.reduce((total, tally) => total + tally.workingDay, 0);
 
     const total = (+workingDay + +totalWorked);
@@ -476,7 +476,8 @@ export class TallyFormComponent implements OnInit {
    * getWorkerRemainingWorkingDay
    */
   private getWorkerRemainingWorkingDay = (worker: any): number => {
-    const todayTallies = this.storeService.getNumberOfWorkerTallies(worker, this.dateSelected);
+    const todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.dateSelected);
+    // tslint:disable-next-line: no-shadowed-variable
     const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 
     const total = worker.dailyMax - totalWorked > 0 ? worker.dailyMax - totalWorked : 0;

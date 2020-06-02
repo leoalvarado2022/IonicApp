@@ -1,6 +1,7 @@
-<ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
-
 <ng-container *ngIf="lat && lng; else retry">
+
+  <ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+
   <agm-map [latitude]="lat" [longitude]="lng" [zoom]="10" class="map-size">
     <ng-container *ngFor="let costCenter of filteredCostCenters">
       <ng-container *ngIf="costCenter.lat && costCenter.lng">

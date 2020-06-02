@@ -77,8 +77,5 @@ export interface TicketForm {
 export interface ToRecord {
   devicesToRecord: Array<any>;
   devicesWithErrors: Array<any>;
-  talliesToRecord: Array<Tally>;
-  talliesWithErrors: Array<any>;
-  tallyTempId: number;
   deviceTempId: number;
 }

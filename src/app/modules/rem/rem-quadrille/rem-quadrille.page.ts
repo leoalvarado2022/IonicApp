@@ -1,8 +1,7 @@
 import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { Subscription, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { IonInfiniteScroll } from '@ionic/angular';
@@ -15,12 +14,13 @@ import { IonInfiniteScroll } from '@ionic/angular';
 export class RemQuadrillePage implements OnInit, OnDestroy {
 
   @ViewChild('quadrille') infiniteScroll: IonInfiniteScroll;
-  private onDestroy$: Subject<void> = new Subject<void>();
 
   public quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
   public workers: Array<any> = [];
   public firstLoad = false;
+
+  private storage$: Subscription;
 
   constructor(
     private router: Router,
@@ -33,9 +33,7 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.firstLoad = true;
-    this.storageSyncService.syncChangedSubscribrer()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe(status => {
+    this.storage$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
       if (status && !this.firstLoad) {
         this.loadQuadrilles();
       }
@@ -45,14 +43,13 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.onDestroy$.next();
+    this.storage$.unsubscribe();
   }
 
   /**
    * loadQuadrilles
    */
   private loadQuadrilles = () => {
-    console.log('loadQuadrilles');
     this.firstLoad = false;
 
     Promise.all([
@@ -135,6 +132,7 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
     setTimeout(() => {
       this.infiniteScrollPaginatorService.addItems();
       this.infiniteScroll.disabled = this.infiniteScrollPaginatorService.disableInifiteScroll();
+
       event.target.complete();
     }, 500);
   }

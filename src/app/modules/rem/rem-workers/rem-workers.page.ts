@@ -78,18 +78,17 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers()
     ]).then((data) => {
-      if (data[0] && data[1]) {
-        this.quadrilles = [...data[0]];
-        const allWorkers = data[1];
+      this.quadrilles = [...data[0]];
+      this.quadrille = this.quadrilles.find(item => item.id === +id);
 
-        this.quadrille = this.quadrilles.find(item => item.id === +id);
-        const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
-        this.workers = [...this.alphabeticalOrderPipe.transform(workers)];
-        this.infiniteScrollPaginatorService.start(this.workers, 10);
-        this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
+      const allWorkers = data[1];
+      const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
 
-        this.buildButtons();
-      }
+      this.workers = this.alphabeticalOrderPipe.transform(workers);
+      this.infiniteScrollPaginatorService.start(this.workers, 10);
+      this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
+
+      this.buildButtons();
     });
   }
 

@@ -26,9 +26,9 @@
   </ion-refresher>
 
   <ng-container *ngIf="quadrille">
-    <h2 class="ion-text-center">
+    <h2 class="ion-text-center" style="font-size: 20px">
       {{ quadrille.name }}
-      <ion-badge class="quadrille-badge" color="primary"> {{ workers.length }} </ion-badge>
+      <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary"> {{ workers.length }} </ion-badge>
     </h2>
 
     <ion-list>
@@ -59,7 +59,7 @@
     </ion-list>
   
     <ion-infinite-scroll #workersInfiniteScroll threshold="150px" (ionInfinite)="loadData($event)" [disabled]="infiniteScrollPaginatorService.disableInifiteScroll()">
-      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas trabajadores..."></ion-infinite-scroll-content>
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas"></ion-infinite-scroll-content>
     </ion-infinite-scroll>
   </ng-container>
 </ion-content>

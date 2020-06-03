@@ -102,10 +102,14 @@ export class TallyListPage implements OnInit, OnDestroy {
       this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
       this.filteredQuadrilles = [...this.quadrilles];
 
+      // Workers
       this.workers = this.alphabeticalOrderPipe.transform(data[1]);
       this.selectedWorkers = [];
+
+      // Tallies
       this.syncedTallies = data[2];
       this.filteredTallies = [];
+
       this.costCenters = data[3];
       this.labors = data[4];
       this.deals = data[5];
@@ -405,27 +409,29 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * deleteTally
    */
-  public deleteTally = async (tally: Tally, slide: IonItemSliding) => {
+  public deleteTally = (tally: Tally, slide: IonItemSliding) => {
     slide.close();
-    const sayYes = await this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?');
+    this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?').then(sayYes => {
+      if (sayYes) {
+        if (tally.status) {
+          if (tally.status === 'new' || tally.status === 'edit')  {
+            this.tallySyncService.removeTallyToRecord(tally.tempId).then( () => {
+              this.loadData();
+            });
+          } else if (tally.status === 'delete') {
+            console.log('no deberia entrar aqui');
+          }
+        } else {
+          const tempId = this.tallySyncService.getTallyTempId();
+          this.tallySyncService.increaseTallyTempId();
 
-    if (sayYes) {
-      if (tally.status) {
-        if (tally.status === 'new' || tally.status === 'edit')  {
-          this.tallySyncService.removeTallyToRecord(tally.tempId);
-          await this.loadData();
-        } else if (tally.status === 'delete') {
-          console.log('no deberia entrar aqui');
+          const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
+          this.tallySyncService.addTallyToRecord(toDelete).then( () => {
+            this.loadData();
+          });
         }
-      } else {
-        const tempId = this.tallySyncService.getTallyTempId();
-        this.tallySyncService.increaseTallyTempId();
-
-        const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
-        await this.tallySyncService.addTallyToRecord(toDelete);
-        await this.loadData();
       }
-    }
+    }); 
   }
 
   /**
@@ -442,6 +448,13 @@ export class TallyListPage implements OnInit, OnDestroy {
   public getBondName = (bondValidity: number): string => {
     const find = this.bonds.find(item => item.bondValidity === bondValidity);
     return find ? find.bondName : '';
+  }
+
+  /**
+   * talliesTracker
+   */
+  public talliesTracker = (index: number, tally: Tally): number => {
+    return tally.id;
   }
 
 }

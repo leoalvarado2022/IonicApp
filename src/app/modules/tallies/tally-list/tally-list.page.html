@@ -108,7 +108,7 @@
     </h4>
 
     <ion-list>
-      <ion-item-sliding #slide *ngFor="let tally of filteredTallies">
+      <ion-item-sliding #slide *ngFor="let tally of filteredTallies; trackBy: talliesTracker">
         <ion-item class="no-padding-item" lines="none">
           <ion-card class="tally-card">
             <ion-item>

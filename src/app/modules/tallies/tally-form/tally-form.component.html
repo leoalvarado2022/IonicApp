@@ -68,6 +68,7 @@
         </ion-button>
         <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Ingrese una jornada. utilice punto en vez de coma.</ion-text>
         <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('min')">El valor minimo es 0.1.</ion-text>
+        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('pattern')">Maximo 3 decimales</ion-text>
       </ion-item>
 
       <ng-container *ngIf="workersOverMax.length > 0">
@@ -86,12 +87,14 @@
           <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
         </ion-button>
         <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('min')">El valor minimo es 0.1</ion-text>
+        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('pattern')">Maximo 3 decimales</ion-text>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Rendimiento</ion-label>
         <ion-input type="number" formControlName="performance"></ion-input>
         <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('min')">El valor minimo es 0.1</ion-text>
+        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('pattern')">Maximo 3 decimales</ion-text>
       </ion-item>
 
       <ion-item>
@@ -115,6 +118,7 @@
         <ion-col class="ion-text-center"><strong>H</strong></ion-col>
         <ion-col class="ion-text-center"><strong>R</strong></ion-col>
       </ion-row>
+
       <ng-container formArrayName="multiple" *ngFor="let worker of workers; let i = index">
         <ion-row style="font-size: 14px">
           <ion-col size="6" style="overflow-wrap: break-word">
@@ -134,6 +138,19 @@
             <ion-item class="full-border ion-no-margin">
               <ion-input formControlName="r" type="number"></ion-input>
             </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-text color="danger" *ngIf="getField(i, 'jr').hasError('required')">Ingrese una jornada. utilice punto en vez de coma.</ion-text>
+            <ion-text color="danger" *ngIf="getField(i, 'jr').hasError('min')">El valor minimo es 0.1.</ion-text>
+            <ion-text color="danger" *ngIf="getField(i, 'jr').hasError('pattern')">Maximo 3 decimales</ion-text>
+            
+            <ion-text color="danger" *ngIf="getField(i, 'h').hasError('min')">El valor minimo es 0.1.</ion-text>
+            <ion-text color="danger" *ngIf="getField(i, 'h').hasError('pattern')">Maximo 3 decimales</ion-text>
+
+            <ion-text color="danger" *ngIf="getField(i, 'r').hasError('min')">El valor minimo es 0.1.</ion-text>
+            <ion-text color="danger" *ngIf="getField(i, 'r').hasError('pattern')">Maximo 3 decimales</ion-text>
           </ion-col>
         </ion-row>
       </ng-container>

@@ -119,6 +119,7 @@ export class LoginPage implements OnInit, OnDestroy {
    */
   public makeLogin = () => {
     this.loginForm.reset();
+    console.log('make login');
     this.router.navigate(['/home-page']);
   }
 

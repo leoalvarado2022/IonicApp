@@ -31,19 +31,15 @@
     <ion-badge class="quadrille-badge" color="primary">{{ contracts.length }}</ion-badge>
   </h2>
 
-  <ion-list>
-    <ng-container *ngFor="let contract of filteredContracts">
+  <ion-virtual-scroll [items]="filteredContracts">
+    <div *virtualItem="let contract">
       <app-contract-list-item
         [contract]="contract"
         (editContractEvent)="editContractEvent($event)"
         (deleteContractEvent)="deleteContract($event)">
       </app-contract-list-item>
-    </ng-container>
-  </ion-list>
-
-  <ion-infinite-scroll #preContracts threshold="150px" (ionInfinite)="loadData($event)" [disabled]="infiniteScrollPaginatorService.disableInifiteScroll()">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando mas"></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+    </div>
+  </ion-virtual-scroll>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="contractForm()">

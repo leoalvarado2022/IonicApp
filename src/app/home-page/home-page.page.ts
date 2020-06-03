@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
-import {BehaviorSubject, interval, Subject} from 'rxjs';
+import {BehaviorSubject, interval, Subject, Subscription, Subscribable} from 'rxjs';
 import {ToastService} from '../shared/services/toast/toast.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
@@ -19,7 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './home-page.page.html',
   styleUrls: ['./home-page.page.scss'],
 })
-export class HomePagePage implements OnInit, OnDestroy {
+export class HomePagePage {
 
   public isLoading = false;
 
@@ -39,7 +39,10 @@ export class HomePagePage implements OnInit, OnDestroy {
   private devicesWithErrors: Array<any> = [];
 
   // Unsubscribers
-  private onDestroy$: Subject<void> = new Subject<void>();
+  private manual$: Subscription;
+  private interval$: Subscription;
+  private stepper$: Subscription;
+  private storage$: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -56,9 +59,8 @@ export class HomePagePage implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit(): void {
-    console.log('home-page');
-
+  ionViewWillEnter() {
+    console.log('home-page ionViewWillEnter');
     // Store push token
     this.storePushToken();
 
@@ -75,8 +77,12 @@ export class HomePagePage implements OnInit, OnDestroy {
     this.storageChangeObservable();
   }
 
-  ngOnDestroy(): void {
-    this.onDestroy$.next();
+  ionViewWillLeave() {
+    console.log('home-page ionViewWillLeave');
+    this.manual$.unsubscribe();
+    this.interval$.unsubscribe();
+    this.stepper$.unsubscribe();
+    this.storage$.unsubscribe();
   }
 
   /**
@@ -86,11 +92,7 @@ export class HomePagePage implements OnInit, OnDestroy {
     const user = this.storeService.getUser();
     const token = this.storeService.getPushToken();
 
-    this.authService.savePushToken(user.id, token).subscribe(() => {
-      // BIEN
-    }, () => {
-      // MAL
-    });
+    this.authService.savePushToken(user.id, token).subscribe();
   }
 
   /**
@@ -98,9 +100,7 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private startManualSyncObservable = () => {
     console.log('startManualSyncObservable');
-    this.manualSyncService.eventSubscription()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe(status => {
+    this.manual$ = this.manualSyncService.eventSubscription().subscribe(status => {
       console.log('startManualSyncObservable status', status);
       if (status && this.storeService.getLoginStatus()) {
         this.sendToRecord();
@@ -113,9 +113,7 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private startSyncIntervalObservable = () => {
     console.log('startSyncIntervalObservable');
-    this.syncInterval
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe(() => {
+    this.interval$ = this.syncInterval.subscribe(() => {
       if (this.storeService.getLoginStatus()) {
         this.sendToRecord();
       }
@@ -127,7 +125,7 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private startSyncStepperObservable = () => {
     console.log('startSyncStepperObservable');
-    this.syncStepObservable.subscribe(step => {
+    this.stepper$ = this.syncStepObservable.subscribe(step => {
       console.log('current step: ', step);
 
       if (step === 0) {
@@ -158,9 +156,7 @@ export class HomePagePage implements OnInit, OnDestroy {
    */
   private storageChangeObservable = () => {
     console.log('storageChangeObservable');
-    this.storageSyncService.syncChangedSubscribrer()
-    .pipe(takeUntil(this.onDestroy$))
-    .subscribe(status => {
+    this.storage$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
       console.log('storageChangeObservable status', status);
       if (status) {
         this.isLoading = false;

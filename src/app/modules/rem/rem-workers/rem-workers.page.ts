@@ -1,14 +1,13 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {ActionSheetController, IonInfiniteScroll} from '@ionic/angular';
+import {ActionSheetController} from '@ionic/angular';
 import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
-import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -23,8 +22,6 @@ enum WorkerStatus {
   styleUrls: ['./rem-workers.page.scss'],
 })
 export class RemWorkersPage implements OnInit, OnDestroy {
-
-  @ViewChild('workersInfiniteScroll') infiniteScroll: IonInfiniteScroll;
 
   public quadrille: any;
   private quadrilles: Array<any> = [];
@@ -45,7 +42,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
     private manualSyncService: ManualSyncService,
-    public infiniteScrollPaginatorService: InfiniteScrollPaginatorService,
     private alphabeticalOrderPipe: AlphabeticalOrderPipe
   ) {
 
@@ -85,8 +81,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
 
       this.workers = this.alphabeticalOrderPipe.transform(workers);
-      this.infiniteScrollPaginatorService.start(this.workers, 10);
-      this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
+      this.filteredWorkers = [...this.workers];
 
       this.buildButtons();
     });
@@ -106,8 +101,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.infiniteScrollPaginatorService.reset();
-      this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
+      this.filteredWorkers = [...this.workers];
     }
   }
 
@@ -115,8 +109,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = (): void => {
-    this.infiniteScrollPaginatorService.reset();
-    this.filteredWorkers = this.infiniteScrollPaginatorService.getItems();
+    this.filteredWorkers = [...this.workers];
   }
 
   /**
@@ -227,15 +220,5 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * loadData
-   */
-  public loadData = (event: any) => {
-    setTimeout(() => {
-      this.infiniteScrollPaginatorService.addItems();
-      event.target.complete();
-    }, 500);
   }
 }

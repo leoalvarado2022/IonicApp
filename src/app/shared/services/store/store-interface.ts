@@ -78,4 +78,5 @@ export interface ToRecord {
   devicesToRecord: Array<any>;
   devicesWithErrors: Array<any>;
   deviceTempId: number;
+  dealsTemp: Array<any>;
 }

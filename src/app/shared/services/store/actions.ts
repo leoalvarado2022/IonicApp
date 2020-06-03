@@ -60,4 +60,6 @@ export enum StoreActions {
   RemoveDevicesWithErrors = 'REMOVE_DEVICES_WITH_ERRORS',
   AddTalliesWithErrors = 'ADD_TALLIES_WITH_ERRORS',
   RemoveTalliesWithErrors = 'REMOVE_TALLIES_WITH_ERRORS',
+  SetDealsTemp= 'SET_DEALS_TEMP',
+  RemoveDealsTemp = 'REMOVE_DEALS_TEMP'
 }

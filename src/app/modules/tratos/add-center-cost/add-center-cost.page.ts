@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {DealsService} from '../services/deals/deals.service';
+import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ModalController} from '@ionic/angular';
+import {TratosScannedPage} from '../tratos-scanned/tratos-scanned.page';
 
 @Component({
   selector: 'app-add-center-cost',
@@ -17,17 +21,39 @@ export class AddCenterCostPage implements OnInit {
   public readonly originalDate: any;
   public listCenterCost: any;
   public deal: any;
+  public centerForm: FormGroup;
 
   constructor(private _storeService: StoreService,
-              private _dealService: DealsService) {
+              private _storeSync: StorageSyncService,
+              private _dealService: DealsService,
+              private formBuilder: FormBuilder,
+              private _modalController: ModalController) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
-
     this.deal = this._dealService.getDealLocal();
     this.listCenterCost = this.listCenterCosts(this.deal);
+
+    if (this.deal.count) {
+      this.centerForm = this.formBuilder.group({
+        deal: this.deal,
+        center_cost_id: [14, Validators.required],
+        unit_control_count: [1, Validators.required],
+        currentDate: ['2020-06-03'],
+        automatic: true
+      });
+    } else {
+      this.centerForm = this.formBuilder.group({
+        deal: this.deal,
+        center_cost_id: ['', Validators.required],
+        unit_control_count: [0],
+        currentDate: ['', Validators.required],
+        automatic: true
+      });
+    }
+
   }
 
 
@@ -50,23 +76,40 @@ export class AddCenterCostPage implements OnInit {
   };
 
   listCenterCosts(deal) {
-    const localData = this._storeService.getDeals();
-    const costCenters = this._storeService.getCostCentersCustom();
-    let list = localData.filter((res: any) => {
-      return res.id === deal.id;
-    });
-
     let response = [];
-    for (const obj of list) {
-      if (obj.id_costCenter !== null) {
-        const exist = costCenters.find(value => value.id === obj.id_costCenter);
-        if (exist && !response.find(value => value.id === exist.id)) {
-          response.push(exist);
+    Promise.all([
+      this._storeSync.getDeals(),
+      this._storeSync.getCostCentersCustom()
+    ]).then((data) => {
+
+      let list = data[0].filter((res: any) => {
+        return res.id === deal.id;
+      });
+      for (const obj of list) {
+        if (obj.id_costCenter !== null) {
+          const exist = data[1].find(value => value.id === obj.id_costCenter);
+          if (exist && !response.find(value => value.id === exist.id)) {
+            response.push(exist);
+          }
         }
       }
-    }
+
+    });
 
     return response;
+  }
+
+  async scanned() {
+    const scanned = Object.assign({}, this.centerForm.value);
+    scanned.currentDate = this.currentDate;
+    scanned.center_cost = this.listCenterCost.find(value => value.id === scanned.center_cost_id);
+
+    const modal = await this._modalController.create({
+      component: TratosScannedPage,
+      componentProps: {centerCost: scanned}
+    });
+
+    return await modal.present();
   }
 
 

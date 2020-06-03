@@ -8,6 +8,7 @@ import {AddTratoPage} from '../add-trato/add-trato.page';
 import {AddCenterCostPage} from '../add-center-cost/add-center-cost.page';
 import {HttpClientModule} from '@angular/common/http';
 import {DealsService} from '../services/deals/deals.service';
+import {TratosScannedPage} from '../tratos-scanned/tratos-scanned.page';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import {DealsService} from '../services/deals/deals.service';
     TratosListPageRoutingModule,
     HttpClientModule
   ],
-  declarations: [TratosListPage, AddTratoPage, AddCenterCostPage],
+  declarations: [TratosListPage, AddTratoPage, AddCenterCostPage, TratosScannedPage],
   providers: [DealsService]
 })
 export class TratosListPageModule {

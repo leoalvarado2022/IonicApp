@@ -13,6 +13,8 @@ import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync
 })
 export class TallyFormComponent implements OnInit {
 
+  private readonly decimalRegex = /^\d*(.\d{1,3})?$/;
+
   @Input() workers: Array<any> = [];
   @Input() dateSelected: string;
   @Input() editTally: Tally;
@@ -83,9 +85,16 @@ export class TallyFormComponent implements OnInit {
       workingDay: [workingDayStartValue, [
         Validators.required,
         Validators.min(0.1),
+        Validators.pattern(this.decimalRegex)
       ]],
-      hoursExtra: ['', Validators.min(0.1)],
-      performance: ['', Validators.min(0.1)],
+      hoursExtra: ['', [
+        Validators.min(0.1),
+        Validators.pattern(this.decimalRegex)
+      ]],
+      performance: ['', [
+        Validators.min(0.1),
+        Validators.pattern(this.decimalRegex)
+      ]],
       unit: [{value: '', disabled: true}],
       notes: [''],
       creatorId: [activeCompany.user, Validators.required],
@@ -144,10 +153,17 @@ export class TallyFormComponent implements OnInit {
       id: [worker.id],
       jr: [this.getWorkerRemainingWorkingDay(worker), [
         Validators.required,
-        Validators.min(0.1)
+        Validators.min(0.1),
+        Validators.pattern(this.decimalRegex)
       ]],
-      h: ['', Validators.min(0)],
-      r: ['', Validators.min(0)]
+      h: ['', [
+        Validators.min(0.1),
+        Validators.pattern(this.decimalRegex)
+      ]],
+      r: ['', [
+        Validators.min(0.1),
+        Validators.pattern(this.decimalRegex)
+      ]]
     });
   }
 
@@ -374,11 +390,11 @@ export class TallyFormComponent implements OnInit {
         const workers = this.tallyForm.get('multiple') as FormArray;
 
         for (let i = 0; i < workers.length; i++) {
-          const value = ((this.split / time) * workers.at(i).get('jr').value || 1);
+          const value = ((this.split / time) * workers.at(i).get('jr').value || 1).toFixed(3);
           workers.at(i).patchValue({r: value });
         }
       } else if (option.toLowerCase() === 'asistencia') {
-        const divide = this.split / this.workers.length;
+        const divide = (this.split / this.workers.length).toFixed(3);
 
         const workers = this.tallyForm.get('multiple') as FormArray;
         for (let i = 0; i < workers.length; i++) {
@@ -539,6 +555,13 @@ export class TallyFormComponent implements OnInit {
         this.tallyForm.get('bondValidity').patchValue(this.availableBonds[0].bondValidity);
       }
     }
+  }
+
+  /**
+   * getField
+   */
+  public getField = (index: number, fieldName: string): FormGroup => {
+    return this.tallyForm.get('multiple')['controls'][index].get(fieldName);
   }
 
 }

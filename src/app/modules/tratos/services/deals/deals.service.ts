@@ -36,6 +36,21 @@ export class DealsService {
   }
 
   /**
+   * @description set deal in localstorage
+   * @param item
+   */
+  public setDealLocal(item: any) {
+    localStorage.setItem('deal', JSON.stringify(item));
+  }
+
+  /**
+   * @description get deal in localstorage
+   */
+  public getDealLocal() {
+    return JSON.parse(localStorage.getItem('deal'));
+  }
+
+  /**
    * @description get deals
    */
   public getDeals() {

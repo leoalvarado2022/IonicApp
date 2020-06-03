@@ -34,6 +34,7 @@ export class HomePagePage {
 
   // Devices
   private removeDevices = false;
+  private removeDealsToRecord = false;
   private removeDevicesToRecord: Array<number> = [];
   private devicesWithErrors: Array<any> = [];
 

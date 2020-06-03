@@ -388,17 +388,18 @@ export class TallyFormComponent implements OnInit {
 
         const time = this.tallyForm.get('multiple').value.reduce((total, tally) => total + tally.jr, 0);
         const workers = this.tallyForm.get('multiple') as FormArray;
+        const division = (this.split / time);
 
         for (let i = 0; i < workers.length; i++) {
-          const value = ((this.split / time) * workers.at(i).get('jr').value || 1).toFixed(3);
-          workers.at(i).patchValue({r: value });
+          const value = (division * workers.at(i).get('jr').value || 1);
+          workers.at(i).patchValue({r: value.toFixed(3) });
         }
       } else if (option.toLowerCase() === 'asistencia') {
-        const divide = (this.split / this.workers.length).toFixed(3);
+        const divide = (this.split / this.workers.length);
 
         const workers = this.tallyForm.get('multiple') as FormArray;
         for (let i = 0; i < workers.length; i++) {
-          workers.at(i).patchValue({r: divide});
+          workers.at(i).patchValue({r: divide.toFixed(3)});
         }
       }
     }

@@ -69,7 +69,6 @@ export class TratosListPage implements OnInit {
       }
 
       this.deals = [...arr];
-
       this._changeDetect.detectChanges();
     }
   }

@@ -18,7 +18,7 @@ import {NativeAudio} from '@ionic-native/native-audio/ngx';
 import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
-import { CoreServicesModule } from './services/core-services.module';
+import {CoreServicesModule} from './services/core-services.module';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',

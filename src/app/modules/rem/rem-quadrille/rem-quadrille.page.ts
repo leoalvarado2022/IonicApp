@@ -1,10 +1,8 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { Subscription } from 'rxjs';
-import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
-import { IonInfiniteScroll } from '@ionic/angular';
 
 @Component({
   selector: 'app-rem-quadrille',
@@ -12,8 +10,6 @@ import { IonInfiniteScroll } from '@ionic/angular';
   styleUrls: ['./rem-quadrille.page.scss'],
 })
 export class RemQuadrillePage implements OnInit, OnDestroy {
-
-  @ViewChild('quadrille') infiniteScroll: IonInfiniteScroll;
 
   public quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
@@ -25,7 +21,6 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private storageSyncService: StorageSyncService,
-    public infiniteScrollPaginatorService: InfiniteScrollPaginatorService,
     private alphabeticalOrderPipe: AlphabeticalOrderPipe
   ) {
 
@@ -57,9 +52,7 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
       this.storageSyncService.getWorkers()
     ]).then( (data) => {
       this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
-      this.infiniteScrollPaginatorService.start(this.quadrilles, 10);
-      this.filteredQuadrilles = this.infiniteScrollPaginatorService.getItems();
-
+      this.filteredQuadrilles = [...this.quadrilles];
       this.workers = [...data[1]];
     });
   }
@@ -77,8 +70,7 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.infiniteScrollPaginatorService.reset();
-      this.filteredQuadrilles = this.infiniteScrollPaginatorService.getItems();
+      this.filteredQuadrilles = [...this.quadrilles];
     }
   }
 
@@ -86,8 +78,7 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = (): void => {
-    this.infiniteScrollPaginatorService.reset();
-    this.filteredQuadrilles = this.infiniteScrollPaginatorService.getItems();
+    this.filteredQuadrilles = [...this.quadrilles];
   }
 
   /**
@@ -123,18 +114,6 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
       return item.quadrilleToApprove === quadrilleId && item.quadrilleStatus.toLowerCase() === 'por aprobar' ||
         item.quadrille === quadrilleId && item.quadrilleStatus.toLowerCase() === 'rechazado';
     }).length;
-  }
-
-  /**
-   * loadData
-   */
-  public loadData = (event: any) => {
-    setTimeout(() => {
-      this.infiniteScrollPaginatorService.addItems();
-      this.infiniteScroll.disabled = this.infiniteScrollPaginatorService.disableInifiteScroll();
-
-      event.target.complete();
-    }, 500);
   }
 
 }

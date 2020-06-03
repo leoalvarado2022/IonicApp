@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {ContractListItem} from '../contract-interfaces';
@@ -6,8 +6,6 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
-import { IonInfiniteScroll } from '@ionic/angular';
-import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 import { NumericOrderPipe } from 'src/app/shared/pipes/numeric-order/numeric-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 
@@ -17,8 +15,6 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
   styleUrls: ['./contracts-list.page.scss'],
 })
 export class ContractsListPage implements OnInit, OnDestroy {
-
-  @ViewChild('preContracts') infiniteScroll: IonInfiniteScroll;
 
   public contracts: Array<ContractListItem> = [];
   public filteredContracts: Array<ContractListItem> = [];
@@ -32,7 +28,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private manualSyncService: ManualSyncService,
     private alertService: AlertService,
-    public infiniteScrollPaginatorService: InfiniteScrollPaginatorService,
     private numericOrderPipe: NumericOrderPipe,
     private storageSyncService: StorageSyncService
   ) {
@@ -62,8 +57,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.storageSyncService.getPreContracts().then( data => {
       const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
       this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
-      this.infiniteScrollPaginatorService.start(this.contracts, 20);
-      this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
+      this.filteredContracts = [...this.contracts];
     });
   }
 
@@ -83,8 +77,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.infiniteScrollPaginatorService.reset();
-      this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
+      this.filteredContracts = [...this.contracts];
     }
   }
 
@@ -92,8 +85,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = () => {
-    this.infiniteScrollPaginatorService.reset();
-    this.filteredContracts = this.infiniteScrollPaginatorService.getItems();
+    this.filteredContracts = [...this.contracts];
   }
 
   /**
@@ -157,16 +149,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
     }, error => {
       this.httpService.errorHandler(error);
     });
-  }
-
-  /**
-   * loadData
-   */
-  public loadData = (event: any) => {
-    setTimeout(() => {
-      this.infiniteScrollPaginatorService.addItems();
-      event.target.complete();
-    }, 500);
   }
 
 }

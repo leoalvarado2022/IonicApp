@@ -10,7 +10,6 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { Tally } from '../tally.interface';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
-import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 
 @Component({
@@ -39,6 +38,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public readonly maxDate = '2030';
   public currentDate: any;
   public readonly originalDate: any;
+  public canUpdateMultiple = false;
 
   private costCenters: Array<CostCenterList> = [];
   private syncedTallies: Array<Tally> = [];
@@ -102,10 +102,14 @@ export class TallyListPage implements OnInit, OnDestroy {
       this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
       this.filteredQuadrilles = [...this.quadrilles];
 
+      // Workers
       this.workers = this.alphabeticalOrderPipe.transform(data[1]);
       this.selectedWorkers = [];
+
+      // Tallies
       this.syncedTallies = data[2];
       this.filteredTallies = [];
+
       this.costCenters = data[3];
       this.labors = data[4];
       this.deals = data[5];
@@ -218,11 +222,19 @@ export class TallyListPage implements OnInit, OnDestroy {
    * @param worker
    */
   public markWorker = (worker: any): void => {
+    this.canUpdateMultiple = false;
+
+    // If worker is already marked, it gets unmarked
     if (this.selectedWorkers.includes(worker)) {
       const index = this.selectedWorkers.indexOf(worker);
       this.selectedWorkers.splice(index, 1);
+
+      this.checkIfCanUpdateMultiple();
     } else {
+      // Not marked, it is added to the selected array
       this.selectedWorkers.push(worker);
+
+      this.checkIfCanUpdateMultiple();
     }
   }
 
@@ -286,36 +298,6 @@ export class TallyListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * createTally
-   */
-  public createTally = async (tally: Tally = null) => {
-    const modal = await this.modalController.create({
-      component: TallyFormComponent,
-      componentProps: {
-        workers: this.selectedWorkers,
-        dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
-        editTally: tally,
-        syncedTallies: this.syncedTallies,
-        talliesToRecord: this.talliesToRecord,
-        costCenters: this.costCenters,
-        labors: this.labors,
-        deals: this.deals,
-        bonds: this.bonds
-      },
-      backdropDismiss: false,
-      keyboardClose: false
-    });
-
-    modal.onDidDismiss().then((data) => {
-      if (data.data) {
-        this.loadData();
-      }
-    });
-
-    return await modal.present();
-  }
-
-  /**
    * getCostCenterName
    * @param costCenterId
    */
@@ -374,23 +356,33 @@ export class TallyListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * checkNotEditableTallies
+   * createTally
    */
-  public checkNotEditableTallies = (): boolean => {
-    for (const worker of this.selectedWorkers) {
-      if (this.getNumberOfWorkerTallies(worker).length === 0) {
-        return true;
+  public createTally = async (tally: Tally = null) => {
+    const modal = await this.modalController.create({
+      component: TallyFormComponent,
+      componentProps: {
+        workers: this.selectedWorkers,
+        dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
+        editTally: tally,
+        syncedTallies: this.syncedTallies,
+        talliesToRecord: this.talliesToRecord,
+        costCenters: this.costCenters,
+        labors: this.labors,
+        deals: this.deals,
+        bonds: this.bonds
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.loadData();
       }
-    }
+    });
 
-    return false;
-  }
-
-  /**
-   * createMultipleTally
-   */
-  public createMultipleTally = () => {
-    console.log('pendiente por implementar');
+    return await modal.present();
   }
 
   /**
@@ -403,29 +395,82 @@ export class TallyListPage implements OnInit, OnDestroy {
   }
 
   /**
+   * createMultipleTally
+   */
+  public createMultipleTally = () => {
+    this.createTally();
+  }
+
+  /**
+   * editMultipleTally
+   */
+  public editMultipleTally = () => {
+    console.log('editMultiple tally');
+  }
+
+  /**
+   * checkIfCanUpdateMultiple
+   */
+  private checkIfCanUpdateMultiple = (): void => {
+    if (this.selectedWorkers.length > 1 && this.checkEditableTallies()) {
+      let workersTalllies = [];
+      this.selectedWorkers.forEach(item => {
+        workersTalllies = [...workersTalllies, ...this.getNumberOfWorkerTallies(item)];
+      });
+
+      this.canUpdateMultiple = this.checkCompatibleTallies(workersTalllies[0], workersTalllies);
+    }
+  }
+
+  /**
+   * checkEditableTallies
+   */
+  public checkEditableTallies = (): boolean => {
+    if (this.selectedWorkers.length > 0) {
+      return this.selectedWorkers.every( worker => this.getNumberOfWorkerTallies(worker).length > 0);
+    }
+
+    return false;
+  }
+
+  /**
+   * checkCompatibleTallies
+   */
+  public checkCompatibleTallies = (tally: Tally, tallies: Array<Tally>): boolean => {
+    return tallies.every( toCheck => {
+      return tally.costCenterId === toCheck.costCenterId &&
+      tally.laborId === toCheck.laborId &&
+      ((!tally.dealValidity && !toCheck.dealValidity) || (tally.dealValidity === toCheck.dealValidity)) &&
+      ((!tally.bondValidity && !toCheck.bondValidity) || (tally.bondValidity === toCheck.bondValidity ));
+    });
+  }
+
+  /**
    * deleteTally
    */
-  public deleteTally = async (tally: Tally, slide: IonItemSliding) => {
+  public deleteTally = (tally: Tally, slide: IonItemSliding) => {
     slide.close();
-    const sayYes = await this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?');
+    this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?').then(sayYes => {
+      if (sayYes) {
+        if (tally.status) {
+          if (tally.status === 'new' || tally.status === 'edit')  {
+            this.tallySyncService.removeTallyToRecord(tally.tempId).then( () => {
+              this.loadData();
+            });
+          } else if (tally.status === 'delete') {
+            console.log('no deberia entrar aqui');
+          }
+        } else {
+          const tempId = this.tallySyncService.getTallyTempId();
+          this.tallySyncService.increaseTallyTempId();
 
-    if (sayYes) {
-      if (tally.status) {
-        if (tally.status === 'new' || tally.status === 'edit')  {
-          this.tallySyncService.removeTallyToRecord(tally.tempId);
-          await this.loadData();
-        } else if (tally.status === 'delete') {
-          console.log('no deberia entrar aqui');
+          const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
+          this.tallySyncService.addTallyToRecord(toDelete).then( () => {
+            this.loadData();
+          });
         }
-      } else {
-        const tempId = this.tallySyncService.getTallyTempId();
-        this.tallySyncService.increaseTallyTempId();
-
-        const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
-        await this.tallySyncService.addTallyToRecord(toDelete);
-        await this.loadData();
       }
-    }
+    });
   }
 
   /**
@@ -442,6 +487,13 @@ export class TallyListPage implements OnInit, OnDestroy {
   public getBondName = (bondValidity: number): string => {
     const find = this.bonds.find(item => item.bondValidity === bondValidity);
     return find ? find.bondName : '';
+  }
+
+  /**
+   * talliesTracker
+   */
+  public talliesTracker = (index: number, tally: Tally): number => {
+    return tally.id;
   }
 
 }

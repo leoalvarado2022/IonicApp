@@ -25,7 +25,8 @@
           <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
             <ion-icon name="arrow-back" slot="start"></ion-icon>
           </ion-button>
-          <ion-datetime style="margin-left: 25px;" [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
+          <ion-datetime style="margin-left: 25%;" [(ngModel)]="currentDate" [displayFormat]="dateFormat"
+                        [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
           <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
             <ion-icon name="arrow-forward" slot="end"></ion-icon>
           </ion-button>
@@ -34,17 +35,15 @@
         <ion-item style="width: 100%;">
           <ion-label position="floating">Centro de Costo</ion-label>
           <ion-select value="" interface="action-sheet">
-            <ion-select-option value="enable">Enable</ion-select-option>
-            <ion-select-option value="mute">Mute</ion-select-option>
-            <ion-select-option value="mute_week">Mute for a week</ion-select-option>
+            <ion-select-option [value]="cc.id" *ngFor="let cc of listCenterCost">{{cc.name}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="deal?.count">
       <ion-col size="12">
         <ion-item>
-          <ion-label position="floating">Plantas</ion-label>
+          <ion-label position="floating">{{deal.unit_control}}</ion-label>
           <ion-input></ion-input>
         </ion-item>
       </ion-col>

@@ -33,7 +33,6 @@ import {NumericOrderPipe} from './pipes/numeric-order/numeric-order.pipe';
 import {CheckConnectionComponent} from './components/check-connection/check-connection.component';
 import {AuthService} from './services/auth/auth.service';
 import {TallyService} from '../modules/tallies/services/tally/tally.service';
-import {DealsService} from './services/deals/deals.service';
 
 @NgModule({
   declarations: [
@@ -75,8 +74,7 @@ import {DealsService} from './services/deals/deals.service';
     NfcService,
     AlphabeticalOrderPipe,
     AuthService,
-    TallyService,
-    DealsService
+    TallyService
   ],
   exports: [
     CommonModule,

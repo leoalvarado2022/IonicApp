@@ -10,7 +10,6 @@ import {NfcService} from '../shared/services/nfc/nfc.service';
 import {environment} from 'src/environments/environment';
 import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.service';
 import { ThrowStmt } from '@angular/compiler';
-import {DealsService} from '../shared/services/deals/deals.service';
 
 @Component({
   selector: 'app-home-page',
@@ -47,7 +46,6 @@ export class HomePagePage implements OnInit, OnDestroy {
     private syncService: SyncService,
     private httpService: HttpService,
     private nfcService: NfcService,
-    private _dealsService: DealsService,
     private manualSyncService: ManualSyncService
   ) {
 

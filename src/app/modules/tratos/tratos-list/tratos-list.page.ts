@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {AddTratoPage} from '../add-trato/add-trato.page';
-import {Route, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {DealsService} from '../services/deals/deals.service';
 import {StoreService} from '../../../shared/services/store/store.service';
 
@@ -12,6 +12,8 @@ import {StoreService} from '../../../shared/services/store/store.service';
 })
 export class TratosListPage implements OnInit {
 
+  deals: any = [];
+
   constructor(public modalController: ModalController,
               private _router: Router,
               private _DealService: DealsService,
@@ -19,10 +21,19 @@ export class TratosListPage implements OnInit {
               private _changeDetect: ChangeDetectorRef) {
   }
 
-  deals: any = [];
-
   ngOnInit() {
     this.loadData();
+  }
+
+  /**
+   * @description remove deal
+   * @param id
+   * @param event
+   */
+  removeDeal(id: number, event: any) {
+    event.close();
+    this.deals = this.deals.filter(value => value.id !== id);
+    this._storeService.removeDealsTemp(id);
   }
 
   /**
@@ -49,7 +60,7 @@ export class TratosListPage implements OnInit {
           const new$ = deals.find(value => value.id === d.id);
           // si existe sigue apareciendo
           if (new$) {
-            arr.push(new$);
+            arr.push(d);
           } else {
             // lo elimina del temporal si no existe
             this._storeService.removeDealsTemp(d.id);
@@ -58,6 +69,7 @@ export class TratosListPage implements OnInit {
       }
 
       this.deals = [...arr];
+
       this._changeDetect.detectChanges();
     }
   }
@@ -70,7 +82,7 @@ export class TratosListPage implements OnInit {
   };
 
   goToRegister = (item: any) => {
-    console.log(item, 'item');
+    this._DealService.setDealLocal(item);
     this._router.navigate(['home-page/tarja_tratos/add-center-cost']);
   };
 

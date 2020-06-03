@@ -60,6 +60,7 @@ export class AddTratoPage implements OnInit {
     // if exists deal , the change data
     if (deal) {
       data = Object.assign(deal, this.activeForm.value);
+
       switch (data.option) {
         case '0' :
           data.count = false;
@@ -83,8 +84,6 @@ export class AddTratoPage implements OnInit {
 
       data.active = true;
     }
-
-    delete data.option;
 
     data.user = this._storeService.getUser();
 

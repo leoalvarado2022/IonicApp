@@ -1,14 +1,17 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {StoreService} from '../../../shared/services/store/store.service';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
-import {ModalController, IonItemSliding} from '@ionic/angular';
+import {ModalController, IonItemSliding, IonInfiniteScroll} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { Tally } from '../tally.interface';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
+import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
+import { InfiniteScrollPaginatorService } from 'src/app/shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
+import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 
 @Component({
   selector: 'app-tally-list',
@@ -38,47 +41,41 @@ export class TallyListPage implements OnInit, OnDestroy {
   public readonly originalDate: any;
 
   private costCenters: Array<CostCenterList> = [];
+  private syncedTallies: Array<Tally> = [];
+  private talliesToRecord: Array<Tally> = [];
+  private talliesWithErrors: Array<any> = [];
   private labors: Array<any> = [];
   private deals: Array<any> = [];
   private bonds: Array<any> = [];
 
   private store$: Subscription;
+  private firstLoad: boolean;
 
   constructor(
-    private storeService: StoreService,
     private router: Router,
     private modalController: ModalController,
     private toastService: ToastService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private storageSyncService: StorageSyncService,
+    private tallySyncService: TallySyncService,
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe
   ) {
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
-      this.reloadQuadrilles();
-      this.reloadWorkers();
-      this.reloadTallies();
-    });
-
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
+    this.firstLoad = true;
+    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(state => {
+      if (state && !this.firstLoad) {
+        this.loadData();
+      }
+    });
+
     this.loadData();
   }
 
   ngOnDestroy(): void {
-    this.quadrilles = [];
-    this.filteredQuadrilles = [];
-    this.activeQuadrille = null;
-
-    this.workers = [];
-    this.filteredWorkers = [];
-    this.selectedWorkers = [];
-    this.activeWorker = [];
-
-    this.filteredTallies = [];
-
-    this.currentDate = null;
-
     this.store$.unsubscribe();
   }
 
@@ -86,26 +83,48 @@ export class TallyListPage implements OnInit, OnDestroy {
    * loadData
    */
   private loadData = (): void => {
-    // Load quadrilles
-    this.reloadQuadrilles();
-    this.activeQuadrille = null;
+    this.firstLoad = false;
 
-    // Workers
-    this.reloadWorkers();
-    this.selectedWorkers = [];
-    this.activeWorker = null;
+    Promise.all([
+      this.storageSyncService.getQuadrilles(),
+      this.storageSyncService.getWorkers(),
+      this.storageSyncService.getTallies(),
+      this.storageSyncService.getCostCentersCustom(),
+      this.storageSyncService.getLabors(),
+      this.storageSyncService.getDeals(),
+      this.storageSyncService.getBonds(),
+      this.tallySyncService.getTalliesToRecord(),
+      this.tallySyncService.getTalliesWithErrors()
+    ]).then(data => {
+      console.log('data loaded');
 
-    this.reloadTallies();
+      // Quadrilles
+      this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
+      this.filteredQuadrilles = [...this.quadrilles];
 
-    // Form data
-    this.costCenters = [...this.storeService.getCostCentersCustom()];
-    this.labors = [...this.storeService.getLabors()];
-    this.deals = [...this.storeService.getDeals()];
-    this.bonds = [...this.storeService.getBonds()];
+      this.workers = this.alphabeticalOrderPipe.transform(data[1]);
+      this.selectedWorkers = [];
+      this.syncedTallies = data[2];
+      this.filteredTallies = [];
+      this.costCenters = data[3];
+      this.labors = data[4];
+      this.deals = data[5];
+      this.bonds = data[6];
+      this.talliesToRecord = data[7];
+      this.talliesWithErrors = data[8];
 
-    if (this.quadrilles.length === 1) {
-      this.selectQuadrille(this.quadrilles[0]);
-    }
+      if (this.activeWorker) {
+        this.selectedWorkers.push(this.activeWorker);
+        this.goToWorkerTallyList(this.activeWorker);
+      } else if (this.activeQuadrille) {
+        this.filteredQuadrilles = [...this.quadrilles];
+      } else {
+        this.activeQuadrille = null;
+        if (this.quadrilles.length === 1) {
+          this.selectQuadrille(this.quadrilles[0]);
+        }
+      }
+    });
   }
 
   /**
@@ -134,7 +153,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.filteredQuadrilles = this.quadrilles;
+      this.filteredQuadrilles = [...this.quadrilles];
     }
   }
 
@@ -152,7 +171,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+      this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
     }
   }
 
@@ -160,7 +179,8 @@ export class TallyListPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = (): void => {
-    this.filteredQuadrilles = this.quadrilles;
+    this.filteredQuadrilles = [...this.quadrilles];
+    this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
   }
 
   /**
@@ -168,16 +188,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any): void => {
-    if (this.activeWorker) {
-      this.reloadTallies();
-    } else if (this.activeQuadrille) {
-      this.reloadWorkers();
-      this.selectedWorkers = [];
-    } else {
-      this.reloadQuadrilles();
-      this.activeQuadrille = null;
-    }
-
+    this.loadData();
     event.target.complete();
   }
 
@@ -187,9 +198,8 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public selectQuadrille = (quadrille: Quadrille): void => {
     this.activeQuadrille = quadrille;
-    this.filteredQuadrilles = [...this.quadrilles];
     this.selectedWorkers = [];
-    this.filteredWorkers = this.getWorkersFilteredByQuadrille();
+    this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
   }
 
   /**
@@ -263,7 +273,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    * @param worker
    */
   private getNumberOfWorkerTallies = (worker: any): Array<Tally> => {
-    return this.storeService.getNumberOfWorkerTallies(worker, this.currentDate);
+    return this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord,  worker, this.currentDate);
   }
 
   /**
@@ -284,7 +294,13 @@ export class TallyListPage implements OnInit, OnDestroy {
       componentProps: {
         workers: this.selectedWorkers,
         dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
-        editTally: tally
+        editTally: tally,
+        syncedTallies: this.syncedTallies,
+        talliesToRecord: this.talliesToRecord,
+        costCenters: this.costCenters,
+        labors: this.labors,
+        deals: this.deals,
+        bonds: this.bonds
       },
       backdropDismiss: false,
       keyboardClose: false
@@ -292,10 +308,7 @@ export class TallyListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.selectedWorkers = [];
-        if (this.activeWorker) {
-          this.selectedWorkers.push(this.activeWorker);
-        }
+        this.loadData();
       }
     });
 
@@ -345,39 +358,12 @@ export class TallyListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * reloadTallies
-   */
-  private reloadTallies = (): void => {
-    if (this.activeWorker) {
-      this.goToWorkerTallyList(this.activeWorker);
-    }
-  }
-
-  /**
-   * reloadWorkers
-   */
-  private reloadWorkers = (): void => {
-    this.workers = [...this.storeService.getWorkers()];
-    this.filteredWorkers = [...this.getWorkersFilteredByQuadrille()];
-  }
-
-  /**
-   * reloadQuadrilles
-   */
-  private reloadQuadrilles = (): void => {
-    const quadrilles = this.storeService.getQuadrilles();
-    this.quadrilles = [...quadrilles] ;
-    this.filteredQuadrilles = [...quadrilles];
-  }
-
-  /**
    * showTallyError
    * @param tally
    */
   public showTallyError = (tally: any): void => {
     if (tally.id <= 0) {
-      const talliesWithErrors = this.storeService.getTalliesWithErrors();
-      const error = talliesWithErrors.find(item => item.id === tally.tempId);
+      const error = this.talliesWithErrors.find(item => item.id === tally.tempId);
 
       if (error) {
         this.toastService.errorToast(error.response);
@@ -420,25 +406,24 @@ export class TallyListPage implements OnInit, OnDestroy {
    * deleteTally
    */
   public deleteTally = async (tally: Tally, slide: IonItemSliding) => {
-    const response = await this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?');
     slide.close();
+    const sayYes = await this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?');
 
-    if (response) {
+    if (sayYes) {
       if (tally.status) {
-        if (tally.status === 'new') {
-          this.storeService.removeTalliesToRecord([tally.tempId]);
-        } else if (tally.status === 'edit') {
-          this.storeService.removeTallyToRecord(tally);
+        if (tally.status === 'new' || tally.status === 'edit')  {
+          this.tallySyncService.removeTallyToRecord(tally.tempId);
+          await this.loadData();
         } else if (tally.status === 'delete') {
           console.log('no deberia entrar aqui');
-          this.storeService.removeTallyToRecord(tally);
         }
       } else {
-        const tempId = this.storeService.getTallyTempId();
-        this.storeService.increaseTallyTempId();
+        const tempId = this.tallySyncService.getTallyTempId();
+        this.tallySyncService.increaseTallyTempId();
 
         const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
-        this.storeService.addTalliesToRecord(toDelete);
+        await this.tallySyncService.addTallyToRecord(toDelete);
+        await this.loadData();
       }
     }
   }

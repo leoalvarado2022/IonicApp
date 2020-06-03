@@ -18,10 +18,8 @@ import {
   Quadrille,
   QualityDetail,
   QualityEstimate,
-  TabMenu,
   Unit
 } from '@primetec/primetec-angular';
-import {Tally} from 'src/app/modules/tallies/tally.interface';
 import {environment} from 'src/environments/environment';
 import {debounceTime} from 'rxjs/operators';
 
@@ -32,7 +30,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
   constructor() {
     super({
-      logStateChanges: true,
+      logStateChanges: false,
       trackStateHistory: false
     });
 
@@ -118,9 +116,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
         deviceTempId: 0,
         devicesToRecord: [],
         devicesWithErrors: [],
-        tallyTempId: 0,
-        talliesToRecord: [],
-        talliesWithErrors: [],
         dealsTemp: []
       }
     };
@@ -381,21 +376,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-   * setMenus
-   */
-  public setMenus = (menus: Array<TabMenu>) => {
-    const sync = {...this.getState().sync, menus};
-    this.setState({sync}, StoreActions.SetMenus);
-  };
-
-  /**
-   * getMenus
-   */
-  public getMenus = (): Array<TabMenu> => {
-    return this.getState().sync.menus;
-  };
-
-  /**
    * setUnits
    * @param units
    */
@@ -479,22 +459,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-   * setTallies
-   * @param tallies
-   */
-  public setTallies = (tallies: Array<Tally>): void => {
-    const sync = {...this.getState().sync, tallies};
-    this.setState({sync}, StoreActions.SetTallies);
-  };
-
-  /**
-   * getTallies
-   */
-  public getTallies = (): Array<Tally> => {
-    return this.getState().sync.tallies;
-  };
-
-  /**
    * setSyncedData
    * @param data
    */
@@ -502,7 +466,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
     const {
       companies,
       costCenters,
-      menus,
       units,
       qualities,
       calibers,
@@ -511,24 +474,13 @@ export class StoreService extends ObservableStore<StoreInterface> {
       workers,
       processPlants,
       destinations,
-      preContracts,
-      countries,
-      contractTypes,
-      civilStatus,
-      afps,
-      isapres,
-      labors,
       laborsCostCenter,
       deals,
-      costCentersCustom,
-      tallies,
-      devices,
-      bonds
+      devices
     } = data;
 
     this.setCompanies(companies);
     this.setCostCenters(costCenters);
-    this.setMenus(menus);
     this.setUnits(units);
     this.setQualities(qualities);
     this.setCalibers(calibers);
@@ -537,19 +489,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setWorkers(workers);
     this.setProcessPlants(processPlants);
     this.setDestinations(destinations);
-    this.setPreContracts(preContracts);
-    this.setCountries(countries);
-    this.setContractTypes(contractTypes);
-    this.setCivilStatus(civilStatus);
-    this.setAfps(afps);
-    this.setIsapres(isapres);
-    this.setLabors(labors);
     this.setLaborsCostCenter(laborsCostCenter);
     this.setDeals(deals);
-    this.setCostCentersCustom(costCentersCustom);
-    this.setTallies(tallies);
     this.setDevices(devices);
-    this.setBonds(bonds);
   };
 
   /**
@@ -969,117 +911,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
 
   /**
-   * setPreContracts
-   * @param preContracts
-   */
-  public setPreContracts = (preContracts: Array<any> = []): void => {
-    const sync = {...this.getState().sync, preContracts};
-    this.setState({sync}, StoreActions.SetPreContracts);
-  };
-
-  /**
-   * getPreContracts
-   */
-  public getPreContracts = (): Array<any> => {
-    return this.getState().sync.preContracts;
-  };
-
-  /**
-   * setCountries
-   * @param countries
-   */
-  public setCountries = (countries: Array<any> = []): void => {
-    const sync = {...this.getState().sync, countries};
-    this.setState({sync}, StoreActions.SetCountries);
-  };
-
-  /**
-   * getCountries
-   */
-  public getCountries = (): Array<any> => {
-    return this.getState().sync.countries;
-  };
-
-  /**
-   * setContractTypes
-   * @param contractTypes
-   */
-  public setContractTypes = (contractTypes: Array<any> = []): void => {
-    const sync = {...this.getState().sync, contractTypes};
-    this.setState({sync}, StoreActions.SetContractTypes);
-  };
-
-  /**
-   * getContractTypes
-   */
-  public getContractTypes(): Array<any> {
-    return this.getState().sync.contractTypes;
-  }
-
-  /**
-   * setCivilStatus
-   * @param civilStatus
-   */
-  public setCivilStatus(civilStatus: Array<any> = []): void {
-    const sync = {...this.getState().sync, civilStatus};
-    this.setState({sync}, StoreActions.SetCivilStatus);
-  }
-
-  /**
-   * getCivilStatus
-   */
-  public getCivilStatus = (): Array<any> => {
-    return this.getState().sync.civilStatus;
-  };
-
-  /**
-   * setAfps
-   * @param afps
-   */
-  public setAfps = (afps: Array<any> = []): void => {
-    const sync = {...this.getState().sync, afps};
-    this.setState({sync}, StoreActions.SetAfps);
-  };
-
-  /**
-   * getAfps
-   */
-  public getAfps = (): Array<any> => {
-    return this.getState().sync.afps;
-  };
-
-  /**
-   * setIsapres
-   * @param isapres
-   */
-  public setIsapres = (isapres: Array<any> = []): void => {
-    const sync = {...this.getState().sync, isapres};
-    this.setState({sync}, StoreActions.SetIsapres);
-  };
-
-  /**
-   * getIsapres
-   */
-  public getIsapres = (): Array<any> => {
-    return this.getState().sync.isapres;
-  };
-
-  /**
-   * @param labors
-   */
-  public setLabors = (labors: Array<any> = []): void => {
-    const sync = {...this.getState().sync, labors};
-    this.setState({sync}, StoreActions.SetLabors);
-  };
-
-  /**
-   * getLabors
-   */
-  public getLabors = (): Array<any> => {
-    return this.getState().sync.labors;
-  };
-
-  /**
    * @param laborsCostCenter
    */
   public setLaborsCostCenter = (laborsCostCenter: Array<any> = []): void => {
@@ -1103,26 +934,10 @@ export class StoreService extends ObservableStore<StoreInterface> {
   };
 
   /**
-   /**
    * getlaborsCostCenter
    */
   public getDeals = (): Array<any> => {
     return this.getState().sync.deals;
-  };
-
-  /**
-   * @param costCentersCustom
-   */
-  public setCostCentersCustom = (costCentersCustom: Array<any> = []): void => {
-    const sync = {...this.getState().sync, costCentersCustom};
-    this.setState({sync}, StoreActions.SetCostCentersCustom);
-  };
-
-  /**
-   * costCentersCustom
-   */
-  public getCostCentersCustom = (): Array<any> => {
-    return this.getState().sync.costCentersCustom;
   };
 
   /**
@@ -1139,21 +954,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getDevices = (): Array<any> => {
     return this.getState().sync.devices;
-  };
-
-  /**
-   * setBonds
-   */
-  public setBonds = (bonds: Array<any>): void => {
-    const sync = {...this.getState().sync, bonds};
-    this.setState({sync}, StoreActions.SetBonds);
-  };
-
-  /**
-   * getBonds
-   */
-  public getBonds = (): Array<any> => {
-    return this.getState().sync.bonds;
   };
 
   /**
@@ -1267,160 +1067,6 @@ export class StoreService extends ObservableStore<StoreInterface> {
     return toRemoved.length;
   };
 
-  /**
-   * getTalliesToRecord
-   */
-  public getTalliesToRecord = (): Array<any> => {
-    return this.getState().toRecord.talliesToRecord;
-  };
-
-  /**
-   * getTallyTempId
-   */
-  public getTallyTempId(): number {
-    return this.getState().toRecord.tallyTempId;
-  }
-
-  /**
-   * increaseTallyTempId
-   */
-  public increaseTallyTempId = (): void => {
-    const current = this.getTallyTempId();
-
-    const toRecord = {...this.getState().toRecord, tallyTempId: (current + 1)};
-    this.setState({toRecord}, StoreActions.IncreaseTallyTempId);
-  };
-
-  /**
-   * addTalliesToRecord
-   * @param tallies
-   */
-  public addTalliesToRecord = (tallyToRecord: Tally): void => {
-    const currentTallies = this.getTalliesToRecord();
-    currentTallies.push(tallyToRecord);
-
-    const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
-    this.setState({toRecord}, StoreActions.AddTallies);
-  };
-
-  /**
-   * editTallyToRecord
-   */
-  public editTallyToRecord = (tallyToRecord: any): void => {
-    const currentTallies = this.getTalliesToRecord();
-    const index = currentTallies.findIndex(item => item.tempId === tallyToRecord.tempId);
-    if (index > -1) {
-      currentTallies[index] = tallyToRecord;
-    } else {
-      currentTallies.push(tallyToRecord);
-    }
-
-    const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
-    this.setState({toRecord}, StoreActions.EditTallies);
-  };
-
-  /**
-   * removeTallyToRecord
-   */
-  public removeTallyToRecord = (tallyToRecord: any): void => {
-    let currentTallies = this.getTalliesToRecord();
-    currentTallies = currentTallies.filter(item => item.id !== tallyToRecord.id);
-
-    const toRecord = {...this.getState().toRecord, talliesToRecord: currentTallies};
-    this.setState({toRecord}, StoreActions.DeleteTallies);
-  };
-
-  /**
-   * removeTalliesToRecord
-   * @param indexes
-   */
-  public removeTalliesToRecord = (indexes: Array<number>): number => {
-    const tallies = this.getTalliesToRecord();
-
-    const toRemoved = tallies.filter(item => !indexes.includes(item.tempId));
-    const toRecord = {...this.getState().toRecord, talliesToRecord: toRemoved};
-
-    this.setState({toRecord}, StoreActions.RemoveTallies);
-
-    return toRemoved.length;
-  };
-
-  /**
-   * getTalliesWithErrors
-   */
-  public getTalliesWithErrors = (): Array<any> => {
-    return this.getState().toRecord.talliesWithErrors;
-  };
-
-  /**
-   * addTalliesWithErrors
-   * @param tallies
-   */
-  public addTalliesWithErrors = (tallies: Array<any>): void => {
-    const talliesWithErrors = this.getTalliesWithErrors();
-
-    const toRecord = {...this.getState().toRecord, talliesWithErrors: [...talliesWithErrors, ...tallies]};
-    this.setState({toRecord}, StoreActions.AddTalliesWithErrors);
-  };
-
-  /**
-   * removeTalliesWithErrors
-   * @param indexes
-   */
-  public removeTalliesWithErrors = (indexes: Array<number>): number => {
-    const talliesWithErrors = this.getTalliesWithErrors();
-    const toRemoved = talliesWithErrors.filter(item => !indexes.includes(item.tempId));
-
-    const toRecord = {...this.getState().toRecord, talliesWithErrors: [...toRemoved]};
-    this.setState({toRecord}, StoreActions.RemoveTalliesWithErrors);
-
-    return toRemoved.length;
-  };
-
-  /**
-   * getNumberOfWorkerTallies
-   * - Filter tallies of a worker by date
-   * - Filter tallies of a worker that are marked to delete
-   * - Filter tallies to record that are being edited
-   */
-  public getNumberOfWorkerTallies = (worker: any, currentDate: string, ignoreId: number = null): Array<Tally> => {
-    // Get the tallys to be deleted and convert the ID to positive for comparison use
-    const markedToDelete = this.getTalliesToRecord().filter(item => item.status === 'delete').map(item => item.id * -1);
-
-    // Get the tallys to be edited
-    const markedToEdit = this.getTalliesToRecord().filter(item => item.status === 'edit').map(item => item.id);
-
-    // Filter synced tallies by current date and not marked for delete
-    const filteredTallies = this.getTallies().filter(item => {
-      const tallyDate = this.removeTimeFromDate(item.date);
-      const current = this.removeTimeFromDate(currentDate);
-
-      return item.workerId === worker.id && tallyDate === current && !markedToDelete.includes(item.id) && !markedToEdit.includes(item.id);
-    });
-
-    // Filter tallies to record by current date and that are not being edited
-    const toRecord = this.getTalliesToRecord().filter(item => {
-      const tallyDate = this.removeTimeFromDate(item.date);
-      const current = this.removeTimeFromDate(currentDate);
-
-      return item.workerId === worker.id && tallyDate === current && item.status !== 'delete' && item.tempId !== ignoreId;
-    });
-
-    // Return joined lists
-    return [...toRecord, ...filteredTallies];
-  };
-
-  /**
-   * removeTimeFromDate
-   * @param date
-   */
-  public removeTimeFromDate = (date: string): string => {
-    if (date && date.includes('T')) {
-      return date.split('T')[0];
-    }
-
-    return date;
-  };
 
   /**
    * setPreContracts
@@ -1452,6 +1098,20 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({toRecord}, StoreActions.RemoveDealsTemp);
   };
 
+  /**
+   * @param costCentersCustom
+   */
+  public setCostCentersCustom = (costCentersCustom: Array<any> = []): void => {
+    const sync = {...this.getState().sync, costCentersCustom};
+    this.setState({sync}, StoreActions.SetCostCentersCustom);
+  };
+
+  /**
+   * costCentersCustom
+   */
+  public getCostCentersCustom = (): Array<any> => {
+    return this.getState().sync.costCentersCustom;
+  };
 
   /**
    * END OF OFF-LINE STATE METHODS

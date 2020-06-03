@@ -4,6 +4,7 @@ import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
 import {MenuComponent} from '../components/menu/menu.component';
 import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
+import { SyncProgressComponent } from '../components/sync-progress/sync-progress.component';
 
 const routes: Routes = [
   {
@@ -16,11 +17,11 @@ const routes: Routes = [
       },
       {
         path: 'companies',
-        loadChildren: () => import('../modules/planning/companies/companies.module').then(module => module.CompaniesPageModule)
+        loadChildren: () => import('../modules/companies/companies.module').then(module => module.CompaniesPageModule)
       },
       {
         path: 'connections',
-        loadChildren: () => import('../modules/planning/connections/connections.module').then(module => module.ConnectionsPageModule)
+        loadChildren: () => import('../modules/connections/connections.module').then(module => module.ConnectionsPageModule)
       },
       {
         path: 'profile',
@@ -97,7 +98,8 @@ const routes: Routes = [
   ],
   declarations: [
     HomePagePage,
-    MenuComponent
+    MenuComponent,
+    SyncProgressComponent
   ],
   providers: [
     ContractDetailService

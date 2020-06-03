@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Company} from '@primetec/primetec-angular';
-import {AuthService} from '../../../shared/services/auth/auth.service';
+import {AuthService} from '../../shared/services/auth/auth.service';
 import {Router} from '@angular/router';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {StoreService} from '../../../shared/services/store/store.service';
-import {UserService} from '../../../shared/services/user/user.service';
+import {LoaderService} from '../../shared/services/loader/loader.service';
+import {StoreService} from '../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-companies',
@@ -18,7 +17,6 @@ export class CompaniesPage implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private userService: UserService,
     private loaderService: LoaderService,
     private router: Router,
     private storeService: StoreService
@@ -39,7 +37,7 @@ export class CompaniesPage implements OnInit {
 
       const user = this.storeService.getUser();
       const connection = this.storeService.getActiveConnection();
-      this.authService.companyChange({connection: connection.token, company: company.id, loggedUser: user.id}).subscribe((data: any) => {
+      this.authService.companyChange({connection: connection.token, company: company.id, loggedUser: user.id}).subscribe(() => {
         this.storeService.setActiveCompany(company);
         this.loadCompanies();
         this.router.navigate(['home-page']);

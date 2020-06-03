@@ -3,7 +3,6 @@ import {Component} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {StorageService} from './shared/services/storage/storage.service';
 import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
 import {FCM} from '@ionic-native/fcm/ngx';
@@ -12,8 +11,7 @@ import {ToastService} from './shared/services/toast/toast.service';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  providers: [StorageService]
+  styleUrls: ['app.component.scss']
 })
 export class AppComponent {
 
@@ -78,11 +76,11 @@ export class AppComponent {
         this.toastService.errorToast('No tiene permiso para recibir notificaciones PUSH');
       });
 
-      this.platform.pause.subscribe((e) => {
+      this.platform.pause.subscribe(() => {
         this.storeService.backupState();
       });
 
-      this.platform.resume.subscribe((e) => {
+      this.platform.resume.subscribe(() => {
         // PENDIENTE DEFINIR SI HACE FALTA ESTE EVENTO
       });
 

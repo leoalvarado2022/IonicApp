@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ConnectionsPage} from './connections.page';
-import {SharedModule} from '../../../shared/shared.module';
+import {SharedModule} from '../../shared/shared.module';
 
 const routes: Routes = [
   {

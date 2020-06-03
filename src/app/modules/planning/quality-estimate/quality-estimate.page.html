@@ -11,19 +11,19 @@
       <app-check-connection></app-check-connection>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar..."
+      (ionChange)="searchQuality($event.target.value)"
+      (ionClear)="cancelSearch()"
+      animated
+      class="production"
+      showCancelButton="never">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-searchbar
-  placeholder="Buscar..."
-  (ionChange)="searchQuality($event.target.value)"
-  (ionClear)="cancelSearch()"
-  animated
-  class="production"
-  showCancelButton="never">
-</ion-searchbar>
-
 <ion-content class="content">
-
   <ng-container *ngFor="let quality of filteredQualityEstimate; let index = index">
     <div class="card-sli">
       <div class="card-sli-back">

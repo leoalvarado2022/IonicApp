@@ -13,21 +13,22 @@
       <app-check-connection></app-check-connection>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar>
+    <ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
+      <ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)"
+        (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+    </ng-container>
+
+    <ng-container *ngIf="activeQuadrille">
+      <ion-searchbar placeholder="Buscar..." (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()"
+        animated class="production" showCancelButton="never"></ion-searchbar>
+    </ng-container>
+  </ion-toolbar>
 </ion-header>
-
-<ng-container *ngIf="!activeQuadrille && quadrilles.length > 1">
-  <ion-searchbar placeholder="Buscar..." (ionChange)="searchQuadrille($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar></ng-container>
-
-<ng-container *ngIf="activeQuadrille">
-  <ion-searchbar placeholder="Buscar..." (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
-</ng-container>
 
 <ion-content>
   <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
-    <ion-refresher-content
-      pullingIcon="arrow-down"
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
+    <ion-refresher-content pullingIcon="arrow-down" pullingText="Pull to refresh" refreshingSpinner="circles"
       refreshingText="Cargando...">
     </ion-refresher-content>
   </ion-refresher>
@@ -37,10 +38,10 @@
     <h2 class="ion-text-center">
       Cuadrillas
 
-      <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+      <ion-badge class="quadrille-badge" color="primary">{{ quadrilles.length }}</ion-badge>
     </h2>
 
-    <ion-virtual-scroll [items]="filteredQuadrilles | alphabeticalOrder" approxItemHeight="100px">
+    <ion-virtual-scroll [items]="filteredQuadrilles" approxItemHeight="100px">
       <div *virtualItem="let quadrille; let itemBounds = bounds">
         <ion-item (click)="selectQuadrille(quadrille)" detail="true">
           <ion-icon name="clipboard" slot="start"></ion-icon>
@@ -66,17 +67,19 @@
       <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
     </h2>
 
+    <!-- DAY SELECTOR -->
     <ion-item>
       <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
       </ion-button>
-      <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
+      <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat">
+      </ion-datetime>
       <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
         <ion-icon name="arrow-forward" slot="end"></ion-icon>
       </ion-button>
     </ion-item>
 
-    <ion-virtual-scroll [items]="filteredWorkers | alphabeticalOrder" approxItemHeight="100px">
+    <ion-virtual-scroll [items]="filteredWorkers" approxItemHeight="100px">
       <div *virtualItem="let worker; let itemBounds = bounds">
         <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
           <ion-icon name="person" slot="start"></ion-icon>
@@ -104,73 +107,71 @@
       <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork(activeWorker) | number }} Jr</ion-badge>
     </h4>
 
-    <ion-virtual-scroll [items]="filteredTallies" approxItemHeight="150px">
-      <div *virtualItem="let tally; let itemBounds = bounds">
+    <ion-list>
+      <ion-item-sliding #slide *ngFor="let tally of filteredTallies">
+        <ion-item class="no-padding-item" lines="none">
+          <ion-card class="tally-card">
+            <ion-item>
+              <ion-icon (click)="showTallyError(tally)"
+                [color]="tally.status === 'new' || tally.status === 'edit' ? 'danger' : 'success' " name="reader"
+                slot="start"></ion-icon>
+              <ion-label>{{ getCostCenterName(tally.costCenterId) }}</ion-label>
+              <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
+            </ion-item>
 
-        <ion-item-sliding #slide>
-          <ion-item class="no-padding-item" lines="none">
-            <ion-card class="tally-card">
-              <ion-item>
-                <ion-icon (click)="showTallyError(tally)" [color]="tally.status === 'new' || tally.status === 'edit' ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
-                <ion-label>{{ getCostCenterName(tally.costCenterId) }}</ion-label>
-                <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
-              </ion-item>
+            <ion-card-content>
+              <ion-row>
+                <ion-col>
+                  Labor: {{ getLaborName(tally.laborId) }}
+                </ion-col>
+                <ion-col>
+                  <ion-badge *ngIf="tally.hoursExtra" class="ion-float-end" color="primary">
+                    {{ tally.hoursExtra }} Hora extra
+                  </ion-badge>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="tally.performance">
+                <ion-col></ion-col>
+                <ion-col>
+                  <ion-badge class="ion-float-end" color="primary">
+                    {{ tally.performance }} Unidad Labor
+                  </ion-badge>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="tally.dealValidity || tally.bondValidity">
+                <ion-col size="6" *ngIf="tally.dealValidity">
+                  Trato:
+                  <ion-badge color="primary">
+                    {{ getDealName(tally.dealValidity) }}
+                  </ion-badge>
+                </ion-col>
+                <ion-col size="6" *ngIf="tally.bondValidity">
+                  Bono:
+                  <ion-badge color="primary">
+                    {{ getBondName(tally.bondValidity) }}
+                  </ion-badge>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col><strong>Notas:</strong></ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>{{ tally.notes }}</ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-item>
 
-              <ion-card-content>
-                <ion-row>
-                  <ion-col>
-                    Labor: {{ getLaborName(tally.laborId) }}
-                  </ion-col>
-                  <ion-col>
-                    <ion-badge *ngIf="tally.hoursExtra" class="ion-float-end" color="primary">
-                      {{ tally.hoursExtra }} Hora extra
-                    </ion-badge>
-                  </ion-col>
-                </ion-row>
-                <ion-row *ngIf="tally.performance">
-                  <ion-col></ion-col>
-                  <ion-col>
-                    <ion-badge class="ion-float-end" color="primary">
-                      {{ tally.performance }} Unidad Labor
-                    </ion-badge>
-                  </ion-col>
-                </ion-row>
-                <ion-row *ngIf="tally.dealValidity || tally.bondValidity">
-                  <ion-col size="6" *ngIf="tally.dealValidity">
-                    Trato:
-                    <ion-badge color="primary">
-                      {{ getDealName(tally.dealValidity) }}
-                    </ion-badge>
-                  </ion-col>
-                  <ion-col size="6" *ngIf="tally.bondValidity">
-                    Bono:
-                    <ion-badge color="primary">
-                      {{ getBondName(tally.bondValidity) }}
-                    </ion-badge>                    
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col><strong>Notas:</strong></ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>{{ tally.notes }}</ion-col>
-                </ion-row>
-              </ion-card-content>
-            </ion-card>
-          </ion-item>
-
-          <ion-item-options side="end">
-            <ion-item-option color="warning" (click)="editTally(tally, slide)">
-              <ion-icon slot="icon-only" name="pencil"></ion-icon>
-            </ion-item-option>
-            <ion-item-option color="danger" (click)="deleteTally(tally, slide)">
-              <ion-icon slot="icon-only" name="trash"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-
-      </div>
-    </ion-virtual-scroll>
+        <ion-item-options side="end">
+          <ion-item-option color="warning" (click)="editTally(tally, slide)">
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="deleteTally(tally, slide)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
 
   </ng-container>
 </ion-content>
@@ -189,7 +190,7 @@
         Ver Tarjas
       </ion-button>
     </ion-col>
-  </ion-row>    
+  </ion-row>
 
   <!-- Several workers selected -->
   <ion-row *ngIf="selectedWorkers.length > 1">
@@ -200,7 +201,7 @@
     </ion-col>
 
     <ion-col size="6">
-      <ion-button color="primary" expand="block"  (click)="createMultipleTally()"  [disabled]="checkNotEditableTallies()">
+      <ion-button color="primary" expand="block" (click)="createMultipleTally()" [disabled]="checkNotEditableTallies()">
         Modificar Masivo
       </ion-button>
     </ion-col>
@@ -209,9 +210,10 @@
   <!-- Worker tally list -->
   <ion-row *ngIf="activeWorker">
     <ion-col>
-      <ion-button color="success" expand="block" (click)="createTally()" [disabled]="getTotalWorkerWork(activeWorker) >= activeWorker.dailyMax">
+      <ion-button color="success" expand="block" (click)="createTally()"
+        [disabled]="getTotalWorkerWork(activeWorker) >= activeWorker.dailyMax">
         Agregar Jornada
       </ion-button>
     </ion-col>
-  </ion-row>  
+  </ion-row>
 </ion-footer>

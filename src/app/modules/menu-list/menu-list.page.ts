@@ -1,12 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
 import {SyncService} from '../../shared/services/sync/sync.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NetworkService} from '../../shared/services/network/network.service';
-import {HttpService} from '../../shared/services/http/http.service';
-import {LoaderService} from '../../shared/services/loader/loader.service';
-import {Subscription} from 'rxjs';
-import {StoreService} from '../../shared/services/store/store.service';
+import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
+import { NetworkService } from 'src/app/shared/services/network/network.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-menu-list',
@@ -16,43 +15,50 @@ import {StoreService} from '../../shared/services/store/store.service';
 export class MenuListPage implements OnInit, OnDestroy {
 
   public menus: Array<TabMenu> = [];
-  private isOnline: boolean;
+  private workers: Array<any> = [];
 
+  private isOnline: boolean;
   private network$: Subscription;
-  private store$: Subscription;
+  private storage$: Subscription;
 
   constructor(
     public syncService: SyncService,
     private router: Router,
-    private networkService: NetworkService,
     private activatedRoute: ActivatedRoute,
-    private httpService: HttpService,
-    private loaderService: LoaderService,
-    private storeService: StoreService
+    private manualSyncService: ManualSyncService,
+    private storageSyncService: StorageSyncService,
+    private networkService: NetworkService
   ) {
 
   }
 
   ngOnInit() {
-    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
-
-    this.store$ = this.storeService.stateChanged.subscribe(() => {
-      this.loadData();
+    this.network$ = this.networkService.getNetworkStatus().subscribe( status => this.isOnline = status);
+    this.storage$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
+      if (status) {
+        this.loadData();
+      }
     });
 
     this.loadData();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.network$.unsubscribe();
-    this.store$.unsubscribe();
+    this.storage$.unsubscribe();
   }
 
   /**
    * loadData
    */
   private loadData = () => {
-    this.menus = [...this.storeService.getMenus()];
+    Promise.all([
+      this.storageSyncService.getMenus(),
+      this.storageSyncService.getWorkers(),
+    ]).then(data => {
+      this.menus = [...data[0]];
+      this.workers = [...data[1]];
+    });
   }
 
   /**
@@ -60,7 +66,7 @@ export class MenuListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reSync = (event) => {
-    this.syncData();
+    this.manualSyncService.sync();
     event.target.complete();
   }
 
@@ -82,31 +88,12 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * syncData
-   */
-  private syncData = () => {
-    this.loaderService.startLoader();
-    const user = this.storeService.getUser();
-    const activeConnection = this.storeService.getActiveConnection();
-
-    this.syncService.syncData(user.username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
-      const data = success.data;
-      this.storeService.setSyncedData(data);
-      this.loaderService.stopLoader();
-    }, error => {
-      this.loaderService.stopLoader();
-      this.httpService.errorHandler(error);
-    });
-  }
-
-  /**
    * showBadge
    * @param menu
    */
   public showBadge = (menu: TabMenu): number => {
     if (menu.menu_url.toLowerCase() === 'tarja_cuadrillas') {
-      const workers = this.storeService.getWorkers();
-      return workers.filter(item => item.quadrilleStatus !== '').length;
+      return this.workers.filter(item => item.quadrilleStatus !== '').length;
     }
 
     return 0;

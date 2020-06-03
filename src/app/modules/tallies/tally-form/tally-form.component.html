@@ -116,8 +116,10 @@
         <ion-col class="ion-text-center"><strong>R</strong></ion-col>
       </ion-row>
       <ng-container formArrayName="multiple" *ngFor="let worker of workers; let i = index">
-        <ion-row style="font-size: 10px">
-          <ion-col size="6">{{ worker.name }}</ion-col>
+        <ion-row style="font-size: 14px">
+          <ion-col size="6" style="overflow-wrap: break-word">
+            {{ worker.name }}
+          </ion-col>
           <ion-col [formGroupName]="i">
             <ion-item class="full-border ion-no-margin">
               <ion-input formControlName="jr" type="number" (ionChange)="checkWorkerDailyMax(worker, $event.target.value)"></ion-input>

@@ -24,6 +24,7 @@ export class CheckConnectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('CheckConnectionComponent');
     this.status$ = this.networkService.getNetworkStatus().subscribe(status => {
       this.isOnline = status;
       if (status) {

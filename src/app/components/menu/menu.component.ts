@@ -1,9 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
-import {AuthService} from '../../shared/services/auth/auth.service';
-import {UserService} from '../../shared/services/user/user.service';
-import {SyncService} from '../../shared/services/sync/sync.service';
 import {Company, Connection} from '@primetec/primetec-angular';
 import {StoreService} from '../../shared/services/store/store.service';
 
@@ -21,9 +18,6 @@ export class MenuComponent implements OnInit {
 
   constructor(
     private menu: MenuController,
-    private authService: AuthService,
-    private userService: UserService,
-    private syncService: SyncService,
     private router: Router,
     private storeService: StoreService
   ) {
@@ -31,7 +25,7 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadData();
+
   }
 
   /**

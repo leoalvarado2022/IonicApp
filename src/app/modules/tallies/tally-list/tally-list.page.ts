@@ -413,13 +413,21 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   private checkIfCanUpdateMultiple = (): void => {
     if (this.selectedWorkers.length > 1 && this.checkEditableTallies()) {
-      let workersTalllies = [];
-      this.selectedWorkers.forEach(item => {
-        workersTalllies = [...workersTalllies, ...this.getNumberOfWorkerTallies(item)];
-      });
-
+      const workersTalllies = this.getSelectedWorkersTallies();
       this.canUpdateMultiple = this.checkCompatibleTallies(workersTalllies[0], workersTalllies);
     }
+  }
+
+  /**
+   * getSelectedWorkersTallies
+   */
+  private getSelectedWorkersTallies = (): Array<Tally> => {
+    let workersTalllies = [];
+    this.selectedWorkers.forEach(item => {
+      workersTalllies = [...workersTalllies, ...this.getNumberOfWorkerTallies(item)];
+    });
+
+    return workersTalllies;
   }
 
   /**

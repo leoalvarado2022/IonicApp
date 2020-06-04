@@ -65,7 +65,6 @@ export class TallyFormMultipleComponent implements OnInit {
 
   ngOnInit() {
     const activeCompany = this.storeService.getActiveCompany();
-    const workingDayStartValue = this.getWorkerRemainingWorkingDay(this.workers[0]);
 
     this.filteredCostCenters = [];
     this.filteredLabors = [];
@@ -77,7 +76,7 @@ export class TallyFormMultipleComponent implements OnInit {
       laborId: ['', Validators.required],
       dealValidity: [''],
       bondValidity: [''],
-      workingDay: [workingDayStartValue, [
+      workingDay: [1, [
         Validators.required,
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
@@ -99,7 +98,7 @@ export class TallyFormMultipleComponent implements OnInit {
     if (this.updateTallies.length > 0) {
       this.editingTally(this.updateTallies[0]);
     } else {
-      this.checkWorkersDailyMax(workingDayStartValue);
+      this.checkWorkersDailyMax(1);
     }
 
     this.addWorkers();
@@ -130,8 +129,6 @@ export class TallyFormMultipleComponent implements OnInit {
 
     this.getDeals();
     this.getBonds();
-
-    this.checkWorkersDailyMax(tally.workingDay);
   }
 
   /**
@@ -140,8 +137,9 @@ export class TallyFormMultipleComponent implements OnInit {
   private addWorkers = (): void => {
     if (this.workers.length > 1) {
       for (const worker of this.workers) {
+        const workerUpdateTallies = this.updateTallies.filter( item => item.workerId === worker.id);
         const workers = this.tallyForm.get('multiple') as FormArray;
-        workers.push(this.addWokerRow(worker));
+        workers.push(this.addWokerRow(worker, workerUpdateTallies[0]));
       }
     }
   }
@@ -150,19 +148,19 @@ export class TallyFormMultipleComponent implements OnInit {
    * addWokerRow
    * @param workerId
    */
-  private addWokerRow = (worker: any): FormGroup => {
+  private addWokerRow = (worker: any, edit: Tally = null): FormGroup => {
     return this.formBuilder.group({
       id: [worker.id],
-      jr: [this.getWorkerRemainingWorkingDay(worker), [
+      jr: [edit ? edit.workingDay : this.getWorkerRemainingWorkingDay(worker), [
         Validators.required,
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]],
-      h: ['', [
+      h: [edit ? edit.hoursExtra : '', [
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]],
-      r: ['', [
+      r: [edit ? edit.performance : '', [
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]]
@@ -283,7 +281,11 @@ export class TallyFormMultipleComponent implements OnInit {
 
     const multpleTallies = [];
     for (const worker of this.workers) {
-      multpleTallies.push(this.newMultipleTally(worker, formData));
+      if (this.updateTallies.length > 0) {
+        multpleTallies.push(this.editMultipleTally(worker, formData));
+      } else {
+        multpleTallies.push(this.newMultipleTally(worker, formData));
+      }
     }
 
     this.tallySyncService.addTalliesToRecord(multpleTallies);
@@ -315,16 +317,25 @@ export class TallyFormMultipleComponent implements OnInit {
    */
   private editMultipleTally = (worker: any, formData: any): object => {
     const data = formData.multiple.find(i => i.id === worker.id);
-    const tempId = this.tallySyncService.getTallyTempId();
-    this.tallySyncService.increaseTallyTempId();
+    const workerUpdateTallies = this.updateTallies.filter( item => item.workerId === worker.id);
+
+    let tempId = null;
+    if (workerUpdateTallies[0].tempId) {
+      tempId = workerUpdateTallies[0].tempId;
+    } else {
+      tempId = this.tallySyncService.getTallyTempId();
+      this.tallySyncService.increaseTallyTempId();
+    }
 
     return Object.assign({}, formData, {
+      id: workerUpdateTallies[0].id,
       workerId: worker.id,
       validity: worker.validity,
       tempId,
       workingDay: data['jr'],
       hoursExtra: data['h'],
-      performance: data['r']
+      performance: data['r'],
+      status: 'edit'
     });
   }
 
@@ -384,7 +395,7 @@ export class TallyFormMultipleComponent implements OnInit {
   public checkWorkerDailyMax = (worker: any, workingDay: number) => {
     // REVISAR ESTO
     // FUNCION NO VALIDA EL CASI DE EDITAR
-    let todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.dateSelected);
+    const todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.dateSelected);
 
     // REVISAR ESTO
     // FUNCION NO VALIDA EL CASI DE EDITAR
@@ -518,6 +529,28 @@ export class TallyFormMultipleComponent implements OnInit {
    */
   public getField = (index: number, fieldName: string): FormGroup => {
     return this.tallyForm.get('multiple')['controls'][index].get(fieldName);
+  }
+
+  /**
+   * increaseStep
+   */
+  public increaseStep = () => {
+    if (this.currentStep < 2) {
+      this.currentStep = this.currentStep + 1;
+
+      this.checkWorkerMultipleTally();
+    }
+  }
+
+  /**
+   * checkWorkerMultipleTally
+   */
+  private checkWorkerMultipleTally = () => {
+    const all = this.tallyForm.get('multiple') as FormArray;
+
+    for (let index = 0; index < all.length; index++) {
+      this.checkWorkerDailyMax(this.workers.find(item => item.id === all.at(index).get('id').value ) , all.at(index).get('jr').value);
+    }
   }
 
 }

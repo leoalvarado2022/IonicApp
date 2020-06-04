@@ -60,17 +60,6 @@
         </ion-item>
       </ng-container>
 
-      <ion-item>
-        <ion-label position="floating">Jornada</ion-label>
-        <ion-input type="number" formControlName="workingDay" (ionChange)="workingDayChanged($event.target.value)"></ion-input>
-        <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
-          <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
-        </ion-button>
-        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Ingrese una jornada. utilice punto en vez de coma.</ion-text>
-        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('min')">El valor minimo es 0.1.</ion-text>
-        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('pattern')">Maximo 3 decimales</ion-text>
-      </ion-item>
-
       <ng-container *ngIf="workersOverMax.length > 0">
         <p style="color: red">
           El valor ingrado supera el maximo de jornada permitida para los trabajadores
@@ -80,32 +69,50 @@
         </ul>
       </ng-container>
 
-      <ion-item>
-        <ion-label position="floating">Horas Extra</ion-label>
-        <ion-input type="number" formControlName="hoursExtra"></ion-input>
-        <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(2)">
-          <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
-        </ion-button>
-        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('min')">El valor minimo es 0.1</ion-text>
-        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('pattern')">Maximo 3 decimales</ion-text>
-      </ion-item>
+      <ng-container *ngIf="updateTallies.length === 0">
+        <!-- WORKING DAY -->
+        <ion-item>
+          <ion-label position="floating">Jornada</ion-label>
+          <ion-input type="number" formControlName="workingDay" (ionChange)="workingDayChanged($event.target.value)"></ion-input>
+          <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
+            <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+          </ion-button>
+          <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Ingrese una jornada. utilice punto en vez de coma.</ion-text>
+          <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('min')">El valor minimo es 0.1.</ion-text>
+          <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('pattern')">Maximo 3 decimales</ion-text>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="floating">Rendimiento</ion-label>
-        <ion-input type="number" formControlName="performance"></ion-input>
-        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('min')">El valor minimo es 0.1</ion-text>
-        <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('pattern')">Maximo 3 decimales</ion-text>
-      </ion-item>
+        <!-- HOURS EXTRA -->
+        <ion-item>
+          <ion-label position="floating">Horas Extra</ion-label>
+          <ion-input type="number" formControlName="hoursExtra"></ion-input>
+          <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(2)">
+            <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+          </ion-button>
+          <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('min')">El valor minimo es 0.1</ion-text>
+          <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('pattern')">Maximo 3 decimales</ion-text>
+        </ion-item>
 
-      <ion-item>
-        <ion-label position="floating">Unidad</ion-label>
-        <ion-input formControlName="unit"></ion-input>
-      </ion-item>
+        <!-- PERFORMANCE -->
+        <ion-item>
+          <ion-label position="floating">Rendimiento</ion-label>
+          <ion-input type="number" formControlName="performance"></ion-input>
+          <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('min')">El valor minimo es 0.1</ion-text>
+          <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('pattern')">Maximo 3 decimales</ion-text>
+        </ion-item>
 
-      <ion-item lines="none">
-        <ion-label position="floating">Notas</ion-label>
-        <ion-textarea formControlName="notes"></ion-textarea>
-      </ion-item>
+        <!-- UNIT -->
+        <ion-item>
+          <ion-label position="floating">Unidad</ion-label>
+          <ion-input formControlName="unit"></ion-input>
+        </ion-item>
+
+        <!-- NOTES -->
+        <ion-item lines="none">
+          <ion-label position="floating">Notas</ion-label>
+          <ion-textarea formControlName="notes"></ion-textarea>
+        </ion-item>
+      </ng-container>      
     </ng-container>
 
     <!-- STEP 2 -->
@@ -206,7 +213,7 @@
     </ion-col>
 
     <ion-col>
-      <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1" [disabled]="tallyForm.get('costCenterId').invalid || tallyForm.get('laborId').invalid || workersOverMax.length > 0">
+      <ion-button color="warning" expand="block" (click)="increaseStep()" [disabled]="tallyForm.get('costCenterId').invalid || tallyForm.get('laborId').invalid || workersOverMax.length > 0">
         Siguiente
       </ion-button>
     </ion-col>

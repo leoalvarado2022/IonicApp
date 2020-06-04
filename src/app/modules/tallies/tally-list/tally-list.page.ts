@@ -73,7 +73,9 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.loadData();
       }
     });
+  }
 
+  ionViewWillEnter() {
     this.loadData();
   }
 
@@ -123,7 +125,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.selectedWorkers.push(this.activeWorker);
         this.goToWorkerTallyList(this.activeWorker);
       } else if (this.activeQuadrille) {
-        this.filteredQuadrilles = [...this.quadrilles];
+        this.selectQuadrille(this.activeQuadrille);
       } else {
         this.activeQuadrille = null;
         if (this.quadrilles.length === 1) {
@@ -322,23 +324,19 @@ export class TallyListPage implements OnInit, OnDestroy {
    * goBack
    */
   public goBack = (): void => {
-    if (this.quadrilles.length > 1) {
-      if (this.activeQuadrille && !this.activeWorker) {
-        this.activeQuadrille = null;
-        this.selectedWorkers = [];
-      } else if (this.activeQuadrille && this.activeWorker) {
-        this.activeWorker = null;
-        this.selectedWorkers = [];
-      } else {
-        this.router.navigate(['home-page']);
-      }
+    if (this.activeWorker) {
+      this.activeWorker = null;
+      this.selectQuadrille(this.activeQuadrille);
+      this.selectedWorkers = [];
+      console.log('volver a listado de trabajadores');
+    } else if (this.activeQuadrille) {
+      this.activeQuadrille = null;
+      this.filteredQuadrilles = [...this.quadrilles];
+      this.selectedWorkers = [];
+      console.log('volver a listado de quadrillas');
     } else {
-      if (this.activeQuadrille && this.activeWorker) {
-        this.activeWorker = null;
-        this.selectedWorkers = [];
-      } else {
-        this.router.navigate(['home-page']);
-      }
+      console.log('volver a al menu');
+      this.router.navigate(['/home-page']);
     }
   }
 
@@ -452,7 +450,30 @@ export class TallyListPage implements OnInit, OnDestroy {
    * editMultipleTally
    */
   public editMultipleTally = async () => {
+    const modal = await this.modalController.create({
+      component: TallyFormMultipleComponent,
+      componentProps: {
+        workers: this.selectedWorkers,
+        dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
+        updateTallies: this.multipleTalliesToUpdate,
+        syncedTallies: this.syncedTallies,
+        talliesToRecord: this.talliesToRecord,
+        costCenters: this.costCenters,
+        labors: this.labors,
+        deals: this.deals,
+        bonds: this.bonds
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
 
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.loadData();
+      }
+    });
+
+    return await modal.present();
   }
 
   /**

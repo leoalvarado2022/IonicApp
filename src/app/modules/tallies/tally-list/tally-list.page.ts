@@ -39,6 +39,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public currentDate: any;
   public readonly originalDate: any;
   public canUpdateMultiple = false;
+  public multipleTalliesToUpdate = [];
 
   private costCenters: Array<CostCenterList> = [];
   private syncedTallies: Array<Tally> = [];
@@ -223,6 +224,7 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public markWorker = (worker: any): void => {
     this.canUpdateMultiple = false;
+    this.multipleTalliesToUpdate = [];
 
     // If worker is already marked, it gets unmarked
     if (this.selectedWorkers.includes(worker)) {
@@ -358,13 +360,12 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * createTally
    */
-  public createTally = async (tally: Tally = null) => {
+  public createTally = async () => {
     const modal = await this.modalController.create({
       component: TallyFormComponent,
       componentProps: {
-        workers: this.selectedWorkers,
+        worker: this.selectedWorkers[0],
         dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
-        editTally: tally,
         syncedTallies: this.syncedTallies,
         talliesToRecord: this.talliesToRecord,
         costCenters: this.costCenters,
@@ -388,24 +389,47 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * editTally
    */
-  public editTally = (tally: Tally, slide: IonItemSliding): void => {
+  public editTally = async (tally: Tally, slide: IonItemSliding): Promise<void> => {
     slide.close();
 
-    this.createTally(tally);
+    const modal = await this.modalController.create({
+      component: TallyFormComponent,
+      componentProps: {
+        worker: this.selectedWorkers[0],
+        dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
+        updateTaly: tally,
+        syncedTallies: this.syncedTallies,
+        talliesToRecord: this.talliesToRecord,
+        costCenters: this.costCenters,
+        labors: this.labors,
+        deals: this.deals,
+        bonds: this.bonds
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.loadData();
+      }
+    });
+
+    return await modal.present();
   }
 
   /**
    * createMultipleTally
    */
   public createMultipleTally = () => {
-    this.createTally();
+ 
   }
 
   /**
    * editMultipleTally
    */
-  public editMultipleTally = () => {
-    console.log('editMultiple tally');
+  public editMultipleTally = async () => {
+
   }
 
   /**
@@ -413,22 +437,32 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   private checkIfCanUpdateMultiple = (): void => {
     if (this.selectedWorkers.length > 1 && this.checkEditableTallies()) {
-      const workersTalllies = this.getSelectedWorkersTallies();
-      this.canUpdateMultiple = this.checkCompatibleTallies(workersTalllies[0], workersTalllies);
+
+      let allWorkersTallies = [];
+      this.selectedWorkers.forEach(worker => {
+        allWorkersTallies = [...allWorkersTallies, ...this.getNumberOfWorkerTallies(worker)];
+      });
+
+      let compatibles = [];
+      let oneWorkerFail = false;
+      this.selectedWorkers.forEach(worker => {
+        const tallies = this.getNumberOfWorkerTallies(worker);
+        const results = tallies.filter(toCheck => this.checkCompatibleTallies(allWorkersTallies[0], toCheck));
+
+        if (results.length > 0) {
+          compatibles = [...compatibles, ...results];
+        } else {
+          oneWorkerFail = true;
+        }
+      });
+
+      if (!oneWorkerFail) {
+        this.canUpdateMultiple = true;
+        this.multipleTalliesToUpdate = [...compatibles];
+      }
     }
   }
 
-  /**
-   * getSelectedWorkersTallies
-   */
-  private getSelectedWorkersTallies = (): Array<Tally> => {
-    let workersTalllies = [];
-    this.selectedWorkers.forEach(item => {
-      workersTalllies = [...workersTalllies, ...this.getNumberOfWorkerTallies(item)];
-    });
-
-    return workersTalllies;
-  }
 
   /**
    * checkEditableTallies
@@ -444,13 +478,10 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * checkCompatibleTallies
    */
-  public checkCompatibleTallies = (tally: Tally, tallies: Array<Tally>): boolean => {
-    return tallies.every( toCheck => {
-      return tally.costCenterId === toCheck.costCenterId &&
-      tally.laborId === toCheck.laborId &&
+  public checkCompatibleTallies = (tally: Tally, toCheck: Tally): boolean => {
+    return tally.costCenterId === toCheck.costCenterId && tally.laborId === toCheck.laborId &&
       ((!tally.dealValidity && !toCheck.dealValidity) || (tally.dealValidity === toCheck.dealValidity)) &&
       ((!tally.bondValidity && !toCheck.bondValidity) || (tally.bondValidity === toCheck.bondValidity ));
-    });
   }
 
   /**

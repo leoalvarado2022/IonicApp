@@ -5,7 +5,7 @@
         <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{ editTally ? 'Editar': 'Agregar' }} Jornada</ion-title>
+    <ion-title>{{ updateTallies.length > 0 ? 'Editar': 'Agregar' }} Jornadas</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -197,11 +197,26 @@
 </ion-content>
 
 <ion-footer>
-  <!-- Single Worker -->
-  <ion-row *ngIf="workers.length === 1">
+  <!-- Step 1 -->
+  <ion-row *ngIf="currentStep === 1">
     <ion-col>
       <ion-button color="danger" expand="block" (click)="closeModal()">
         Cancelar
+      </ion-button>
+    </ion-col>
+
+    <ion-col>
+      <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1" [disabled]="tallyForm.get('costCenterId').invalid || tallyForm.get('laborId').invalid || workersOverMax.length > 0">
+        Siguiente
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <!-- Step 2 -->
+  <ion-row *ngIf="currentStep === 2">
+    <ion-col>
+      <ion-button color="warning" expand="block" (click)="currentStep = currentStep - 1">
+        Anterior
       </ion-button>
     </ion-col>
 
@@ -211,37 +226,4 @@
       </ion-button>
     </ion-col>
   </ion-row>
-
-  <!-- Multiple worker -->
-  <ng-container *ngIf="workers.length > 1">
-    <!-- Step 1 -->
-    <ion-row *ngIf="currentStep === 1">
-      <ion-col>
-        <ion-button color="danger" expand="block" (click)="closeModal()">
-          Cancelar
-        </ion-button>
-      </ion-col>
-
-      <ion-col>
-        <ion-button color="warning" expand="block" (click)="currentStep = currentStep + 1" [disabled]="tallyForm.get('costCenterId').invalid || tallyForm.get('laborId').invalid || workersOverMax.length > 0">
-          Siguiente
-        </ion-button>
-      </ion-col>
-    </ion-row>
-
-    <!-- Step 2 -->
-    <ion-row *ngIf="currentStep === 2">
-      <ion-col>
-        <ion-button color="warning" expand="block" (click)="currentStep = currentStep - 1">
-          Anterior
-        </ion-button>
-      </ion-col>
-
-      <ion-col>
-        <ion-button color="success" expand="block" [disabled]="tallyForm.invalid || workersOverMax.length > 0" (click)="submitForm()">
-          Guardar
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ng-container>
 </ion-footer>

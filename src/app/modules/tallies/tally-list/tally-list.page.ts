@@ -11,6 +11,7 @@ import { Tally } from '../tally.interface';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
+import { TallyFormMultipleComponent } from '../tally-form-multiple/tally-form-multiple.component';
 
 @Component({
   selector: 'app-tally-list',
@@ -421,8 +422,30 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * createMultipleTally
    */
-  public createMultipleTally = () => {
- 
+  public createMultipleTally = async () => {
+    const modal = await this.modalController.create({
+      component: TallyFormMultipleComponent,
+      componentProps: {
+        workers: this.selectedWorkers,
+        dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
+        syncedTallies: this.syncedTallies,
+        talliesToRecord: this.talliesToRecord,
+        costCenters: this.costCenters,
+        labors: this.labors,
+        deals: this.deals,
+        bonds: this.bonds
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.loadData();
+      }
+    });
+
+    return await modal.present();
   }
 
   /**

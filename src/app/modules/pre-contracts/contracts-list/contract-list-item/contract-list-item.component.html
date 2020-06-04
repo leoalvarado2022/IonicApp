@@ -2,7 +2,7 @@
   <ion-item>
     <ion-icon name="document" slot="start"></ion-icon>
     <ion-label>
-      <h2>{{ contract.workerName + ' ' + contract.workerLastName + ' ' + contract.workerSurname | titlecase }}</h2>
+      <h2 class="ion-text-wrap">{{ contract.workerName + ' ' + contract.workerLastName + ' ' + contract.workerSurname | titlecase }}</h2>
       <p>{{ contract.contractTypeName | titlecase }}</p>
     </ion-label>
     <ion-badge [color]="contract.id > 0 ? 'success': 'warning'" slot="end">

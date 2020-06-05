@@ -68,11 +68,10 @@ export class ContractsListPage implements OnInit, OnDestroy {
   public searchContract = (search: string) => {
     if (search) {
       this.filteredContracts = this.contracts.filter(item => {
+        const fullName = `${item.workerName.toLowerCase()} ${item.workerLastName.toLowerCase()} ${item.workerSurname.toLowerCase()}`;
         return (
           item.id.toString().includes(search.toLowerCase()) ||
-          item.workerName.toLowerCase().includes(search.toLowerCase()) ||
-          item.workerLastName.toLowerCase().includes(search.toLowerCase()) ||
-          item.workerSurname.toLowerCase().includes(search.toLowerCase()) ||
+          fullName.includes(search.toLowerCase()) ||
           item.contractTypeName.toLowerCase().includes(search.toLowerCase())
         );
       });

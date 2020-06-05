@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
-import {BehaviorSubject, interval, Subject, Subscription, Subscribable} from 'rxjs';
+import {BehaviorSubject, interval,  Subscription,  Scheduler, SchedulerLike} from 'rxjs';
 import {ToastService} from '../shared/services/toast/toast.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
@@ -12,7 +12,6 @@ import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.se
 import { StorageSyncService } from '../services/storage/storage-sync/storage-sync.service';
 import { TallySyncService } from '../services/storage/tally-sync/tally-sync.service';
 import { Tally } from '../modules/tallies/tally.interface';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home-page',

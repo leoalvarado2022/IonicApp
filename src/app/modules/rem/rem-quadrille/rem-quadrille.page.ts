@@ -51,9 +51,13 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers()
     ]).then( (data) => {
-      this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
-      this.filteredQuadrilles = [...this.quadrilles];
       this.workers = [...data[1]];
+
+      let orderByName = this.alphabeticalOrderPipe.transform(data[0]);
+      orderByName = orderByName.map( item => Object.assign({}, item, { cases: this.showBadge(item.id) }));
+
+      this.quadrilles = [...this.orderByTransfersFirst(orderByName)];
+      this.filteredQuadrilles = [...this.quadrilles];
     });
   }
 
@@ -114,6 +118,28 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
       return item.quadrilleToApprove === quadrilleId && item.quadrilleStatus.toLowerCase() === 'por aprobar' ||
         item.quadrille === quadrilleId && item.quadrilleStatus.toLowerCase() === 'rechazado';
     }).length;
+  }
+
+  /**
+   * orderByTransfersFirst
+   */
+  private orderByTransfersFirst = (orderByName: Array<any>): Array<any> => {
+    const withTransfers = [];
+    const noTransfers = [];
+
+    if (orderByName.length > 0) {
+      orderByName.filter( item => {
+        if (item['cases'] > 0 ) {
+          withTransfers.push(item);
+        } else {
+          noTransfers.push(item);
+        }
+
+        return false;
+      });
+    }
+
+    return [...withTransfers, ...noTransfers];
   }
 
 }

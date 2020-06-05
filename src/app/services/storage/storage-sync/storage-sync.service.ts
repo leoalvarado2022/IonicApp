@@ -287,4 +287,21 @@ export class StorageSyncService extends MainSyncService {
     });
   }
 
+  /**
+   * setTally Temp
+   * @param tallyTemp
+   */
+  public setTallyTemp = (tallyTemp: Array<any> = []): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.TallyTemp, tallyTemp);
+  }
+
+  /**
+   * getTemp
+   */
+  public getTallyTemp = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.TallyTemp).then( (tallyTemp: Array<any>) => {
+      return tallyTemp ? tallyTemp : [];
+    });
+  }
+
 }

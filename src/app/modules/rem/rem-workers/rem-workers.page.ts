@@ -79,8 +79,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       const allWorkers = data[1];
       const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
+      const orderByName = this.alphabeticalOrderPipe.transform(workers);
 
-      this.workers = this.alphabeticalOrderPipe.transform(workers);
+      this.workers = [...this.orderByTransfersFirst(orderByName)];
       this.filteredWorkers = [...this.workers];
 
       this.buildButtons();
@@ -221,4 +222,27 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.httpService.errorHandler(error);
     });
   }
+
+  /**
+   * orderByTransfersFirst
+   */
+  private orderByTransfersFirst = (orderByName: Array<any>): Array<any> => {
+    const withTransfers = [];
+    const noTransfers = [];
+
+    if (orderByName.length > 0) {
+      orderByName.filter( item => {
+        if (item['quadrilleStatus'] !== '' ) {
+          withTransfers.push(item);
+        } else {
+          noTransfers.push(item);
+        }
+
+        return false;
+      });
+    }
+
+    return [...withTransfers, ...noTransfers];
+  }
+
 }

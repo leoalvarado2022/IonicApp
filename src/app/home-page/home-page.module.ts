@@ -5,6 +5,7 @@ import {SharedModule} from '../shared/shared.module';
 import {MenuComponent} from '../components/menu/menu.component';
 import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
 import { SyncProgressComponent } from '../components/sync-progress/sync-progress.component';
+import {DealsService} from '../modules/tratos/services/deals/deals.service';
 
 const routes: Routes = [
   {
@@ -102,7 +103,8 @@ const routes: Routes = [
     SyncProgressComponent
   ],
   providers: [
-    ContractDetailService
+    ContractDetailService,
+    DealsService
   ]
 })
 export class HomePagePageModule {

@@ -8,11 +8,12 @@ import {HttpService} from '../shared/services/http/http.service';
 import {TallyService} from '../modules/tallies/services/tally/tally.service';
 import {NfcService} from '../shared/services/nfc/nfc.service';
 import {environment} from 'src/environments/environment';
-import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.service';
-import { StorageSyncService } from '../services/storage/storage-sync/storage-sync.service';
-import { TallySyncService } from '../services/storage/tally-sync/tally-sync.service';
-import { Tally } from '../modules/tallies/tally.interface';
-import { takeUntil } from 'rxjs/operators';
+import {ManualSyncService} from '../shared/services/manual-sync/manual-sync.service';
+import {StorageSyncService} from '../services/storage/storage-sync/storage-sync.service';
+import {TallySyncService} from '../services/storage/tally-sync/tally-sync.service';
+import {Tally} from '../modules/tallies/tally.interface';
+import {takeUntil} from 'rxjs/operators';
+import {DealsService} from '../modules/tratos/services/deals/deals.service';
 
 @Component({
   selector: 'app-home-page',
@@ -52,6 +53,7 @@ export class HomePagePage {
     private syncService: SyncService,
     private httpService: HttpService,
     private nfcService: NfcService,
+    private _dealService: DealsService,
     private manualSyncService: ManualSyncService,
     private storageSyncService: StorageSyncService,
     private tallySyncService: TallySyncService,
@@ -75,6 +77,8 @@ export class HomePagePage {
 
     // Storage Sync Observable
     this.storageChangeObservable();
+
+    this.recordDealsTallies();
   }
 
   ionViewWillLeave() {
@@ -93,7 +97,7 @@ export class HomePagePage {
     const token = this.storeService.getPushToken();
 
     this.authService.savePushToken(user.id, token).subscribe();
-  }
+  };
 
   /**
    * startManualSyncObservable
@@ -106,7 +110,7 @@ export class HomePagePage {
         this.sendToRecord();
       }
     });
-  }
+  };
 
   /**
    * startSyncIntervalObservable
@@ -118,7 +122,7 @@ export class HomePagePage {
         this.sendToRecord();
       }
     });
-  }
+  };
 
   /**
    * startSyncStepperObservable
@@ -148,8 +152,13 @@ export class HomePagePage {
       if (step === 2) {
         this.recordDevices();
       }
+
+      // Sync step 3
+      /*if (step === 3) {
+        this.recordDealsTallies();
+      }*/
     });
-  }
+  };
 
   /**
    * storageChangeObservable
@@ -162,17 +171,17 @@ export class HomePagePage {
         this.isLoading = false;
       }
     });
-  }
+  };
 
   /**
    * checkIfRemoveTalliesToRecord
    */
-  private checkIfRemoveTalliesToRecord  = (): void => {
+  private checkIfRemoveTalliesToRecord = (): void => {
     if (this.removeTalliesToRecordFlag) {
       Promise.all([
         this.tallySyncService.addTalliesWithErrors(this.talliesWithErrors),
         this.tallySyncService.removeTalliesToRecord(this.removeTalliesToRecord)
-      ]).then( (result) => {
+      ]).then((result) => {
         this.talliesWithErrors = [];
 
         if (result[1].length === 0) {
@@ -181,7 +190,7 @@ export class HomePagePage {
         }
       });
     }
-  }
+  };
 
   /**
    * checkIfRemoveDevicesToRecord
@@ -197,7 +206,7 @@ export class HomePagePage {
         this.removeDevices = false;
       }
     }
-  }
+  };
 
   /**
    * syncData
@@ -217,14 +226,14 @@ export class HomePagePage {
       this.isLoading = false;
       this.httpService.errorHandler(error);
     });
-  }
+  };
 
   /**
    * sendToRecord
    */
   private sendToRecord = (): void => {
     this.syncStepObservable.next(1);
-  }
+  };
 
   /**
    * recordTallies
@@ -233,15 +242,15 @@ export class HomePagePage {
     this.tallySyncService.getTalliesToRecord().then((talliesToRecord: Array<Tally>) => {
       const mapStatus = talliesToRecord.map(item => {
         if (item.status === 'delete') {
-          return Object.assign({}, item, { order: 1});
+          return Object.assign({}, item, {order: 1});
         }
 
         if (item.status === 'edit') {
-          return Object.assign({}, item, { order: 2});
+          return Object.assign({}, item, {order: 2});
         }
 
         if (item.status === 'new') {
-          return Object.assign({}, item, { order: 3});
+          return Object.assign({}, item, {order: 3});
         }
 
         return item;
@@ -258,7 +267,7 @@ export class HomePagePage {
         this.syncStepObservable.next(2);
       }
     });
-  }
+  };
 
   /**
    * recordDevices
@@ -272,14 +281,38 @@ export class HomePagePage {
     if (toRecord && toRecord.length > 0) {
       this.nfcService.saveDevicesToRecord(toRecord, user).subscribe((success: any) => {
         this.checkRecordedDevices(success.log);
-        this.syncStepObservable.next(0);
+        this.syncStepObservable.next(3);
       }, () => {
         this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
       });
     } else {
-      this.syncStepObservable.next(0);
+      this.syncStepObservable.next(3);
     }
-  }
+  };
+
+  /**
+   * recordDevices
+   */
+  private recordDealsTallies = () => {
+    this.storageSyncService.getTallyTemp().then((toRecord: any) => {
+      toRecord = toRecord.filter(value => value.id === 0);
+
+      const user = this.storeService.getUser();
+      delete user.avatar;
+
+      if (toRecord && toRecord.length > 0) {
+        this._dealService.saveTalliesToRecord(toRecord, user).subscribe((success: any) => {
+          this.storageSyncService.setTallyTemp([]);
+          this.syncStepObservable.next(0);
+        }, () => {
+          this.toastService.errorToast('Ocurrio un error al sincronizar tratos');
+        });
+      } else {
+        this.syncStepObservable.next(0);
+      }
+    });
+  };
+
 
   /**
    * checkRecordedTallies
@@ -305,7 +338,7 @@ export class HomePagePage {
 
       this.removeTalliesToRecordFlag = true;
     }
-  }
+  };
 
   /**
    * checkRecordedTallies
@@ -330,6 +363,6 @@ export class HomePagePage {
       }
       this.removeDevices = true;
     }
-  }
+  };
 
 }

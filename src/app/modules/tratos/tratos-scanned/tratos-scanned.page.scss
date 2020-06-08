@@ -66,3 +66,25 @@ ion-card {
   color: #8e9093;
   font-size: 1.4rem;
 }
+
+.title-row-scanned {
+  color: #8e9093;
+  font-size: 0.8rem;
+  margin-top: 3% !important;
+}
+
+ion-item {
+  --border-color: transparent;
+}
+
+.ion-card-worker {
+  height: 50px;
+  border-radius: 5px;
+  width: 98%;
+}
+
+.ion-list-worker {
+  width: 98%;
+  margin: 0 auto;
+  background: none !important;
+}

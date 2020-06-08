@@ -487,6 +487,12 @@ export class TallyListPage implements OnInit, OnDestroy {
         allWorkersTallies = [...allWorkersTallies, ...this.getNumberOfWorkerTallies(worker)];
       });
 
+      console.log('selectedWorkers', this.selectedWorkers);
+      console.log('allWorkersTallies', allWorkersTallies);
+
+      localStorage.setItem('selectedWorkers', JSON.stringify(this.selectedWorkers));
+      localStorage.setItem('allWorkersTallies', JSON.stringify(allWorkersTallies));
+
       let compatibles = [];
       let oneWorkerFail = false;
       this.selectedWorkers.forEach(worker => {

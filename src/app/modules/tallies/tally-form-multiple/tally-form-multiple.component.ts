@@ -66,6 +66,8 @@ export class TallyFormMultipleComponent implements OnInit {
   ngOnInit() {
     const activeCompany = this.storeService.getActiveCompany();
 
+    console.log('update tallies', this.updateTallies);
+
     this.filteredCostCenters = [];
     this.filteredLabors = [];
 
@@ -156,11 +158,11 @@ export class TallyFormMultipleComponent implements OnInit {
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]],
-      h: [edit ? edit.hoursExtra : '', [
+      h: [edit ? edit.hoursExtra || '' : '', [
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]],
-      r: [edit ? edit.performance : '', [
+      r: [edit ? edit.performance || '' : '', [
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]]
@@ -392,18 +394,12 @@ export class TallyFormMultipleComponent implements OnInit {
    * @param worker
    * @param workingDay
    */
-  public checkWorkerDailyMax = (worker: any, workingDay: number) => {
-    // REVISAR ESTO
-    // FUNCION NO VALIDA EL CASI DE EDITAR
-    const todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.dateSelected);
+  public checkWorkerDailyMax = (worker: any, workingDay: number, ignoreId: number = null) => {
+    let todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.dateSelected, ignoreId);
 
-    // REVISAR ESTO
-    // FUNCION NO VALIDA EL CASI DE EDITAR
-    /*
-    if (this.editTally && !this.editTally[0].tempId) {
-      todayTallies = todayTallies.filter(i => i.id !== this.editTally[0].id);
+    if (this.updateTallies.length > 0) {
+      todayTallies = todayTallies.filter(i => !this.updateTallies.filter(item => item.workerId === worker.id).map(item => item.id).includes(i.id));
     }
-    */
 
     // tslint:disable-next-line: no-shadowed-variable
     const totalWorked = todayTallies.reduce((total, tally) => total + tally.workingDay, 0);
@@ -549,7 +545,11 @@ export class TallyFormMultipleComponent implements OnInit {
     const all = this.tallyForm.get('multiple') as FormArray;
 
     for (let index = 0; index < all.length; index++) {
-      this.checkWorkerDailyMax(this.workers.find(item => item.id === all.at(index).get('id').value ) , all.at(index).get('jr').value);
+      const currentWorker = this.workers.find(item => item.id === all.at(index).get('id').value);
+      const workerUpdateTallies = this.updateTallies.filter( item => item.workerId === currentWorker.id);
+      const ignore = workerUpdateTallies[0] ? workerUpdateTallies[0].tempId : null;
+
+      this.checkWorkerDailyMax(currentWorker , all.at(index).get('jr').value, ignore);
     }
   }
 

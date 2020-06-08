@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
@@ -10,6 +10,7 @@ import {ContractsService} from '../services/contracts/contracts.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
+import { IonDatetime } from '@ionic/angular';
 
 @Component({
   selector: 'app-contract-form',
@@ -34,6 +35,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   private activeCompany: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
+
   private tempId = 0;
 
   public readonly actionHeader: any = {
@@ -393,6 +395,13 @@ export class ContractFormPage implements OnInit, OnDestroy {
     }
 
     return '';
+  }
+
+  /**
+   * goBack
+   */
+  public goBack = () => {
+    this.router.navigate(['/home-page/tarja_contrato']);
   }
 
 }

@@ -16,6 +16,7 @@ export class TallyFormMultipleComponent implements OnInit {
   @Input() workers: Array<any> = [];
   @Input() dateSelected: string;
   @Input() updateTallies: Array<Tally> = [];
+  @Input() numberOfCases: Array<any> = [];
   @Input() syncedTallies: Array<Tally> = [];
   @Input() talliesToRecord: Array<Tally> = [];
   @Input() costCenters: Array<any> = [];
@@ -31,6 +32,7 @@ export class TallyFormMultipleComponent implements OnInit {
   };
 
   public tallyForm: FormGroup;
+  public showFooterButtons = false;
   public currentStep = 1;
   public split = 0;
 
@@ -66,8 +68,6 @@ export class TallyFormMultipleComponent implements OnInit {
   ngOnInit() {
     const activeCompany = this.storeService.getActiveCompany();
 
-    console.log('update tallies', this.updateTallies);
-
     this.filteredCostCenters = [];
     this.filteredLabors = [];
 
@@ -97,13 +97,21 @@ export class TallyFormMultipleComponent implements OnInit {
       multiple: this.formBuilder.array([])
     });
 
-    if (this.updateTallies.length > 0) {
-      this.editingTally(this.updateTallies[0]);
-    } else {
+    if (this.numberOfCases.length === 0) {
+      // NUEVO
+      console.log('NUEVO');
       this.checkWorkersDailyMax(1);
-    }
+      this.addWorkers();
 
-    this.addWorkers();
+      this.showFooterButtons = true;
+    } else {
+      // EDITAR
+      if (this.numberOfCases.length === 1) {
+        this.editingTally(this.updateTallies[0]);
+        this.addWorkers(this.updateTallies);
+        this.showFooterButtons = true;
+      }
+    }
   }
 
   /**
@@ -123,11 +131,8 @@ export class TallyFormMultipleComponent implements OnInit {
       tempId: tally.tempId
     });
 
-    const costCenter = this.costCenters.find(item => item.id === tally.costCenterId);
-    this.costCenterName = costCenter.name;
-
-    const labor = this.labors.find(item => item.id === tally.laborId);
-    this.laborName = labor.name;
+    this.costCenterName = this.getCostCenterName(tally.costCenterId);
+    this.laborName = this.getLaborName(tally.laborId);
 
     this.getDeals();
     this.getBonds();
@@ -136,14 +141,21 @@ export class TallyFormMultipleComponent implements OnInit {
   /**
    * addWorkers
    */
-  private addWorkers = (): void => {
-    if (this.workers.length > 1) {
-      for (const worker of this.workers) {
-        const workerUpdateTallies = this.updateTallies.filter( item => item.workerId === worker.id);
-        const workers = this.tallyForm.get('multiple') as FormArray;
+  private addWorkers = (updateTallies: Array<Tally> = null): void => {
+    this.workers.forEach(worker => {
+      const workers = this.tallyForm.get('multiple') as FormArray;
+
+      if (updateTallies) {
+        const workerUpdateTallies = updateTallies.filter( item => item.workerId === worker.id);
         workers.push(this.addWokerRow(worker, workerUpdateTallies[0]));
+
+        if (workerUpdateTallies.length > 1) {
+          console.log('Alerta trabajador con mas de una tarja en un mismo centro de costo-labor');
+        }
+      } else {
+        workers.push(this.addWokerRow(worker));
       }
-    }
+    });
   }
 
   /**
@@ -278,19 +290,19 @@ export class TallyFormMultipleComponent implements OnInit {
   /**
    * submitForm
    */
-  public submitForm = () => {
+  public submitForm = async () => {
     const formData = Object.assign({}, this.tallyForm.value);
 
-    const multpleTallies = [];
     for (const worker of this.workers) {
-      if (this.updateTallies.length > 0) {
-        multpleTallies.push(this.editMultipleTally(worker, formData));
+      if (this.numberOfCases.length === 0) {
+        const newTally = this.newMultipleTally(worker, formData);
+        await this.tallySyncService.addTallyToRecord(newTally);
       } else {
-        multpleTallies.push(this.newMultipleTally(worker, formData));
+        const editTally = this.editMultipleTally(worker, formData);
+        await this.tallySyncService.editTallyToRecord(editTally);
       }
     }
 
-    this.tallySyncService.addTalliesToRecord(multpleTallies);
     this.closeModal(true);
   }
 
@@ -317,26 +329,26 @@ export class TallyFormMultipleComponent implements OnInit {
   /**
    * editMultipleTally
    */
-  private editMultipleTally = (worker: any, formData: any): object => {
+  private editMultipleTally = (worker: any, formData: any): Tally => {
     const data = formData.multiple.find(i => i.id === worker.id);
-    const workerUpdateTallies = this.updateTallies.filter( item => item.workerId === worker.id);
+    const workerUpdateTallies = this.updateTallies.find( item => item.workerId === worker.id);
 
     let tempId = null;
-    if (workerUpdateTallies[0].tempId) {
-      tempId = workerUpdateTallies[0].tempId;
+    if (workerUpdateTallies.tempId) {
+      tempId = workerUpdateTallies.tempId;
     } else {
       tempId = this.tallySyncService.getTallyTempId();
       this.tallySyncService.increaseTallyTempId();
     }
 
     return Object.assign({}, formData, {
-      id: workerUpdateTallies[0].id,
+      id: workerUpdateTallies.id,
       workerId: worker.id,
       validity: worker.validity,
       tempId,
       workingDay: data['jr'],
-      hoursExtra: data['h'],
-      performance: data['r'],
+      hoursExtra: data['h'] || 0,
+      performance: data['r'] || 0,
       status: 'edit'
     });
   }
@@ -551,6 +563,35 @@ export class TallyFormMultipleComponent implements OnInit {
 
       this.checkWorkerDailyMax(currentWorker , all.at(index).get('jr').value, ignore);
     }
+  }
+
+  /**
+   * getCostCenterName
+   */
+  public getCostCenterName = (costCenterId: number): string => {
+    const costCenter = this.costCenters.find(item => item.id === costCenterId);
+    return costCenter ? costCenter.name : 'No encontrado';
+  }
+
+  /**
+   * getLaborName
+   */
+  public getLaborName = (laborId: number): string => {
+    const labor = this.labors.find(item => item.id === laborId);
+    return labor ? labor.name : 'No encontrado';
+  }
+
+  /**
+   * selectCase
+   */
+  public selectCase = (selectedCase: any) => {
+    const filteredTallies = this.updateTallies.filter(tally => tally.costCenterId === selectedCase.costCenterId && tally.laborId === selectedCase.laborId);
+    this.updateTallies = [...filteredTallies];
+
+    this.editingTally(filteredTallies[0]);
+    this.addWorkers(filteredTallies);
+    this.numberOfCases = [selectedCase];
+    this.showFooterButtons = true;
   }
 
 }

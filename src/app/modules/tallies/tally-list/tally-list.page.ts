@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
-import {ModalController, IonItemSliding, IonInfiniteScroll} from '@ionic/angular';
+import {ModalController, IonItemSliding} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
@@ -40,7 +40,8 @@ export class TallyListPage implements OnInit, OnDestroy {
   public currentDate: any;
   public readonly originalDate: any;
   public canUpdateMultiple = false;
-  public multipleTalliesToUpdate = [];
+  public multipleTalliesToUpdate: Array<any> = [];
+  private numberOfCases: Array<any> = [];
 
   private costCenters: Array<CostCenterList> = [];
   private syncedTallies: Array<Tally> = [];
@@ -249,6 +250,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public addDayToDate = (): void => {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
+      this.selectedWorkers = [];
     }
   }
 
@@ -258,6 +260,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public subtractDayToDate = (): void => {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.selectedWorkers = [];
     }
   }
 
@@ -456,6 +459,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         workers: this.selectedWorkers,
         dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
         updateTallies: this.multipleTalliesToUpdate,
+        numberOfCases: this.numberOfCases,
         syncedTallies: this.syncedTallies,
         talliesToRecord: this.talliesToRecord,
         costCenters: this.costCenters,
@@ -487,12 +491,39 @@ export class TallyListPage implements OnInit, OnDestroy {
         allWorkersTallies = [...allWorkersTallies, ...this.getNumberOfWorkerTallies(worker)];
       });
 
-      console.log('selectedWorkers', this.selectedWorkers);
-      console.log('allWorkersTallies', allWorkersTallies);
+      const allValidTallies = [];
+      this.selectedWorkers.forEach(worker => {
 
-      localStorage.setItem('selectedWorkers', JSON.stringify(this.selectedWorkers));
-      localStorage.setItem('allWorkersTallies', JSON.stringify(allWorkersTallies));
+        // Filter the current worker tallies
+        const thisWorkerTallies = allWorkersTallies.filter(item => item.workerId === worker.id);
 
+        // Filter other workers tallies
+        const otherWorkerTallies = allWorkersTallies.filter(item => item.workerId !== worker.id);
+
+        // Tallies in common with other workers
+        const commonTallies = [];
+        thisWorkerTallies.forEach(tally => {
+
+          // Find similar tallies
+          const similarTallies = otherWorkerTallies.filter( map => map.costCenterId === tally.costCenterId && map.laborId === tally.laborId);
+
+          // Add to the array
+          similarTallies.forEach(similar => commonTallies.push(similar));
+        });
+
+        // At least one in common
+        if (commonTallies.length > 0) {
+          commonTallies.forEach(common => allValidTallies.push(common));
+        }
+      });
+
+      if (allValidTallies.length > 0) {
+        this.canUpdateMultiple = true;
+        this.multipleTalliesToUpdate = [...allValidTallies];
+        this.numberOfCases = this.getUniqueCases(allValidTallies);
+      }
+
+      /*
       let compatibles = [];
       let oneWorkerFail = false;
       this.selectedWorkers.forEach(worker => {
@@ -510,6 +541,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.canUpdateMultiple = true;
         this.multipleTalliesToUpdate = [...compatibles];
       }
+      */
     }
   }
 
@@ -583,6 +615,34 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public talliesTracker = (index: number, tally: Tally): number => {
     return tally.id;
+  }
+
+  /**
+   * getUniqueCases
+   */
+  private getUniqueCases = (tallies: Array<Tally>): Array<any> => {
+    const uniqueCasesArray = [];
+
+    if (tallies.length > 0) {
+      tallies.forEach(tally => {
+        const searchInUniqueCasesArray = uniqueCasesArray.find(unique => unique.costCenterId === tally.costCenterId && unique.laborId === tally.laborId);
+
+        if (!searchInUniqueCasesArray) {
+          uniqueCasesArray.push(tally);
+        }
+      });
+    }
+
+    if (uniqueCasesArray.length > 0) {
+      return uniqueCasesArray.map(item => {
+        return {
+          costCenterId: item.costCenterId,
+          laborId: item.laborId
+        };
+      });
+    }
+
+    return uniqueCasesArray;
   }
 
 }

@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
-import {BehaviorSubject, interval,  Subscription,  Scheduler, SchedulerLike} from 'rxjs';
+import {BehaviorSubject, interval,  Subscription} from 'rxjs';
 import {ToastService} from '../shared/services/toast/toast.service';
 import {SyncService} from '../shared/services/sync/sync.service';
 import {HttpService} from '../shared/services/http/http.service';
@@ -33,7 +33,6 @@ export class HomePagePage {
 
   // Devices
   private removeDevices = false;
-  private removeDealsToRecord = false;
   private removeDevicesToRecord: Array<number> = [];
   private devicesWithErrors: Array<any> = [];
 
@@ -126,6 +125,21 @@ export class HomePagePage {
     console.log('startSyncStepperObservable');
     this.stepper$ = this.syncStepObservable.subscribe(step => {
       console.log('current step: ', step);
+
+      /**
+       * Icono de sync
+       * Sincronizar dato por modulos pedazos
+       * La pantalla de carga no va en todas partes.
+       * sincronizar datos solo del modulo
+       * Pantalla que muestra el progreso
+       *
+       *
+       * 0 .- Make syncAll
+       * 1 .- Save in storage
+       * 2 .- Save Tallies
+       * 3 .- Save devices
+       * 4 .- Go back to sync
+       */
 
       if (step === 0) {
         // Remove from "talliesToRecord" the tallies that were recorded successful

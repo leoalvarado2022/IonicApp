@@ -7,6 +7,8 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StepNames } from 'src/app/services/storage/step-names';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -29,9 +31,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
 
-  public firstLoad = false;
-
-  private store$: Subscription;
+  private stepper$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,26 +40,33 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
+    private stepperService: StepperService
   ) {
 
   }
 
   ngOnInit() {
-    this.firstLoad = true;
-    const id = this.route.snapshot.paramMap.get('id');
-    this.loadWorkers(id);
+    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
+      if (step === StepNames.EndStoring ) {
+        this.loadWorkers();
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    this.store$.unsubscribe();
+    this.stepper$.unsubscribe();
+  }
+
+  ionViewWillEnter() {
+    this.loadWorkers();
   }
 
   /**
    * loadWorkers
    */
-  private loadWorkers = (id: string) => {
-    this.firstLoad = false;
+  private loadWorkers = () => {
+    const id = this.route.snapshot.paramMap.get('id');
 
     Promise.all([
       this.storageSyncService.getQuadrilles(),
@@ -109,8 +116,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event) => {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.loadWorkers(id);
+    this.loadWorkers();
     event.target.complete();
   }
 
@@ -207,7 +213,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
 
       // BANDERA DE SINCRONIZACION
-      
+      this.stepperService.runAllSteps();
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);

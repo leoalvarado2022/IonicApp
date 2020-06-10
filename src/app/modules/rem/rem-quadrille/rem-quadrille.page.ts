@@ -1,7 +1,6 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { Subscription } from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 
 @Component({
@@ -9,14 +8,11 @@ import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/a
   templateUrl: './rem-quadrille.page.html',
   styleUrls: ['./rem-quadrille.page.scss'],
 })
-export class RemQuadrillePage implements OnInit, OnDestroy {
+export class RemQuadrillePage implements OnInit {
 
   public quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
   public workers: Array<any> = [];
-  public firstLoad = false;
-
-  private storage$: Subscription;
 
   constructor(
     private router: Router,
@@ -26,21 +22,18 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
-    this.firstLoad = true;
+  ionViewWillEnter() {
     this.loadQuadrilles();
   }
 
-  ngOnDestroy() {
-    this.storage$.unsubscribe();
+  ngOnInit() {
+
   }
 
   /**
    * loadQuadrilles
    */
   private loadQuadrilles = () => {
-    this.firstLoad = false;
-
     Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers()

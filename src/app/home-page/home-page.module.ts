@@ -4,7 +4,6 @@ import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
 import {MenuComponent} from '../components/menu/menu.component';
 import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
-import { SyncProgressComponent } from '../components/sync-progress/sync-progress.component';
 
 const routes: Routes = [
   {
@@ -98,8 +97,7 @@ const routes: Routes = [
   ],
   declarations: [
     HomePagePage,
-    MenuComponent,
-    SyncProgressComponent
+    MenuComponent
   ],
   providers: [
     ContractDetailService

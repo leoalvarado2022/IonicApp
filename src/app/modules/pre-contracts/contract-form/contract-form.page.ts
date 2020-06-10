@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { IonDatetime } from '@ionic/angular';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -52,7 +52,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
     private contractsService: ContractsService,
     private httpService: HttpService,
     private activatedRoute: ActivatedRoute,
-    private storageSyncService: StorageSyncService
+    private storageSyncService: StorageSyncService,
+    private stepperService: StepperService
   ) {
     this.contractForm = this.formBuilder.group({
       id: [0],
@@ -255,8 +256,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
   private storeContract = (data: any) => {
     this.contractsService.storePreContracts([data]).subscribe(() => {
 
-      
-      this.router.navigate(['/home-page/tarja_contrato']);
+      this.stepperService.runAllSteps();
+      this.goBack();
     }, error => {
       this.httpService.errorHandler(error);
     });

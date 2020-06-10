@@ -9,7 +9,6 @@ import * as moment from 'moment';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 import { IonDatetime } from '@ionic/angular';
 
 @Component({
@@ -53,8 +52,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     private contractsService: ContractsService,
     private httpService: HttpService,
     private activatedRoute: ActivatedRoute,
-    private storageSyncService: StorageSyncService,
-    private manualSyncService: ManualSyncService,
+    private storageSyncService: StorageSyncService
   ) {
     this.contractForm = this.formBuilder.group({
       id: [0],
@@ -257,7 +255,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   private storeContract = (data: any) => {
     this.contractsService.storePreContracts([data]).subscribe(() => {
 
-      this.manualSyncService.sync();
+      
       this.router.navigate(['/home-page/tarja_contrato']);
     }, error => {
       this.httpService.errorHandler(error);

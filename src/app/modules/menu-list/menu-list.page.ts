@@ -2,10 +2,11 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {TabMenu} from '@primetec/primetec-angular';
 import {SyncService} from '../../shared/services/sync/sync.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { NetworkService } from 'src/app/shared/services/network/network.service';
 import { Subscription } from 'rxjs';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StepNames } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-menu-list',
@@ -19,34 +20,36 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   private isOnline: boolean;
   private network$: Subscription;
-  private storage$: Subscription;
+  private step$: Subscription;
 
   constructor(
     public syncService: SyncService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private manualSyncService: ManualSyncService,
     private storageSyncService: StorageSyncService,
-    private networkService: NetworkService
+    private networkService: NetworkService,
+    private stepperService: StepperService
   ) {
 
   }
 
+  ionViewWillEnter() {
+    this.loadData();
+  }
+
   ngOnInit() {
     this.network$ = this.networkService.getNetworkStatus().subscribe( status => this.isOnline = status);
-    this.storage$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
-      if (status) {
+    this.step$ = this.stepperService.getStepper().subscribe(step => {
+      if (step === StepNames.EndStoring) {
         this.loadData();
       }
     });
-
-    this.loadData();
   }
 
   ngOnDestroy() {
     this.network$.unsubscribe();
-    this.storage$.unsubscribe();
   }
+
 
   /**
    * loadData
@@ -65,8 +68,8 @@ export class MenuListPage implements OnInit, OnDestroy {
    * reSync
    * @param event
    */
-  public reSync = (event) => {
-    this.manualSyncService.sync();
+  public reSync = (event: any) => {
+    this.stepperService.runAllSteps();
     event.target.complete();
   }
 

@@ -69,11 +69,6 @@ export class TallyListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.firstLoad = true;
-    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(state => {
-      if (state && !this.firstLoad) {
-        this.loadData();
-      }
-    });
   }
 
   ionViewWillEnter() {

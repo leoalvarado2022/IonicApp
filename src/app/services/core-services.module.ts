@@ -6,35 +6,37 @@ import { LoaderService } from '../shared/services/loader/loader.service';
 import { NetworkService } from '../shared/services/network/network.service';
 import { GeolocationService } from '../shared/services/geolocation/geolocation.service';
 import { StoreService } from '../shared/services/store/store.service';
-import { ManualSyncService } from '../shared/services/manual-sync/manual-sync.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 import { HttpService } from '../shared/services/http/http.service';
 import { AlertService } from '../shared/services/alert/alert.service';
 import { StorageSyncService } from './storage/storage-sync/storage-sync.service';
-import { MainSyncService } from './storage/main/main-sync.service';
 import { TallySyncService } from './storage/tally-sync/tally-sync.service';
+import { TimerService } from './storage/timer/timer.service';
+import { StepperService } from './storage/stepper/stepper.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
     IonicStorageModule.forRoot({
       name: '_fx360',
       driverOrder: ['indexeddb', 'sqlite', 'websql'],
-    })
+    }),
+    HttpClientModule
   ],
   providers: [
     LoaderService,
     NetworkService,
     GeolocationService,
     StoreService,
-    ManualSyncService,
     ToastService,
     HttpService,
     AlertService,
 
     // Storage Services Block
-    MainSyncService,
     StorageSyncService,
-    TallySyncService
+    TallySyncService,
+    TimerService,
+    StepperService
   ],
 })
 export class CoreServicesModule {

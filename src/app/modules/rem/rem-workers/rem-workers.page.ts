@@ -7,7 +7,6 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -41,7 +40,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
-    private manualSyncService: ManualSyncService,
     private alphabeticalOrderPipe: AlphabeticalOrderPipe
   ) {
 
@@ -50,13 +48,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.firstLoad = true;
     const id = this.route.snapshot.paramMap.get('id');
-
-    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe( status => {
-      if (status && !this.firstLoad) {
-        this.loadWorkers(id);
-      }
-    });
-
     this.loadWorkers(id);
   }
 
@@ -216,7 +207,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
 
       // BANDERA DE SINCRONIZACION
-      this.manualSyncService.sync();
+      
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);

@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NetworkService } from '../../services/network/network.service';
 import { Subscription } from 'rxjs';
-import { SyncService } from '../../services/sync/sync.service';
-import { ManualSyncService } from '../../services/manual-sync/manual-sync.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 
 @Component({
   selector: 'app-check-connection',
@@ -17,8 +16,7 @@ export class CheckConnectionComponent implements OnInit, OnDestroy {
   private status$: Subscription;
 
   constructor(
-    private networkService: NetworkService,
-    private manualSyncService: ManualSyncService
+    private networkService: NetworkService
   ) {
 
   }
@@ -45,7 +43,7 @@ export class CheckConnectionComponent implements OnInit, OnDestroy {
   public manualSync = () => {
     console.log('manualSync', this.isOnline);
     if (this.isOnline) {
-      this.manualSyncService.sync();
+      
     }
   }
 

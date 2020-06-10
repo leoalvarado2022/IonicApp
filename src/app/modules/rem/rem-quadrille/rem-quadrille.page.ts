@@ -28,12 +28,6 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.firstLoad = true;
-    this.storage$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
-      if (status && !this.firstLoad) {
-        this.loadQuadrilles();
-      }
-    });
-
     this.loadQuadrilles();
   }
 

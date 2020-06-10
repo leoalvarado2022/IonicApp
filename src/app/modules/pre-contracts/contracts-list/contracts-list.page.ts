@@ -4,7 +4,6 @@ import {ContractsService} from '../services/contracts/contracts.service';
 import {ContractListItem} from '../contract-interfaces';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { NumericOrderPipe } from 'src/app/shared/pipes/numeric-order/numeric-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
@@ -26,7 +25,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
     private router: Router,
     private contractsService: ContractsService,
     private httpService: HttpService,
-    private manualSyncService: ManualSyncService,
     private alertService: AlertService,
     private numericOrderPipe: NumericOrderPipe,
     private storageSyncService: StorageSyncService
@@ -36,12 +34,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.firstLoad = true;
-    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
-      if (status && !this.firstLoad) {
-        this.loadPreContracts();
-      }
-    });
-
     this.loadPreContracts();
   }
 
@@ -144,7 +136,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.contractsService.storePreContracts(preContracts).subscribe(() => {
 
       // SEND TO SYNC
-      this.manualSyncService.sync();
+      
     }, error => {
       this.httpService.errorHandler(error);
     });

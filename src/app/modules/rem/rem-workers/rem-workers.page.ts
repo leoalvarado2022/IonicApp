@@ -213,7 +213,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
 
       // BANDERA DE SINCRONIZACION
-      this.stepperService.runAllSteps();
+      this.stepperService.runRemModuleStorageSteps();
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);

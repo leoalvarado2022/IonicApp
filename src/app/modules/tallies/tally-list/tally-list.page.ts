@@ -54,7 +54,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   private bonds: Array<any> = [];
 
   private stepper$: Subscription;
-  
+
   constructor(
     private router: Router,
     private modalController: ModalController,
@@ -519,25 +519,6 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.numberOfCases = this.getUniqueCases(allValidTallies);
       }
 
-      /*
-      let compatibles = [];
-      let oneWorkerFail = false;
-      this.selectedWorkers.forEach(worker => {
-        const tallies = this.getNumberOfWorkerTallies(worker);
-        const results = tallies.filter(toCheck => this.checkCompatibleTallies(allWorkersTallies[0], toCheck));
-
-        if (results.length > 0) {
-          compatibles = [...compatibles, ...results];
-        } else {
-          oneWorkerFail = true;
-        }
-      });
-
-      if (!oneWorkerFail) {
-        this.canUpdateMultiple = true;
-        this.multipleTalliesToUpdate = [...compatibles];
-      }
-      */
     }
   }
 

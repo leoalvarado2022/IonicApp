@@ -15,9 +15,9 @@ export class StorageSyncService {
   }
 
   /**
-   * storeSyncedData
+   * storeAllSyncedData
    */
-  public storeSyncedData = (data: Sync): Promise<any> => {
+  public storeAllSyncedData = (data: Sync): Promise<any> => {
     const {
       quadrilles,
       workers,
@@ -50,6 +50,43 @@ export class StorageSyncService {
       this.setCivilStatus(civilStatus),
       this.setAfps(afps),
       this.setIsapres(isapres)
+    ]);
+  }
+
+  /**
+   * storeRemSyncData
+   */
+  public storeRemSyncData = (data: Sync): Promise<any> => {
+    const { quadrilles, workers } = data;
+
+    return Promise.all([
+      this.setQuadrilles(quadrilles),
+      this.setWorkers(workers)
+    ]);
+  }
+
+  /**
+   * storeTalliesSyncData
+   */
+  public storeTalliesSyncData = (data: Sync): Promise<any> => {
+    const {
+      quadrilles,
+      workers,
+      labors,
+      deals,
+      costCentersCustom,
+      tallies,
+      bonds
+    } = data;
+
+    return Promise.all([
+      this.setQuadrilles(quadrilles),
+      this.setWorkers(workers),
+      this.setTallies(tallies),
+      this.setCostCentersCustom(costCentersCustom),
+      this.setLabors(labors),
+      this.setDeals(deals),
+      this.setBonds(bonds)
     ]);
   }
 

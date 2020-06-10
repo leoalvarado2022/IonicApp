@@ -2,8 +2,8 @@
   <ion-icon slot="icon-only" name="notifications"></ion-icon>
 </ion-button>
 
-<ion-button [color]="(stepperService.getStepper() | async) !== getStepNames().EndStoring ? 'warning' : 'default'">
-  <ion-icon [ngClass]="{ 'icon-spinner': (stepperService.getStepper() | async) !== getStepNames().EndStoring } "  slot="icon-only" name="sync"></ion-icon>
+<ion-button [color]="(stepperService.getStepper() | async) < getStepNames().EndStoring ? 'warning' : 'default'">
+  <ion-icon [ngClass]="{ 'icon-spinner': (stepperService.getStepper() | async) < getStepNames().EndStoring }" slot="icon-only" name="sync"></ion-icon>
 </ion-button>
 
 <ion-button [color]="getGlobeColor()" (click)="syncAll()">

@@ -81,7 +81,7 @@ export class StepperService {
 
         // Start storing data
         if (step === StepNames.StartStoring) {
-          this.storeSyncData();
+          this.storeAllSyncData();
         }
 
         // Storing ends
@@ -89,8 +89,30 @@ export class StepperService {
           console.log('AQUI PARA EL CICLO');
         }
 
-        // More steps over here
-        // *****
+        /**
+         * MODULE STEPS
+         * ======================================================================
+         */
+
+        // Make rem sync
+        if (step === StepNames.GetRemSyncData) {
+          this.syncData(StepNames.StartStoringRem);
+        }
+
+        // Store rem data
+        if (step === StepNames.StartStoringRem) {
+          this.storeRemSyncData();
+        }
+
+        // Make tally sync
+        if (step === StepNames.GetTalliesSyncData) {
+          this.syncData(StepNames.StartStoringTallies);
+        }
+
+        // Store tally sync
+        if (step === StepNames.StartStoringTallies) {
+          this.storeTalliesSyncData();
+        }
 
       }
     });
@@ -118,31 +140,73 @@ export class StepperService {
   }
 
   /**
-   * Gets the data from the sync endpoint
+   * runRemModuleStorageSteps
    */
-  private syncData = (): void => {
+  public runRemModuleStorageSteps = () => {
+    this.stepper.next(StepNames.GetRemSyncData);
+  }
+
+  /**
+   * runTalliesModuleStorageSteps
+   */
+  public runTalliesModuleStorageSteps = () => {
+    this.stepper.next(StepNames.GetTalliesSyncData);
+  }
+
+  /**
+   * Gets the data from the sync endpoint
+   * @param nextStep is used when we need to store only a part of the sync. Default is All
+   */
+  private syncData = (nextStep: number = StepNames.StartStoring): void => {
     const userData = this.storeService.getUser();
     const username = userData.username;
     const activeConnection = this.storeService.getActiveConnection();
 
     this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe(success => {
       this.dataSync = success['data'];
-
-      this.goToStep(StepNames.StartStoring);
+      this.goToStep(nextStep);
     }, error => {
       this.httpService.errorHandler(error);
     });
   }
 
   /**
-   * storeSyncData
+   * storeAllSyncData
    */
-  private storeSyncData =  () => {
+  private storeAllSyncData =  () => {
     // OLD STORAGE
     this.storeService.setSyncedData(this.dataSync);
 
     // NEW STORAGE TEST
-    this.storageSyncService.storeSyncedData(this.dataSync).then( () => {
+    this.storageSyncService.storeAllSyncedData(this.dataSync).then( () => {
+      this.dataSync = null;
+      this.goToStep(StepNames.EndStoring);
+    });
+  }
+
+  /**
+   * storeRemSyncData
+   */
+  private storeRemSyncData =  () => {
+    // OLD STORAGE
+    this.storeService.setSyncedData(this.dataSync);
+
+    // NEW STORAGE TEST
+    this.storageSyncService.storeRemSyncData(this.dataSync).then( () => {
+      this.dataSync = null;
+      this.goToStep(StepNames.EndStoring);
+    });
+  }
+
+  /**
+   * storeTalliesSyncData
+   */
+  private storeTalliesSyncData =  () => {
+    // OLD STORAGE
+    this.storeService.setSyncedData(this.dataSync);
+
+    // NEW STORAGE TEST
+    this.storageSyncService.storeTalliesSyncData(this.dataSync).then( () => {
       this.dataSync = null;
       this.goToStep(StepNames.EndStoring);
     });

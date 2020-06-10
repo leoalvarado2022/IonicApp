@@ -4,7 +4,16 @@ export enum StepNames {
   CleanMemory,
   GetSyncData,
   StartStoring,
-  EndStoring,
+
+  // REM Module Steps
+  GetRemSyncData,
+  StartStoringRem,
+
+  // Tallies Module Steps
+  GetTalliesSyncData,
+  StartStoringTallies,
+
+  EndStoring // THIS NEEDS TO BE THE LAST STEP
 }
 
 export const StepsArray = [

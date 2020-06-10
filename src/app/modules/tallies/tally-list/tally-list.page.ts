@@ -12,6 +12,8 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { TallyFormMultipleComponent } from '../tally-form-multiple/tally-form-multiple.component';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StepNames } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-tally-list',
@@ -51,9 +53,8 @@ export class TallyListPage implements OnInit, OnDestroy {
   private deals: Array<any> = [];
   private bonds: Array<any> = [];
 
-  private store$: Subscription;
-  private firstLoad: boolean;
-
+  private stepper$: Subscription;
+  
   constructor(
     private router: Router,
     private modalController: ModalController,
@@ -61,14 +62,19 @@ export class TallyListPage implements OnInit, OnDestroy {
     private alertService: AlertService,
     private storageSyncService: StorageSyncService,
     private tallySyncService: TallySyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
+    private stepperService: StepperService
   ) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
-    this.firstLoad = true;
+    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
+      if (step === StepNames.EndStoring ) {
+        this.loadData();
+      }
+    });
   }
 
   ionViewWillEnter() {
@@ -76,15 +82,13 @@ export class TallyListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.store$.unsubscribe();
+    this.stepper$.unsubscribe();
   }
 
   /**
    * loadData
    */
   private loadData = (): void => {
-    this.firstLoad = false;
-
     Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers(),
@@ -326,14 +330,11 @@ export class TallyListPage implements OnInit, OnDestroy {
       this.activeWorker = null;
       this.selectQuadrille(this.activeQuadrille);
       this.selectedWorkers = [];
-      console.log('volver a listado de trabajadores');
     } else if (this.activeQuadrille) {
       this.activeQuadrille = null;
       this.filteredQuadrilles = [...this.quadrilles];
       this.selectedWorkers = [];
-      console.log('volver a listado de quadrillas');
     } else {
-      console.log('volver a al menu');
       this.router.navigate(['/home-page']);
     }
   }

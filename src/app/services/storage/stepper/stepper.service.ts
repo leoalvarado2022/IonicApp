@@ -47,15 +47,20 @@ export class StepperService {
     this.stepper.subscribe( step => {
       console.log('step', step);
 
+      // Sync if online and logged in
       if (this.isOnline && this.storeService.getLoginStatus() ) {
+
+        // Record Tallies Step
         if (step === StepNames.RecordTallies) {
           this.recordTallies();
         }
 
+        // Record Devices Step
         if (step === StepNames.RecordDevices) {
           this.recordDevices();
         }
 
+        // Clean memory
         if (step === StepNames.CleanMemory) {
           // Remove from "talliesToRecord" the tallies that were recorded successful
           this.checkIfRemoveTalliesToRecord();
@@ -63,21 +68,30 @@ export class StepperService {
           // Remove from "devices" the devices that were recorded successful
           this.checkIfRemoveDevicesToRecord();
 
-          this.goToStep(StepNames.GetSyncData);
+          setTimeout(() => {
+            this.goToStep(StepNames.GetSyncData);
+          }, 2000);
         }
 
+        // Get sync data
         if (step === StepNames.GetSyncData) {
           // Sync data
           this.syncData();
         }
 
+        // Start storing data
         if (step === StepNames.StartStoring) {
           this.storeSyncData();
         }
 
+        // Storing ends
         if (step === StepNames.EndStoring) {
           console.log('AQUI PARA EL CICLO');
         }
+
+        // More steps over here
+        // *****
+
       }
     });
   }

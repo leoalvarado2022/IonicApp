@@ -1,14 +1,15 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start" *ngIf="currentStep === 1">
-      <ion-back-button  class="header-back-button"></ion-back-button>
+      <ion-button (click)="goBack()" color="secondary">
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
       <strong>Crear Pre-Contrato</strong>
     </ion-title>
     <ion-buttons slot="end">
-      <app-notifications></app-notifications>
-      <app-check-connection></app-check-connection>
+      <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>

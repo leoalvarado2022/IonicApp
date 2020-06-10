@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
-import {ModalController, IonItemSliding, IonInfiniteScroll} from '@ionic/angular';
+import {ModalController, IonItemSliding} from '@ionic/angular';
 import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
@@ -12,6 +12,8 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { TallyFormMultipleComponent } from '../tally-form-multiple/tally-form-multiple.component';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StepNames } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-tally-list',
@@ -40,7 +42,8 @@ export class TallyListPage implements OnInit, OnDestroy {
   public currentDate: any;
   public readonly originalDate: any;
   public canUpdateMultiple = false;
-  public multipleTalliesToUpdate = [];
+  public multipleTalliesToUpdate: Array<any> = [];
+  private numberOfCases: Array<any> = [];
 
   private costCenters: Array<CostCenterList> = [];
   private syncedTallies: Array<Tally> = [];
@@ -50,8 +53,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   private deals: Array<any> = [];
   private bonds: Array<any> = [];
 
-  private store$: Subscription;
-  private firstLoad: boolean;
+  private stepper$: Subscription;
 
   constructor(
     private router: Router,
@@ -60,16 +62,16 @@ export class TallyListPage implements OnInit, OnDestroy {
     private alertService: AlertService,
     private storageSyncService: StorageSyncService,
     private tallySyncService: TallySyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
+    private stepperService: StepperService
   ) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
-    this.firstLoad = true;
-    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(state => {
-      if (state && !this.firstLoad) {
+    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
+      if (step === StepNames.EndStoring ) {
         this.loadData();
       }
     });
@@ -80,15 +82,13 @@ export class TallyListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.store$.unsubscribe();
+    this.stepper$.unsubscribe();
   }
 
   /**
    * loadData
    */
   private loadData = (): void => {
-    this.firstLoad = false;
-
     Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers(),
@@ -249,6 +249,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public addDayToDate = (): void => {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
+      this.selectedWorkers = [];
     }
   }
 
@@ -258,6 +259,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public subtractDayToDate = (): void => {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.selectedWorkers = [];
     }
   }
 
@@ -328,14 +330,11 @@ export class TallyListPage implements OnInit, OnDestroy {
       this.activeWorker = null;
       this.selectQuadrille(this.activeQuadrille);
       this.selectedWorkers = [];
-      console.log('volver a listado de trabajadores');
     } else if (this.activeQuadrille) {
       this.activeQuadrille = null;
       this.filteredQuadrilles = [...this.quadrilles];
       this.selectedWorkers = [];
-      console.log('volver a listado de quadrillas');
     } else {
-      console.log('volver a al menu');
       this.router.navigate(['/home-page']);
     }
   }
@@ -456,6 +455,7 @@ export class TallyListPage implements OnInit, OnDestroy {
         workers: this.selectedWorkers,
         dateSelected: moment(this.currentDate).format('YYYY-MM-DD'),
         updateTallies: this.multipleTalliesToUpdate,
+        numberOfCases: this.numberOfCases,
         syncedTallies: this.syncedTallies,
         talliesToRecord: this.talliesToRecord,
         costCenters: this.costCenters,
@@ -487,23 +487,38 @@ export class TallyListPage implements OnInit, OnDestroy {
         allWorkersTallies = [...allWorkersTallies, ...this.getNumberOfWorkerTallies(worker)];
       });
 
-      let compatibles = [];
-      let oneWorkerFail = false;
+      const allValidTallies = [];
       this.selectedWorkers.forEach(worker => {
-        const tallies = this.getNumberOfWorkerTallies(worker);
-        const results = tallies.filter(toCheck => this.checkCompatibleTallies(allWorkersTallies[0], toCheck));
 
-        if (results.length > 0) {
-          compatibles = [...compatibles, ...results];
-        } else {
-          oneWorkerFail = true;
+        // Filter the current worker tallies
+        const thisWorkerTallies = allWorkersTallies.filter(item => item.workerId === worker.id);
+
+        // Filter other workers tallies
+        const otherWorkerTallies = allWorkersTallies.filter(item => item.workerId !== worker.id);
+
+        // Tallies in common with other workers
+        const commonTallies = [];
+        thisWorkerTallies.forEach(tally => {
+
+          // Find similar tallies
+          const similarTallies = otherWorkerTallies.filter( map => map.costCenterId === tally.costCenterId && map.laborId === tally.laborId);
+
+          // Add to the array
+          similarTallies.forEach(similar => commonTallies.push(similar));
+        });
+
+        // At least one in common
+        if (commonTallies.length > 0) {
+          commonTallies.forEach(common => allValidTallies.push(common));
         }
       });
 
-      if (!oneWorkerFail) {
+      if (allValidTallies.length > 0) {
         this.canUpdateMultiple = true;
-        this.multipleTalliesToUpdate = [...compatibles];
+        this.multipleTalliesToUpdate = [...allValidTallies];
+        this.numberOfCases = this.getUniqueCases(allValidTallies);
       }
+
     }
   }
 
@@ -577,6 +592,34 @@ export class TallyListPage implements OnInit, OnDestroy {
    */
   public talliesTracker = (index: number, tally: Tally): number => {
     return tally.id;
+  }
+
+  /**
+   * getUniqueCases
+   */
+  private getUniqueCases = (tallies: Array<Tally>): Array<any> => {
+    const uniqueCasesArray = [];
+
+    if (tallies.length > 0) {
+      tallies.forEach(tally => {
+        const searchInUniqueCasesArray = uniqueCasesArray.find(unique => unique.costCenterId === tally.costCenterId && unique.laborId === tally.laborId);
+
+        if (!searchInUniqueCasesArray) {
+          uniqueCasesArray.push(tally);
+        }
+      });
+    }
+
+    if (uniqueCasesArray.length > 0) {
+      return uniqueCasesArray.map(item => {
+        return {
+          costCenterId: item.costCenterId,
+          laborId: item.laborId
+        };
+      });
+    }
+
+    return uniqueCasesArray;
   }
 
 }

@@ -7,7 +7,8 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StepNames } from 'src/app/services/storage/step-names';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -30,9 +31,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
 
-  public firstLoad = false;
-
-  private store$: Subscription;
+  private stepper$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,34 +40,33 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
-    private manualSyncService: ManualSyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe
+    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
+    private stepperService: StepperService
   ) {
 
   }
 
   ngOnInit() {
-    this.firstLoad = true;
-    const id = this.route.snapshot.paramMap.get('id');
-
-    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe( status => {
-      if (status && !this.firstLoad) {
-        this.loadWorkers(id);
+    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
+      if (step === StepNames.EndStoring ) {
+        this.loadWorkers();
       }
     });
-
-    this.loadWorkers(id);
   }
 
   ngOnDestroy(): void {
-    this.store$.unsubscribe();
+    this.stepper$.unsubscribe();
+  }
+
+  ionViewWillEnter() {
+    this.loadWorkers();
   }
 
   /**
    * loadWorkers
    */
-  private loadWorkers = (id: string) => {
-    this.firstLoad = false;
+  private loadWorkers = () => {
+    const id = this.route.snapshot.paramMap.get('id');
 
     Promise.all([
       this.storageSyncService.getQuadrilles(),
@@ -79,8 +77,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       const allWorkers = data[1];
       const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
+      const orderByName = this.alphabeticalOrderPipe.transform(workers);
 
-      this.workers = this.alphabeticalOrderPipe.transform(workers);
+      this.workers = [...this.orderByTransfersFirst(orderByName)];
       this.filteredWorkers = [...this.workers];
 
       this.buildButtons();
@@ -117,8 +116,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event) => {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.loadWorkers(id);
+    this.loadWorkers();
     event.target.complete();
   }
 
@@ -215,10 +213,33 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
 
       // BANDERA DE SINCRONIZACION
-      this.manualSyncService.sync();
+      this.stepperService.runRemModuleStorageSteps();
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
   }
+
+  /**
+   * orderByTransfersFirst
+   */
+  private orderByTransfersFirst = (orderByName: Array<any>): Array<any> => {
+    const withTransfers = [];
+    const noTransfers = [];
+
+    if (orderByName.length > 0) {
+      orderByName.filter( item => {
+        if (item['quadrilleStatus'] !== '' ) {
+          withTransfers.push(item);
+        } else {
+          noTransfers.push(item);
+        }
+
+        return false;
+      });
+    }
+
+    return [...withTransfers, ...noTransfers];
+  }
+
 }

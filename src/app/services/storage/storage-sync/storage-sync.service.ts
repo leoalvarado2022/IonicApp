@@ -4,21 +4,20 @@ import { Sync } from 'src/app/shared/services/store/store-interface';
 import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
-import { MainSyncService } from '../main/main-sync.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StorageSyncService extends MainSyncService {
+export class StorageSyncService {
 
   constructor(private storage: Storage) {
-    super();
+
   }
 
   /**
-   * storeSyncedData
+   * storeAllSyncedData
    */
-  public storeSyncedData = (data: Sync) => {
+  public storeAllSyncedData = (data: Sync): Promise<any> => {
     const {
       quadrilles,
       workers,
@@ -36,7 +35,7 @@ export class StorageSyncService extends MainSyncService {
       isapres,
     } = data;
 
-    Promise.all([
+    return Promise.all([
       this.setQuadrilles(quadrilles),
       this.setWorkers(workers),
       this.setTallies(tallies),
@@ -51,11 +50,44 @@ export class StorageSyncService extends MainSyncService {
       this.setCivilStatus(civilStatus),
       this.setAfps(afps),
       this.setIsapres(isapres)
-    ]).then( () => {
-      console.log('storeSyncedData OK, event emmited');
-      // AVISAR QUE CAMBIO EL SYNC
-      this.syncChangedEvent();
-    });
+    ]);
+  }
+
+  /**
+   * storeRemSyncData
+   */
+  public storeRemSyncData = (data: Sync): Promise<any> => {
+    const { quadrilles, workers } = data;
+
+    return Promise.all([
+      this.setQuadrilles(quadrilles),
+      this.setWorkers(workers)
+    ]);
+  }
+
+  /**
+   * storeTalliesSyncData
+   */
+  public storeTalliesSyncData = (data: Sync): Promise<any> => {
+    const {
+      quadrilles,
+      workers,
+      labors,
+      deals,
+      costCentersCustom,
+      tallies,
+      bonds
+    } = data;
+
+    return Promise.all([
+      this.setQuadrilles(quadrilles),
+      this.setWorkers(workers),
+      this.setTallies(tallies),
+      this.setCostCentersCustom(costCentersCustom),
+      this.setLabors(labors),
+      this.setDeals(deals),
+      this.setBonds(bonds)
+    ]);
   }
 
   /**

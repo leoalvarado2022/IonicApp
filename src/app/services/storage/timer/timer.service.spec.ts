@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MainSyncService } from './main-sync.service';
+import { TimerService } from './timer.service';
 
-describe('MainSyncService', () => {
-  let service: MainSyncService;
+describe('TimerService', () => {
+  let service: TimerService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MainSyncService);
+    service = TestBed.inject(TimerService);
   });
 
   it('should be created', () => {

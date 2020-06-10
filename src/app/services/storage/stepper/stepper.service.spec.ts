@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ManualSyncService } from './manual-sync.service';
+import { StepperService } from './stepper.service';
 
-describe('ManualSyncService', () => {
-  let service: ManualSyncService;
+describe('StepperService', () => {
+  let service: StepperService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ManualSyncService);
+    service = TestBed.inject(StepperService);
   });
 
   it('should be created', () => {

@@ -1,19 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
-import {BehaviorSubject, interval, Subject, Subscription, Subscribable} from 'rxjs';
-import {ToastService} from '../shared/services/toast/toast.service';
-import {SyncService} from '../shared/services/sync/sync.service';
-import {HttpService} from '../shared/services/http/http.service';
-import {TallyService} from '../modules/tallies/services/tally/tally.service';
-import {NfcService} from '../shared/services/nfc/nfc.service';
-import {environment} from 'src/environments/environment';
-import {ManualSyncService} from '../shared/services/manual-sync/manual-sync.service';
-import {StorageSyncService} from '../services/storage/storage-sync/storage-sync.service';
-import {TallySyncService} from '../services/storage/tally-sync/tally-sync.service';
-import {Tally} from '../modules/tallies/tally.interface';
-import {takeUntil} from 'rxjs/operators';
-import {DealsService} from '../modules/tratos/services/deals/deals.service';
+import { TimerService } from '../services/storage/timer/timer.service';
+import { Subscription } from 'rxjs';
+import { StepperService } from '../services/storage/stepper/stepper.service';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -22,71 +13,52 @@ import {DealsService} from '../modules/tratos/services/deals/deals.service';
 })
 export class HomePagePage {
 
-  public isLoading = false;
-
-  // Interval & Stepper
-  private syncInterval = interval(1000 * 60 * environment.syncTimerMinutes);
-  private syncStepObservable: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-
-  // Tallies
-  private removeTalliesToRecordFlag = false;
-  private removeTalliesToRecord: Array<number> = [];
-  private talliesWithErrors: Array<any> = [];
-
-  // Devices
-  private removeDevices = false;
-  private removeDealsToRecord = false;
-  private removeDevicesToRecord: Array<number> = [];
-  private devicesWithErrors: Array<any> = [];
-
-  // Unsubscribers
-  private manual$: Subscription;
-  private interval$: Subscription;
-  private stepper$: Subscription;
-  private storage$: Subscription;
+  private timer$: Subscription;
+  private router$: Subscription;
+  private step$: Subscription;
 
   constructor(
     private authService: AuthService,
     private storeService: StoreService,
-    private tallyService: TallyService,
-    private toastService: ToastService,
-    private syncService: SyncService,
-    private httpService: HttpService,
-    private nfcService: NfcService,
-    private _dealService: DealsService,
-    private manualSyncService: ManualSyncService,
-    private storageSyncService: StorageSyncService,
-    private tallySyncService: TallySyncService,
+    private timerService: TimerService,
+    private stepperService: StepperService,
+    private router: Router
   ) {
 
+    this.router$ = this.router.events.subscribe(route => {
+      if (route instanceof NavigationEnd ) {
+        if (route.url === '/home-page') {
+          console.log('estamos en home-page');
+          this.timerService.startResume();
+        } else {
+          console.log('NO estamos en home-page');
+          this.timerService.pauseStop();
+        }
+      }
+    });
   }
 
   ionViewWillEnter() {
-    console.log('home-page ionViewWillEnter');
     // Store push token
     this.storePushToken();
 
-    // Manual sync observable
-    this.startManualSyncObservable();
+    // Run all sync steps
+    this.stepperService.runAllSteps();
+  }
 
-    // Sync timer observable
-    this.startSyncIntervalObservable();
+  ionViewDidEnter() {
+    this.timerService.startResume();
 
-    // Sync Stepper Observable
-    this.startSyncStepperObservable();
-
-    // Storage Sync Observable
-    this.storageChangeObservable();
-
-    this.recordDealsTallies();
+    this.timer$ = this.timerService.getTimerNotifier().subscribe(() => {
+      this.stepperService.runAllSteps();
+    });
   }
 
   ionViewWillLeave() {
-    console.log('home-page ionViewWillLeave');
-    this.manual$.unsubscribe();
-    this.interval$.unsubscribe();
-    this.stepper$.unsubscribe();
-    this.storage$.unsubscribe();
+    this.timerService.pauseStop();
+    this.timer$.unsubscribe();
+    this.router$.unsubscribe();
+    this.step$.unsubscribe();
   }
 
   /**
@@ -97,272 +69,6 @@ export class HomePagePage {
     const token = this.storeService.getPushToken();
 
     this.authService.savePushToken(user.id, token).subscribe();
-  };
-
-  /**
-   * startManualSyncObservable
-   */
-  private startManualSyncObservable = () => {
-    console.log('startManualSyncObservable');
-    this.manual$ = this.manualSyncService.eventSubscription().subscribe(status => {
-      console.log('startManualSyncObservable status', status);
-      if (status && this.storeService.getLoginStatus()) {
-        this.sendToRecord();
-      }
-    });
-  };
-
-  /**
-   * startSyncIntervalObservable
-   */
-  private startSyncIntervalObservable = () => {
-    console.log('startSyncIntervalObservable');
-    this.interval$ = this.syncInterval.subscribe(() => {
-      if (this.storeService.getLoginStatus()) {
-        this.sendToRecord();
-      }
-    });
-  };
-
-  /**
-   * startSyncStepperObservable
-   */
-  private startSyncStepperObservable = () => {
-    console.log('startSyncStepperObservable');
-    this.stepper$ = this.syncStepObservable.subscribe(step => {
-      console.log('current step: ', step);
-
-      if (step === 0) {
-        // Remove from "talliesToRecord" the tallies that were recorded successful
-        this.checkIfRemoveTalliesToRecord();
-
-        // Remove from "devices" the devices that were recorded successful
-        this.checkIfRemoveDevicesToRecord();
-
-        // Sync data
-        this.syncData();
-      }
-
-      // Sync step 1
-      if (step === 1) {
-        this.recordTallies();
-      }
-
-      // Sync step 2
-      if (step === 2) {
-        this.recordDevices();
-      }
-
-      // Sync step 3
-      /*if (step === 3) {
-        this.recordDealsTallies();
-      }*/
-    });
-  };
-
-  /**
-   * storageChangeObservable
-   */
-  private storageChangeObservable = () => {
-    console.log('storageChangeObservable');
-    this.storage$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
-      console.log('storageChangeObservable status', status);
-      if (status) {
-        this.isLoading = false;
-      }
-    });
-  };
-
-  /**
-   * checkIfRemoveTalliesToRecord
-   */
-  private checkIfRemoveTalliesToRecord = (): void => {
-    if (this.removeTalliesToRecordFlag) {
-      Promise.all([
-        this.tallySyncService.addTalliesWithErrors(this.talliesWithErrors),
-        this.tallySyncService.removeTalliesToRecord(this.removeTalliesToRecord)
-      ]).then((result) => {
-        this.talliesWithErrors = [];
-
-        if (result[1].length === 0) {
-          this.removeTalliesToRecord = [];
-          this.removeTalliesToRecordFlag = false;
-        }
-      });
-    }
-  };
-
-  /**
-   * checkIfRemoveDevicesToRecord
-   */
-  private checkIfRemoveDevicesToRecord = () => {
-    if (this.removeDevices) {
-      this.storeService.addDevicesWithErrors(this.devicesWithErrors);
-      this.devicesWithErrors = [];
-
-      const removed = this.storeService.removeDevicesToRecord(this.removeDevicesToRecord);
-      if (removed === 0) {
-        this.removeDevicesToRecord = [];
-        this.removeDevices = false;
-      }
-    }
-  };
-
-  /**
-   * syncData
-   */
-  private syncData = (): void => {
-    const userData = this.storeService.getUser();
-    const username = userData.username;
-    const activeConnection = this.storeService.getActiveConnection();
-
-    this.isLoading = true;
-    this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe((success: any) => {
-      this.storeService.setSyncedData(success.data);
-
-      // NEW STORAGE TEST
-      this.storageSyncService.storeSyncedData(success.data);
-    }, error => {
-      this.isLoading = false;
-      this.httpService.errorHandler(error);
-    });
-  };
-
-  /**
-   * sendToRecord
-   */
-  private sendToRecord = (): void => {
-    this.syncStepObservable.next(1);
-  };
-
-  /**
-   * recordTallies
-   */
-  private recordTallies = (): void => {
-    this.tallySyncService.getTalliesToRecord().then((talliesToRecord: Array<Tally>) => {
-      const mapStatus = talliesToRecord.map(item => {
-        if (item.status === 'delete') {
-          return Object.assign({}, item, {order: 1});
-        }
-
-        if (item.status === 'edit') {
-          return Object.assign({}, item, {order: 2});
-        }
-
-        if (item.status === 'new') {
-          return Object.assign({}, item, {order: 3});
-        }
-
-        return item;
-      });
-
-      if (mapStatus && mapStatus.length > 0) {
-        this.tallyService.recordTallies(mapStatus).subscribe((success: any) => {
-          this.checkRecordedTallies(success.log);
-          this.syncStepObservable.next(2);
-        }, () => {
-          this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
-        });
-      } else {
-        this.syncStepObservable.next(2);
-      }
-    });
-  };
-
-  /**
-   * recordDevices
-   */
-  private recordDevices = () => {
-    const toRecord = this.storeService.getDevicesToRecord();
-
-    const user = this.storeService.getUser();
-    delete user.avatar;
-
-    if (toRecord && toRecord.length > 0) {
-      this.nfcService.saveDevicesToRecord(toRecord, user).subscribe((success: any) => {
-        this.checkRecordedDevices(success.log);
-        this.syncStepObservable.next(3);
-      }, () => {
-        this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
-      });
-    } else {
-      this.syncStepObservable.next(3);
-    }
-  };
-
-  /**
-   * recordDevices
-   */
-  private recordDealsTallies = () => {
-    this.storageSyncService.getTallyTemp().then((toRecord: any) => {
-      toRecord = toRecord.filter(value => value.id === 0);
-
-      const user = this.storeService.getUser();
-      delete user.avatar;
-
-      if (toRecord && toRecord.length > 0) {
-        this._dealService.saveTalliesToRecord(toRecord, user).subscribe((success: any) => {
-          this.storageSyncService.setTallyTemp([]);
-          this.syncStepObservable.next(0);
-        }, () => {
-          this.toastService.errorToast('Ocurrio un error al sincronizar tratos');
-        });
-      } else {
-        this.syncStepObservable.next(0);
-      }
-    });
-  };
-
-
-  /**
-   * checkRecordedTallies
-   * @param logs
-   */
-  private checkRecordedTallies = (logs: Array<any>): void => {
-    if (logs.length > 0) {
-      for (const log of logs) {
-        if (log.hasOwnProperty('respuesta')) {
-          if (log['respuesta'].toLowerCase() === 'ok') {
-            this.removeTalliesToRecord.push(+log['id_parametro']);
-          } else {
-            const checkDuplicity = this.talliesWithErrors.find(item => item.id === +log['id_parametro']);
-            if (!checkDuplicity) {
-              this.talliesWithErrors.push({
-                id: +log['id_parametro'],
-                response: log['respuesta']
-              });
-            }
-          }
-        }
-      }
-
-      this.removeTalliesToRecordFlag = true;
-    }
-  };
-
-  /**
-   * checkRecordedTallies
-   * @param logs
-   */
-  private checkRecordedDevices = (logs: Array<any>) => {
-    if (logs.length > 0) {
-      for (const log of logs) {
-        if (log.hasOwnProperty('respuesta')) {
-          if (log['respuesta'].toLowerCase() === 'ok') {
-            this.removeDevicesToRecord.push(+log['id_parametro']);
-          } else {
-            const checkDuplicity = this.devicesWithErrors.find(item => item.id === +log['id_parametro']);
-            if (!checkDuplicity) {
-              this.devicesWithErrors.push({
-                id: +log['id_parametro'],
-                response: log['respuesta']
-              });
-            }
-          }
-        }
-      }
-      this.removeDevices = true;
-    }
-  };
+  }
 
 }

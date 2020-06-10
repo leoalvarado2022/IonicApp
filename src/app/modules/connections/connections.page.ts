@@ -4,7 +4,7 @@ import {Connection} from '@primetec/primetec-angular';
 import {Router} from '@angular/router';
 import {LoaderService} from '../../shared/services/loader/loader.service';
 import {StoreService} from '../../shared/services/store/store.service';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 
 @Component({
   selector: 'app-connections',
@@ -21,7 +21,7 @@ export class ConnectionsPage implements OnInit {
     private router: Router,
     private loaderService: LoaderService,
     private storeService: StoreService,
-    private manualSyncService: ManualSyncService
+    private stepperService: StepperService
   ) {
 
   }
@@ -42,7 +42,7 @@ export class ConnectionsPage implements OnInit {
       this.authService.connectionChange({connection: connection.token, loggedUser: user.id}).subscribe(() => {
         this.storeService.setActiveConnection(connection);
 
-        this.manualSyncService.sync();
+        this.stepperService.runAllSteps();
         this.router.navigate(['home-page']);
       });
     }

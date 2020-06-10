@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { MainSyncService } from '../main/main-sync.service';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { Storage } from '@ionic/storage';
 import { StorageKeys } from '../storage-keys';
@@ -7,12 +6,12 @@ import { StorageKeys } from '../storage-keys';
 @Injectable({
   providedIn: 'root'
 })
-export class TallySyncService extends MainSyncService {
+export class TallySyncService {
 
   private tallyTempId = 1;
 
   constructor(private storage: Storage) {
-    super();
+
   }
 
   /**

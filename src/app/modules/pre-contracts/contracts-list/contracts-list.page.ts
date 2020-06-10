@@ -4,10 +4,11 @@ import {ContractsService} from '../services/contracts/contracts.service';
 import {ContractListItem} from '../contract-interfaces';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { NumericOrderPipe } from 'src/app/shared/pipes/numeric-order/numeric-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StepNames } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-contracts-list',
@@ -18,42 +19,41 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
   public contracts: Array<ContractListItem> = [];
   public filteredContracts: Array<ContractListItem> = [];
-  private firstLoad = false;
 
-  private store$: Subscription;
+  private stepper$: Subscription;
 
   constructor(
     private router: Router,
     private contractsService: ContractsService,
     private httpService: HttpService,
-    private manualSyncService: ManualSyncService,
     private alertService: AlertService,
     private numericOrderPipe: NumericOrderPipe,
-    private storageSyncService: StorageSyncService
+    private storageSyncService: StorageSyncService,
+    private stepperService: StepperService
   ) {
 
   }
 
   ngOnInit() {
-    this.firstLoad = true;
-    this.store$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
-      if (status && !this.firstLoad) {
+    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
+      if (step === StepNames.EndStoring) {
         this.loadPreContracts();
       }
     });
-
-    this.loadPreContracts();
   }
 
   ngOnDestroy(): void {
-    this.store$.unsubscribe();
+    this.stepper$.unsubscribe();
+  }
+
+  ionViewWillEnter() {
+    this.loadPreContracts();
   }
 
   /**
    * loadPreContracts
    */
   private loadPreContracts = () => {
-    this.firstLoad = false;
     this.storageSyncService.getPreContracts().then( data => {
       const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
       this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
@@ -144,7 +144,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.contractsService.storePreContracts(preContracts).subscribe(() => {
 
       // SEND TO SYNC
-      this.manualSyncService.sync();
+      this.stepperService.runAllSteps();
     }, error => {
       this.httpService.errorHandler(error);
     });

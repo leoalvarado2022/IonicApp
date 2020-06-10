@@ -13,9 +13,11 @@ export class NumericOrderPipe implements PipeTransform {
    * @returns array
    */
   public transform = (array: Array<any> = [], fieldName: string = 'id', reverse: boolean = false): Array<any> => {
+
     if (array.length > 0) {
       array.sort( (a, b) => {
         if (a.hasOwnProperty(fieldName) && typeof a[fieldName] === 'number') {
+
           if (parseInt(a[fieldName], 10) > parseInt(b[fieldName], 10)) {
             return 1;
           }

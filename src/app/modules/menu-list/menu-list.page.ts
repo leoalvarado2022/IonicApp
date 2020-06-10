@@ -6,7 +6,7 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 import { NetworkService } from 'src/app/shared/services/network/network.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
-import { StepNames } from 'src/app/services/storage/step-names';
+import { StepNames, StepsArray } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-menu-list',
@@ -28,7 +28,7 @@ export class MenuListPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private storageSyncService: StorageSyncService,
     private networkService: NetworkService,
-    private stepperService: StepperService
+    public stepperService: StepperService
   ) {
 
   }
@@ -47,6 +47,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.step$.unsubscribe();
     this.network$.unsubscribe();
   }
 
@@ -100,5 +101,16 @@ export class MenuListPage implements OnInit, OnDestroy {
     }
 
     return 0;
+  }
+
+  /**
+   * getStepNames
+   */
+  public getStepNames = () => {
+    return StepNames;
+  }
+
+  public getNamesArray() {
+    return StepsArray;
   }
 }

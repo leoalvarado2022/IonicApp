@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
 
-import {NotificationsComponent} from './components/notifications/notifications.component';
 import {HttpClientModule} from '@angular/common/http';
 import {UserService} from './services/user/user.service';
 import {DetectPlatformService} from './services/detect-platform/detect-platform.service';
@@ -27,14 +26,13 @@ import {NfcService} from './services/nfc/nfc.service';
 import {ContractsService} from '../modules/pre-contracts/services/contracts/contracts.service';
 import { AlphabeticalOrderPipe } from './pipes/alphabetical-order/alphabetical-order.pipe';
 import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
-import { CheckConnectionComponent } from './components/check-connection/check-connection.component';
 import { AuthService } from './services/auth/auth.service';
 import { TallyService } from '../modules/tallies/services/tally/tally.service';
 import { InfiniteScrollPaginatorService } from './services/inifite-scroll-paginator/infinite-scroll-paginator.service';
+import { ToolbarButtonsComponent } from '../components/toolbar-buttons/toolbar-buttons.component';
 
 @NgModule({
   declarations: [
-    NotificationsComponent,
     CustomDatePipe,
     HarvestEstimateItemComponent,
     QualityEstimateItemComponent,
@@ -45,7 +43,7 @@ import { InfiniteScrollPaginatorService } from './services/inifite-scroll-pagina
     TicketCardComponent,
     AlphabeticalOrderPipe,
     NumericOrderPipe,
-    CheckConnectionComponent
+    ToolbarButtonsComponent
   ],
   imports: [
     CommonModule,
@@ -78,7 +76,6 @@ import { InfiniteScrollPaginatorService } from './services/inifite-scroll-pagina
     FormsModule,
     IonicModule,
     HttpClientModule,
-    NotificationsComponent,
     ReactiveFormsModule,
     CustomDatePipe,
     HarvestEstimateItemComponent,
@@ -90,7 +87,7 @@ import { InfiniteScrollPaginatorService } from './services/inifite-scroll-pagina
     TicketCardComponent,
     AlphabeticalOrderPipe,
     NumericOrderPipe,
-    CheckConnectionComponent
+    ToolbarButtonsComponent
   ],
   entryComponents: [
     ImageViewerComponent

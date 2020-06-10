@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { CheckConnectionComponent } from './check-connection.component';
+import { ToolbarButtonsComponent } from './toolbar-buttons.component';
 
-describe('CheckConnectionComponent', () => {
-  let component: CheckConnectionComponent;
-  let fixture: ComponentFixture<CheckConnectionComponent>;
+describe('ToolbarButtonsComponent', () => {
+  let component: ToolbarButtonsComponent;
+  let fixture: ComponentFixture<ToolbarButtonsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CheckConnectionComponent ],
+      declarations: [ ToolbarButtonsComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CheckConnectionComponent);
+    fixture = TestBed.createComponent(ToolbarButtonsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

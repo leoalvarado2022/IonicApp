@@ -6,3 +6,12 @@ export enum StepNames {
   StartStoring,
   EndStoring,
 }
+
+export const StepsArray = [
+  'Grabar Tarjas',
+  'Grabar Dispositivos',
+  'Limpiar Memoria',
+  'Obtener Sync',
+  'Guardando en Almacenamiento',
+  'Terminado'
+];

@@ -9,6 +9,8 @@ import * as moment from 'moment';
 })
 export class DealsService {
 
+  private readonly tallyScanneds = 'deal/scanneds';
+
   constructor(
     private httpClient: HttpClient,
     private httpService: HttpService,
@@ -76,4 +78,16 @@ export class DealsService {
 
     return response;
   }
+
+  /**
+   * @description save PreDevices
+   * @param preDevices
+   * @param user
+   */
+  public saveTalliesToRecord = (tallyScanneds: any, user: any) => {
+    const url = this.httpService.buildUrl(this.tallyScanneds);
+    return this.httpClient.post(url, this.httpService.buildBody({tallyScanneds, user}), {
+      headers: this.httpService.getHeaders()
+    });
+  };
 }

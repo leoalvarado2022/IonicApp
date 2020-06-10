@@ -4,26 +4,32 @@ import {AddTratoPage} from '../add-trato/add-trato.page';
 import {Router} from '@angular/router';
 import {DealsService} from '../services/deals/deals.service';
 import {StoreService} from '../../../shared/services/store/store.service';
+import * as moment from 'moment';
+import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 
 @Component({
   selector: 'app-tratos-list',
   templateUrl: './tratos-list.page.html',
   styleUrls: ['./tratos-list.page.scss'],
 })
-export class TratosListPage implements OnInit {
+export class TratosListPage {
 
   deals: any = [];
+  tallyTemp = [];
 
   constructor(public modalController: ModalController,
               private _router: Router,
               private _DealService: DealsService,
               private _storeService: StoreService,
+              private _storageSyncService: StorageSyncService,
               private _changeDetect: ChangeDetectorRef) {
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
+    console.log('tratos-list.ionViewWillEnter',);
     this.loadData();
   }
+
 
   /**
    * @description remove deal
@@ -69,8 +75,78 @@ export class TratosListPage implements OnInit {
       }
 
       this.deals = [...arr];
+      // mapear deals
+      this.mapDeals();
       this._changeDetect.detectChanges();
     }
+  }
+
+  mapDeals() {
+    Promise.all([
+      this._storageSyncService.getTallies(),
+      this._storageSyncService.getTallyTemp()
+    ]).then(data => {
+      let tallies: any = [];
+      // si las tarjas existen
+      if (data[0] && data[0].length) {
+        tallies = data[0].filter(value => moment(value.date).utc().format('YYYY-MM-DD') === moment().utc().format('YYYY-MM-DD') && value.dispositivo === 1);
+
+        if (tallies.length) {
+          // mapear tarjas pra el conteo y para clasificarlos en escaneo
+          tallies = tallies.map(value => {
+            value.rendimiento = value.performance;
+            value.id_par_entidades_trabajador = value.workerId;
+            value.id_par_tratos_vigencias = value.dealValidity;
+            value.id_par_centros_costos = value.costCenterId;
+            return value;
+          });
+
+          this.tallyTemp = [...tallies];
+        }
+      }
+
+      // si hay temporales tambien se agregan
+      if (data[1] && data[1].length) {
+        this.tallyTemp = [...data[1]];
+      }
+
+      // se agrega a los temporales
+      this._storageSyncService.setTallyTemp(this.tallyTemp);
+      // console.log(this.tallyTemp);
+    });
+  }
+
+  /**
+   * conteo de trabajadores por tratos
+   * @param deal
+   */
+  workersCount(deal) {
+    const tallies = this.tallyTemp.filter(value => value.id_par_tratos_vigencias === deal.id_deal_validity);
+    const worker = this._DealService.groupBy(tallies, (item) => item.id_par_entidades_trabajador);
+    let count = [];
+    worker.forEach((valor, clave, map) => {
+      if (valor.length) {
+        count.push(valor[0]);
+      }
+    });
+
+    return count.length;
+  }
+
+  /**
+   * conteo de trabajadores por tratos
+   * @param deal
+   */
+  performanceCount(deal) {
+    const tallies = this.tallyTemp.filter(value => value.id_par_tratos_vigencias === deal.id_deal_validity);
+    let performance = 0;
+    if (tallies.length) {
+      performance = tallies
+        .map(obj => obj.rendimiento || 0)
+        .reduce((sum, current) => sum + current) + performance;
+    }
+
+    return performance;
   }
 
   /**

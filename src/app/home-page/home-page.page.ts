@@ -5,7 +5,6 @@ import { TimerService } from '../services/storage/timer/timer.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from '../services/storage/stepper/stepper.service';
 import { Router, NavigationEnd } from '@angular/router';
-import { StepNames } from '../services/storage/step-names';
 
 @Component({
   selector: 'app-home-page',

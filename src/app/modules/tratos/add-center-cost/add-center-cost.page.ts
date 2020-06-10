@@ -6,6 +6,7 @@ import {StorageSyncService} from '../../../services/storage/storage-sync/storage
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {TratosScannedPage} from '../tratos-scanned/tratos-scanned.page';
+import {NFC} from '@ionic-native/nfc/ngx';
 
 @Component({
   selector: 'app-add-center-cost',
@@ -36,12 +37,12 @@ export class AddCenterCostPage implements OnInit {
     this.deal = this._dealService.getDealLocal();
     this.listCenterCost = this.listCenterCosts(this.deal);
 
-    if (this.deal.count) {
+    if (this.deal.count || this.deal.weight) {
       this.centerForm = this.formBuilder.group({
         deal: this.deal,
-        center_cost_id: [14, Validators.required],
-        unit_control_count: [1, Validators.required],
-        currentDate: ['2020-06-03'],
+        center_cost_id: ['', Validators.required],
+        unit_control_count: ['', Validators.required],
+        currentDate: ['2020-06-03', Validators.required],
         automatic: true
       });
     } else {
@@ -49,11 +50,10 @@ export class AddCenterCostPage implements OnInit {
         deal: this.deal,
         center_cost_id: ['', Validators.required],
         unit_control_count: [0],
-        currentDate: ['', Validators.required],
+        currentDate: ['2020-06-03', Validators.required],
         automatic: true
       });
     }
-
   }
 
 
@@ -75,6 +75,10 @@ export class AddCenterCostPage implements OnInit {
     }
   };
 
+  /**
+   * @description lista de centro de costo agrupado por trato
+   * @param deal
+   */
   listCenterCosts(deal) {
     let response = [];
     Promise.all([
@@ -99,7 +103,10 @@ export class AddCenterCostPage implements OnInit {
     return response;
   }
 
-  async scanned() {
+  /**
+   * @description logica para enviar a escaneo
+   */
+  async sendScanned() {
     const scanned = Object.assign({}, this.centerForm.value);
     scanned.currentDate = this.currentDate;
     scanned.center_cost = this.listCenterCost.find(value => value.id === scanned.center_cost_id);

@@ -78,7 +78,6 @@ export class HomePagePage {
     // Storage Sync Observable
     this.storageChangeObservable();
 
-    this.recordDealsTallies();
   }
 
   ionViewWillLeave() {
@@ -154,9 +153,9 @@ export class HomePagePage {
       }
 
       // Sync step 3
-      /*if (step === 3) {
+      if (step === 3) {
         this.recordDealsTallies();
-      }*/
+      }
     });
   };
 

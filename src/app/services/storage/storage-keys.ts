@@ -13,6 +13,8 @@ export enum StorageKeys {
   CivilStatus = 'civilStatus',
   Afp = 'afps',
   Isapre = 'isapres',
+  Devices = 'devices',
+  DevicesToRecord = 'devicesToRecord',
   TallyTemp = 'tallyTemp',
 
   // On memory data

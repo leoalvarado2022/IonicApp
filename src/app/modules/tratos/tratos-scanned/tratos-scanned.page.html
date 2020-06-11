@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
-    <ion-buttons slot="start" (click)="closeWork()" class="arrow-left">
-      <ion-icon name="arrow-back-outline"></ion-icon>
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>
       <strong>{{centerCost?.deal?.name_deal}}</strong>
@@ -14,8 +14,6 @@
 </ion-header>
 
 <ion-content>
-
-
   <ion-row *ngIf="notSupported">
     <ion-col col-12>
       <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize">
@@ -27,7 +25,7 @@
   <div class="content-box">
     <div class="sub-title"><strong>Labor:</strong> {{centerCost?.deal?.name_labor}}</div>
     <div class="sub-title"><strong>Centro:</strong> {{centerCost?.center_cost?.name}}</div>
-    <div class="sub-title"><strong>Fecha:</strong> {{centerCost.currentDate | date : 'dd/MM/yyyy'}}</div>
+    <div class="sub-title"><strong>Fecha:</strong> {{centerCost?.currentDate | date : 'dd/MM/yyyy'}}</div>
     <div class="sub-title"><strong>{{centerCost?.deal?.unit_control}}:</strong> {{centerCost?.unit_control_count || 0}}
     </div>
   </div>

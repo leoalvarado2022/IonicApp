@@ -11,11 +11,28 @@ export class DealsService {
 
   private readonly tallyScanneds = 'deal/scanneds';
 
+  public dataScanned: any;
+
   constructor(
     private httpClient: HttpClient,
     private httpService: HttpService,
     private _storeService: StoreService
   ) {
+  }
+
+  /**
+   * get data scanned
+   */
+  getDataScanned() {
+    return this.dataScanned;
+  }
+
+  /**
+   * @description data scanned
+   * @param data
+   */
+  setDataScanned(data) {
+    this.dataScanned = data;
   }
 
   /**

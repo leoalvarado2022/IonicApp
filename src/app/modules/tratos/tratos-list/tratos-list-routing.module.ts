@@ -3,6 +3,7 @@ import {Routes, RouterModule} from '@angular/router';
 
 import {TratosListPage} from './tratos-list.page';
 import {AddCenterCostPage} from '../add-center-cost/add-center-cost.page';
+import {TratosScannedPage} from '../tratos-scanned/tratos-scanned.page';
 
 const routes: Routes = [
   {
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path: 'add-center-cost',
     component: AddCenterCostPage
+  },
+  {
+    path: 'deal-scanned',
+    component: TratosScannedPage
   }
 ];
 

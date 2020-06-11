@@ -5,8 +5,7 @@ import {DealsService} from '../services/deals/deals.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
-import {TratosScannedPage} from '../tratos-scanned/tratos-scanned.page';
-import {NFC} from '@ionic-native/nfc/ngx';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-add-center-cost',
@@ -28,7 +27,8 @@ export class AddCenterCostPage implements OnInit {
               private _storeSync: StorageSyncService,
               private _dealService: DealsService,
               private formBuilder: FormBuilder,
-              private _modalController: ModalController) {
+              private _modalController: ModalController,
+              private _router: Router) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
   }
@@ -106,17 +106,14 @@ export class AddCenterCostPage implements OnInit {
   /**
    * @description logica para enviar a escaneo
    */
-  async sendScanned() {
+  sendScanned() {
     const scanned = Object.assign({}, this.centerForm.value);
     scanned.currentDate = this.currentDate;
     scanned.center_cost = this.listCenterCost.find(value => value.id === scanned.center_cost_id);
 
-    const modal = await this._modalController.create({
-      component: TratosScannedPage,
-      componentProps: {centerCost: scanned}
-    });
 
-    return await modal.present();
+    this._dealService.setDataScanned(scanned);
+    this._router.navigate(['home-page/tarja_tratos/deal-scanned']);
   }
 
 

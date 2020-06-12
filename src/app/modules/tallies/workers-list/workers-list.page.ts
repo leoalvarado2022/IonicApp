@@ -5,13 +5,13 @@ import { StepNames } from 'src/app/services/storage/step-names';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import { Tally } from '../tally.interface';
 import { ModalController } from '@ionic/angular';
 import { CostCenterList } from '@primetec/primetec-angular';
-import { TallyFormComponent } from '../tally-form/tally-form.component';
-import { TallyFormMultipleComponent } from '../tally-form-multiple/tally-form-multiple.component';
+import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
+import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-form-multiple.component';
 
 @Component({
   selector: 'app-workers-list',
@@ -53,6 +53,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private tallySyncService: TallySyncService,
     private modalController: ModalController,
+    private router: Router
   ) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.originalDate = moment().format('YYYY-MM-DD');
@@ -95,13 +96,13 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
       // Tallies
       this.syncedTallies = data[1];
+      this.talliesToRecord = data[6];
 
       // Form
       this.costCenters = data[2];
       this.labors = data[3];
       this.deals = data[4];
       this.bonds = data[5];
-      this.talliesToRecord = data[6];
     });
   }
 
@@ -331,7 +332,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * @param id
    */
   public goToWorkerTallyList = (id: number): void => {
-    // REDIRECT TO TALLI
+    this.router.navigate(['/home-page/tallies-list', id, this.currentDate]);
   }
 
   /**

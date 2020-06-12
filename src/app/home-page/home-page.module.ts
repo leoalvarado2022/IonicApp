@@ -92,6 +92,10 @@ const routes: Routes = [
       {
         path: 'tally-workers-list/:id',
         loadChildren: () => import('../modules/tallies/workers-list/workers-list.module').then( m => m.WorkersListPageModule)
+      },
+      {
+        path: 'tallies-list/:id/:date',
+        loadChildren: () => import('../modules/tallies/tallies-list/tallies-list.module').then( m => m.TalliesListPageModule)
       }
     ]
   },
@@ -99,7 +103,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    IonicModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [

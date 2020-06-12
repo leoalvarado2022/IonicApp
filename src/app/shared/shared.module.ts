@@ -30,8 +30,8 @@ import { AuthService } from './services/auth/auth.service';
 import { TallyService } from '../modules/tallies/services/tally/tally.service';
 import { InfiniteScrollPaginatorService } from './services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 import { ToolbarButtonsComponent } from '../components/toolbar-buttons/toolbar-buttons.component';
-import { TallyFormComponent } from '../modules/tallies/tally-form/tally-form.component';
-import { TallyFormMultipleComponent } from '../modules/tallies/tally-form-multiple/tally-form-multiple.component';
+import { TallyFormMultipleComponent } from '../modules/tallies/forms/tally-form-multiple/tally-form-multiple.component';
+import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-form.component';
 
 @NgModule({
   declarations: [

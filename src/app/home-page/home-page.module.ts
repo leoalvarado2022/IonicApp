@@ -80,23 +80,17 @@ const routes: Routes = [
       {
         path: 'tarja_asociarnfc',
         loadChildren: () => import('../modules/associate/nfc/nfc.module').then(m => m.NfcPageModule)
-      },      
+      },
       {
         path: 'tarja_tratos',
         loadChildren: () => import('../modules/tratos/tratos-list/tratos-list.module').then(m => m.TratosListPageModule)
       },
-      /*
-      {
-        path: 'tarja_tarjas',
-        loadChildren: () => import('../modules/tallies/tally-list/tally-list.module').then(module => module.TallyListPageModule)
-      },
-      */
       {
         path: 'tarja_tarjas',
         loadChildren: () => import('../modules/tallies/quadrilles-list/quadrilles-list.module').then( m => m.QuadrillesListPageModule)
       },
       {
-        path: 'workers-list',
+        path: 'tally-workers-list/:id',
         loadChildren: () => import('../modules/tallies/workers-list/workers-list.module').then( m => m.WorkersListPageModule)
       }
     ]

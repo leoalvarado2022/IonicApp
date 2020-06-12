@@ -5,6 +5,7 @@ import { StepperService } from 'src/app/services/storage/stepper/stepper.service
 import { StepNames } from 'src/app/services/storage/step-names';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-quadrilles-list',
@@ -26,6 +27,7 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
     private stepperService: StepperService,
     private storageSyncService: StorageSyncService,
     private alphabeticalOrderPipe: AlphabeticalOrderPipe,
+    private router: Router
   ) {
 
   }
@@ -97,10 +99,10 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
 
   /**
    * selectQuadrille
-   * @param quadrille
+   * @param id
    */
-  public selectQuadrille = (quadrille: Quadrille): void => {
-    // REDIRECT HERE
+  public selectQuadrille = (id: number): void => {
+    this.router.navigate(['/home-page/tally-workers-list', id]);
   }
 
   /**

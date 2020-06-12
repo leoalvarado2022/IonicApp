@@ -1,9 +1,95 @@
 <ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Trabajadores</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
   <ion-toolbar>
-    <ion-title>WorkersList</ion-title>
+      <ion-searchbar 
+        placeholder="Buscar..."
+        animated
+        class="production" 
+        showCancelButton="never"
+        (ionChange)="searchWorker($event.target.value)"
+        (ionClear)="cancelSearch()">
+      </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
+  <!-- TRABAJADORES -->  
+  <h2 class="ion-text-center">
+    Trabajadores
+
+    <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
+  </h2>
+
+  <!-- DAY SELECTOR -->
+  <ion-item>
+    <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
+      <ion-icon name="arrow-back" slot="start"></ion-icon>
+    </ion-button>
+    <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat">
+    </ion-datetime>
+    <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
+      <ion-icon name="arrow-forward" slot="end"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-virtual-scroll [items]="filteredWorkers" approxItemHeight="100px">
+    <div *virtualItem="let worker">
+      <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
+        <ion-icon name="person" slot="start"></ion-icon>
+        <ion-label>
+          <h2>{{ worker.name }}</h2>
+          <p class="label-padding">{{ worker.identifier | rut }}</p>
+          <p class="label-padding">
+            <ion-badge color="primary">
+              {{ getTotalWorkerWork(worker) | number }} JR
+            </ion-badge>
+          </p>
+        </ion-label>
+      </ion-item>
+    </div>
+  </ion-virtual-scroll>
+
 </ion-content>
+
+<ion-footer>
+  <!-- One worker selected -->
+  <ion-row *ngIf="selectedWorkers.length === 1">
+    <ion-col size="6">
+      <ion-button color="success" expand="block" (click)="createTally()">
+        Agregar Jornada
+      </ion-button>
+    </ion-col>
+
+    <ion-col size="6">
+      <ion-button color="primary" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0].id)">
+        Ver Tarjas
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <!-- Several workers selected -->
+  <ion-row *ngIf="selectedWorkers.length > 1">
+    <ion-col size="6">
+      <ion-button color="success" expand="block" (click)="createMultipleTally()">
+        Agregar Masivo
+      </ion-button>
+    </ion-col>
+
+    <ion-col size="6">
+      <ion-button color="primary" expand="block" (click)="editMultipleTally()" [disabled]="!canUpdateMultiple">
+        Modificar Masivo
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

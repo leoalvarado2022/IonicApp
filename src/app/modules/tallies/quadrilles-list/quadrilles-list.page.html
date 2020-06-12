@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button class="header-back-button"></ion-back-button>
     </ion-buttons>
     <ion-title>
       <strong>Quadrillas</strong>
@@ -38,8 +38,8 @@
   </h2>
 
   <ion-virtual-scroll [items]="filteredQuadrilles" approxItemHeight="100px">
-    <div *virtualItem="let quadrille; let itemBounds = bounds">
-      <ion-item (click)="selectQuadrille(quadrille)" detail="true">
+    <div *virtualItem="let quadrille">
+      <ion-item (click)="selectQuadrille(quadrille.id)" detail="true">
         <ion-icon name="clipboard" slot="start"></ion-icon>
         <ion-label>
           <h2>{{ quadrille.name }}</h2>

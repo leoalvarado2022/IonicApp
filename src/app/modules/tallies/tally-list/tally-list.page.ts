@@ -3,7 +3,6 @@ import {CostCenterList, Quadrille} from '@primetec/primetec-angular';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
 import {ModalController, IonItemSliding} from '@ionic/angular';
-import {TallyFormComponent} from '../tally-form/tally-form.component';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {Subscription} from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
@@ -11,7 +10,6 @@ import { Tally } from '../tally.interface';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
-import { TallyFormMultipleComponent } from '../tally-form-multiple/tally-form-multiple.component';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StepNames } from 'src/app/services/storage/step-names';
 
@@ -41,6 +39,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   public readonly maxDate = '2030';
   public currentDate: any;
   public readonly originalDate: any;
+
   public canUpdateMultiple = false;
   public multipleTalliesToUpdate: Array<any> = [];
   private numberOfCases: Array<any> = [];
@@ -358,6 +357,7 @@ export class TallyListPage implements OnInit, OnDestroy {
   /**
    * createTally
    */
+  /*
   public createTally = async () => {
     const modal = await this.modalController.create({
       component: TallyFormComponent,
@@ -383,10 +383,12 @@ export class TallyListPage implements OnInit, OnDestroy {
 
     return await modal.present();
   }
+  */
 
   /**
    * editTally
    */
+  /*
   public editTally = async (tally: Tally, slide: IonItemSliding): Promise<void> => {
     slide.close();
 
@@ -415,10 +417,12 @@ export class TallyListPage implements OnInit, OnDestroy {
 
     return await modal.present();
   }
+  */
 
   /**
    * createMultipleTally
    */
+  /*
   public createMultipleTally = async () => {
     const modal = await this.modalController.create({
       component: TallyFormMultipleComponent,
@@ -444,10 +448,12 @@ export class TallyListPage implements OnInit, OnDestroy {
 
     return await modal.present();
   }
+  */
 
   /**
    * editMultipleTally
    */
+  /*
   public editMultipleTally = async () => {
     const modal = await this.modalController.create({
       component: TallyFormMultipleComponent,
@@ -475,6 +481,7 @@ export class TallyListPage implements OnInit, OnDestroy {
 
     return await modal.present();
   }
+  */
 
   /**
    * checkIfCanUpdateMultiple
@@ -518,7 +525,6 @@ export class TallyListPage implements OnInit, OnDestroy {
         this.multipleTalliesToUpdate = [...allValidTallies];
         this.numberOfCases = this.getUniqueCases(allValidTallies);
       }
-
     }
   }
 

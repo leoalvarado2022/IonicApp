@@ -1,20 +1,16 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-import { IonicModule } from '@ionic/angular';
-
 import { WorkersListPageRoutingModule } from './workers-list-routing.module';
 
 import { WorkersListPage } from './workers-list.page';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
+    SharedModule,
     WorkersListPageRoutingModule
   ],
   declarations: [WorkersListPage]
 })
-export class WorkersListPageModule {}
+export class WorkersListPageModule {
+
+}

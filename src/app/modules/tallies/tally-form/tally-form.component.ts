@@ -1,9 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActionSheetController, ModalController} from '@ionic/angular';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {StoreService} from '../../../shared/services/store/store.service';
-import { Tally } from '../tally.interface';
 import * as moment from 'moment';
+import { Component, OnInit, Input } from '@angular/core';
+import { Tally } from '../tally.interface';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ModalController, ActionSheetController } from '@ionic/angular';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 
 @Component({

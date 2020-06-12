@@ -6,6 +6,7 @@ import { StoreService } from 'src/app/shared/services/store/store.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import * as moment from 'moment';
 
+
 @Component({
   selector: 'app-tally-form-multiple',
   templateUrl: './tally-form-multiple.component.html',

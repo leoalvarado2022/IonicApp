@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import {ContractsService} from '../services/contracts/contracts.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { ManualSyncService } from 'src/app/shared/services/manual-sync/manual-sync.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 
 @Component({
   selector: 'app-contract-form',
@@ -34,6 +34,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   private activeCompany: any = null;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
+
   private tempId = 0;
 
   public readonly actionHeader: any = {
@@ -52,7 +53,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private activatedRoute: ActivatedRoute,
     private storageSyncService: StorageSyncService,
-    private manualSyncService: ManualSyncService,
+    private stepperService: StepperService
   ) {
     this.contractForm = this.formBuilder.group({
       id: [0],
@@ -255,8 +256,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
   private storeContract = (data: any) => {
     this.contractsService.storePreContracts([data]).subscribe(() => {
 
-      this.manualSyncService.sync();
-      this.router.navigate(['/home-page/tarja_contrato']);
+      this.stepperService.runAllSteps();
+      this.goBack();
     }, error => {
       this.httpService.errorHandler(error);
     });
@@ -393,6 +394,13 @@ export class ContractFormPage implements OnInit, OnDestroy {
     }
 
     return '';
+  }
+
+  /**
+   * goBack
+   */
+  public goBack = () => {
+    this.router.navigate(['/home-page/tarja_contrato']);
   }
 
 }

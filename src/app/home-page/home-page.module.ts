@@ -4,8 +4,6 @@ import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
 import {MenuComponent} from '../components/menu/menu.component';
 import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
-import { SyncProgressComponent } from '../components/sync-progress/sync-progress.component';
-import {DealsService} from '../modules/tratos/services/deals/deals.service';
 
 const routes: Routes = [
   {
@@ -99,12 +97,10 @@ const routes: Routes = [
   ],
   declarations: [
     HomePagePage,
-    MenuComponent,
-    SyncProgressComponent
+    MenuComponent
   ],
   providers: [
-    ContractDetailService,
-    DealsService
+    ContractDetailService
   ]
 })
 export class HomePagePageModule {

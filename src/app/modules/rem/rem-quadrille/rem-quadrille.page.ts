@@ -1,7 +1,6 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { Subscription } from 'rxjs';
 import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 
 @Component({
@@ -9,14 +8,11 @@ import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/a
   templateUrl: './rem-quadrille.page.html',
   styleUrls: ['./rem-quadrille.page.scss'],
 })
-export class RemQuadrillePage implements OnInit, OnDestroy {
+export class RemQuadrillePage implements OnInit {
 
   public quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
   public workers: Array<any> = [];
-  public firstLoad = false;
-
-  private storage$: Subscription;
 
   constructor(
     private router: Router,
@@ -26,34 +22,29 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
-    this.firstLoad = true;
-    this.storage$ = this.storageSyncService.syncChangedSubscribrer().subscribe(status => {
-      if (status && !this.firstLoad) {
-        this.loadQuadrilles();
-      }
-    });
-
+  ionViewWillEnter() {
     this.loadQuadrilles();
   }
 
-  ngOnDestroy() {
-    this.storage$.unsubscribe();
+  ngOnInit() {
+
   }
 
   /**
    * loadQuadrilles
    */
   private loadQuadrilles = () => {
-    this.firstLoad = false;
-
     Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers()
     ]).then( (data) => {
-      this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
-      this.filteredQuadrilles = [...this.quadrilles];
       this.workers = [...data[1]];
+
+      let orderByName = this.alphabeticalOrderPipe.transform(data[0]);
+      orderByName = orderByName.map( item => Object.assign({}, item, { cases: this.showBadge(item.id) }));
+
+      this.quadrilles = [...this.orderByTransfersFirst(orderByName)];
+      this.filteredQuadrilles = [...this.quadrilles];
     });
   }
 
@@ -114,6 +105,28 @@ export class RemQuadrillePage implements OnInit, OnDestroy {
       return item.quadrilleToApprove === quadrilleId && item.quadrilleStatus.toLowerCase() === 'por aprobar' ||
         item.quadrille === quadrilleId && item.quadrilleStatus.toLowerCase() === 'rechazado';
     }).length;
+  }
+
+  /**
+   * orderByTransfersFirst
+   */
+  private orderByTransfersFirst = (orderByName: Array<any>): Array<any> => {
+    const withTransfers = [];
+    const noTransfers = [];
+
+    if (orderByName.length > 0) {
+      orderByName.filter( item => {
+        if (item['cases'] > 0 ) {
+          withTransfers.push(item);
+        } else {
+          noTransfers.push(item);
+        }
+
+        return false;
+      });
+    }
+
+    return [...withTransfers, ...noTransfers];
   }
 
 }

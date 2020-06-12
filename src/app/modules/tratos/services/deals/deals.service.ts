@@ -3,6 +3,10 @@ import {HttpClient} from '@angular/common/http';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import * as moment from 'moment';
+import {Storage} from '@ionic/storage';
+import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
+import {StoreActions} from '../../../../shared/services/store/actions';
+import {StorageKeys} from '../../../../services/storage/storage-keys';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +20,8 @@ export class DealsService {
   constructor(
     private httpClient: HttpClient,
     private httpService: HttpService,
-    private _storeService: StoreService
+    private _StorageSyncService: StorageSyncService,
+    private storage: Storage,
   ) {
   }
 
@@ -72,39 +77,70 @@ export class DealsService {
   /**
    * @description get deals
    */
-  public getDeals() {
-    const deals = this._storeService.getDeals();
-
-    if (!deals || !deals || !deals.length) {
-      return [];
-    }
-    const list = deals.filter(value => {
-      const vigente = moment().isBetween(moment.utc(value.date_init), moment.utc(value.date_end), null, '[]');
-      return vigente;
-    });
-
-    const groups = this.groupBy(list, (item) => item.id);
-
-    const response = [];
-
-    groups.forEach((valor, clave, map) => {
-      if (valor.length) {
-        response.push(valor[0]);
+  public getDeals = (): Promise<any> => {
+    return this._StorageSyncService.getDeals().then(deals => {
+      if (!deals || !deals || !deals.length) {
+        return [];
       }
-    });
+      const list = deals.filter(value => {
+        const vigente = moment().isBetween(moment.utc(value.date_init), moment.utc(value.date_end), null, '[]');
+        return vigente;
+      });
 
-    return response;
-  }
+      const groups = this.groupBy(list, (item) => item.id);
+
+      const response = [];
+
+      groups.forEach((valor, clave, map) => {
+        if (valor.length) {
+          response.push(valor[0]);
+        }
+      });
+
+      return response;
+    });
+  };
 
   /**
-   * @description save PreDevices
-   * @param preDevices
+   * @description save saveTalliesToRecord
+   * @param tallyScanneds
    * @param user
    */
   public saveTalliesToRecord = (tallyScanneds: any, user: any) => {
     const url = this.httpService.buildUrl(this.tallyScanneds);
     return this.httpClient.post(url, this.httpService.buildBody({tallyScanneds, user}), {
       headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * setDealsTemp
+   * @param dealsToRecordRow
+   */
+  public setDealsTemp = (dealsToRecordRow: any): Promise<any> => {
+    return this.getDealsTemp().then(row => {
+      const filter = row.filter(value => value.id !== dealsToRecordRow.id);
+      filter.push(dealsToRecordRow);
+      return this.storage.set(StorageKeys.DealsTemp, filter);
+    });
+  };
+
+  /**
+   * getDealsTemp
+   */
+  public getDealsTemp = (): Promise<any> => {
+    return this.storage.get(StorageKeys.DealsTemp).then((dealsTemp: Array<any>) => {
+      return dealsTemp ? dealsTemp : [];
+    });
+  };
+
+  /**
+   * removeDealsTemp
+   */
+  public removeDealsTemp = (id): Promise<any> => {
+    return this.getDealsTemp().then(row => {
+      const filter = row.filter(value => value.id !== id);
+      return this.storage.set(StorageKeys.DealsTemp, filter);
     });
   };
 }

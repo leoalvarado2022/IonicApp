@@ -23,8 +23,7 @@ export class AddCenterCostPage implements OnInit {
   public deal: any;
   public centerForm: FormGroup;
 
-  constructor(private _storeService: StoreService,
-              private _storeSync: StorageSyncService,
+  constructor(private _storeSync: StorageSyncService,
               private _dealService: DealsService,
               private formBuilder: FormBuilder,
               private _modalController: ModalController,

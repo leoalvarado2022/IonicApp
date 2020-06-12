@@ -9,10 +9,10 @@ export const environment = {
   app_name: 'FX10',
   api_url: 'http://192.168.1.98:5572',
   // api_url: 'http://127.0.0.1:5572',
-  appVersion: 'v1.0.76',
+  appVersion: 'v1.0.78',
   tz: 'America/Santiago',
   iosDeviceNames,
-  syncTimerMinutes: 10
+  syncTimerMinutes: 5
 };
 
 /*

@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {AlertController, ModalController, NavController, Platform} from '@ionic/angular';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {StoreService} from '../../../shared/services/store/store.service';
@@ -14,6 +14,7 @@ import {Router} from '@angular/router';
   selector: 'app-tratos-scanned',
   templateUrl: './tratos-scanned.page.html',
   styleUrls: ['./tratos-scanned.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TratosScannedPage implements OnInit, OnDestroy {
 
@@ -31,9 +32,9 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
   constructor(public _modalController: ModalController,
               private _storageSyncService: StorageSyncService,
-              private _storeService: StoreService,
               private _dealService: DealsService,
               private _alertController: AlertController,
+              public _changeDetectorRef: ChangeDetectorRef,
               private _platform: Platform,
               private _route: Router,
               public _nfc: NFC,
@@ -49,8 +50,13 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       return;
     }
 
-    this.devices = this._storeService.getDevices();
-    this.workers = this._storeService.getWorkers();
+    Promise.all([
+      this._storageSyncService.getDevices(),
+      this._storageSyncService.getWorkers()
+    ]).then(data => {
+      this.devices = data[0];
+      this.workers = data[1];
+    });
 
     this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3').then(() => {
     }).catch((ex) => {
@@ -64,6 +70,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     this._storageSyncService.getTallyTemp().then(data => {
       if (data && data.length) {
         this.tallyTemp = data;
+        this.openNFCScanner();
       }
     });
   }
@@ -110,7 +117,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           // conseguir el id del tag
           const id = this._nfc.bytesToHexString(event.tag.id);
           // guardar y transformar data para guardar
-          this.pullDevice(id);
+          this.pullDevice(id).then();
         }, error => {
           console.log(error, 'error');
           this.notSupported = true;
@@ -177,6 +184,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       this.worker = `No existe trabajador con el dispositivo ${id}`;
       this.exist = false;
     }
+    this._changeDetectorRef.detectChanges();
   }
 
 

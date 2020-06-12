@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { SyncProgressComponent } from './sync-progress.component';
+import { ToolbarButtonsComponent } from './toolbar-buttons.component';
 
-describe('SyncProgressComponent', () => {
-  let component: SyncProgressComponent;
-  let fixture: ComponentFixture<SyncProgressComponent>;
+describe('ToolbarButtonsComponent', () => {
+  let component: ToolbarButtonsComponent;
+  let fixture: ComponentFixture<ToolbarButtonsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SyncProgressComponent ],
+      declarations: [ ToolbarButtonsComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SyncProgressComponent);
+    fixture = TestBed.createComponent(ToolbarButtonsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

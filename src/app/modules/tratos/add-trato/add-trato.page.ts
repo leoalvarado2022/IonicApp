@@ -3,6 +3,8 @@ import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ValidateRut} from '@primetec/primetec-angular';
 import {StoreService} from '../../../shared/services/store/store.service';
+import {DeviceSyncService} from '../../../services/storage/device-sync/device-sync.service';
+import {DealsService} from '../services/deals/deals.service';
 
 @Component({
   selector: 'app-associate-work',
@@ -16,7 +18,8 @@ export class AddTratoPage implements OnInit {
 
   constructor(public modalController: ModalController,
               private formBuilder: FormBuilder,
-              private _storeService: StoreService) {
+              private _storeService: StoreService,
+              private _dealService: DealsService) {
   }
 
 
@@ -87,7 +90,7 @@ export class AddTratoPage implements OnInit {
 
     data.user = this._storeService.getUser();
 
-    this._storeService.setDealsTemp(data);
+    await this._dealService.setDealsTemp(data);
     await this.closeWork(data);
   }
 

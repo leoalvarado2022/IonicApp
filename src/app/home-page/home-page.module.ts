@@ -4,11 +4,14 @@ import {HomePagePage} from './home-page.page';
 import {SharedModule} from '../shared/shared.module';
 import {MenuComponent} from '../components/menu/menu.component';
 import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
+import { AuthGuard } from '../guards/auth/auth.guard';
+import { IonicModule } from '@ionic/angular';
 
 const routes: Routes = [
   {
     path: '',
     component: HomePagePage,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -79,13 +82,21 @@ const routes: Routes = [
         loadChildren: () => import('../modules/associate/nfc/nfc.module').then(m => m.NfcPageModule)
       },
       {
-        path: 'tarja_tarjas',
-        loadChildren: () => import('../modules/tallies/tally-list/tally-list.module').then(module => module.TallyListPageModule)
-      },
-      {
         path: 'tarja_tratos',
         loadChildren: () => import('../modules/tratos/tratos-list/tratos-list.module').then(m => m.TratosListPageModule)
       },
+      {
+        path: 'tarja_tarjas',
+        loadChildren: () => import('../modules/tallies/quadrilles-list/quadrilles-list.module').then( m => m.QuadrillesListPageModule)
+      },
+      {
+        path: 'tally-workers-list/:id',
+        loadChildren: () => import('../modules/tallies/workers-list/workers-list.module').then( m => m.WorkersListPageModule)
+      },
+      {
+        path: 'tallies-list/:id/:date',
+        loadChildren: () => import('../modules/tallies/tallies-list/tallies-list.module').then( m => m.TalliesListPageModule)
+      }
     ]
   },
 ];

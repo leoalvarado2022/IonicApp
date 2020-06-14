@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { TallyFormMultipleComponent } from './tally-form-multiple.component';
+import { WorkersListPage } from './workers-list.page';
 
-describe('TallyFormMultipleComponent', () => {
-  let component: TallyFormMultipleComponent;
-  let fixture: ComponentFixture<TallyFormMultipleComponent>;
+describe('WorkersListPage', () => {
+  let component: WorkersListPage;
+  let fixture: ComponentFixture<WorkersListPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TallyFormMultipleComponent ],
+      declarations: [ WorkersListPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TallyFormMultipleComponent);
+    fixture = TestBed.createComponent(WorkersListPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

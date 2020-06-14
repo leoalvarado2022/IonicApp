@@ -15,7 +15,6 @@ export class HomePagePage {
 
   private timer$: Subscription;
   private router$: Subscription;
-  private step$: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -58,7 +57,6 @@ export class HomePagePage {
     this.timerService.pauseStop();
     this.timer$.unsubscribe();
     this.router$.unsubscribe();
-    this.step$.unsubscribe();
   }
 
   /**

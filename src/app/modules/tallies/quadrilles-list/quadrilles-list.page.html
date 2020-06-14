@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Quadrillas</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+      <ion-searchbar 
+        placeholder="Buscar..."
+        animated
+        class="production" 
+        showCancelButton="never"
+        (ionChange)="searchQuadrille($event.target.value)"
+        (ionClear)="cancelSearch()">
+      </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
+    <ion-refresher-content pullingIcon="arrow-down" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="Cargando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- CUADRILLAS -->
+  <h2 class="ion-text-center">
+    Cuadrillas
+
+    <ion-badge class="quadrille-badge" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+  </h2>
+
+  <ion-virtual-scroll [items]="filteredQuadrilles" approxItemHeight="100px">
+    <div *virtualItem="let quadrille">
+      <ion-item (click)="selectQuadrille(quadrille.id)" detail="true">
+        <ion-icon name="clipboard" slot="start"></ion-icon>
+        <ion-label>
+          <h2>{{ quadrille.name }}</h2>
+          <p class="label-padding">{{ quadrille.responsibleName }}</p>
+          <p class="label-padding">
+            <ion-badge color="primary">
+              {{ getQuadrilleNumberWorkers(quadrille.id) }} Personas
+            </ion-badge>
+          </p>
+        </ion-label>
+      </ion-item>
+    </div>
+  </ion-virtual-scroll> 
+
+</ion-content>

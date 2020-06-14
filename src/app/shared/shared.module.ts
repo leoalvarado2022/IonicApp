@@ -30,6 +30,8 @@ import { AuthService } from './services/auth/auth.service';
 import { TallyService } from '../modules/tallies/services/tally/tally.service';
 import { InfiniteScrollPaginatorService } from './services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 import { ToolbarButtonsComponent } from '../components/toolbar-buttons/toolbar-buttons.component';
+import { TallyFormMultipleComponent } from '../modules/tallies/forms/tally-form-multiple/tally-form-multiple.component';
+import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-form.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import { ToolbarButtonsComponent } from '../components/toolbar-buttons/toolbar-b
     TicketCardComponent,
     AlphabeticalOrderPipe,
     NumericOrderPipe,
-    ToolbarButtonsComponent
+    ToolbarButtonsComponent,
+    TallyFormComponent,
+    TallyFormMultipleComponent
   ],
   imports: [
     CommonModule,
@@ -87,10 +91,14 @@ import { ToolbarButtonsComponent } from '../components/toolbar-buttons/toolbar-b
     TicketCardComponent,
     AlphabeticalOrderPipe,
     NumericOrderPipe,
-    ToolbarButtonsComponent
+    ToolbarButtonsComponent,
+    TallyFormComponent,
+    TallyFormMultipleComponent
   ],
   entryComponents: [
-    ImageViewerComponent
+    ImageViewerComponent,
+    TallyFormComponent,
+    TallyFormMultipleComponent
   ]
 })
 export class SharedModule {

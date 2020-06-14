@@ -7,9 +7,9 @@ import {iosDeviceNames} from './ios-device-names';
 export const environment = {
   production: false,
   app_name: 'FX10',
-  api_url: 'http://192.168.1.120:5572',
-  // api_url: 'http://127.0.0.1:5572',
-  appVersion: 'v1.0.78',
+  // api_url: 'http://192.168.1.120:5572',
+  api_url: 'http://127.0.0.1:5572',
+  appVersion: 'v1.0.79',
   tz: 'America/Santiago',
   iosDeviceNames,
   syncTimerMinutes: 5

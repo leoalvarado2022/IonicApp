@@ -12,6 +12,7 @@ import {Tally} from 'src/app/modules/tallies/tally.interface';
 import {NetworkService} from 'src/app/shared/services/network/network.service';
 import {StepNames} from '../step-names';
 import {DeviceSyncService} from '../device-sync/device-sync.service';
+import {DealsService} from '../../../modules/tratos/services/deals/deals.service';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,7 @@ export class StepperService {
     private tallyService: TallyService,
     private toastService: ToastService,
     private nfcService: NfcService,
+    private _dealService: DealsService,
     private networkService: NetworkService,
     private _deviceSyncService: DeviceSyncService
   ) {
@@ -61,6 +63,10 @@ export class StepperService {
         if (step === StepNames.RecordDevices) {
           this.recordDevices();
         }
+        // Record Devices Step
+        if (step === StepNames.RecordDevicesTallies) {
+          this.recordDealsTallies();
+        }
 
         // Clean memory
         if (step === StepNames.CleanMemory) {
@@ -75,7 +81,7 @@ export class StepperService {
           }, 2000);
         }
 
-        // Get sync data
+        //  Get sync data
         if (step === StepNames.GetSyncData) {
           // Sync data
           this.syncData();
@@ -310,9 +316,32 @@ export class StepperService {
       if (toRecord && toRecord.length > 0) {
         this.nfcService.saveDevicesToRecord(toRecord, user).subscribe((success: any) => {
           this.checkRecordedDevices(success.log);
-          this.goToStep(StepNames.CleanMemory);
+          this.goToStep(StepNames.RecordDevicesTallies);
         }, () => {
           this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
+        });
+      } else {
+        this.goToStep(StepNames.RecordDevicesTallies);
+      }
+    });
+  };
+
+  /**
+   * recordDealsTallies
+   */
+  private recordDealsTallies = () => {
+    this.storageSyncService.getTallyTemp().then((toRecord: any) => {
+      toRecord = toRecord.filter(value => value.id === 0);
+
+      const user = this.storeService.getUser();
+      delete user.avatar;
+
+      if (toRecord && toRecord.length > 0) {
+        this._dealService.saveTalliesToRecord(toRecord, user).subscribe((success: any) => {
+          this.storageSyncService.setTallyTemp([]).then();
+          this.goToStep(StepNames.CleanMemory);
+        }, () => {
+          this.toastService.errorToast('Ocurrio un error al sincronizar tratos');
         });
       } else {
         this.goToStep(StepNames.CleanMemory);

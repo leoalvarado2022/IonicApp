@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {NativeAudio} from '@ionic-native/native-audio/ngx';
 import {AlertController, ModalController, Platform} from '@ionic/angular';
@@ -8,16 +8,19 @@ import {StoreService} from '../../../shared/services/store/store.service';
 import {AssociateWorkPage} from './associate-work/associate-work.page';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import * as moment from 'moment';
+import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
+import {DeviceSyncService} from '../../../services/storage/device-sync/device-sync.service';
 
 @Component({
   selector: 'app-nfc',
   templateUrl: './nfc.page.html',
   styleUrls: ['./nfc.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NfcPage implements OnInit, OnDestroy {
 
   notSupported = false;
-  scanned = [];
+  scanned: Array<any>;
   $listener: Subscription;
   scanning = false;
   selected;
@@ -30,9 +33,10 @@ export class NfcPage implements OnInit, OnDestroy {
               private platform: Platform,
               public nfc: NFC,
               public ndef: Ndef,
-              private ref: ChangeDetectorRef,
-              public storeService: StoreService,
+              public _changeDetectorRef: ChangeDetectorRef,
               public modalController: ModalController,
+              private _storageSyncService: StorageSyncService,
+              private _deviceSyncService: DeviceSyncService,
               private alertCtrl: AlertController,
               private toastService: ToastService) {
   }
@@ -50,22 +54,27 @@ export class NfcPage implements OnInit, OnDestroy {
     });
   }
 
+
   /**
    * @description cargar la data predeterminada y activar los audios
    */
   preload() {
     this.scanned = [];
     this.scanning = false;
+
     this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3').then(() => {
     }).catch((ex) => {
       console.log(ex);
     });
+
     this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3').then(() => {
     }).catch((ex) => {
       console.log(ex);
     });
 
-    this.list = this.storeService.getDevices();
+    this._storageSyncService.getDevices().then(data => {
+      this.list = data;
+    });
   }
 
   ngOnInit() {
@@ -112,7 +121,7 @@ export class NfcPage implements OnInit, OnDestroy {
           const id = this.nfc.bytesToHexString(event.tag.id);
 
           // guardar y transformar data para guardar
-          this.pullDevice(id, event.type.toUpperCase());
+          this.pullDevice(id, event.type.toUpperCase()).then();
         }, error => {
           console.log(error, 'error');
           this.notSupported = true;
@@ -124,9 +133,8 @@ export class NfcPage implements OnInit, OnDestroy {
    * @param id
    * @param type
    */
-  pullDevice(id, type) {
+  async pullDevice(id, type) {
 
-    // reiniciar todo
     this.error = false;
     this.sync = false;
     this.selected = undefined;
@@ -138,12 +146,12 @@ export class NfcPage implements OnInit, OnDestroy {
     }
 
     if (!exist) {
-      exist = this.storeService.getDevicesToRecord();
+      exist = await this._deviceSyncService.getDevicesToRecord();
       exist = exist.find(value => value.id_device === id && value.id === 0);
     }
 
     if (exist) {
-      const findRecord = this.storeService.getDevicesToRecord();
+      const findRecord = await this._deviceSyncService.getDevicesToRecord();
       const row = findRecord.find(value => value.id_device === id);
 
       if (row) {
@@ -152,7 +160,6 @@ export class NfcPage implements OnInit, OnDestroy {
         }
       }
     }
-
 
     if (!exist) {
       const device = new Device();
@@ -164,19 +171,16 @@ export class NfcPage implements OnInit, OnDestroy {
         console.log(ex);
       });
     } else {
-      // this.errors(exist);
-      console.log(this.scanned, 'scanned');
-      console.log(exist, 'exist');
-
       const indexScanned = this.scanned.find(item => item.id_device === exist.id_device);
-      console.log(indexScanned, 'indexScanned');
 
       if (!indexScanned) {
         this.scanned.unshift(exist);
         this.nativeAudio.play('beep');
       }
     }
-    this.ref.markForCheck();
+
+    this._changeDetectorRef.detectChanges();
+
   }
 
   /**
@@ -196,30 +200,6 @@ export class NfcPage implements OnInit, OnDestroy {
     this.associateWork();
   }
 
-  errors(device: any) {
-    const devicesWithErrors = this.storeService.getDevicesWithErrors();
-    const devicesToRecord = this.storeService.getDevicesToRecord();
-    const noSync = devicesToRecord.find(item => item.tempId === device.tempId);
-
-    // console.log(devicesWithErrors, 'devicesWithErrors');
-
-    const error = devicesWithErrors.find(item => item.id === device.tempId);
-
-    // console.log(devicesWithErrors, device, error, noSync);
-
-    if (error) {
-      this.error = true;
-      this.toastService.errorToast(error.response);
-    } else {
-      if (noSync) {
-        this.sync = true;
-        this.toastService.warningToast('No sincronizado');
-      }
-    }
-
-
-  }
-
   /**
    * @description asociar un trabajador con el tag
    */
@@ -229,7 +209,14 @@ export class NfcPage implements OnInit, OnDestroy {
       componentProps: {tag: this.selected}
     });
 
-    modal.onDidDismiss().then((data) => {
+    modal.onDidDismiss().then((data: any) => {
+      // console.log(data);
+      if (data.data && data.data !== null) {
+        const scanned = this.scanned.filter(value => value.id_device !== data.data.id_device);
+        scanned.push(data.data);
+        this.scanned = scanned;
+        this._changeDetectorRef.detectChanges();
+      }
       this.selected = undefined;
     });
 
@@ -276,18 +263,19 @@ export class NfcPage implements OnInit, OnDestroy {
     this.scanned = [];
 
     if (deleted.id && deleted.id > 0) {
-      const tempId = this.storeService.getDeviceTempId();
-      deleted.id = deleted.id * -1;
-      deleted.tempId = tempId;
+      this._deviceSyncService.getDeviceTempId().then(tempId => {
+        deleted.id = deleted.id * -1;
+        deleted.tempId = tempId;
+      });
+
     } else {
       deleted.delete = true;
     }
 
     deleted.date = moment().format('YYYY-MM-DD HH:mm:ss');
 
-    // console.log(deleted, 'deleted');
-
-    this.storeService.addDevicesToRecord(deleted);
+    this._deviceSyncService.addDevicesToRecord(deleted).then();
+    this._changeDetectorRef.detectChanges();
     return true;
   }
 }

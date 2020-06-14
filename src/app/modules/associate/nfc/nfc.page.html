@@ -16,6 +16,9 @@
   <h2 class="ion-text-center">
     NFC
   </h2>
+  <!--<ion-button color="secondary" size="large" expand="full" class="ion-text-capitalize"
+              (click)="pullDevice('23123123', 'TAG')" ion-button>prueba
+  </ion-button>-->
 
   <!--<ion-grid class="ion-padding" *ngIf="selected || scanning">
     <ion-row *ngIf="!scanning">
@@ -51,12 +54,13 @@
     </ng-template>
   </ion-grid>
 
+  <!--  {{scanned | json}}-->
   <ion-grid>
-    <ion-row *ngIf="scanned.length">
+    <ion-row *ngIf="scanned.length > 0">
       <ion-card *ngFor="let device of scanned" (click)="onPress(device)"
                 [class.selected]="selected === device"
-                [class.error]="error && device.id < 1"
-                [class.sync]="sync && device.id < 1">
+                [class.error]="error && device?.id < 1"
+                [class.sync]="sync && device?.id < 1">
         <ion-card-content>
           <ion-row class="ion-align-items-center">
             <ion-col size="2">
@@ -64,13 +68,12 @@
             </ion-col>
             <ion-col size="10">
               <!--<div class="title-row">Tipo: {{device.type}}</div>-->
-              <div class="subtitle-row">ID: {{device.id_device}}</div>
-              <div class="subtitle-row" *ngIf="device.link">Trabajador: {{device.link}}</div>
+              <div class="subtitle-row">ID: {{device?.id_device}}</div>
+              <div class="subtitle-row" *ngIf="device?.link">Trabajador: {{device?.link}}</div>
             </ion-col>
           </ion-row>
         </ion-card-content>
       </ion-card>
-
     </ion-row>
   </ion-grid>
 </ion-content>

@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {ModalController, NavParams} from '@ionic/angular';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import * as moment from 'moment';
+import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
+import {DeviceSyncService} from '../../../../services/storage/device-sync/device-sync.service';
 
 @Component({
   selector: 'app-associate-work',
@@ -16,46 +18,45 @@ export class AssociateWorkPage implements OnInit {
 
   constructor(public modalController: ModalController,
               private storeService: StoreService,
+              public _storageSyncService: StorageSyncService,
+              private _deviceSyncService: DeviceSyncService,
               private navParams: NavParams) {
     this.tag = this.navParams.get('tag');
   }
 
 
   ngOnInit() {
-    this.workers = this.filterActiveWork();
-    this.filtered = this.workers.filter((value: any, index: any) => index < 10);
+    this.filterActiveWork();
   }
 
   /**
    * @description buscar los trabajadores activos por compañía y los que tengas fechas validas
    */
   private filterActiveWork = () => {
-    const company = this.storeService.getActiveCompany();
-    let workers = this.storeService.getWorkers();
+    this._storageSyncService.getWorkers().then(data => {
+      const company = this.storeService.getActiveCompany();
+      this.workers = data.filter(data => {
+        const valid = moment(new Date()).isBetween(moment(data.startDate), moment(data.endDate), null, '[]');
+        return valid && data.active && data.company === company.id;
+      });
 
-    workers = workers.filter(data => {
-      const valid = moment(new Date()).isBetween(moment(data.startDate), moment(data.endDate), null, '[]');
-      return valid && data.active && data.company === company.id;
+      this.filtered = this.workers.filter((value: any, index: any) => index < 10);
     });
-
-    return workers;
-  }
+  };
 
   /**
    * cancelWork
    */
   public cancelWork = () => {
     this.filtered = this.workers;
-  }
+  };
 
   /**
    * closeModal
    */
   public closeWork = async (data: any = null) => {
-    await this.modalController.dismiss({
-      data
-    });
-  }
+    await this.modalController.dismiss(data);
+  };
 
 
   /**
@@ -75,7 +76,7 @@ export class AssociateWorkPage implements OnInit {
         const matchName = worker.names ? worker.names.toLowerCase().indexOf(filter.toLowerCase()) > -1 : true;
         return (matchIdentified || matchName) && index < 5;
       });
-  }
+  };
 
 
   /**
@@ -84,7 +85,7 @@ export class AssociateWorkPage implements OnInit {
    */
   async onPress(worker) {
 
-    const tempId = this.storeService.getDeviceTempId();
+    const tempId = await this._deviceSyncService.getDeviceTempId();
 
     let body: any;
     body = this.tag;
@@ -96,7 +97,7 @@ export class AssociateWorkPage implements OnInit {
     body.date = moment().format('YYYY-MM-DD HH:mm:ss');
 
     if (body) {
-      this.storeService.addDevicesToRecord(body);
+      await this._deviceSyncService.addDevicesToRecord(body);
     }
 
     await this.closeWork(body);

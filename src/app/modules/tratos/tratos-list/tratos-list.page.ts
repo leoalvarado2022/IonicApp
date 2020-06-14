@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {AddTratoPage} from '../add-trato/add-trato.page';
 import {Router} from '@angular/router';
@@ -11,6 +11,7 @@ import {StorageSyncService} from '../../../services/storage/storage-sync/storage
   selector: 'app-tratos-list',
   templateUrl: './tratos-list.page.html',
   styleUrls: ['./tratos-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TratosListPage {
 
@@ -39,46 +40,52 @@ export class TratosListPage {
   removeDeal(id: number, event: any) {
     event.close();
     this.deals = this.deals.filter(value => value.id !== id);
-    this._storeService.removeDealsTemp(id);
+    this._DealService.removeDealsTemp(id).then();
   }
 
   /**
    * @description load data , phone db
    */
   loadData() {
-    let dealsToRecord = this._storeService.getDealsTemp();
-    if (dealsToRecord.length) {
-      // buscar el usuario logueado
-      const user = this._storeService.getUser();
-
-      /// filtrar por usuario
-      dealsToRecord = dealsToRecord.filter(value => value.user.id === user.id);
-
-      // comparar que exista en la lista
-      const deals = this._DealService.getDeals();
-
-      let arr = [];
-
+    Promise.all([
+      this._DealService.getDealsTemp(),
+      this._DealService.getDeals()
+    ]).then(data => {
+      // console.log(data, 'data');
+      let dealsToRecord = data[0];
       if (dealsToRecord.length) {
-        // recorrer lista filtrada
-        for (const d of dealsToRecord) {
-          // buscar si existe en la  lista de tratos activos
-          const new$ = deals.find(value => value.id === d.id);
-          // si existe sigue apareciendo
-          if (new$) {
-            arr.push(d);
-          } else {
-            // lo elimina del temporal si no existe
-            this._storeService.removeDealsTemp(d.id);
+        // buscar el usuario logueado
+        const user = this._storeService.getUser();
+
+        /// filtrar por usuario
+        dealsToRecord = dealsToRecord.filter(value => value.user.id === user.id);
+
+        // comparar que exista en la lista
+        const deals = data[0];
+
+        let arr = [];
+
+        if (dealsToRecord.length) {
+          // recorrer lista filtrada
+          for (const d of dealsToRecord) {
+            // buscar si existe en la  lista de tratos activos
+            const new$ = deals.find(value => value.id === d.id);
+            // si existe sigue apareciendo
+            if (new$) {
+              arr.push(d);
+            } else {
+              // lo elimina del temporal si no existe
+              this._DealService.removeDealsTemp(d.id).then();
+            }
           }
         }
-      }
 
-      this.deals = [...arr];
-      // mapear deals
-      this.mapDeals();
-      this._changeDetect.detectChanges();
-    }
+        this.deals = [...arr];
+        // mapear deals
+        this.mapDeals();
+        this._changeDetect.detectChanges();
+      }
+    });
   }
 
   mapDeals() {
@@ -86,6 +93,7 @@ export class TratosListPage {
       this._storageSyncService.getTallies(),
       this._storageSyncService.getTallyTemp()
     ]).then(data => {
+      // console.log(data[0], 'getTallies', data[1], 'getTallyTemp');
       let tallies: any = [];
       // si las tarjas existen
       if (data[0] && data[0].length) {
@@ -111,7 +119,7 @@ export class TratosListPage {
       }
 
       // se agrega a los temporales
-      this._storageSyncService.setTallyTemp(this.tallyTemp);
+      this._storageSyncService.setTallyTemp(this.tallyTemp).then();
       // console.log(this.tallyTemp);
     });
   }
@@ -162,7 +170,7 @@ export class TratosListPage {
   };
 
   activeTrato = async () => {
-    const deals = this._DealService.getDeals();
+    const deals = await this._DealService.getDeals();
     const modal = await this.modalController.create({
       component: AddTratoPage,
       componentProps: {deals}

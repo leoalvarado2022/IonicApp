@@ -25,32 +25,34 @@
                   <ion-item style="width: 100%;">
                     <ion-label position="floating">Elegir tratos</ion-label>
                     <ion-select formControlName="id" interface="action-sheet" (ionChange)="change($event)">
-                      <ion-select-option [value]="deal.id" *ngFor="let deal of deals">{{deal.name_deal}}</ion-select-option>
+                      <ion-select-option [value]="deal.id"
+                                         *ngFor="let deal of deals">{{deal.name_deal}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                   <ng-container *ngIf="activeForm.get('id').errors && !activeForm.invalid">
-                    <span *ngIf="activeForm.get('id').hasError('required')" style="color: red">Debe elegir un trato.</span>
+                    <span *ngIf="activeForm.get('id').hasError('required')"
+                          style="color: red">Debe elegir un trato.</span>
                   </ng-container>
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-col size="7">
+                <ion-col size="12">
                   <ion-item>
                     <ion-label position="floating">Labor</ion-label>
-                    <ion-input formControlName="name_labor" readonly></ion-input>
+                    <ion-input formControlName="name_labor" disabled></ion-input>
                   </ion-item>
                 </ion-col>
-                <ion-col size="5">
+                <ion-col size="12">
                   <ion-item>
                     <ion-label position="floating">Unidad</ion-label>
-                    <ion-input formControlName="unit_control" readonly></ion-input>
+                    <ion-input formControlName="unit_control" disabled></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-row>
               <ion-row>
                 <ion-col size="12">
                   <ion-item style="width: 100%;">
-                    <ion-label position="floating">Metodo de Registro</ion-label>
+                    <ion-label position="floating">Método de Lectura</ion-label>
                     <ion-select formControlName="option" interface="action-sheet">
                       <ion-select-option value="0">Peso</ion-select-option>
                       <ion-select-option value="1">Conteo</ion-select-option>
@@ -78,7 +80,7 @@
               <ion-row>
                 <ion-col size="12">
                   <ion-item>
-                    <ion-label>Automatico</ion-label>
+                    <ion-label>Registro Automatico</ion-label>
                     <ion-checkbox slot="end" formControlName="automatic"></ion-checkbox>
                   </ion-item>
                 </ion-col>

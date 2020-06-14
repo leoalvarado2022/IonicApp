@@ -14,6 +14,7 @@ import { TallySyncService } from './storage/tally-sync/tally-sync.service';
 import { TimerService } from './storage/timer/timer.service';
 import { StepperService } from './storage/stepper/stepper.service';
 import { HttpClientModule } from '@angular/common/http';
+import {DeviceSyncService} from './storage/device-sync/device-sync.service';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { HttpClientModule } from '@angular/common/http';
     StorageSyncService,
     TallySyncService,
     TimerService,
-    StepperService
+    StepperService,
+    DeviceSyncService
   ],
 })
 export class CoreServicesModule {

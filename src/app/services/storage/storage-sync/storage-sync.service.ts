@@ -33,6 +33,7 @@ export class StorageSyncService {
       civilStatus,
       afps,
       isapres,
+      devices
     } = data;
 
     return Promise.all([
@@ -49,7 +50,8 @@ export class StorageSyncService {
       this.setContractTypes(contractTypes),
       this.setCivilStatus(civilStatus),
       this.setAfps(afps),
-      this.setIsapres(isapres)
+      this.setIsapres(isapres),
+      this.setDevices(devices)
     ]);
   }
 
@@ -317,7 +319,24 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Isapre).then( (isapres: Array<any>) => {
       return isapres ? isapres : [];
     });
-  }
+  };
+
+  /**
+   * setDevices
+   * @param devices
+   */
+  public setDevices = (devices: Array<any> = []): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Devices, devices);
+  };
+
+  /**
+   * getDevices
+   */
+  public getDevices = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Devices).then((devices: Array<any>) => {
+      return devices ? devices : [];
+    });
+  };
 
   /**
    * setTally Temp

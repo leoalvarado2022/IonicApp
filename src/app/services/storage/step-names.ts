@@ -1,6 +1,7 @@
 export enum StepNames {
   RecordTallies = 0,
   RecordDevices,
+  RecordDevicesTallies,
   CleanMemory,
   GetSyncData,
   StartStoring,
@@ -19,6 +20,7 @@ export enum StepNames {
 export const StepsArray = [
   'Grabar Tarjas',
   'Grabar Dispositivos',
+  'Grabar Tratos y Tarjas',
   'Limpiar Memoria',
   'Obtener Sync',
   'Guardando en Almacenamiento',

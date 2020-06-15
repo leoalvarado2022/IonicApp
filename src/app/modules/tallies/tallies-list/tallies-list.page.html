@@ -1,0 +1,116 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Tarjas</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
+    <ion-refresher-content pullingIcon="arrow-down" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="Cargando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- TARJAS -->
+  <h3 class="ion-text-center">
+    {{ getWorkerName() | titlecase }}
+  </h3>
+  <ion-row>
+    <ion-col>
+      <p class="ion-text-center ion-text-wrap">
+        Tarjas
+        <ion-badge class="quadrille-badge" color="primary">{{ getNumberOfWorkerTallies().length }}</ion-badge>
+      </p>
+    </ion-col>
+    <ion-col>
+      <p class="ion-text-center">
+        Jornadas
+        <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork().toFixed(2) }} Jr</ion-badge>
+      </p>
+    </ion-col>
+  </ion-row>
+ 
+  <ion-list *ngIf="!isLoading">
+    <ion-item-sliding #slide *ngFor="let tally of getNumberOfWorkerTallies()">
+      <ion-item class="no-padding-item" lines="none">
+        <ion-card class="tally-card">
+          <ion-item>
+            <ion-icon (click)="showTallyError(tally)"
+              [color]="tally.status === 'new' || tally.status === 'edit' ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
+            <ion-label>{{ getCostCenterName(tally.costCenterId) | titlecase }}</ion-label>
+            <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
+          </ion-item>
+
+          <ion-card-content>
+            <ion-row>
+              <ion-col>
+                Labor: {{ getLaborName(tally.laborId) | titlecase }}
+              </ion-col>
+              <ion-col>
+                <ion-badge *ngIf="tally.hoursExtra" class="ion-float-end" color="primary">
+                  {{ tally.hoursExtra }} Hora extra
+                </ion-badge>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="tally.performance">
+              <ion-col></ion-col>
+              <ion-col>
+                <ion-badge class="ion-float-end" color="primary">
+                  {{ tally.performance }} Unidad Labor
+                </ion-badge>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="tally.dealValidity || tally.bondValidity">
+              <ion-col size="6" *ngIf="tally.dealValidity">
+                Trato:
+                <ion-badge color="primary">
+                  {{ getDealName(tally.dealValidity) | titlecase }}
+                </ion-badge>
+              </ion-col>
+              <ion-col size="6" *ngIf="tally.bondValidity">
+                Bono:
+                <ion-badge color="primary">
+                  {{ getBondName(tally.bondValidity) | titlecase }}
+                </ion-badge>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col><strong>Notas:</strong></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>{{ tally.notes }}</ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="warning" (click)="editTally(tally, slide)">
+          <ion-icon slot="icon-only" name="pencil"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteTally(tally, slide)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col>
+      <ion-button color="success" expand="block" (click)="createTally()" [disabled]="checkWorkerLimit()">
+        Agregar Jornada
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

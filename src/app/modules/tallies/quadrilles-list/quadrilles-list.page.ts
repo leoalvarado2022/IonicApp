@@ -19,7 +19,10 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
 
   // Workers
   private workers: Array<any> = [];
+
   private firstLoad = true;
+  public isLoading = false;
+
 
   private stepper$: Subscription;
 
@@ -34,7 +37,7 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
       if (step === StepNames.EndStoring && !this.firstLoad) {
-        this.loadAsync();
+        this.loadData();
       }
     });
   }
@@ -44,26 +47,32 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.loadAsync();
+    this.loadData();
   }
 
   /**
    * loadAsync
    */
-  private loadAsync = async () => {
+  private loadData = () => {
     this.firstLoad = false;
 
-    const data = await Promise.all([
+    // START LOADING
+    this.isLoading = true;
+
+    Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers(),
-    ]);
+    ]).then( data => {
+      // Quadrilles
+      this.quadrilles = [...data[0]];
+      this.filteredQuadrilles = [...this.quadrilles];
 
-    // Quadrilles
-    this.quadrilles = [...data[0]];
-    this.filteredQuadrilles = [...this.quadrilles];
+      // Workers
+      this.workers = [...data[1]];
 
-    // Workers
-    this.workers = [...data[1]];
+      // END LOADING
+      this.isLoading = false;
+    });
   }
 
   /**
@@ -96,7 +105,7 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any): void => {
-    this.loadAsync();
+    this.loadData();
     event.target.complete();
   }
 

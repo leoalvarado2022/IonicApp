@@ -1,15 +1,11 @@
-<ion-button class="white-button">
+<ion-button class="toolbar-button white-button">
   <ion-icon slot="icon-only" name="notifications"></ion-icon>
 </ion-button>
 
-<ng-container *ngIf="(stepperService.getStepper() | async) < getStepNames().EndStoring">
-  <ion-button color="warning">
-    <ion-icon [ngClass]="{ 'icon-spinner': (stepperService.getStepper() | async) < getStepNames().EndStoring }" slot="icon-only" name="sync"></ion-icon>
-  </ion-button>
-</ng-container>
+<ion-button class="toolbar-button" color="warning" *ngIf="(stepperService.getStepper() | async) < getStepNames().EndStoring">
+  <ion-icon [ngClass]="{ 'icon-spinner': (stepperService.getStepper() | async) < getStepNames().EndStoring }" slot="icon-only" name="sync"></ion-icon>
+</ion-button>
 
-<ng-container *ngIf="(stepperService.getStepper() | async) === getStepNames().EndStoring">
-  <ion-button [color]="getGlobeColor()" (click)="syncAll()">
-    <ion-icon slot="icon-only" name="globe"></ion-icon>
-  </ion-button>  
-</ng-container>
+<ion-button class="toolbar-button" [color]="getGlobeColor()" (click)="syncAll()" *ngIf="(stepperService.getStepper() | async) === getStepNames().EndStoring">
+  <ion-icon slot="icon-only" name="globe"></ion-icon>
+</ion-button>

@@ -1,11 +1,15 @@
-ion-icon {
-  font-size: 30px;
-}
-
 .white-button {
   ion-icon {
     color: white;
   }
+}
+
+.toolbar-button {
+  --padding-top: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-bottom: 0;
+  --margin: 0;
 }
 
 .icon-spinner {

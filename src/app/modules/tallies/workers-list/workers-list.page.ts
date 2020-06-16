@@ -44,6 +44,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
   private bonds: Array<any> = [];
 
   private firstLoad = true;
+  public isLoading = false;
 
   private stepper$: Subscription;
 
@@ -60,10 +61,9 @@ export class WorkersListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('pasa por aqui');
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
       if (step === StepNames.EndStoring && !this.firstLoad) {
-        this.loadAsync();
+        this.minimunDataReload();
       }
     });
   }
@@ -73,26 +73,21 @@ export class WorkersListPage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.loadAsync();
+    this.loadData();
   }
 
   /**
    * loadAsync
    */
-  private loadAsync = async () => {
+  private loadData = () => {
     this.firstLoad = false;
+
+    // START LOADING
+    this.isLoading = true;
+
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    this.workers = [];
-    this.filteredWorkers = [];
-    this.syncedTallies = [];
-    this.talliesToRecord = [];
-    this.costCenters = [];
-    this.labors = [];
-    this.deals = [];
-    this.bonds = [];
-
-    const data = await Promise.all([
+    Promise.all([
       this.tallySyncService.getWorkersByQuadrille(+id, this.currentDate),
       this.storageSyncService.getTallies(),
       this.storageSyncService.getCostCentersCustom(),
@@ -100,22 +95,26 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
       this.tallySyncService.getTalliesToRecord(),
-    ]);
+    ]).then( data => {
 
-    // Workers
-    this.workers = [...data[0]];
-    this.filteredWorkers = [...this.workers] ;
-    this.selectedWorkers = [];
+      // Workers
+      this.workers = [...data[0]];
+      this.filteredWorkers = [...this.workers] ;
+      this.selectedWorkers = [];
 
-    // Tallies
-    this.syncedTallies = [...data[1]];
-    this.talliesToRecord = [...data[6]];
+      // Tallies
+      this.syncedTallies = [...data[1]];
+      this.talliesToRecord = [...data[6]];
 
-    // Form
-    this.costCenters = [...data[2]];
-    this.labors = [...data[3]];
-    this.deals = [...data[4]];
-    this.bonds = [...data[5]];
+      // Form
+      this.costCenters = [...data[2]];
+      this.labors = [...data[3]];
+      this.deals = [...data[4]];
+      this.bonds = [...data[5]];
+
+      // END LOADING
+      this.isLoading = false;
+    });
   }
 
   /**
@@ -310,7 +309,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadAsync();
+        this.minimunDataReload();
       }
     });
 
@@ -347,7 +346,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadAsync();
+        this.minimunDataReload();
       }
     });
 
@@ -378,7 +377,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadAsync();
+        this.minimunDataReload();
       }
     });
 
@@ -390,8 +389,34 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any): void => {
-    this.loadAsync();
+    this.minimunDataReload();
     event.target.complete();
+  }
+
+  /**
+   * minimunDataReload
+   */
+  private minimunDataReload = () => {
+
+    // START LOADING
+    this.isLoading = true;
+
+    Promise.all([
+      this.storageSyncService.getTallies(),
+      this.tallySyncService.getTalliesToRecord(),
+    ]).then( data => {
+
+      // Workers
+      this.selectedWorkers = [];
+
+      // Tallies
+      this.syncedTallies = [...data[0]];
+      this.talliesToRecord = [...data[1]];
+
+      // END LOADING
+      this.isLoading = false;
+    });
+
   }
 
 }

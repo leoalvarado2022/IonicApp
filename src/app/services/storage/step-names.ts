@@ -22,7 +22,6 @@ export const StepsArray = [
   'Grabar Dispositivos',
   'Grabar Tratos y Tarjas',
   'Limpiar Memoria',
-  'Obtener Sync',
-  'Guardando en Almacenamiento',
-  'Terminado'
+  'Sincronizando',
+  'Almacenando datos en memoria'
 ];

@@ -5,7 +5,6 @@ import {ActionSheetController} from '@ionic/angular';
 import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
-import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StepNames } from 'src/app/services/storage/step-names';
@@ -40,7 +39,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
     private stepperService: StepperService
   ) {
 
@@ -77,7 +75,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       const allWorkers = data[1];
       const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
-      const orderByName = this.alphabeticalOrderPipe.transform(workers);
+      const orderByName = [...workers];
 
       this.workers = [...this.orderByTransfersFirst(orderByName)];
       this.filteredWorkers = [...this.workers];
@@ -184,9 +182,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * buildButtons
    */
   private buildButtons = () => {
-    const orderedQuadrilles = this.alphabeticalOrderPipe.transform(this.quadrilles);
-
-    this.buttons = orderedQuadrilles
+    this.buttons = this.quadrilles
       .filter(item => item !== this.quadrille)
       .map(item => ({
         text: item.name,

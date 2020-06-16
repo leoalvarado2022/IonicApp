@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 
 import { IonicStorageModule } from '@ionic/storage';
-
 import { LoaderService } from '../shared/services/loader/loader.service';
 import { NetworkService } from '../shared/services/network/network.service';
 import { GeolocationService } from '../shared/services/geolocation/geolocation.service';
@@ -23,7 +22,7 @@ import {DeviceSyncService} from './storage/device-sync/device-sync.service';
       driverOrder: ['indexeddb', 'sqlite', 'websql'],
     }),
     HttpClientModule
-  ],
+  ],  
   providers: [
     LoaderService,
     NetworkService,
@@ -39,7 +38,7 @@ import {DeviceSyncService} from './storage/device-sync/device-sync.service';
     TimerService,
     StepperService,
     DeviceSyncService
-  ],
+  ]
 })
 export class CoreServicesModule {
 

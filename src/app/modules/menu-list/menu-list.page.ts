@@ -110,7 +110,21 @@ export class MenuListPage implements OnInit, OnDestroy {
     return StepNames;
   }
 
-  public getNamesArray() {
+  /**
+   * getNamesArray
+   */
+  public getNamesArray = () => {
     return StepsArray;
+  }
+
+  /**
+   * getStepColor
+   */
+  public getStepColor = (stepperIndex: number, namesIndex: number): string => {
+    if (stepperIndex === namesIndex) {
+      return 'primary';
+    } else {
+      return stepperIndex > namesIndex ? 'success' :  'warning';
+    }
   }
 }

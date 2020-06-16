@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StepNames } from 'src/app/services/storage/step-names';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,13 +19,13 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
 
   // Workers
   private workers: Array<any> = [];
+  private firstLoad = true;
 
   private stepper$: Subscription;
 
   constructor(
     private stepperService: StepperService,
     private storageSyncService: StorageSyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
     private router: Router
   ) {
 
@@ -34,8 +33,8 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring ) {
-        this.loadData();
+      if (step === StepNames.EndStoring && !this.firstLoad) {
+        this.loadAsync();
       }
     });
   }
@@ -44,23 +43,27 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
     this.stepper$.unsubscribe();
   }
 
-  ionViewWillEnter() {
-    this.loadData();
+  ionViewDidEnter() {
+    this.loadAsync();
   }
 
-  private loadData = (): void => {
-    Promise.all([
+  /**
+   * loadAsync
+   */
+  private loadAsync = async () => {
+    this.firstLoad = false;
+
+    const data = await Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers(),
-    ]).then(data => {
+    ]);
 
-      // Quadrilles
-      this.quadrilles = this.alphabeticalOrderPipe.transform(data[0]);
-      this.filteredQuadrilles = [...this.quadrilles];
+    // Quadrilles
+    this.quadrilles = [...data[0]];
+    this.filteredQuadrilles = [...this.quadrilles];
 
-      // Workers
-      this.workers = [...data[1]];
-    });
+    // Workers
+    this.workers = [...data[1]];
   }
 
   /**
@@ -93,7 +96,7 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any): void => {
-    this.loadData();
+    this.loadAsync();
     event.target.complete();
   }
 

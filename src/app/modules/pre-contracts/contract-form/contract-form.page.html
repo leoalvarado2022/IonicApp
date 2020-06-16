@@ -40,7 +40,7 @@
       <ion-item>
         <ion-label position="floating">Nacionalidad</ion-label>
         <ion-select formControlName="nationality" placeholder="Nacionalidad" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" [selectedText]="getNationalityName()"  (ionChange)="changeIdentifierValidation($event.detail.value)">
-          <ion-select-option *ngFor="let nationality of nationalities | alphabeticalOrder" [value]="nationality.id">{{ nationality.name }}</ion-select-option>
+          <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality.id">{{ nationality.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -121,7 +121,7 @@
         <ion-item>
           <ion-label position="floating">Estado Civil</ion-label>
           <ion-select formControlName="civilStatus" placeholder="Estado Civil" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-            <ion-select-option *ngFor="let status of civilStatus | alphabeticalOrder" [value]="status.name">{{ status.name }}</ion-select-option>
+            <ion-select-option *ngFor="let status of civilStatus" [value]="status.name">{{ status.name }}</ion-select-option>
           </ion-select>
         </ion-item>
 
@@ -152,21 +152,21 @@
       <ion-item>
         <ion-label position="floating">Tipo de Contrato</ion-label>
         <ion-select formControlName="contractType" placeholder="Tipo de Contrato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let type of contractTypes | alphabeticalOrder" [value]="type.id">{{ type.name }}</ion-select-option>
+          <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">AFP</ion-label>
         <ion-select formControlName="afp" placeholder="AFP" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let afp of afps | alphabeticalOrder" [value]="afp.id">{{ afp.name }}</ion-select-option>
+          <ion-select-option *ngFor="let afp of afps" [value]="afp.id">{{ afp.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">ISAPRE</ion-label>
         <ion-select formControlName="isapre" placeholder="Isapre" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let isapre of isapres | alphabeticalOrder" [value]="isapre.id">{{ isapre.name }}</ion-select-option>
+          <ion-select-option *ngFor="let isapre of isapres" [value]="isapre.id">{{ isapre.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -178,7 +178,7 @@
       <ion-item>
         <ion-label position="floating">Cuadrilla</ion-label>
         <ion-select formControlName="quadrille" placeholder="Cuadrilla" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let quadrille of quadrilles | alphabeticalOrder" [value]="quadrille.id">{{ quadrille.name }}</ion-select-option>
+          <ion-select-option *ngFor="let quadrille of quadrilles" [value]="quadrille.id">{{ quadrille.name }}</ion-select-option>
         </ion-select>
       </ion-item>
 

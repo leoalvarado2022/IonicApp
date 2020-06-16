@@ -27,19 +27,19 @@
     <ion-col>
       <p class="ion-text-center ion-text-wrap">
         Tarjas
-        <ion-badge class="quadrille-badge" color="primary">{{ getNumberOfWorkerTallies().length }}</ion-badge>
+        <ion-badge class="quadrille-badge" color="primary">{{ workerTallies.length }}</ion-badge>
       </p>
     </ion-col>
     <ion-col>
       <p class="ion-text-center">
         Jornadas
-        <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork().toFixed(2) }} Jr</ion-badge>
+        <ion-badge class="quadrille-badge" color="primary">{{ totalWorked }} Jr</ion-badge>
       </p>
     </ion-col>
   </ion-row>
  
-  <ion-list *ngIf="!isLoading">
-    <ion-item-sliding #slide *ngFor="let tally of getNumberOfWorkerTallies()">
+  <ion-list>
+    <ion-item-sliding #slide *ngFor="let tally of workerTallies">
       <ion-item class="no-padding-item" lines="none">
         <ion-card class="tally-card">
           <ion-item>

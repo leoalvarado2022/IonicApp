@@ -40,6 +40,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
   private bonds: Array<any> = [];
 
   private firstLoad = true;
+  public isLoading = false;
 
   private stepper$: Subscription;
 
@@ -59,7 +60,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
       if (step === StepNames.EndStoring && !this.firstLoad) {
         console.log('pasa por aqui');
-        this.loadAsync();
+        this.loadData();
       }
     });
   }
@@ -69,17 +70,22 @@ export class TalliesListPage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    this.loadAsync();
+    this.loadData();
   }
 
   /**
    * loadData
    */
-  private loadAsync = async () => {
+  private loadData = () => {
+    this.firstLoad = false;
+
+    // START LOADING
+    this.isLoading = true;
+
     this.currentDate = this.activatedRoute.snapshot.paramMap.get('date');
     const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    const data = await Promise.all([
+    Promise.all([
       this.tallySyncService.getWorkerById(+id),
       this.tallySyncService.getWorkerSyncedTallies(+id),
       this.tallySyncService.getWorkerTalliesToRecord(+id),
@@ -89,26 +95,29 @@ export class TalliesListPage implements OnInit, OnDestroy {
       this.storageSyncService.getLabors(),
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
-    ]);
+    ]).then( data => {
 
-    // Worker
-    this.activeWorker = data[0];
-    // this.workerTallies = [...this.getNumberOfWorkerTallies()];
+      // Worker
+      this.activeWorker = data[0];
 
-    // Tallies
-    this.syncedTallies = [...data[1]];
-    this.talliesToRecord = [...data[2]];
-    this.talliesWithErrors = [...data[3]];
+      // Tallies
+      this.syncedTallies = [...data[1]];
+      this.talliesToRecord = [...data[2]];
+      this.talliesWithErrors = [...data[3]];
 
-    // Form
-    this.costCenters = [...data[4]];
-    this.labors = [...data[5]];
-    this.deals = [...data[6]];
-    this.bonds = [...data[7]];
+      // Form
+      this.costCenters = [...data[4]];
+      this.labors = [...data[5]];
+      this.deals = [...data[6]];
+      this.bonds = [...data[7]];
 
-    // CALC TALLIES
-    this.workerTallies = [...this.getNumberOfWorkerTallies()];
-    this.totalWorked = this.getTotalWorkerWork(this.workerTallies);
+      // CALC TALLIES
+      this.workerTallies = [...this.getNumberOfWorkerTallies()];
+      this.totalWorked = this.getTotalWorkerWork(this.workerTallies);
+
+      // END LOADING
+      this.isLoading = false;
+    });
   }
 
   /**
@@ -116,7 +125,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any): void => {
-    this.loadAsync();
+    this.minimunReload();
     event.target.complete();
   }
 
@@ -215,7 +224,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadAsync();
+        this.minimunReload();
       }
     });
 
@@ -239,12 +248,12 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
               this.tallySyncService.removeTallyToRecord(tally.tempId).then( () => {
                 this.tallySyncService.addTallyToRecord(toDelete).then( () => {
-                  this.loadAsync();
+                  this.minimunReload();
                 });
               });
             } else {
               this.tallySyncService.removeTallyToRecord(tally.tempId).then( () => {
-                this.loadAsync();
+                this.minimunReload();
               });
             }
           }
@@ -254,7 +263,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
           const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
           this.tallySyncService.addTallyToRecord(toDelete).then( () => {
-            this.loadAsync();
+            this.minimunReload();
           });
         }
       }
@@ -283,7 +292,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadAsync();
+        this.minimunReload();
       }
     });
 
@@ -310,6 +319,41 @@ export class TalliesListPage implements OnInit, OnDestroy {
     }
 
     return 'Cargando...';
+  }
+
+  /**
+   * minimunReload
+   */
+  private minimunReload = () => {
+    this.firstLoad = false;
+
+    // START LOADING 
+    this.isLoading = true;
+
+    this.currentDate = this.activatedRoute.snapshot.paramMap.get('date');
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+
+    Promise.all([
+      this.tallySyncService.getWorkerSyncedTallies(+id),
+      this.tallySyncService.getWorkerTalliesToRecord(+id),
+      this.tallySyncService.getTalliesWithErrors(),
+    ]).then( data => {
+
+      // Tallies
+      this.syncedTallies = [...data[0]];
+      this.talliesToRecord = [...data[1]];
+      this.talliesWithErrors = [...data[2]];
+
+      // CALC TALLIES
+      this.workerTallies = [...this.getNumberOfWorkerTallies()];
+      this.totalWorked = this.getTotalWorkerWork(this.workerTallies);
+
+      console.log('totalWorked', this.totalWorked);
+
+      // END LOADING
+      this.isLoading = false;
+    });
+
   }
 
 }

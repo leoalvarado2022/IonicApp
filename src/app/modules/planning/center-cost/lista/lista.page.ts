@@ -1,9 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {CostCenterList} from '@primetec/primetec-angular';
-import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
 import {Router} from '@angular/router';
-import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {StoreService} from '../../../../shared/services/store/store.service';
 
 @Component({
@@ -16,10 +13,9 @@ export class ListaPage implements OnInit {
   public filteredCostCenters: Array<CostCenterList> = [];
   private costCenters: Array<CostCenterList> = [];
 
+  public isLoading = false;
+
   constructor(
-    private syncService: SyncService,
-    private contractDetailService: ContractDetailService,
-    private loaderService: LoaderService,
     private router: Router,
     private storeService: StoreService
   ) {
@@ -27,18 +23,25 @@ export class ListaPage implements OnInit {
   }
 
   ngOnInit() {
+
+  }
+
+  ionViewDidEnter() {
     this.loadCostCenters();
   }
 
   /**
    * loadCostCenters
    */
-  public loadCostCenters = () => {
-    this.loaderService.startLoader();
+  private loadCostCenters = () => {
+    this.isLoading = true;
+
     const costCenters = this.storeService.getCostCenters();
+
     this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
-    this.loaderService.stopLoader();
+
+    this.isLoading = false;
   }
 
   /**
@@ -82,8 +85,9 @@ export class ListaPage implements OnInit {
    * reSync
    * @param event
    */
-  public reSync = (event) => {
+  public reSync = (event: any) => {
     this.loadCostCenters();
     event.target.complete();
   }
+
 }

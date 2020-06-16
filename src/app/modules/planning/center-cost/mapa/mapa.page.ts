@@ -1,7 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
-import {SyncService} from '../../../../shared/services/sync/sync.service';
-import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {GeolocationService} from '../../../../shared/services/geolocation/geolocation.service';
 import {Subscription} from 'rxjs';
 import {StoreService} from '../../../../shared/services/store/store.service';
@@ -24,8 +22,6 @@ export class MapaPage implements OnInit, OnDestroy {
   private store$: Subscription;
 
   constructor(
-    private syncService: SyncService,
-    private loaderService: LoaderService,
     private geolocationService: GeolocationService,
     private storeService: StoreService
   ) {
@@ -35,7 +31,7 @@ export class MapaPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadCurrentPosition();
 
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
+    this.store$ = this.storeService.stateChanged.subscribe(() => {
       this.costCenters = this.storeService.getCostCenters();
       this.filteredCostCenters = this.costCenters;
     });
@@ -44,6 +40,12 @@ export class MapaPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.position$.unsubscribe();
     this.store$.unsubscribe();
+  }
+
+  ionViewDidEnter() {
+    const costCenters = this.storeService.getCostCenters();
+    this.costCenters = [...costCenters];
+    this.filteredCostCenters = [...costCenters];
   }
 
   /**

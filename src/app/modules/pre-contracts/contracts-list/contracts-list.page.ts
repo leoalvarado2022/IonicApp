@@ -17,8 +17,11 @@ import { StepNames } from 'src/app/services/storage/step-names';
 })
 export class ContractsListPage implements OnInit, OnDestroy {
 
-  public contracts: Array<ContractListItem> = [];
+  private contracts: Array<ContractListItem> = [];
   public filteredContracts: Array<ContractListItem> = [];
+
+  private firstLoad = true;
+  public isLoading = false;
 
   private stepper$: Subscription;
 
@@ -36,7 +39,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring) {
+      if (step === StepNames.EndStoring && !this.firstLoad) {
         this.loadPreContracts();
       }
     });
@@ -46,7 +49,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.stepper$.unsubscribe();
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.loadPreContracts();
   }
 
@@ -54,10 +57,15 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * loadPreContracts
    */
   private loadPreContracts = () => {
+    this.firstLoad = false;
+    this.isLoading = true;
+
     this.storageSyncService.getPreContracts().then( data => {
       const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
       this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
       this.filteredContracts = [...this.contracts];
+
+      this.isLoading = false;
     });
   }
 

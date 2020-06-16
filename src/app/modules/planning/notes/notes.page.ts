@@ -27,6 +27,8 @@ export class NotesPage implements OnInit, OnDestroy {
   private router$: Subscription;
   private store$: Subscription;
 
+  private firstLoad = true;
+
   constructor(
     private modalController: ModalController,
     private contractDetailService: ContractDetailService,
@@ -37,9 +39,7 @@ export class NotesPage implements OnInit, OnDestroy {
     private networkService: NetworkService,
     private storeService: StoreService
   ) {
-    this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
-      this.isOnline = status;
-    });
+
   }
 
   ngOnInit() {
@@ -49,10 +49,14 @@ export class NotesPage implements OnInit, OnDestroy {
       }
     });
 
+    this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
+      this.isOnline = status;
+    });
+
     this.store$ = this.storeService.stateChanged.subscribe(data => {
-      this.costCenter = this.storeService.getCostCenter();
-      this.notes = this.storeService.getNotes();
-      this.filteredNotes = this.storeService.getNotes();
+      if (!this.firstLoad) {
+        this.loadData();
+      }
     });
   }
 
@@ -60,6 +64,21 @@ export class NotesPage implements OnInit, OnDestroy {
     this.isOnline$.unsubscribe();
     this.router$.unsubscribe();
     this.store$.unsubscribe();
+  }
+
+  ionViewDidEnter() {
+    this.loadData();
+  }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    this.firstLoad = false;
+
+    this.costCenter = this.storeService.getCostCenter();
+    this.notes = this.storeService.getNotes();
+    this.filteredNotes = this.storeService.getNotes();
   }
 
   /**

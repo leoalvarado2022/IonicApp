@@ -6,6 +6,7 @@ import {DealsService} from '../services/deals/deals.service';
 import {StoreService} from '../../../shared/services/store/store.service';
 import * as moment from 'moment';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
+import {WorkerDealsComponent} from '../worker-deals/worker-deals.component';
 
 @Component({
   selector: 'app-tratos-list',
@@ -88,6 +89,9 @@ export class TratosListPage {
     });
   }
 
+  /**
+   * mapear tratos
+   */
   mapDeals() {
     Promise.all([
       this._storageSyncService.getTallies(),
@@ -121,6 +125,7 @@ export class TratosListPage {
       // se agrega a los temporales
       this._storageSyncService.setTallyTemp(this.tallyTemp).then();
       // console.log(this.tallyTemp);
+      this._changeDetect.detectChanges();
     });
   }
 
@@ -169,6 +174,9 @@ export class TratosListPage {
     this._router.navigate(['home-page/tarja_tratos/add-center-cost']);
   };
 
+  /**
+   * activar trato
+   */
   activeTrato = async () => {
     const deals = await this._DealService.getDeals();
     const modal = await this.modalController.create({
@@ -183,4 +191,38 @@ export class TratosListPage {
 
     return await modal.present();
   };
+
+  /**
+   * @description
+   * @param deals
+   * @param event
+   */
+  async showWorkers(deals: any, event: any) {
+    event.close();
+    const tallies = this.tallyTemp.filter(value => value.id_par_tratos_vigencias === deals.id_deal_validity);
+    const worker = this._DealService.groupBy(tallies, (item) => item.id_par_entidades_trabajador);
+    let work = [];
+    worker.forEach((valor, clave, map) => {
+      if (valor.length) {
+        work.push(valor[0]);
+      }
+    });
+    const nameWorker = await this._storageSyncService.getWorkers();
+    work = work.map((data: any) => {
+      data.worker = nameWorker.find(value => value.id === data.workerId);
+      return data;
+    });
+
+    deals.worker = work;
+    const modal = await this.modalController.create({
+      component: WorkerDealsComponent,
+      componentProps: {deals}
+    });
+
+    modal.onDidDismiss().then((data) => {
+      console.log(data, 'data.onDidDismiss');
+    });
+
+    return await modal.present();
+  }
 }

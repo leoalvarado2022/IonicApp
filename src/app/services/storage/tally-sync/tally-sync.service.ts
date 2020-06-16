@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { Storage } from '@ionic/storage';
 import { StorageKeys } from '../storage-keys';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -185,6 +186,75 @@ export class TallySyncService {
     }
 
     return date;
+  }
+
+  /**
+   * getWorkersByQuadrille
+   * @param quadrilleId
+   * @param currentDate
+   */
+  public getWorkersByQuadrille = (quadrilleId: number, currentDate: string): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Workers).then( (workers: Array<any>) => {
+      if (workers) {
+        return workers.filter(item => item.quadrille === quadrilleId && this.validContractDate(item, currentDate));
+      }
+
+      return [];
+    });
+  }
+
+  /**
+   * validContractDate
+   */
+  private validContractDate = (worker: any, currentDate: string): boolean => {
+    if (currentDate) {
+      const start = moment(worker.startDate).toISOString();
+      const end = moment(worker.endDate).toISOString();
+
+      return moment(currentDate).isBetween(start, end);
+    }
+
+    return false;
+  }
+
+  /**
+   * getWorkerById
+   * @param id 
+   */
+  public getWorkerById = (id: number): Promise<any> => {
+    return this.storage.get(StorageKeys.Workers).then( (workers: Array<any>) => {
+      if (workers) {
+        return workers.find(item => item.id === id);
+      }
+
+      return null;
+    });
+  }
+
+  /**
+   * getWorkerSyncedTallies
+   */
+  public getWorkerSyncedTallies = (workerId: number): Promise<Array<Tally>> => {
+    return this.storage.get(StorageKeys.Tallies).then( (tallies: Array<Tally>) => {
+      if (tallies) {
+        return tallies.filter(item => item.workerId === workerId);
+      }
+
+      return [];
+    });
+  }
+
+  /**
+   * getWorkerTalliesToRecord
+   */
+  public getWorkerTalliesToRecord = (workerId: number): Promise<Array<Tally>> => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then( (tallies: Array<Tally>) => {
+      if (tallies) {
+        return tallies.filter(item => item.workerId === workerId);
+      }
+
+      return [];
+    });
   }
 
 }

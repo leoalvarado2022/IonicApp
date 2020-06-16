@@ -76,9 +76,7 @@ export class StepperService {
           // Remove from "devices" the devices that were recorded successful
           this.checkIfRemoveDevicesToRecord();
 
-          setTimeout(() => {
-            this.goToStep(StepNames.GetSyncData);
-          }, 2000);
+          this.goToStep(StepNames.GetSyncData);
         }
 
         //  Get sync data
@@ -131,35 +129,35 @@ export class StepperService {
    */
   private goToStep = (stepNumber: number) => {
     this.stepper.next(stepNumber);
-  };
+  }
 
   /**
    * getStepper
    */
   public getStepper = () => {
     return this.stepper.asObservable();
-  };
+  }
 
   /**
    * runAllSteps
    */
   public runAllSteps = () => {
     this.stepper.next(StepNames.RecordTallies);
-  };
+  }
 
   /**
    * runRemModuleStorageSteps
    */
   public runRemModuleStorageSteps = () => {
     this.stepper.next(StepNames.GetRemSyncData);
-  };
+  }
 
   /**
    * runTalliesModuleStorageSteps
    */
   public runTalliesModuleStorageSteps = () => {
     this.stepper.next(StepNames.GetTalliesSyncData);
-  };
+  }
 
   /**
    * Gets the data from the sync endpoint
@@ -170,13 +168,15 @@ export class StepperService {
     const username = userData.username;
     const activeConnection = this.storeService.getActiveConnection();
 
+    this.dataSync = null;
     this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe(success => {
       this.dataSync = success['data'];
       this.goToStep(nextStep);
     }, error => {
       this.httpService.errorHandler(error);
+      this.goToStep(StepNames.EndStoring);
     });
-  };
+  }
 
   /**
    * storeAllSyncData
@@ -190,7 +190,7 @@ export class StepperService {
       this.dataSync = null;
       this.goToStep(StepNames.EndStoring);
     });
-  };
+  }
 
   /**
    * storeRemSyncData
@@ -204,7 +204,7 @@ export class StepperService {
       this.dataSync = null;
       this.goToStep(StepNames.EndStoring);
     });
-  };
+  }
 
   /**
    * storeTalliesSyncData
@@ -218,7 +218,7 @@ export class StepperService {
       this.dataSync = null;
       this.goToStep(StepNames.EndStoring);
     });
-  };
+  }
 
   /**
    * recordTallies
@@ -247,12 +247,13 @@ export class StepperService {
           this.goToStep(StepNames.RecordDevices);
         }, () => {
           this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
+          this.goToStep(StepNames.EndStoring);
         });
       } else {
         this.goToStep(StepNames.RecordDevices);
       }
     });
-  };
+  }
 
   /**
    * checkRecordedTallies
@@ -278,7 +279,7 @@ export class StepperService {
 
       this.removeTalliesToRecordFlag = true;
     }
-  };
+  }
 
   /**
    * checkIfRemoveTalliesToRecord
@@ -297,7 +298,7 @@ export class StepperService {
         }
       });
     }
-  };
+  }
 
 
   /**
@@ -319,12 +320,13 @@ export class StepperService {
           this.goToStep(StepNames.RecordDevicesTallies);
         }, () => {
           this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
+          this.goToStep(StepNames.EndStoring);
         });
       } else {
         this.goToStep(StepNames.RecordDevicesTallies);
       }
     });
-  };
+  }
 
   /**
    * recordDealsTallies
@@ -342,12 +344,13 @@ export class StepperService {
           this.goToStep(StepNames.CleanMemory);
         }, () => {
           this.toastService.errorToast('Ocurrio un error al sincronizar tratos');
+          this.goToStep(StepNames.EndStoring);
         });
       } else {
         this.goToStep(StepNames.CleanMemory);
       }
     });
-  };
+  }
 
   /**
    * checkIfRemoveDevicesToRecord
@@ -364,7 +367,7 @@ export class StepperService {
         }
       });
     }
-  };
+  }
 
   /**
    * checkRecordedTallies
@@ -389,6 +392,6 @@ export class StepperService {
       }
       this.removeDevices = true;
     }
-  };
+  }
 
 }

@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { StepNames } from 'src/app/services/storage/step-names';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import { Tally } from '../tally.interface';
@@ -44,12 +43,13 @@ export class WorkersListPage implements OnInit, OnDestroy {
   private deals: Array<any> = [];
   private bonds: Array<any> = [];
 
+  private firstLoad = true;
+
   private stepper$: Subscription;
 
   constructor(
     private stepperService: StepperService,
     private storageSyncService: StorageSyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe,
     private activatedRoute: ActivatedRoute,
     private tallySyncService: TallySyncService,
     private modalController: ModalController,
@@ -60,9 +60,10 @@ export class WorkersListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('pasa por aqui');
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring ) {
-        this.loadData();
+      if (step === StepNames.EndStoring && !this.firstLoad) {
+        this.loadAsync();
       }
     });
   }
@@ -71,39 +72,50 @@ export class WorkersListPage implements OnInit, OnDestroy {
     this.stepper$.unsubscribe();
   }
 
-  ionViewWillEnter() {
-    this.loadData();
+  ionViewDidEnter() {
+    this.loadAsync();
   }
 
   /**
-   * loadData
+   * loadAsync
    */
-  private loadData = (): void => {
-    Promise.all([
-      this.storageSyncService.getWorkers(),
+  private loadAsync = async () => {
+    this.firstLoad = false;
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
+
+    this.workers = [];
+    this.filteredWorkers = [];
+    this.syncedTallies = [];
+    this.talliesToRecord = [];
+    this.costCenters = [];
+    this.labors = [];
+    this.deals = [];
+    this.bonds = [];
+
+    const data = await Promise.all([
+      this.tallySyncService.getWorkersByQuadrille(+id, this.currentDate),
       this.storageSyncService.getTallies(),
       this.storageSyncService.getCostCentersCustom(),
       this.storageSyncService.getLabors(),
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
-      this.tallySyncService.getTalliesToRecord()
-    ]).then(data => {
+      this.tallySyncService.getTalliesToRecord(),
+    ]);
 
-      // Workers
-      this.workers = this.alphabeticalOrderPipe.transform(this.getQuadrilleWorkers(data[0]));
-      this.filteredWorkers = [...this.workers] ;
-      this.selectedWorkers = [];
+    // Workers
+    this.workers = [...data[0]];
+    this.filteredWorkers = [...this.workers] ;
+    this.selectedWorkers = [];
 
-      // Tallies
-      this.syncedTallies = data[1];
-      this.talliesToRecord = data[6];
+    // Tallies
+    this.syncedTallies = [...data[1]];
+    this.talliesToRecord = [...data[6]];
 
-      // Form
-      this.costCenters = data[2];
-      this.labors = data[3];
-      this.deals = data[4];
-      this.bonds = data[5];
-    });
+    // Form
+    this.costCenters = [...data[2]];
+    this.labors = [...data[3]];
+    this.deals = [...data[4]];
+    this.bonds = [...data[5]];
   }
 
   /**
@@ -129,30 +141,6 @@ export class WorkersListPage implements OnInit, OnDestroy {
    */
   public cancelSearch = (): void => {
     this.filteredWorkers = [...this.workers];
-  }
-
-  /**
-   * getWorkersFilteredByQuadrille
-   */
-  public getQuadrilleWorkers = (workers: Array<any>): Array<any> => {
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
-
-    return workers.filter(item => item.quadrille === parseInt(id, 10) && this.validContractDate(item));
-  }
-
-  /**
-   * validContractDate
-   * @param worker
-   */
-  public validContractDate = (worker: any): boolean => {
-    if (this.currentDate) {
-      const start = moment(worker.startDate).toISOString();
-      const end = moment(worker.endDate).toISOString();
-
-      return moment(this.currentDate).isBetween(start, end);
-    }
-
-    return false;
   }
 
   /**
@@ -202,7 +190,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * @param worker
    */
   private getNumberOfWorkerTallies = (worker: any): Array<Tally> => {
-    return this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord,  worker, this.currentDate);
+    return this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.currentDate);
   }
 
   /**
@@ -293,9 +281,11 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * getTotalWorkerWork
    * @param worker
    */
-  public getTotalWorkerWork = (worker: any): number => {
+  public getTotalWorkerWork = (worker: any): string => {
     const todayTallies = this.getNumberOfWorkerTallies(worker);
-    return todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+    const workTotal = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+
+    return parseFloat(workTotal).toFixed(2);
   }
 
   /**
@@ -320,7 +310,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadData();
+        this.loadAsync();
       }
     });
 
@@ -357,7 +347,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadData();
+        this.loadAsync();
       }
     });
 
@@ -388,11 +378,20 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadData();
+        this.loadAsync();
       }
     });
 
     return await modal.present();
+  }
+
+  /**
+   * reload
+   * @param event
+   */
+  public reload = (event: any): void => {
+    this.loadAsync();
+    event.target.complete();
   }
 
 }

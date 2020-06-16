@@ -1,6 +1,6 @@
 {
   "name": "fx360_movil",
-  "version": "1.0.79",
+  "version": "1.0.81",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -139,8 +139,8 @@
       "phonegap-plugin-barcodescanner": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

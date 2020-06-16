@@ -20,11 +20,10 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 })
 export class TalliesListPage implements OnInit, OnDestroy {
 
-  public isLoading = false;
-
   // Worker
   public activeWorker: any = null;
   public workerTallies: Array<Tally> = [];
+  public totalWorked = '0';
 
   // Date
   private currentDate: any = null;
@@ -39,6 +38,8 @@ export class TalliesListPage implements OnInit, OnDestroy {
   private labors: Array<any> = [];
   private deals: Array<any> = [];
   private bonds: Array<any> = [];
+
+  private firstLoad = true;
 
   private stepper$: Subscription;
 
@@ -56,8 +57,9 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring ) {
-        this.loadData();
+      if (step === StepNames.EndStoring && !this.firstLoad) {
+        console.log('pasa por aqui');
+        this.loadAsync();
       }
     });
   }
@@ -66,53 +68,47 @@ export class TalliesListPage implements OnInit, OnDestroy {
     this.stepper$.unsubscribe();
   }
 
-  ionViewWillEnter() {
-    this.loadData();
+  ionViewDidEnter() {
+    this.loadAsync();
   }
 
   /**
    * loadData
    */
-  private loadData = (): void => {
+  private loadAsync = async () => {
     this.currentDate = this.activatedRoute.snapshot.paramMap.get('date');
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
 
-    this.isLoading = true;
-    Promise.all([
-      this.storageSyncService.getWorkers(),
-      this.storageSyncService.getTallies(),
+    const data = await Promise.all([
+      this.tallySyncService.getWorkerById(+id),
+      this.tallySyncService.getWorkerSyncedTallies(+id),
+      this.tallySyncService.getWorkerTalliesToRecord(+id),
+      this.tallySyncService.getTalliesWithErrors(),
+
       this.storageSyncService.getCostCentersCustom(),
       this.storageSyncService.getLabors(),
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
-      this.tallySyncService.getTalliesToRecord(),
-      this.tallySyncService.getTalliesWithErrors()
-    ]).then(data => {
+    ]);
 
-      // Worker
-      this.activeWorker = this.getWorker(data[0]);
-      this.workerTallies = [...this.getNumberOfWorkerTallies()];
+    // Worker
+    this.activeWorker = data[0];
+    // this.workerTallies = [...this.getNumberOfWorkerTallies()];
 
-      // Tallies
-      this.syncedTallies = data[1];
-      this.talliesToRecord = data[6];
-      this.talliesWithErrors = data[7];
+    // Tallies
+    this.syncedTallies = [...data[1]];
+    this.talliesToRecord = [...data[2]];
+    this.talliesWithErrors = [...data[3]];
 
-      // Form
-      this.costCenters = data[2];
-      this.labors = data[3];
-      this.deals = data[4];
-      this.bonds = data[5];
+    // Form
+    this.costCenters = [...data[4]];
+    this.labors = [...data[5]];
+    this.deals = [...data[6]];
+    this.bonds = [...data[7]];
 
-      this.isLoading = false;
-    });
-  }
-
-  /**
-   * getWorker
-   */
-  private getWorker = (workers: Array<any>) => {
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
-    return workers.find(w => w.id === +id);
+    // CALC TALLIES
+    this.workerTallies = [...this.getNumberOfWorkerTallies()];
+    this.totalWorked = this.getTotalWorkerWork(this.workerTallies);
   }
 
   /**
@@ -120,7 +116,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any): void => {
-    this.loadData();
+    this.loadAsync();
     event.target.complete();
   }
 
@@ -128,15 +124,19 @@ export class TalliesListPage implements OnInit, OnDestroy {
    * getTotalWorkerWork
    * @param worker
    */
-  public getTotalWorkerWork = (): number => {
-    const todayTallies = this.getNumberOfWorkerTallies();
-    return todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+  public getTotalWorkerWork = (todayTallies: Array<Tally>): string => {
+    if (todayTallies) {
+      const workTotal = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+      return parseFloat(workTotal).toFixed(2);
+    }
+
+    return '0';
   }
 
   /**
    * getNumberOfWorkerTallies
    */
-  public getNumberOfWorkerTallies = (): Array<Tally> => {
+  private getNumberOfWorkerTallies = (): Array<Tally> => {
     return this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, this.activeWorker, this.currentDate);
   }
 
@@ -215,7 +215,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadData();
+        this.loadAsync();
       }
     });
 
@@ -239,12 +239,12 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
               this.tallySyncService.removeTallyToRecord(tally.tempId).then( () => {
                 this.tallySyncService.addTallyToRecord(toDelete).then( () => {
-                  this.loadData();
+                  this.loadAsync();
                 });
               });
             } else {
               this.tallySyncService.removeTallyToRecord(tally.tempId).then( () => {
-                this.loadData();
+                this.loadAsync();
               });
             }
           }
@@ -254,7 +254,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
           const toDelete = Object.assign({}, tally, {id: tally.id * -1, status: 'delete', tempId});
           this.tallySyncService.addTallyToRecord(toDelete).then( () => {
-            this.loadData();
+            this.loadAsync();
           });
         }
       }
@@ -283,7 +283,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then((data) => {
       if (data.data) {
-        this.loadData();
+        this.loadAsync();
       }
     });
 
@@ -295,7 +295,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
    */
   public checkWorkerLimit = () => {
     if (this.activeWorker) {
-      return this.getTotalWorkerWork() >= this.activeWorker.dailyMax;
+      return this.getTotalWorkerWork(this.workerTallies) >= this.activeWorker.dailyMax;
     }
 
     return true;

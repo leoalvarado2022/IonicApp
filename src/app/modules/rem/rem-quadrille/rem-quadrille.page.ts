@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { AlphabeticalOrderPipe } from 'src/app/shared/pipes/alphabetical-order/alphabetical-order.pipe';
 
 @Component({
   selector: 'app-rem-quadrille',
@@ -16,8 +15,7 @@ export class RemQuadrillePage implements OnInit {
 
   constructor(
     private router: Router,
-    private storageSyncService: StorageSyncService,
-    private alphabeticalOrderPipe: AlphabeticalOrderPipe
+    private storageSyncService: StorageSyncService
   ) {
 
   }
@@ -40,7 +38,7 @@ export class RemQuadrillePage implements OnInit {
     ]).then( (data) => {
       this.workers = [...data[1]];
 
-      let orderByName = this.alphabeticalOrderPipe.transform(data[0]);
+      let orderByName = [...data[0]];
       orderByName = orderByName.map( item => Object.assign({}, item, { cases: this.showBadge(item.id) }));
 
       this.quadrilles = [...this.orderByTransfersFirst(orderByName)];

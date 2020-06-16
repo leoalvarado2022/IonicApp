@@ -69,6 +69,9 @@ export class TallyFormComponent implements OnInit {
     this.filteredLabors = [];
     const workingDayStartValue = this.getWorkerRemainingWorkingDay();
 
+    console.log('talliesToRecord', this.talliesToRecord);
+    console.log('syncedTallies', this.syncedTallies);
+
     this.tallyForm = this.formBuilder.group({
       id: [0, Validators.required],
       date: [this.dateSelected, Validators.required],
@@ -244,9 +247,15 @@ export class TallyFormComponent implements OnInit {
 
     if (this.updateTaly) {
       const editTally = this.editSingleTally(this.worker, formData, this.updateTaly);
+
+      console.log({ editTally });
+
       this.tallySyncService.editTallyToRecord(editTally);
     } else {
       const newTally = this.newSingleTally(this.worker, formData);
+
+      console.log({ newTally });
+
       this.tallySyncService.addTallyToRecord(newTally);
     }
 
@@ -339,8 +348,8 @@ export class TallyFormComponent implements OnInit {
    */
   public workingDayChanged = (value: number) => {
     if (value) {
-      this.checkWorkerDailyMax(value);
       this.tallyForm.get('workingDay').patchValue(value);
+      this.checkWorkerDailyMax(value);
     }
   }
 
@@ -356,12 +365,12 @@ export class TallyFormComponent implements OnInit {
    */
   private getWorkerRemainingWorkingDay = (): number => {
     const todayTallies = this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, this.worker, this.dateSelected);
-    // tslint:disable-next-line: no-shadowed-variable
+
     const totalWorked = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 
-    const total = this.worker.dailyMax - totalWorked > 0 ? this.worker.dailyMax - totalWorked : 0;
+    const ammount = this.worker.dailyMax - totalWorked > 0 ? this.worker.dailyMax - totalWorked : 0;
 
-    return parseFloat(total.toFixed(2));
+    return parseFloat(ammount.toFixed(2));
   }
 
   /**

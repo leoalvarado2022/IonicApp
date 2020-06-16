@@ -20,7 +20,7 @@
     </ion-item>
 
     <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
-      <ion-item *ngFor="let costCenter of filteredCostCenters | alphabeticalOrder" (click)="selectCostCenter(costCenter)">
+      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
         {{ costCenter.name  }}
       </ion-item>
     </ion-list>
@@ -33,7 +33,7 @@
     </ion-item>
 
     <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">        
-      <ion-item *ngFor="let labor of filteredLabors | alphabeticalOrder" (click)="selectLabor(labor)">
+      <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
         {{ labor.name  }}
       </ion-item>
     </ion-list>
@@ -43,7 +43,7 @@
       <ion-item>
         <ion-label position="stacked">Trato</ion-label>
         <ion-select formControlName="dealValidity" placeholder="Trato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectDeal($event.detail.value)">
-          <ion-select-option *ngFor="let deal of availableDeals | alphabeticalOrder:'name_deal'" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
+          <ion-select-option *ngFor="let deal of availableDeals" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
         </ion-select>
       </ion-item>   
     </ng-container>
@@ -53,7 +53,7 @@
       <ion-item>
         <ion-label position="stacked">Bono</ion-label>
         <ion-select formControlName="bondValidity" placeholder="Bono" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let bond of availableBonds | alphabeticalOrder:'bondName'" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
+          <ion-select-option *ngFor="let bond of availableBonds" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
         </ion-select>
       </ion-item>
     </ng-container>

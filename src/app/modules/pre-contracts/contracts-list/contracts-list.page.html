@@ -16,34 +16,33 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
-    <ion-refresher-content
-      pullingIcon="arrow-down"
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
-      refreshingText="Sincronizando...">
-    </ion-refresher-content>
-  </ion-refresher>
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
 
   <h2 class="ion-text-center">
     Pre-Contratos
-    <ion-badge class="quadrille-badge" color="primary">{{ contracts.length }}</ion-badge>
+    <ion-badge class="quadrille-badge" color="primary">{{ filteredContracts.length }}</ion-badge>
   </h2>
 
-  <ion-virtual-scroll [items]="filteredContracts">
-    <div *virtualItem="let contract">
-      <app-contract-list-item
-        [contract]="contract"
-        (editContractEvent)="editContractEvent($event)"
-        (deleteContractEvent)="deleteContract($event)">
-      </app-contract-list-item>
-    </div>
-  </ion-virtual-scroll>
+  <ng-container *ngIf="isLoading">
+    <h1 class="ion-text-center">Cargando...</h1>
+  </ng-container>
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="contractForm()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+  <ng-container *ngIf="!isLoading">
+    <ion-virtual-scroll [items]="filteredContracts">
+      <div *virtualItem="let contract">
+        <app-contract-list-item
+          [contract]="contract"
+          (editContractEvent)="editContractEvent($event)"
+          (deleteContractEvent)="deleteContract($event)">
+        </app-contract-list-item>
+      </div>
+    </ion-virtual-scroll>
+  
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button (click)="contractForm()">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ng-container>  
 
 </ion-content>

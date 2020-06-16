@@ -27,6 +27,8 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
   private router$: Subscription;
   private store$: Subscription;
 
+  private firstLoad = true;
+
   constructor(
     private router: Router,
     private modalController: ModalController,
@@ -37,9 +39,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     private networkService: NetworkService,
     private storeService: StoreService
   ) {
-    this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
-      this.isOnline = status;
-    });
+
   }
 
   ngOnInit() {
@@ -49,17 +49,38 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
       }
     });
 
-    this.store$ = this.storeService.stateChanged.subscribe(data => {
-      this.costCenter = this.storeService.getCostCenter();
-      this.harvestEstimate = this.storeService.getHarvestEstimate();
-      this.filteredHarvestEstimate = this.storeService.getHarvestEstimate();
+    this.isOnline$ = this.networkService.getNetworkStatus().subscribe(status => {
+      this.isOnline = status;
     });
+
+    this.store$ = this.storeService.stateChanged.subscribe(data => {
+      if (!this.firstLoad) {
+        this.loadData();
+      }
+    });
+
+    this.firstLoad = false;
   }
 
   ngOnDestroy(): void {
     this.isOnline$.unsubscribe();
     this.router$.unsubscribe();
     this.store$.unsubscribe();
+  }
+
+  ionViewDidEnter() {
+    this.loadData();
+  }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    this.firstLoad = false;
+
+    this.costCenter = this.storeService.getCostCenter();
+    this.harvestEstimate = this.storeService.getHarvestEstimate();
+    this.filteredHarvestEstimate = this.storeService.getHarvestEstimate();
   }
 
   /**

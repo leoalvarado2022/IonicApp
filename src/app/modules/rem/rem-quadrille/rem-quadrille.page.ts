@@ -9,9 +9,11 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 })
 export class RemQuadrillePage implements OnInit {
 
-  public quadrilles: Array<any> = [];
+  private workers: Array<any> = [];
+  private quadrilles: Array<any> = [];
   public filteredQuadrilles: Array<any> = [];
-  public workers: Array<any> = [];
+
+  public isLoading = false;
 
   constructor(
     private router: Router,
@@ -20,7 +22,7 @@ export class RemQuadrillePage implements OnInit {
 
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.loadQuadrilles();
   }
 
@@ -32,6 +34,9 @@ export class RemQuadrillePage implements OnInit {
    * loadQuadrilles
    */
   private loadQuadrilles = () => {
+
+    this.isLoading = true;
+
     Promise.all([
       this.storageSyncService.getQuadrilles(),
       this.storageSyncService.getWorkers()
@@ -43,6 +48,8 @@ export class RemQuadrillePage implements OnInit {
 
       this.quadrilles = [...this.orderByTransfersFirst(orderByName)];
       this.filteredQuadrilles = [...this.quadrilles];
+
+      this.isLoading = false;
     });
   }
 

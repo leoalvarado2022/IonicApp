@@ -34,6 +34,7 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   private lat: number;
   private lng: number;
 
+  private firstLoad = true;
   private geolocationService$: Subscription;
   private store$: Subscription;
 
@@ -56,11 +57,6 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadUnits();
     this.costCenterListItem = this.storeService.getActiveCostCenter();
-    const id = this.route.snapshot.paramMap.get('id');
-
-    if (id) {
-      this.loadContractDetail(id);
-    }
 
     this.geolocationService$ = this.geolocationService.getCurrentPosition().subscribe(data => {
       this.lat = data.lat;
@@ -82,6 +78,15 @@ export class ContractDetailPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.geolocationService$.unsubscribe();
     this.store$.unsubscribe();
+  }
+
+  ionViewDidEnter() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.loadContractDetail(id);
+    }
+
   }
 
   /**

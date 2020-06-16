@@ -1,18 +1,26 @@
 <ion-content>
-  <ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
 
-  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
-    <ion-refresher-content
-      pullingIcon="arrow-down"
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
-      refreshingText="Sincronizando...">
-    </ion-refresher-content>
-  </ion-refresher>
+  <ion-refresher class="refresher-position" (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
 
-  <ion-virtual-scroll [items]="filteredCostCenters">
-    <div *virtualItem="let item">
-      <app-cost-center-card (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
-    </div>
-  </ion-virtual-scroll>
+  <ion-searchbar 
+    placeholder="Buscar..." 
+    animated 
+    class="production" 
+    showCancelButton="never"
+    (ionChange)="searchCostCenter($event.target.value)" 
+    (ionClear)="cancelSearch()">
+  </ion-searchbar>
+
+  <ng-container *ngIf="isLoading">
+    <h1>Cargando...</h1>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading">
+    <ion-virtual-scroll [items]="filteredCostCenters" approxItemHeight="170px">
+      <div *virtualItem="let item" style="height: 170px">
+        <app-cost-center-card (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
+      </div>
+    </ion-virtual-scroll>
+  </ng-container>
+
 </ion-content>

@@ -25,10 +25,13 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   public quadrille: any;
   private quadrilles: Array<any> = [];
-  public workers: Array<any> = [];
+  private workers: Array<any> = [];
   public filteredWorkers: Array<any> = [];
   public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
+
+  public isLoading = false;
+  private firstLoad = false;
 
   private stepper$: Subscription;
 
@@ -46,7 +49,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring ) {
+      if (step === StepNames.EndStoring && !this.firstLoad ) {
         this.loadWorkers();
       }
     });
@@ -56,7 +59,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.stepper$.unsubscribe();
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.loadWorkers();
   }
 
@@ -65,6 +68,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    */
   private loadWorkers = () => {
     const id = this.route.snapshot.paramMap.get('id');
+
+    this.firstLoad = false;
+    this.isLoading = true;
 
     Promise.all([
       this.storageSyncService.getQuadrilles(),
@@ -81,6 +87,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.filteredWorkers = [...this.workers];
 
       this.buildButtons();
+
+      this.isLoading = false;
     });
   }
 

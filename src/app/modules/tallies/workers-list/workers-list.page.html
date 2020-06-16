@@ -23,11 +23,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">
-    <ion-refresher-content pullingIcon="arrow-down" pullingText="Pull to refresh" refreshingSpinner="circles"
-      refreshingText="Cargando...">
-    </ion-refresher-content>
-  </ion-refresher>
+
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed"></ion-refresher>
 
   <!-- TRABAJADORES -->  
   <h2 class="ion-text-center">
@@ -48,22 +45,28 @@
     </ion-button>
   </ion-item>
 
-  <ion-virtual-scroll [items]="filteredWorkers" approxItemHeight="100px">
-    <div *virtualItem="let worker">
-      <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
-        <ion-icon name="person" slot="start"></ion-icon>
-        <ion-label>
-          <h2>{{ worker.name }}</h2>
-          <p class="label-padding">{{ worker.identifier | rut }}</p>
-          <p class="label-padding">
-            <ion-badge color="primary">
-              {{ getTotalWorkerWork(worker) | number }} JR
-            </ion-badge>
-          </p>
-        </ion-label>
-      </ion-item>
-    </div>
-  </ion-virtual-scroll>
+  <ng-container *ngIf="isLoading">
+    <h1 class="ion-text-center">Cargando...</h1>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading">
+    <ion-virtual-scroll [items]="filteredWorkers" approxItemHeight="100px">
+      <div *virtualItem="let worker">
+        <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-label>
+            <h2>{{ worker.name }}</h2>
+            <p class="label-padding">{{ worker.identifier | rut }}</p>
+            <p class="label-padding">
+              <ion-badge color="primary">
+                {{ getTotalWorkerWork(worker) | number }} JR
+              </ion-badge>
+            </p>
+          </ion-label>
+        </ion-item>
+      </div>
+    </ion-virtual-scroll>
+  </ng-container>
 
 </ion-content>
 

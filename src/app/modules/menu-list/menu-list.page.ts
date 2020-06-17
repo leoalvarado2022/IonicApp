@@ -6,7 +6,7 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 import { NetworkService } from 'src/app/shared/services/network/network.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
-import { StepNames, StepsArray } from 'src/app/services/storage/step-names';
+import { StepNames } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-menu-list',
@@ -33,10 +33,6 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   }
 
-  ionViewWillEnter() {
-    this.loadData();
-  }
-
   ngOnInit() {
     this.network$ = this.networkService.getNetworkStatus().subscribe( status => this.isOnline = status);
     this.step$ = this.stepperService.getStepper().subscribe(step => {
@@ -51,6 +47,9 @@ export class MenuListPage implements OnInit, OnDestroy {
     this.network$.unsubscribe();
   }
 
+  ionViewWillEnter() {
+    this.loadData();
+  }
 
   /**
    * loadData
@@ -104,20 +103,6 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * getStepNames
-   */
-  public getStepNames = () => {
-    return StepNames;
-  }
-
-  /**
-   * getNamesArray
-   */
-  public getNamesArray = () => {
-    return StepsArray;
-  }
-
-  /**
    * getStepColor
    */
   public getStepColor = (stepperIndex: number, namesIndex: number): string => {
@@ -127,4 +112,5 @@ export class MenuListPage implements OnInit, OnDestroy {
       return stepperIndex > namesIndex ? 'success' :  'warning';
     }
   }
+
 }

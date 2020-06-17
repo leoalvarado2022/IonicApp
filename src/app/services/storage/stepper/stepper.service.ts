@@ -10,7 +10,7 @@ import {ToastService} from 'src/app/shared/services/toast/toast.service';
 import {NfcService} from 'src/app/shared/services/nfc/nfc.service';
 import {Tally} from 'src/app/modules/tallies/tally.interface';
 import {NetworkService} from 'src/app/shared/services/network/network.service';
-import {StepNames} from '../step-names';
+import {StepNames, StepsArray} from '../step-names';
 import {DeviceSyncService} from '../device-sync/device-sync.service';
 import {DealsService} from '../../../modules/tratos/services/deals/deals.service';
 
@@ -19,7 +19,8 @@ import {DealsService} from '../../../modules/tratos/services/deals/deals.service
 })
 export class StepperService {
 
-  private stepper: BehaviorSubject<number> = new BehaviorSubject<number>(99);
+  private stepper = new BehaviorSubject<number>(99);
+  private stepNames = new BehaviorSubject<Array<any>>([]);
   private dataSync = null;
   private isOnline: boolean;
 
@@ -63,6 +64,7 @@ export class StepperService {
         if (step === StepNames.RecordDevices) {
           this.recordDevices();
         }
+
         // Record Devices Step
         if (step === StepNames.RecordDevicesTallies) {
           this.recordDealsTallies();
@@ -142,13 +144,23 @@ export class StepperService {
    * runAllSteps
    */
   public runAllSteps = () => {
+    this.calcValidSteps();
     this.stepper.next(StepNames.RecordTallies);
+  }
+
+  /**
+   * runTallyRecordStep
+   */
+  public runTallyRecordStep = () => {
+    this.calcValidSteps();
+    this.recordTallies(StepNames.EndStoring);
   }
 
   /**
    * runRemModuleStorageSteps
    */
   public runRemModuleStorageSteps = () => {
+    this.calcValidSteps();
     this.stepper.next(StepNames.GetRemSyncData);
   }
 
@@ -156,6 +168,7 @@ export class StepperService {
    * runTalliesModuleStorageSteps
    */
   public runTalliesModuleStorageSteps = () => {
+    this.calcValidSteps();
     this.stepper.next(StepNames.GetTalliesSyncData);
   }
 
@@ -223,7 +236,7 @@ export class StepperService {
   /**
    * recordTallies
    */
-  private recordTallies = (): void => {
+  private recordTallies = (nextStep: number = StepNames.RecordDevices): void => {
     this.tallySyncService.getTalliesToRecord().then((talliesToRecord: Array<Tally>) => {
       const mapStatus = talliesToRecord.map(item => {
         if (item.status === 'delete') {
@@ -244,13 +257,13 @@ export class StepperService {
       if (mapStatus && mapStatus.length > 0) {
         this.tallyService.recordTallies(mapStatus).subscribe((success: any) => {
           this.checkRecordedTallies(success.log);
-          this.goToStep(StepNames.RecordDevices);
+          this.goToStep(nextStep);
         }, () => {
           this.toastService.errorToast('Ocurrio un error al sincronizar tarjas');
           this.goToStep(StepNames.EndStoring);
         });
       } else {
-        this.goToStep(StepNames.RecordDevices);
+        this.goToStep(nextStep);
       }
     });
   }
@@ -340,8 +353,9 @@ export class StepperService {
 
       if (toRecord && toRecord.length > 0) {
         this._dealService.saveTalliesToRecord(toRecord, user).subscribe((success: any) => {
-          this.storageSyncService.setTallyTemp([]).then();
-          this.goToStep(StepNames.CleanMemory);
+          this.storageSyncService.setTallyTemp([]).then( () => {
+            this.goToStep(StepNames.CleanMemory);
+          });
         }, () => {
           this.toastService.errorToast('Ocurrio un error al sincronizar tratos');
           this.goToStep(StepNames.EndStoring);
@@ -392,6 +406,63 @@ export class StepperService {
       }
       this.removeDevices = true;
     }
+  }
+
+  /**
+   * calcValidSteps
+   */
+  private calcValidSteps = () => {
+    console.log('calcValidSteps');
+
+    Promise.all([
+      this.tallySyncService.getTalliesToRecord(),
+      this._deviceSyncService.getDevicesToRecord(),
+      this.storageSyncService.getTallyTemp()
+    ]).then( data => {
+
+      const returnArray = [...this.getStepsArray()];
+      const filteredIndexes = [];
+
+      if (data[0].length === 0) {
+        filteredIndexes.push(StepNames.RecordTallies);
+      }
+
+      if (data[1].length === 0) {
+        filteredIndexes.push(StepNames.RecordDevices);
+      }
+
+      if (data[2].length === 0) {
+        filteredIndexes.push(StepNames.RecordDevicesTallies);
+      }
+
+      if (data[2].length === 0 && data[1].length === 0 && data[0].length === 0) {
+        filteredIndexes.push(StepNames.CleanMemory);
+      }
+
+      const result = returnArray.filter( (value, index) => !filteredIndexes.includes(index));
+      this.stepNames.next(result);
+    });
+  }
+
+  /**
+   * getStepsArray
+   */
+  public getStepsArray = () => {
+    return StepsArray;
+  }
+
+  /**
+   * getStepNames
+   */
+  public getStepNames = () => {
+    return StepNames;
+  }
+
+  /**
+   * getValidSteps
+   */
+  public getValidSteps = () => {
+    return this.stepNames.asObservable();
   }
 
 }

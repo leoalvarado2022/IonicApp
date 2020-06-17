@@ -13,24 +13,18 @@
 </ion-header>
 
 <ion-content class="content">
-  <ng-container *ngIf="( stepperService.getStepper() | async)  > getStepNames().RecordTallies &&  ( stepperService.getStepper() | async) < getStepNames().EndStoring">
+
+  <ng-container *ngIf="(stepperService.getStepper() | async) >= stepperService.getStepNames().RecordTallies && (stepperService.getStepper() | async) < stepperService.getStepNames().EndStoring">
     <ion-list>
-      <ion-item *ngFor="let step of getNamesArray(); let i = index">
+      <ion-item *ngFor="let step of stepperService.getValidSteps() | async; let i = index">
         <ion-icon [color]="getStepColor(stepperService.getStepper() | async, i)" slot="start" name="checkmark-circle"></ion-icon>
         <ion-label>{{ step }} </ion-label>         
       </ion-item>
     </ion-list>
   </ng-container>
 
-  <ng-container *ngIf="( stepperService.getStepper() | async)  === getStepNames().EndStoring">
-    <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
-      <ion-refresher-content
-        pullingIcon="arrow-down"
-        pullingText="Pull to refresh"
-        refreshingSpinner="circles"
-        refreshingText="Sincronizando...">
-      </ion-refresher-content>
-    </ion-refresher>
+  <ng-container *ngIf="(stepperService.getStepper() | async) === stepperService.getStepNames().EndStoring">
+    <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
   
     <div *ngFor="let menu of menus; let i = index" class="card-menu-item">
       <div

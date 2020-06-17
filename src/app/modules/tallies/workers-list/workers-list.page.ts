@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { StepNames } from 'src/app/services/storage/step-names';
@@ -15,7 +15,7 @@ import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-f
 @Component({
   selector: 'app-workers-list',
   templateUrl: './workers-list.page.html',
-  styleUrls: ['./workers-list.page.scss'],
+  styleUrls: ['./workers-list.page.scss']
 })
 export class WorkersListPage implements OnInit, OnDestroy {
 

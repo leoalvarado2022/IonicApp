@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
@@ -16,14 +16,13 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 @Component({
   selector: 'app-tallies-list',
   templateUrl: './tallies-list.page.html',
-  styleUrls: ['./tallies-list.page.scss'],
+  styleUrls: ['./tallies-list.page.scss']
 })
 export class TalliesListPage implements OnInit, OnDestroy {
 
   // Worker
   public activeWorker: any = null;
   public workerTallies: Array<Tally> = [];
-  public totalWorked = '0';
 
   // Date
   private currentDate: any = null;
@@ -51,7 +50,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
     private tallySyncService: TallySyncService,
     private toastService: ToastService,
     private modalController: ModalController,
-    private alertService: AlertService,
+    private alertService: AlertService
   ) {
 
   }
@@ -59,8 +58,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe(step => {
       if (step === StepNames.EndStoring && !this.firstLoad) {
-        console.log('pasa por aqui');
-        this.loadData();
+        this.minimunReload();
       }
     });
   }
@@ -112,8 +110,8 @@ export class TalliesListPage implements OnInit, OnDestroy {
       this.bonds = [...data[7]];
 
       // CALC TALLIES
-      this.workerTallies = [...this.getNumberOfWorkerTallies()];
-      this.totalWorked = this.getTotalWorkerWork(this.workerTallies);
+      const a = this.getNumberOfWorkerTallies();
+      this.workerTallies = [...a];
 
       // END LOADING
       this.isLoading = false;
@@ -133,9 +131,9 @@ export class TalliesListPage implements OnInit, OnDestroy {
    * getTotalWorkerWork
    * @param worker
    */
-  public getTotalWorkerWork = (todayTallies: Array<Tally>): string => {
-    if (todayTallies) {
-      const workTotal = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+  public getTotalWorkerWork = (): string => {
+    if (this.workerTallies) {
+      const workTotal = this.workerTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
       return parseFloat(workTotal).toFixed(2);
     }
 
@@ -304,7 +302,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
    */
   public checkWorkerLimit = () => {
     if (this.activeWorker) {
-      return this.getTotalWorkerWork(this.workerTallies) >= this.activeWorker.dailyMax;
+      return this.getTotalWorkerWork() >= this.activeWorker.dailyMax;
     }
 
     return true;
@@ -327,7 +325,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
   private minimunReload = () => {
     this.firstLoad = false;
 
-    // START LOADING 
+    // START LOADING
     this.isLoading = true;
 
     this.currentDate = this.activatedRoute.snapshot.paramMap.get('date');
@@ -345,10 +343,8 @@ export class TalliesListPage implements OnInit, OnDestroy {
       this.talliesWithErrors = [...data[2]];
 
       // CALC TALLIES
-      this.workerTallies = [...this.getNumberOfWorkerTallies()];
-      this.totalWorked = this.getTotalWorkerWork(this.workerTallies);
-
-      console.log('totalWorked', this.totalWorked);
+      const b = this.getNumberOfWorkerTallies();
+      this.workerTallies = [...b];
 
       // END LOADING
       this.isLoading = false;

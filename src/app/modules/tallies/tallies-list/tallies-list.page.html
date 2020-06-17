@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed">    </ion-refresher>
+  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed"></ion-refresher>
 
   <!-- TARJAS -->
   <h3 class="ion-text-center">
@@ -29,7 +29,7 @@
     <ion-col>
       <p class="ion-text-center">
         Jornadas
-        <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork(workerTallies) }} Jr</ion-badge>
+        <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork() }} Jr</ion-badge>
       </p>
     </ion-col>
   </ion-row>

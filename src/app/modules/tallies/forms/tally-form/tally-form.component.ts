@@ -69,9 +69,6 @@ export class TallyFormComponent implements OnInit {
     this.filteredLabors = [];
     const workingDayStartValue = this.getWorkerRemainingWorkingDay();
 
-    console.log('talliesToRecord', this.talliesToRecord);
-    console.log('syncedTallies', this.syncedTallies);
-
     this.tallyForm = this.formBuilder.group({
       id: [0, Validators.required],
       date: [this.dateSelected, Validators.required],
@@ -247,15 +244,9 @@ export class TallyFormComponent implements OnInit {
 
     if (this.updateTaly) {
       const editTally = this.editSingleTally(this.worker, formData, this.updateTaly);
-
-      console.log({ editTally });
-
       this.tallySyncService.editTallyToRecord(editTally);
     } else {
       const newTally = this.newSingleTally(this.worker, formData);
-
-      console.log({ newTally });
-
       this.tallySyncService.addTallyToRecord(newTally);
     }
 
@@ -272,6 +263,7 @@ export class TallyFormComponent implements OnInit {
     return Object.assign({}, formData, {
       workerId: worker.id,
       validity: worker.validity,
+      workingDay: parseFloat(formData.workingDay),
       tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
       performance: formData.performance ? formData.performance : 0,
@@ -294,6 +286,7 @@ export class TallyFormComponent implements OnInit {
     return Object.assign({}, formData, {
       workerId: worker.id,
       validity: worker.validity,
+      workingDay: parseFloat(formData.workingDay),
       tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
       performance: formData.performance ? formData.performance : 0,

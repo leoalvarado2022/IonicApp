@@ -107,9 +107,9 @@ export class MenuListPage implements OnInit, OnDestroy {
    */
   public getStepColor = (stepperIndex: number, namesIndex: number): string => {
     if (stepperIndex === namesIndex) {
-      return 'primary';
+      return 'warning';
     } else {
-      return stepperIndex > namesIndex ? 'success' :  'warning';
+      return stepperIndex > namesIndex ? 'success' : 'danger';
     }
   }
 

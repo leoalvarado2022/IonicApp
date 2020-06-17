@@ -421,26 +421,24 @@ export class StepperService {
     ]).then( data => {
 
       const returnArray = [...this.getStepsArray()];
-      const filteredIndexes = [];
 
       if (data[0].length === 0) {
-        filteredIndexes.push(StepNames.RecordTallies);
+        returnArray[StepNames.RecordTallies].valid = false;
       }
 
       if (data[1].length === 0) {
-        filteredIndexes.push(StepNames.RecordDevices);
+        returnArray[StepNames.RecordDevices].valid = false;
       }
 
       if (data[2].length === 0) {
-        filteredIndexes.push(StepNames.RecordDevicesTallies);
+        returnArray[StepNames.RecordDevicesTallies].valid = false;
       }
 
       if (data[2].length === 0 && data[1].length === 0 && data[0].length === 0) {
-        filteredIndexes.push(StepNames.CleanMemory);
+        returnArray[StepNames.CleanMemory].valid = false;
       }
 
-      const result = returnArray.filter( (value, index) => !filteredIndexes.includes(index));
-      this.stepNames.next(result);
+      this.stepNames.next(returnArray);
     });
   }
 

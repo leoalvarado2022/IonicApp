@@ -12,14 +12,16 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="content">
+<ion-content class="content">  
 
   <ng-container *ngIf="(stepperService.getStepper() | async) >= stepperService.getStepNames().RecordTallies && (stepperService.getStepper() | async) < stepperService.getStepNames().EndStoring">
     <ion-list>
-      <ion-item *ngFor="let step of stepperService.getValidSteps() | async; let i = index">
-        <ion-icon [color]="getStepColor(stepperService.getStepper() | async, i)" slot="start" name="checkmark-circle"></ion-icon>
-        <ion-label>{{ step }} </ion-label>         
-      </ion-item>
+      <ng-container *ngFor="let step of stepperService.getValidSteps() | async; let i = index">
+        <ion-item *ngIf="step.valid">
+          <ion-icon [color]="getStepColor(stepperService.getStepper() | async, i)" slot="start" name="checkmark-circle"></ion-icon>
+          <ion-label>{{ step.title }}</ion-label>         
+        </ion-item>
+      </ng-container>      
     </ion-list>
   </ng-container>
 

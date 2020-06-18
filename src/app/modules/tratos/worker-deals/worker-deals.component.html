@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start" (click)="closeWork()" class="arrow-left">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title>
+      <strong>{{deals?.name_deal}}</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid>
+    <ion-row>
+      <ion-card>
+        <ion-card-content>
+          <ion-grid>
+            <ion-row class="header">
+              <ion-col size="10">
+                Trabajador
+              </ion-col>
+              <ion-col size="2" style="text-align: center;">
+                R
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-list class="fixed-list">
+            <ion-grid>
+              <ion-row *ngFor="let worker of deals?.worker">
+                <ion-col size="10">
+                  <p>{{ worker.worker.names }}</p>
+                </ion-col>
+                <ion-col size="2" style="text-align: center;">
+                  <ion-input type="text" value="{{ worker.performance }}" readonly></ion-input>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+
+    </ion-row>
+  </ion-grid>
+
+
+</ion-content>

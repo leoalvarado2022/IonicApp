@@ -47,7 +47,7 @@
               <ion-icon (click)="showTallyError(tally)"
                 [color]="tally.status === 'new' || tally.status === 'edit' ? 'danger' : 'success' " name="reader" slot="start"></ion-icon>
               <ion-label>{{ getCostCenterName(tally.costCenterId) | titlecase }}</ion-label>
-              <ion-badge slot="end">{{ tally.workingDay }} Jr</ion-badge>
+              <ion-badge slot="end">{{ tally.workingDay.toFixed(2) }} Jr</ion-badge>
             </ion-item>
   
             <ion-card-content>

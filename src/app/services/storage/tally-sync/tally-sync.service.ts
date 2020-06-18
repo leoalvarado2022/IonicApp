@@ -106,6 +106,21 @@ export class TallySyncService {
   }
 
   /**
+   * addTalliesToSyncedTallies
+   * @param recorded
+   */
+  public addTalliesToSyncedTallies = (recorded: Array<number>) => {
+    return this.storage.get(StorageKeys.TalliesToRecord).then((talliesToRecord: Array<Tally>) => {
+      if (talliesToRecord) {
+        const mergeArrays = talliesToRecord.filter(x => recorded.includes(x.tempId) && x.status !== 'delete' );
+        return this.storage.set(StorageKeys.Tallies, mergeArrays);
+      }
+
+      return [];
+    });
+  }
+
+  /**
    * getTallyTempId
    */
   public getTallyTempId(): number {
@@ -219,7 +234,7 @@ export class TallySyncService {
 
   /**
    * getWorkerById
-   * @param id 
+   * @param id
    */
   public getWorkerById = (id: number): Promise<any> => {
     return this.storage.get(StorageKeys.Workers).then( (workers: Array<any>) => {

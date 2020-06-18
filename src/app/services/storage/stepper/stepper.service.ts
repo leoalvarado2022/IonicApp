@@ -149,14 +149,6 @@ export class StepperService {
   }
 
   /**
-   * runTallyRecordStep
-   */
-  public runTallyRecordStep = () => {
-    this.calcValidSteps();
-    this.recordTallies(StepNames.EndStoring);
-  }
-
-  /**
    * runRemModuleStorageSteps
    */
   public runRemModuleStorageSteps = () => {
@@ -461,6 +453,78 @@ export class StepperService {
    */
   public getValidSteps = () => {
     return this.stepNames.asObservable();
+  }
+
+  /**
+   * onlySyncTallies
+   */
+  public onlySyncTallies = async () => {
+    console.log('onlySyncTallies');
+    const talliesBuilded = await this.buildTalliesArray();
+
+    if (talliesBuilded.length > 0) {
+      const log = await this.syncTallies(talliesBuilded);
+      this.checkRecordedTallies(log);
+      await this.tallySyncService.addTalliesToSyncedTallies(this.removeTalliesToRecord);
+      await this.cleanTalliesMemory();
+
+      this.removeTalliesToRecord = [];
+      this.talliesWithErrors = [];
+
+      this.goToStep(StepNames.EndStoring);
+    } else {
+      this.goToStep(StepNames.EndStoring);
+    }
+  }
+
+  /**
+   * buildTalliesArray
+   */
+  private buildTalliesArray = (): Promise<any> => {
+    return this.tallySyncService.getTalliesToRecord().then((talliesToRecord: Array<Tally>) => {
+      if (talliesToRecord) {
+        return talliesToRecord.map(item => {
+          if (item.status === 'delete') {
+            return Object.assign({}, item, {order: 1});
+          }
+
+          if (item.status === 'edit') {
+            return Object.assign({}, item, {order: 2});
+          }
+
+          if (item.status === 'new') {
+            return Object.assign({}, item, {order: 3});
+          }
+
+          return item;
+        });
+      }
+
+      return [];
+    });
+  }
+
+  /**
+   * syncTallies
+   */
+  private syncTallies = (tallies: Array<Tally>): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      this.tallyService.recordTallies(tallies).subscribe((success: any) => {
+        resolve(success.log);
+      }, error => {
+        reject(error);
+      });
+    });
+  }
+
+  /**
+   * cleanTalliesMemory
+   */
+  private cleanTalliesMemory = (): Promise<any> => {
+    return Promise.all([
+      this.tallySyncService.addTalliesWithErrors(this.talliesWithErrors),
+      this.tallySyncService.removeTalliesToRecord(this.removeTalliesToRecord)
+    ]);
   }
 
 }

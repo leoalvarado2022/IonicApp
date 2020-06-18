@@ -320,7 +320,7 @@ export class TallyFormMultipleComponent implements OnInit {
       workerId: worker.id,
       validity: worker.validity,
       tempId,
-      workingDay: data['jr'],
+      workingDay: parseFloat(data['jr']),
       hoursExtra: data['h'] || 0,
       performance: data['r'] || 0,
       status: 'new'
@@ -347,7 +347,7 @@ export class TallyFormMultipleComponent implements OnInit {
       workerId: worker.id,
       validity: worker.validity,
       tempId,
-      workingDay: data['jr'],
+      workingDay: parseFloat(data['jr']),
       hoursExtra: data['h'] || 0,
       performance: data['r'] || 0,
       status: 'edit'

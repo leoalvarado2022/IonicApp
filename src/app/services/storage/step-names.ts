@@ -1,4 +1,4 @@
-export enum StepNames {
+enum StepNames {
   RecordTallies = 0,
   RecordDevices,
   RecordDevicesTallies,
@@ -17,11 +17,14 @@ export enum StepNames {
   EndStoring // THIS NEEDS TO BE THE LAST STEP
 }
 
-export const StepsArray = [
-  'Grabar Tarjas',
-  'Grabar Dispositivos',
-  'Grabar Tratos y Tarjas',
-  'Limpiar Memoria',
-  'Sincronizando',
-  'Almacenando datos en memoria'
+const StepsArray = [
+  { index: StepNames.RecordTallies, title: 'Grabar Tarjas', valid: true },
+  { index: StepNames.RecordDevices, title: 'Grabar Dispositivos', valid: true },
+  { index: StepNames.RecordDevicesTallies, title: 'Grabar Tratos y Tarjas', valid: true },
+  { index: StepNames.CleanMemory, title: 'Limpiar Memoria', valid: true },
+  { index: StepNames.GetSyncData, title: 'Sincronizando', valid: true },
+  { index: StepNames.StartStoring, title: 'Almacenando datos en memoria', valid: true },
+  { index: StepNames.EndStoring, title: 'Completado', valid: true }
 ];
+
+export { StepNames, StepsArray };

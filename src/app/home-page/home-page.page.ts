@@ -23,7 +23,7 @@ export class HomePagePage {
     private stepperService: StepperService,
     private router: Router
   ) {
-
+    /*
     this.router$ = this.router.events.subscribe(route => {
       if (route instanceof NavigationEnd ) {
         if (route.url === '/home-page') {
@@ -35,28 +35,39 @@ export class HomePagePage {
         }
       }
     });
+    */
   }
 
   ionViewWillEnter() {
     // Store push token
     this.storePushToken();
-
-    // Run all sync steps
-    this.stepperService.runAllSteps();
   }
 
   ionViewDidEnter() {
-    this.timerService.startResume();
+    // Run all sync steps
+    this.stepperService.runAllSteps();
 
     this.timer$ = this.timerService.getTimerNotifier().subscribe(() => {
-      this.stepperService.runAllSteps();
+      // LOGICA FUERTE
+      console.log('verificar ruta dentro del timer', this.router.url);
+
+      if (this.router.url.includes('tarja_tarjas') || this.router.url.includes('tally-workers-list') || this.router.url.includes('tallies-list')) {
+        this.stepperService.runTallyRecordStep();
+      } else {
+        this.stepperService.runAllSteps();
+      }
     });
+
+    // StartTimer
+    console.log('StartTimer');
+    this.timerService.startResume();
   }
 
   ionViewWillLeave() {
+    console.log('StopTimer');
     this.timerService.pauseStop();
     this.timer$.unsubscribe();
-    this.router$.unsubscribe();
+    // this.router$.unsubscribe();
   }
 
   /**

@@ -30,7 +30,7 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       if (this.platform.is('ios')) {
-        this.statusBar.styleDefault();
+        this.statusBar.styleLightContent();
         this.splashScreen.hide();
       } else {
         this.statusBar.overlaysWebView(false);

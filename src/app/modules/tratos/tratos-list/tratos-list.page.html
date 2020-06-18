@@ -30,7 +30,7 @@
   <div *ngFor="let deal of deals">
     <ion-item-sliding #slidingItem>
       <ion-item-options side="start">
-        <!--          <ion-item-option><ion-icon name="receipt"></ion-icon></ion-item-option>-->
+        <ion-item-option (click)="showWorkers(deal, slidingItem)"><ion-icon name="receipt"></ion-icon></ion-item-option>
         <ion-item-option color="danger" (click)="removeDeal(deal.id, slidingItem)">
           <ion-icon name="trash-bin"></ion-icon>
         </ion-item-option>

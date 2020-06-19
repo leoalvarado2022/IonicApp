@@ -38,8 +38,8 @@ export class ContractsListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring && !this.firstLoad) {
+    this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
+      if (steps.length === 0  && !this.firstLoad) {
         this.loadPreContracts();
       }
     });
@@ -152,7 +152,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.contractsService.storePreContracts(preContracts).subscribe(() => {
 
       // SEND TO SYNC
-      this.stepperService.runAllSteps();
+      this.stepperService.syncAll();
     }, error => {
       this.httpService.errorHandler(error);
     });

@@ -355,4 +355,21 @@ export class StorageSyncService {
     });
   }
 
+  /**
+   * addTalliesToSyncedTallies
+   * @param recorded
+   */
+  public addDevicesToSyncedDevices = (recorded: Array<number>) => {
+    return this.storage.get(StorageKeys.Devices).then((syncedDevices: Array<any>) => {
+      if (syncedDevices) {
+        // REVISAR AQUI
+        // const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId) && x.status !== 'delete' );
+        const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId));
+        return this.storage.set(StorageKeys.Devices, mergeArrays);
+      }
+
+      return [];
+    });
+  }
+
 }

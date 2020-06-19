@@ -2,10 +2,10 @@
   <ion-icon slot="icon-only" name="notifications"></ion-icon>
 </ion-button>
 
-<ion-button class="toolbar-button" color="warning" *ngIf="(stepperService.getStepper() | async) < getStepNames().EndStoring">
-  <ion-icon [ngClass]="{ 'icon-spinner': (stepperService.getStepper() | async) < getStepNames().EndStoring }" slot="icon-only" name="sync"></ion-icon>
+<ion-button class="toolbar-button" color="warning" *ngIf="(stepperService.getStepper() | async)?.length > 0 ">
+  <ion-icon class="icon-spinner" slot="icon-only" name="sync"></ion-icon>
 </ion-button>
 
-<ion-button class="toolbar-button" [color]="getGlobeColor()" (click)="syncAll()" *ngIf="(stepperService.getStepper() | async) === getStepNames().EndStoring">
+<ion-button class="toolbar-button" [color]="getGlobeColor()" (click)="syncAll()" *ngIf="(stepperService.getStepper() | async)?.length === 0">
   <ion-icon slot="icon-only" name="globe"></ion-icon>
 </ion-button>

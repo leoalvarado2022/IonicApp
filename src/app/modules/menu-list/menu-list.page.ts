@@ -6,7 +6,6 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 import { NetworkService } from 'src/app/shared/services/network/network.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
-import { StepNames } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-menu-list',
@@ -17,6 +16,7 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   public menus: Array<TabMenu> = [];
   private workers: Array<any> = [];
+  private firstLoad = true;
 
   private isOnline: boolean;
   private network$: Subscription;
@@ -35,8 +35,9 @@ export class MenuListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.network$ = this.networkService.getNetworkStatus().subscribe( status => this.isOnline = status);
-    this.step$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring) {
+    this.step$ = this.stepperService.getStepper().subscribe( (steps: Array<any>) => {
+      if (steps.length === 0 && !this.firstLoad) {
+        console.log('calga data pe');
         this.loadData();
       }
     });
@@ -55,6 +56,8 @@ export class MenuListPage implements OnInit, OnDestroy {
    * loadData
    */
   private loadData = () => {
+    this.firstLoad = false;
+
     Promise.all([
       this.storageSyncService.getMenus(),
       this.storageSyncService.getWorkers(),
@@ -69,7 +72,7 @@ export class MenuListPage implements OnInit, OnDestroy {
    * @param event
    */
   public reSync = (event: any) => {
-    this.stepperService.runAllSteps();
+    this.stepperService.syncAll();
     event.target.complete();
   }
 
@@ -100,17 +103,6 @@ export class MenuListPage implements OnInit, OnDestroy {
     }
 
     return 0;
-  }
-
-  /**
-   * getStepColor
-   */
-  public getStepColor = (stepperIndex: number, namesIndex: number): string => {
-    if (stepperIndex === namesIndex) {
-      return 'warning';
-    } else {
-      return stepperIndex > namesIndex ? 'success' : 'danger';
-    }
   }
 
 }

@@ -42,7 +42,7 @@ export class ConnectionsPage implements OnInit {
       this.authService.connectionChange({connection: connection.token, loggedUser: user.id}).subscribe(() => {
         this.storeService.setActiveConnection(connection);
 
-        this.stepperService.runAllSteps();
+        this.stepperService.syncAll();
         this.router.navigate(['home-page']);
       });
     }

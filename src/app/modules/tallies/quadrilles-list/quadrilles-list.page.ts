@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Quadrille } from '@primetec/primetec-angular';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
-import { StepNames } from 'src/app/services/storage/step-names';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { Router } from '@angular/router';
 
@@ -35,8 +34,8 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring && !this.firstLoad) {
+    this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
+      if (steps.length === 0 && !this.firstLoad) {
         this.loadData();
       }
     });

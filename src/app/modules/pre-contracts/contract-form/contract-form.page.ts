@@ -256,7 +256,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   private storeContract = (data: any) => {
     this.contractsService.storePreContracts([data]).subscribe(() => {
 
-      this.stepperService.runAllSteps();
+      this.stepperService.syncAll();
       this.goBack();
     }, error => {
       this.httpService.errorHandler(error);

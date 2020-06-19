@@ -7,7 +7,6 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
-import { StepNames } from 'src/app/services/storage/step-names';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -48,8 +47,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring && !this.firstLoad ) {
+    this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
+      if (steps.length === 0 && !this.firstLoad ) {
         this.loadWorkers();
       }
     });
@@ -217,7 +216,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
 
       // BANDERA DE SINCRONIZACION
-      this.stepperService.runRemModuleStorageSteps();
+      this.stepperService.syncAll();
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);

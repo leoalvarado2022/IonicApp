@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {ActionSheetController} from '@ionic/angular';
 import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {HttpService} from '../../../shared/services/http/http.service';
@@ -36,7 +35,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private loaderService: LoaderService,
     private actionSheetController: ActionSheetController,
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
@@ -209,16 +207,15 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       status
     };
 
-    this.loaderService.startLoader();
-
+    this.isLoading = true;
     this.quadrilleService.transferWorkers(data).subscribe(() => {
-      this.selectedWorkers = [];
-      this.loaderService.stopLoader();
+      this.selectedWorkers = [];      
 
       // BANDERA DE SINCRONIZACION
-      this.stepperService.syncAll();
+      this.stepperService.onlySyncREM();
+      this.isLoading = false;
     }, error => {
-      this.loaderService.stopLoader();
+      this.isLoading = false;
       this.httpService.errorHandler(error);
     });
   }

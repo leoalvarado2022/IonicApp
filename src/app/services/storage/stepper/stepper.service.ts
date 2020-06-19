@@ -128,31 +128,6 @@ export class StepperService {
   }
 
   /**
-   * recordDealsTallies
-   */
-  private recordDealsTallies = () => {
-    this.storageSyncService.getTallyTemp().then((toRecord: any) => {
-      toRecord = toRecord.filter(value => value.id === 0);
-
-      const user = this.storeService.getUser();
-      delete user.avatar;
-
-      if (toRecord && toRecord.length > 0) {
-        this._dealService.saveTalliesToRecord(toRecord, user).subscribe((success: any) => {
-          this.storageSyncService.setTallyTemp([]).then( () => {
-            // this.goToStep(StepNames.CleanMemory);
-          });
-        }, () => {
-          this.toastService.errorToast('Ocurrio un error al sincronizar tratos');
-          // this.goToStep(StepNames.EndStoring);
-        });
-      } else {
-        // this.goToStep(StepNames.CleanMemory);
-      }
-    });
-  }
-
-  /**
    * onlySyncTallies
    */
   public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {
@@ -347,6 +322,27 @@ export class StepperService {
    */
   private cleanDealsMemory = () => {
     return this.storageSyncService.setTallyTemp([]);
+  }
+
+  /**
+   * onlySyncREM
+   */
+  public onlySyncREM = async () => {
+    // SYNC
+    this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
+    this.stepsArraySubject.next(this.stepsArray);
+    const data = await this.syncData();
+
+    // STORE
+    this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
+    await this.storageSyncService.storeRemSyncData(data);
+
+    // Terminado
+    setTimeout(() => {
+      // LISTO
+      this.stepsArray = [];
+      this.stepsArraySubject.next([]);
+    }, 1000);
   }
 
 }

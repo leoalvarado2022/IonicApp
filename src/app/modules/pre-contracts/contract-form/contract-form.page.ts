@@ -88,7 +88,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     this.activeCompany = this.storeService.getActiveCompany();
 
     Promise.all([
-      this.storageSyncService.getQuadrilles(),
+      this.storageSyncService.getAllQuadrilles(),
       this.storageSyncService.getWorkers(),
       this.storageSyncService.getPreContracts(),
       this.storageSyncService.getCountries(),

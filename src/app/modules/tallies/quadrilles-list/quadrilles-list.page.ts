@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { Router } from '@angular/router';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-quadrilles-list',
@@ -28,7 +29,8 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
   constructor(
     private stepperService: StepperService,
     private storageSyncService: StorageSyncService,
-    private router: Router
+    private router: Router,
+    private storeService: StoreService
   ) {
 
   }
@@ -57,9 +59,10 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
 
     // START LOADING
     this.isLoading = true;
+    const activeCompany = this.storeService.getActiveCompany();
 
     Promise.all([
-      this.storageSyncService.getQuadrilles(),
+      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user),
       this.storageSyncService.getWorkers(),
     ]).then( data => {
       // Quadrilles

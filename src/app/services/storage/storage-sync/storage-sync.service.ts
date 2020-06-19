@@ -100,11 +100,30 @@ export class StorageSyncService {
   }
 
   /**
-   * getQuadrilles
+   * getAllQuadrilles
    */
-  public getQuadrilles = (): Promise<Array<Quadrille>> => {
+  public getAllQuadrilles = (): Promise<Array<Quadrille>> => {
     return this.storage.get(StorageKeys.Quadrilles).then( (quadrilles: Array<Quadrille>) => {
-      return quadrilles ? quadrilles : [];
+      return quadrilles ? quadrilles: [];
+    });
+  }
+
+  /**
+   * getQuadrillesByCurrentUser
+   * @param currentUserId 
+   * @param isSuper 
+   */
+  public getQuadrillesByCurrentUser = (currentUserId: number, isSuper: boolean = false): Promise<Array<Quadrille>> => {
+    return this.storage.get(StorageKeys.Quadrilles).then( (quadrilles: Array<Quadrille>) => {
+      if (quadrilles) {
+        if (isSuper) {
+          return quadrilles;
+        }else {
+          return quadrilles.filter(x => x.responsible === currentUserId);
+        }
+      }
+
+      return [];
     });
   }
 

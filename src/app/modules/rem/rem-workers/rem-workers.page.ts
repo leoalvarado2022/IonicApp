@@ -6,6 +6,8 @@ import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
+import { Quadrille } from '@primetec/primetec-angular';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -21,12 +23,14 @@ enum WorkerStatus {
 })
 export class RemWorkersPage implements OnInit, OnDestroy {
 
-  public quadrille: any;
-  private quadrilles: Array<any> = [];
+  public quadrille: Quadrille;
+  private quadrilles: Array<Quadrille> = [];
   private workers: Array<any> = [];
   public filteredWorkers: Array<any> = [];
   public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
+
+  private allQuadrilles: Array<Quadrille> = [];
 
   public isLoading = false;
   private firstLoad = false;
@@ -39,7 +43,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
-    private stepperService: StepperService
+    private stepperService: StepperService,
+    private storeService: StoreService
   ) {
 
   }
@@ -69,12 +74,17 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.firstLoad = false;
     this.isLoading = true;
 
+    const activeCompany = this.storeService.getActiveCompany();
+
     Promise.all([
-      this.storageSyncService.getQuadrilles(),
-      this.storageSyncService.getWorkers()
+      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user),
+      this.storageSyncService.getWorkers(),
+      this.storageSyncService.getAllQuadrilles()
     ]).then((data) => {
       this.quadrilles = [...data[0]];
       this.quadrille = this.quadrilles.find(item => item.id === +id);
+
+      this.allQuadrilles = [...data[2]];
 
       const allWorkers = data[1];
       const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
@@ -187,7 +197,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * buildButtons
    */
   private buildButtons = () => {
-    this.buttons = this.quadrilles
+    this.buttons = this.allQuadrilles
       .filter(item => item !== this.quadrille)
       .map(item => ({
         text: item.name,

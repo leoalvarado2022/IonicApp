@@ -11,6 +11,7 @@ import { ModalController } from '@ionic/angular';
 import { CostCenterList } from '@primetec/primetec-angular';
 import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
 import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-form-multiple.component';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-workers-list',

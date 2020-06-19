@@ -345,4 +345,26 @@ export class StepperService {
     }, 1000);
   }
 
+
+  /**
+   * onlySyncPreContracts
+   */
+  public onlySyncPreContracts = async () => {
+    // SYNC
+    this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
+    this.stepsArraySubject.next(this.stepsArray);
+    const data = await this.syncData();
+
+    // STORE
+    this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
+    await this.storageSyncService.storePreContractsSyncData(data);
+
+    // Terminado
+    setTimeout(() => {
+      // LISTO
+      this.stepsArray = [];
+      this.stepsArraySubject.next([]);
+    }, 1000);
+  }
+
 }

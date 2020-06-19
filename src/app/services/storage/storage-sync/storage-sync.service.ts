@@ -4,6 +4,8 @@ import { Sync } from 'src/app/shared/services/store/store-interface';
 import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { zip } from 'rxjs';
+import { ContractsListPageModule } from 'src/app/modules/pre-contracts/contracts-list/contracts-list.module';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +67,16 @@ export class StorageSyncService {
       this.setQuadrilles(quadrilles),
       this.setWorkers(workers)
     ]);
+  }
+
+  /**
+   * storePreContractsSyncData
+   * @param data 
+   */
+  public storePreContractsSyncData = (data: Sync): Promise<any> => {
+    const { preContracts } = data;
+
+    return this.setPreContracts(preContracts);
   }
 
   /**
@@ -388,6 +400,22 @@ export class StorageSyncService {
       }
 
       return [];
+    });
+  }
+
+  /**
+   * deletePreContractFromStorage
+   * @param preContractId 
+   */
+  public deletePreContractFromStorage = (preContractId: number): Promise<Array<any>> => {
+    return this.getPreContracts().then( (preContracts: Array<any>) => {
+      
+      if (preContracts) {
+        const filtered = preContracts.filter(x => x.id !== preContractId);
+        return this.setPreContracts(filtered);
+      }
+
+      return Promise.resolve([]);
     });
   }
 

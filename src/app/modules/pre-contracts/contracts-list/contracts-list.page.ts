@@ -131,11 +131,16 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * @param data
    */
   public deleteContract = async (data: any): Promise<void> => {
-    const {contract, slide} = data;
+    const {contract, slide} = data;    
     slide.close();
 
     const sayYes = await this.alertService.confirmAlert('Seguro que desea borrar este pre-contrato?');
     if (sayYes) {
+      const newData = await this.storageSyncService.deletePreContractFromStorage(contract.id);
+      const preContractsMapped = newData.map(item => this.contractsService.mapPreContractToBeListed(item));
+      this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
+      this.filteredContracts = [...this.contracts];
+
       const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
       this.storeContract(deleteContract);
     }
@@ -152,7 +157,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.contractsService.storePreContracts(preContracts).subscribe(() => {
 
       // SEND TO SYNC
-      this.stepperService.syncAll();
+      this.stepperService.onlySyncPreContracts();
     }, error => {
       this.httpService.errorHandler(error);
     });

@@ -62,7 +62,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
     this.storageSyncService.getPreContracts().then( data => {
       const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
-      this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
+      this.contracts = [...preContractsMapped];
       this.filteredContracts = [...this.contracts];
 
       this.isLoading = false;
@@ -119,11 +119,11 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * editContractEvent
    * @param data
    */
-  public editContractEvent = (data: any) => {
+  public editContractEvent = async (data: any) => {
     const {contract, slide} = data;
     slide.close();
 
-    this.contractForm(contract.id);
+    await this.contractForm(contract.id);
   }
 
   /**
@@ -136,13 +136,13 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
     const sayYes = await this.alertService.confirmAlert('Seguro que desea borrar este pre-contrato?');
     if (sayYes) {
-      const newData = await this.storageSyncService.deletePreContractFromStorage(contract.id);
+      const newData = await this.storageSyncService.deletePreContractFromStorage(data.id);
       const preContractsMapped = newData.map(item => this.contractsService.mapPreContractToBeListed(item));
-      this.contracts = this.numericOrderPipe.transform(preContractsMapped, 'id', true);
+      this.contracts = [...preContractsMapped];
       this.filteredContracts = [...this.contracts];
 
       const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
-      this.storeContract(deleteContract);
+      await this.storeContract(deleteContract);
     }
   }
 
@@ -150,12 +150,11 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * storeContract
    * @param data
    */
-  private storeContract = (data: any) => {
+  private storeContract = async (data: any) => {
     const preContracts = [];
     preContracts.push(data);
 
     this.contractsService.storePreContracts(preContracts).subscribe(() => {
-
       // SEND TO SYNC
       this.stepperService.onlySyncPreContracts();
     }, error => {

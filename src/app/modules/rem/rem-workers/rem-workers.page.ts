@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ActionSheetController} from '@ionic/angular';
-import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { Quadrille } from '@primetec/primetec-angular';
+import { QuadrilleService } from '../services/quadrille/quadrille.service';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -55,6 +55,10 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         this.loadWorkers();
       }
     });
+
+    this.quadrilleService.getTransfers().then( data => {
+      console.log('get data', data);
+    })
   }
 
   ngOnDestroy(): void {
@@ -219,6 +223,15 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     };
 
     this.isLoading = true;
+    this.quadrilleService.addTransfers(data).then( data => {
+
+      console.log('data', data);
+
+      this.isLoading = false;      
+    });
+
+    /*
+    this.isLoading = true;
     this.quadrilleService.transferWorkers(data).subscribe(() => {
       this.selectedWorkers = [];      
 
@@ -229,6 +242,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.isLoading = false;
       this.httpService.errorHandler(error);
     });
+    */
   }
 
   /**

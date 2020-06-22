@@ -1,6 +1,6 @@
 {
   "name": "fx360_movil",
-  "version": "1.0.82",
+  "version": "1.0.84",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -10,6 +10,7 @@
     "ios": "ionic cordova run ios --livereload",
     "android": "ionic cordova run android --livereload",
     "build-ios": "ionic cordova build ios --prod",
+    "build-android": "ionic cordova build android --prod",
     "test": "ng test",
     "lint": "ng lint --fix",
     "e2e": "ng e2e",
@@ -110,7 +111,9 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-app-version": {},
       "cordova-sqlite-storage": {},
@@ -137,7 +140,9 @@
       "phonegap-nfc": {
         "NFC_USAGE_DESCRIPTION": "Read NFC Tags"
       },
-      "phonegap-plugin-barcodescanner": {}
+      "phonegap-plugin-barcodescanner": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     },
     "platforms": [
       "android",

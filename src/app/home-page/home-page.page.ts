@@ -45,17 +45,22 @@ export class HomePagePage {
 
   ionViewDidEnter() {
     // Run all sync steps
-    this.stepperService.runAllSteps();
+    this.stepperService.syncAll();
 
     this.timer$ = this.timerService.getTimerNotifier().subscribe(() => {
       // LOGICA FUERTE
+      /*
       console.log('verificar ruta dentro del timer', this.router.url);
 
       if (this.router.url.includes('tarja_tarjas') || this.router.url.includes('tally-workers-list') || this.router.url.includes('tallies-list')) {
-        this.stepperService.runTallyRecordStep();
+        // this.stepperService.runTallyRecordStep();
+        this.stepperService.onlySyncTallies();
       } else {
         this.stepperService.runAllSteps();
       }
+      */
+
+     this.stepperService.syncAll();
     });
 
     // StartTimer

@@ -4,7 +4,7 @@
       <ion-back-button class="header-back-button"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      <strong>Quadrillas</strong>
+      <strong>Cuadrillas</strong>
     </ion-title>
     <ion-buttons slot="end">
       <app-toolbar-buttons></app-toolbar-buttons>
@@ -43,8 +43,8 @@
         <ion-item (click)="selectQuadrille(quadrille.id)" detail="true">
           <ion-icon name="clipboard" slot="start"></ion-icon>
           <ion-label>
-            <h2>{{ quadrille.name }}</h2>
-            <p class="label-padding">{{ quadrille.responsibleName }}</p>
+            <h2>{{ quadrille.name | titlecase }}</h2>
+            <p class="label-padding">{{ quadrille.responsibleName | titlecase  }}</p>
             <p class="label-padding">
               <ion-badge color="primary">
                 {{ getQuadrilleNumberWorkers(quadrille.id) }} Personas

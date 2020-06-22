@@ -55,7 +55,7 @@
         <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
           <ion-icon name="person" slot="start"></ion-icon>
           <ion-label>
-            <h2>{{ worker.name }}</h2>
+            <h2>{{ worker.name | titlecase }}</h2>
             <p class="label-padding">{{ worker.identifier | rut }}</p>
             <p class="label-padding">
               <ion-badge color="primary">

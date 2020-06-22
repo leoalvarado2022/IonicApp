@@ -4,6 +4,8 @@ import { Sync } from 'src/app/shared/services/store/store-interface';
 import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { zip } from 'rxjs';
+import { ContractsListPageModule } from 'src/app/modules/pre-contracts/contracts-list/contracts-list.module';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +70,16 @@ export class StorageSyncService {
   }
 
   /**
+   * storePreContractsSyncData
+   * @param data 
+   */
+  public storePreContractsSyncData = (data: Sync): Promise<any> => {
+    const { preContracts } = data;
+
+    return this.setPreContracts(preContracts);
+  }
+
+  /**
    * storeTalliesSyncData
    */
   public storeTalliesSyncData = (data: Sync): Promise<any> => {
@@ -100,11 +112,30 @@ export class StorageSyncService {
   }
 
   /**
-   * getQuadrilles
+   * getAllQuadrilles
    */
-  public getQuadrilles = (): Promise<Array<Quadrille>> => {
+  public getAllQuadrilles = (): Promise<Array<Quadrille>> => {
     return this.storage.get(StorageKeys.Quadrilles).then( (quadrilles: Array<Quadrille>) => {
-      return quadrilles ? quadrilles : [];
+      return quadrilles ? quadrilles: [];
+    });
+  }
+
+  /**
+   * getQuadrillesByCurrentUser
+   * @param currentUserId 
+   * @param isSuper 
+   */
+  public getQuadrillesByCurrentUser = (currentUserId: number, isSuper: boolean = false): Promise<Array<Quadrille>> => {
+    return this.storage.get(StorageKeys.Quadrilles).then( (quadrilles: Array<Quadrille>) => {
+      if (quadrilles) {
+        if (isSuper) {
+          return quadrilles;
+        }else {
+          return quadrilles.filter(x => x.responsible === currentUserId);
+        }
+      }
+
+      return [];
     });
   }
 
@@ -352,6 +383,39 @@ export class StorageSyncService {
   public getTallyTemp = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.TallyTemp).then( (tallyTemp: Array<any>) => {
       return tallyTemp ? tallyTemp : [];
+    });
+  }
+
+  /**
+   * addTalliesToSyncedTallies
+   * @param recorded
+   */
+  public addDevicesToSyncedDevices = (recorded: Array<number>) => {
+    return this.storage.get(StorageKeys.Devices).then((syncedDevices: Array<any>) => {
+      if (syncedDevices) {
+        // REVISAR AQUI
+        // const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId) && x.status !== 'delete' );
+        const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId));
+        return this.storage.set(StorageKeys.Devices, mergeArrays);
+      }
+
+      return [];
+    });
+  }
+
+  /**
+   * deletePreContractFromStorage
+   * @param preContractId 
+   */
+  public deletePreContractFromStorage = (preContractId: number): Promise<Array<any>> => {
+    return this.getPreContracts().then( (preContracts: Array<any>) => {
+      
+      if (preContracts) {
+        const filtered = preContracts.filter(x => x.id !== preContractId);
+        return this.setPreContracts(filtered);
+      }
+
+      return Promise.resolve([]);
     });
   }
 

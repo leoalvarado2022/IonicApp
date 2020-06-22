@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-rem-quadrille',
@@ -17,7 +18,8 @@ export class RemQuadrillePage implements OnInit {
 
   constructor(
     private router: Router,
-    private storageSyncService: StorageSyncService
+    private storageSyncService: StorageSyncService,
+    private storeService: StoreService
   ) {
 
   }
@@ -36,9 +38,10 @@ export class RemQuadrillePage implements OnInit {
   private loadQuadrilles = () => {
 
     this.isLoading = true;
+    const activeCompany = this.storeService.getActiveCompany();
 
     Promise.all([
-      this.storageSyncService.getQuadrilles(),
+      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user),
       this.storageSyncService.getWorkers()
     ]).then( (data) => {
       this.workers = [...data[1]];

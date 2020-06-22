@@ -11,6 +11,7 @@ import { ModalController } from '@ionic/angular';
 import { CostCenterList } from '@primetec/primetec-angular';
 import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
 import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-form-multiple.component';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-workers-list',
@@ -61,8 +62,8 @@ export class WorkersListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring && !this.firstLoad) {
+    this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
+      if (steps.length === 0  && !this.firstLoad) {
         this.minimunDataReload();
       }
     });

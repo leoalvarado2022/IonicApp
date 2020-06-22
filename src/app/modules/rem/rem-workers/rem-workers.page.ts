@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {ActionSheetController} from '@ionic/angular';
 import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
-import { StepNames } from 'src/app/services/storage/step-names';
+import { StoreService } from 'src/app/shared/services/store/store.service';
+import { Quadrille } from '@primetec/primetec-angular';
 
 enum WorkerStatus {
   'POR APROBAR' = 'por aprobar',
@@ -23,12 +23,14 @@ enum WorkerStatus {
 })
 export class RemWorkersPage implements OnInit, OnDestroy {
 
-  public quadrille: any;
-  private quadrilles: Array<any> = [];
+  public quadrille: Quadrille;
+  private quadrilles: Array<Quadrille> = [];
   private workers: Array<any> = [];
   public filteredWorkers: Array<any> = [];
   public selectedWorkers: Array<any> = [];
   private buttons: Array<any> = [];
+
+  private allQuadrilles: Array<Quadrille> = [];
 
   public isLoading = false;
   private firstLoad = false;
@@ -37,19 +39,19 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private loaderService: LoaderService,
     private actionSheetController: ActionSheetController,
     private quadrilleService: QuadrilleService,
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
-    private stepperService: StepperService
+    private stepperService: StepperService,
+    private storeService: StoreService
   ) {
 
   }
 
   ngOnInit() {
-    this.stepper$ = this.stepperService.getStepper().subscribe(step => {
-      if (step === StepNames.EndStoring && !this.firstLoad ) {
+    this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
+      if (steps.length === 0 && !this.firstLoad ) {
         this.loadWorkers();
       }
     });
@@ -72,12 +74,17 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.firstLoad = false;
     this.isLoading = true;
 
+    const activeCompany = this.storeService.getActiveCompany();
+
     Promise.all([
-      this.storageSyncService.getQuadrilles(),
-      this.storageSyncService.getWorkers()
+      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user),
+      this.storageSyncService.getWorkers(),
+      this.storageSyncService.getAllQuadrilles()
     ]).then((data) => {
       this.quadrilles = [...data[0]];
       this.quadrille = this.quadrilles.find(item => item.id === +id);
+
+      this.allQuadrilles = [...data[2]];
 
       const allWorkers = data[1];
       const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
@@ -190,7 +197,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * buildButtons
    */
   private buildButtons = () => {
-    this.buttons = this.quadrilles
+    this.buttons = this.allQuadrilles
       .filter(item => item !== this.quadrille)
       .map(item => ({
         text: item.name,
@@ -210,16 +217,15 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       status
     };
 
-    this.loaderService.startLoader();
-
+    this.isLoading = true;
     this.quadrilleService.transferWorkers(data).subscribe(() => {
-      this.selectedWorkers = [];
-      this.loaderService.stopLoader();
+      this.selectedWorkers = [];      
 
       // BANDERA DE SINCRONIZACION
-      this.stepperService.runRemModuleStorageSteps();
+      this.stepperService.onlySyncREM();
+      this.isLoading = false;
     }, error => {
-      this.loaderService.stopLoader();
+      this.isLoading = false;
       this.httpService.errorHandler(error);
     });
   }

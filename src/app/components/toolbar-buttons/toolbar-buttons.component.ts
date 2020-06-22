@@ -47,7 +47,7 @@ export class ToolbarButtonsComponent implements OnInit, OnDestroy {
    */
   public syncAll  = () => {
     if (this.isOnline) {
-      this.stepperService.runAllSteps();
+      this.stepperService.syncAll();
     }
   }
 

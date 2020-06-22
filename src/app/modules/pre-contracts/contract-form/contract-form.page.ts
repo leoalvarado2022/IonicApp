@@ -88,7 +88,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     this.activeCompany = this.storeService.getActiveCompany();
 
     Promise.all([
-      this.storageSyncService.getQuadrilles(),
+      this.storageSyncService.getAllQuadrilles(),
       this.storageSyncService.getWorkers(),
       this.storageSyncService.getPreContracts(),
       this.storageSyncService.getCountries(),
@@ -256,7 +256,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   private storeContract = (data: any) => {
     this.contractsService.storePreContracts([data]).subscribe(() => {
 
-      this.stepperService.runAllSteps();
+      this.stepperService.syncAll();
       this.goBack();
     }, error => {
       this.httpService.errorHandler(error);

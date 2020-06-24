@@ -134,8 +134,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     } else {
       if (this.selectedWorkers.length > 0) {
         this.selectedWorkers = this.selectedWorkers.filter(item => {
-          return (worker.quadrille === item.quadrille && item.quadrilleStatus.toLowerCase() === worker.quadrilleStatus.toLowerCase()) ||
-            (worker.quadrilleToApprove === item.quadrilleToApprove && item.quadrilleStatus.toLowerCase() === worker.quadrilleStatus.toLowerCase());
+          return (worker.quadrille === item.quadrille && item.quadrilleStatus.toLowerCase() === worker.quadrilleStatus.toLowerCase());
         });
       }
 
@@ -214,6 +213,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    */
   public cancelTransfer = () => {    
     // Map data to store
+        
     const mapData = this.mapDataToMemory(this.quadrille.id, TransferActions.ApruebaRechazo);
 
     // Store data
@@ -378,16 +378,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * filterTransfers
    */
   private filterTransfers = (transfers: Array<any>, quadrilleId: number): Array<any> => {
-    // Transfers
-    const remap = transfers ? transfers.map(x => {
-      if ( x.quadrilleToApprove === quadrilleId && x.quadrilleStatus === TransferActions.Aprobado) {
-        return Object.assign({}, x, { quadrille: x.quadrilleToApprove });
-      }
-
-      return x;
-    }) : [];    
-
-    return remap ? remap.filter(x => x.quadrille === quadrilleId) : [];
+    return transfers ? transfers.filter(x => x.quadrille === quadrilleId) : [];
   }
 
 }

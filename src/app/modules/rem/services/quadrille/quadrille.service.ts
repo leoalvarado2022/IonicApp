@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { Storage } from '@ionic/storage';
 import { StorageKeys } from 'src/app/services/storage/storage-keys';
+import { TransferActions } from '../../TransferActions';
 
 @Injectable()
 export class QuadrilleService {
@@ -55,7 +56,7 @@ export class QuadrilleService {
    */
   public getTransfersByQuadrille = (quadrilleId: number): Promise<Array<any>> => {
     return this.getTransfers().then((transfers: Array<any>) => {      
-      return transfers.filter(x => x.quadrille === quadrilleId || x.quadrilleToApprove === quadrilleId);
+      return transfers.filter(x => x.quadrille === quadrilleId);
     });
   }
 
@@ -98,19 +99,25 @@ export class QuadrilleService {
   public cancelTransfers = (cancelTransfers: Array<any>) => {
     return this.getTransfers().then((currentTransfers: Array<any>) => {
 
-      // Map ids
-      const mapIds = cancelTransfers.map(worker => worker.id);
+      cancelTransfers = cancelTransfers.filter(cancelItem => {
+        const findIndex = currentTransfers.findIndex( currentItem => currentItem.id === cancelItem.id);
 
-      // Process    
-      for (let index = 0; index < currentTransfers.length; index++) {
-        // Check if already exist
-        if(mapIds.includes(currentTransfers[index].id)) {          
-          const deleteIndex = cancelTransfers.findIndex(x => x.id === currentTransfers[index].id);            
-          cancelTransfers.splice(deleteIndex, 1);          
+        if(findIndex > -1) {
+          currentTransfers.splice(findIndex, 1);
+
+          if(cancelItem.quadrilleStatus.toLowerCase() === TransferActions.ApruebaRechazo){
+            return false;          
+          }
         }
-      }
-      
-      return this.storage.set(StorageKeys.WorkersTransfers, [...cancelTransfers, ...currentTransfers]);
+
+        return true;
+      });
+
+      // Merge
+      const mergeArray = [...cancelTransfers, ...currentTransfers];      
+
+      // Return 
+      return this.storage.set(StorageKeys.WorkersTransfers,  mergeArray);
     });
   }
 

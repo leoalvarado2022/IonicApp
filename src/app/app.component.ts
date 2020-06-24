@@ -73,7 +73,7 @@ export class AppComponent {
         });
       }).catch(error => {
         console.log('No tiene permiso para recibir notificaciones PUSH: ', error);
-        this.toastService.errorToast('No tiene permiso para recibir notificaciones PUSH');
+        this.toastService.errorToast('No tiene permiso para recibir notificaciones PUSH', 1000, 'bottom');
       });
 
       this.platform.pause.subscribe(() => {

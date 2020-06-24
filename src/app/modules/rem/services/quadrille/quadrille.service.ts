@@ -21,9 +21,23 @@ export class QuadrilleService {
    * transferWorkers
    * @param data 
    */
-  public transferWorkers = (data: any) => {
+  public transferWorkers = (data: Array<any>) => {
     const url = this.httpService.buildUrl(this.joinQuadrille);
-    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+    return this.httpClient.post(url, this.httpService.buildBody({data}), {headers: this.httpService.getHeaders()});
+  }
+
+  /**
+   * getQuadrilleTransfers
+   * @param quadrilleId 
+   */
+  public getQuadrilleTransfers = (quadrilleId: number) => {
+    return this.storage.get(StorageKeys.Workers).then( (workers: Array<any>) => {
+      if (workers) {
+        return workers.filter(worker => worker.quadrille === quadrilleId || worker.quadrilleToApprove === quadrilleId);
+      }
+
+      return [];      
+    });
   }
 
   /**
@@ -36,16 +50,113 @@ export class QuadrilleService {
   }
 
   /**
-   * addTransfers
-   * @param data 
+   * getTransfersByQuadrille
+   * @param quadrilleId 
    */
-  public addTransfers = (data: any) => {
-    return this.getTransfers().then((transfers: Array<any>) => {
-      console.log('antes', transfers);
-      transfers.push(data); 
-      console.log('despues', transfers);
+  public getTransfersByQuadrille = (quadrilleId: number): Promise<Array<any>> => {
+    return this.getTransfers().then((transfers: Array<any>) => {      
+      return transfers.filter(x => x.quadrille === quadrilleId || x.quadrilleToApprove === quadrilleId);
+    });
+  }
+
+  /**
+   * clearQuadrilleTransfers
+   * @param quadrilleId 
+   */
+  public clearQuadrilleTransfers = (quadrilleId: number): Promise<Array<any>> => {
+    return this.getTransfers().then((transfers: Array<any>) => {      
+      const filtered = transfers.filter(x => x.quadrille !== quadrilleId);
+      return this.storage.set(StorageKeys.WorkersTransfers,  filtered);
+    });
+  }
+
+  /**
+   * addTransfers
+   * @param newTransfers 
+   */
+  public addTransfers = (newTransfers: Array<any>) => {
+    return this.getTransfers().then((currentTransfers: Array<any>) => {
+
+      // Map ids
+      const mapIds = currentTransfers.map(worker => worker.id);
       
-      return this.storage.set(StorageKeys.WorkersTransfers,  transfers);
+      // Filter
+      const filterDuplicates = newTransfers.filter(n => !mapIds.includes(n.id));
+
+      // Merge
+      const mergeArray = [...filterDuplicates, ...currentTransfers];      
+
+      // Return 
+      return this.storage.set(StorageKeys.WorkersTransfers,  mergeArray);
+    });
+  }
+
+  /**
+   * cancelTransfers
+   * @param cancelTransfers 
+   */
+  public cancelTransfers = (cancelTransfers: Array<any>) => {
+    return this.getTransfers().then((currentTransfers: Array<any>) => {
+
+      // Map ids
+      const mapIds = cancelTransfers.map(worker => worker.id);
+
+      // Process    
+      for (let index = 0; index < currentTransfers.length; index++) {
+        // Check if already exist
+        if(mapIds.includes(currentTransfers[index].id)) {          
+          const deleteIndex = cancelTransfers.findIndex(x => x.id === currentTransfers[index].id);            
+          cancelTransfers.splice(deleteIndex, 1);          
+        }
+      }
+      
+      return this.storage.set(StorageKeys.WorkersTransfers, [...cancelTransfers, ...currentTransfers]);
+    });
+  }
+
+  /**
+   * acceptTransfers
+   * @param acceptTransfers 
+   */
+  public acceptTransfers = (acceptTransfers: Array<any>) => {
+    return this.getTransfers().then((currentTransfers: Array<any>) => {
+
+      // Map ids
+      const mapIds = acceptTransfers.map(worker => worker.id);
+
+      // Process    
+      for (let index = 0; index < currentTransfers.length; index++) {
+        // Check if already exist
+        if(mapIds.includes(currentTransfers[index].id)) {
+          const deleteIndex = acceptTransfers.findIndex(x => x.id === currentTransfers[index].id);
+          acceptTransfers.splice(deleteIndex, 1);
+        }
+      }
+      
+      return this.storage.set(StorageKeys.WorkersTransfers, [...acceptTransfers, ...currentTransfers]);
+    });
+  }
+
+  /**
+   * rejectTransfers
+   * @param rejectTransfers 
+   */
+  public rejectTransfers = (rejectTransfers: Array<any>) => {
+    return this.getTransfers().then((currentTransfers: Array<any>) => {
+
+      // Map ids
+      const mapIds = rejectTransfers.map(worker => worker.id);
+
+      // Process    
+      for (let index = 0; index < currentTransfers.length; index++) {
+        // Check if already exist
+        if(mapIds.includes(currentTransfers[index].id)) {
+          const deleteIndex = rejectTransfers.findIndex(x => x.id === currentTransfers[index].id);
+          rejectTransfers.splice(deleteIndex, 1);
+        }
+      }
+      
+      return this.storage.set(StorageKeys.WorkersTransfers, [...rejectTransfers, ...currentTransfers]);
     });
   }
 

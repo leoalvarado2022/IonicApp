@@ -97,7 +97,7 @@
         </ion-button>
       </ion-col>
 
-      <ng-container *ngIf="selectedWorkers[0].quadrille !== quadrille.id">
+      <ng-container *ngIf="selectedWorkers[0].quadrille !== quadrille.id && !selectedWorkers[0].memory">
         <ion-col size="6">
           <ion-button (click)="acceptWorkers();" color="success" expand="block">
             Aprobar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}

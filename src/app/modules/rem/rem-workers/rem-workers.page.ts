@@ -76,9 +76,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
     Promise.all([
       this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
-      this.quadrilleService.getQuadrilleTransfers(+id),
+      this.quadrilleService.getQuadrilleWorkers(+id),
       this.storageSyncService.getAllQuadrilles(),
-      this.quadrilleService.getTransfersByQuadrille(+id)
+      this.quadrilleService.getQuadrilleTransfers(+id)
     ]).then((data) => {
       this.selectedWorkers = [];
 
@@ -86,7 +86,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.quadrille = this.quadrilles.find(item => item.id === +id);
       this.allQuadrilles = data[2];
 
-      this.onMemoryTransfers = this.filterTransfers(data[3], +id);
+      this.onMemoryTransfers = data[3];
       this.workers = this.orderByTransfersFirst(data[1]);
       this.filteredWorkers = this.removeDuplicatedWorkers(data[3], this.workers);
       
@@ -168,8 +168,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * buildButtons
    */
   private buildButtons = () => {
-    this.buttons = this.allQuadrilles
-      .filter(item => item !== this.quadrille)
+    this.buttons = this.allQuadrilles.filter(item => item.id !== this.quadrille.id)
       .map(item => ({
           text: item.name,
           handler: () => {
@@ -192,19 +191,21 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');    
-    this.quadrilleService.addTransfers(mapData).then( (transfers: Array<any>) => {
+    this.quadrilleService.addTransfers(mapData).then( response => {
       this.selectedWorkers = [];
 
-      // Transfers
-      this.onMemoryTransfers = this.filterTransfers(transfers, +id);
-      
-      // Remove workers both in filtered and memory arrays
-      this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
 
-      // Make printable array
-      this.printableWorkers = this.mergeArrays();
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
       
-      this.isLoading = false;
+        this.isLoading = false;
+      });
     });
   }
 
@@ -219,19 +220,21 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');    
-    this.quadrilleService.cancelTransfers(mapData).then( (transfers: Array<any>) => {
+    this.quadrilleService.cancelTransfers(mapData).then( response => {
       this.selectedWorkers = [];      
 
-      // Transfers
-      this.onMemoryTransfers = this.filterTransfers(transfers, +id);
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
       
-      // Remove workers both in filtered and memory arrays
-      this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
-
-      // Make printable array
-      this.printableWorkers = this.mergeArrays();
-
-      this.isLoading = false;
+        this.isLoading = false;
+      });
     });
   }
 
@@ -245,19 +248,21 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');    
-    this.quadrilleService.acceptTransfers(mapData).then( (transfers: Array<any>) => {
+    this.quadrilleService.acceptTransfers(mapData).then(response => {
       this.selectedWorkers = [];            
 
-      // Transfers
-      this.onMemoryTransfers = this.filterTransfers(transfers, +id);
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
       
-      // Remove workers both in filtered and memory arrays
-      this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
-
-      // Make printable array
-      this.printableWorkers = this.mergeArrays();
-
-      this.isLoading = false;
+        this.isLoading = false;
+      });
     });
   }
 
@@ -266,24 +271,28 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    */
   public rejectWorkers = () => {    
     // Map data to store
-    const mapData = this.mapDataToMemory(this.selectedWorkers[0].id, TransferActions.Rechazado);
+    const mapData = this.mapDataToMemory(this.quadrille.id, TransferActions.Rechazado);
 
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');    
-    this.quadrilleService.rejectTransfers(mapData).then( (transfers: Array<any>) => {
+    this.quadrilleService.rejectTransfers(mapData).then( response => {
       this.selectedWorkers = [];            
 
-      // Transfers
-      this.onMemoryTransfers = this.filterTransfers(transfers, +id);
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // console.log('transfers', transfers);
+
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
       
-      // Remove workers both in filtered and memory arrays
-      this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
-
-      // Make printable array
-      this.printableWorkers = this.mergeArrays();
-
-      this.isLoading = false;
+        this.isLoading = false;
+      });
     });
   }
 
@@ -292,25 +301,28 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * @param event
    */
   public reload = (event: any) => {
-    this.isLoading = true;
+    this.sendTransfers();
+    event.target.complete();
+  }
 
+  /**
+   * sendTransfers
+   */
+  private sendTransfers = () => {
+    this.isLoading = true;
     this.quadrilleService.transferWorkers(this.onMemoryTransfers).subscribe(() => {
       this.selectedWorkers = [];      
 
       const id = this.route.snapshot.paramMap.get('id');
       this.quadrilleService.clearQuadrilleTransfers(+id).then( () => {
         this.onMemoryTransfers = [];
-
-        // BANDERA DE SINCRONIZACION
-        this.stepperService.onlySyncREM();
-      });      
-      this.isLoading = false;
+        this.printableWorkers = this.mergeArrays();
+        this.isLoading = false;
+      });            
     }, error => {
       this.isLoading = false;
       this.httpService.errorHandler(error);
     });
-
-    event.target.complete();
   }
 
   /**
@@ -372,13 +384,6 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    */
   public getTransferNames = () => {
     return TransferActions;
-  }
-
-  /**
-   * filterTransfers
-   */
-  private filterTransfers = (transfers: Array<any>, quadrilleId: number): Array<any> => {
-    return transfers ? transfers.filter(x => x.quadrille === quadrilleId) : [];
   }
 
 }

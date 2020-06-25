@@ -1,11 +1,12 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {TabMenu} from '@primetec/primetec-angular';
+import {TabMenu, Quadrille} from '@primetec/primetec-angular';
 import {SyncService} from '../../shared/services/sync/sync.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { NetworkService } from 'src/app/shared/services/network/network.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-menu-list',
@@ -28,7 +29,8 @@ export class MenuListPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private storageSyncService: StorageSyncService,
     private networkService: NetworkService,
-    public stepperService: StepperService
+    public stepperService: StepperService,
+    private storeService: StoreService
   ) {
 
   }
@@ -58,12 +60,19 @@ export class MenuListPage implements OnInit, OnDestroy {
   private loadData = () => {
     this.firstLoad = false;
 
+    const activeCompany = this.storeService.getActiveCompany();
+    const access = this.storeService.getAccess();
+
     Promise.all([
       this.storageSyncService.getMenus(),
+      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
       this.storageSyncService.getWorkers(),
     ]).then(data => {
+
       this.menus = [...data[0]];
-      this.workers = [...data[1]];
+      const quadrilles = data[1].map(q => q.id);
+      this.workers = data[2].filter(x => quadrilles.includes(x.quadrille))  || [];      
+      
     });
   }
 

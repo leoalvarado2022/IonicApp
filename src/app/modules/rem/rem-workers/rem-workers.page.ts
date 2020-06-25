@@ -1,20 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ActionSheetController} from '@ionic/angular';
-import {QuadrilleService} from '../rem-quadrille/services/quadrille/quadrille.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { Quadrille } from '@primetec/primetec-angular';
-
-enum WorkerStatus {
-  'POR APROBAR' = 'por aprobar',
-  'APROBADO' = 'aprobado',
-  'RECHAZADO' = 'rechazado',
-  'APRUEBA RECHAZO' = 'apruebarechazo'
-}
+import { QuadrilleService } from '../services/quadrille/quadrille.service';
+import { TransferActions } from '../TransferActions';
 
 @Component({
   selector: 'app-rem-workers',
@@ -23,17 +17,20 @@ enum WorkerStatus {
 })
 export class RemWorkersPage implements OnInit, OnDestroy {
 
-  public quadrille: Quadrille;
   private quadrilles: Array<Quadrille> = [];
-  private workers: Array<any> = [];
-  public filteredWorkers: Array<any> = [];
-  public selectedWorkers: Array<any> = [];
-  private buttons: Array<any> = [];
-
   private allQuadrilles: Array<Quadrille> = [];
+  public quadrille: Quadrille;  
 
-  public isLoading = false;
+  private workers: Array<any> = [];
+  private filteredWorkers: Array<any> = [];
+  public selectedWorkers: Array<any> = [];
+  public printableWorkers: Array<any> = [];
+
+  private onMemoryTransfers: Array<any> = [];  
+
   private firstLoad = false;
+  public isLoading = false;
+  private buttons: Array<any> = [];    
 
   private stepper$: Subscription;
 
@@ -75,23 +72,25 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.isLoading = true;
 
     const activeCompany = this.storeService.getActiveCompany();
+    const access = this.storeService.getAccess();
 
     Promise.all([
-      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user),
-      this.storageSyncService.getWorkers(),
-      this.storageSyncService.getAllQuadrilles()
+      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
+      this.quadrilleService.getQuadrilleWorkers(+id),
+      this.storageSyncService.getAllQuadrilles(),
+      this.quadrilleService.getQuadrilleTransfers(+id)
     ]).then((data) => {
-      this.quadrilles = [...data[0]];
+      this.selectedWorkers = [];
+
+      this.quadrilles = data[0];
       this.quadrille = this.quadrilles.find(item => item.id === +id);
+      this.allQuadrilles = data[2];
 
-      this.allQuadrilles = [...data[2]];
-
-      const allWorkers = data[1];
-      const workers = allWorkers.filter(item => item.quadrille === this.quadrille.id || item.quadrilleToApprove === this.quadrille.id);
-      const orderByName = [...workers];
-
-      this.workers = [...this.orderByTransfersFirst(orderByName)];
-      this.filteredWorkers = [...this.workers];
+      this.onMemoryTransfers = data[3];
+      this.workers = this.orderByTransfersFirst(data[1]);
+      this.filteredWorkers = this.removeDuplicatedWorkers(data[3], this.workers);
+      
+      this.printableWorkers = this.mergeArrays();
 
       this.buildButtons();
 
@@ -104,8 +103,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * @param search
    */
   public searchWorker = (search: string): void => {
-    if (search) {
-      this.filteredWorkers = this.workers.filter(item => {
+    if (search) {            
+      this.printableWorkers = this.mergeArrays().filter(item => {
         return (
           item.id.toString().includes(search.toLowerCase()) ||
           item.identifier.toLowerCase().includes(search.toLowerCase()) ||
@@ -113,7 +112,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         );
       });
     } else {
-      this.filteredWorkers = [...this.workers];
+      this.printableWorkers = [...this.mergeArrays()];
     }
   }
 
@@ -121,19 +120,10 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = (): void => {
-    this.filteredWorkers = [...this.workers];
+    this.printableWorkers = [...this.mergeArrays()];
   }
 
-  /**
-   * reload
-   * @param event
-   */
-  public reload = (event) => {
-    this.loadWorkers();
-    event.target.complete();
-  }
-
-  /**
+    /**
    * markWorker
    * @param worker
    */
@@ -143,7 +133,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.selectedWorkers.splice(index, 1);
     } else {
       if (this.selectedWorkers.length > 0) {
-        this.selectedWorkers = this.selectedWorkers.filter(item => item.quadrilleStatus === worker.quadrilleStatus);
+        this.selectedWorkers = this.selectedWorkers.filter(item => {
+          return (worker.quadrille === item.quadrille && item.quadrilleStatus.toLowerCase() === worker.quadrilleStatus.toLowerCase());
+        });
       }
 
       this.selectedWorkers.push(worker);
@@ -173,57 +165,160 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   }
 
   /**
+   * buildButtons
+   */
+  private buildButtons = () => {
+    this.buttons = this.allQuadrilles.filter(item => item.id !== this.quadrille.id)
+      .map(item => ({
+          text: item.name,
+          handler: () => {
+            this.addTransfer(item.id, TransferActions.PorAprobar);
+          }
+        })
+      );
+  }
+
+  /**
+   * addTransfer
+   * @param quadrille 
+   * @param status 
+   */
+  private addTransfer = (quadrille: number, status: string) => {
+  
+    // Map data to store
+    const mapData = this.mapDataToMemory(quadrille, status);    
+
+    // Store data
+    this.isLoading = true;
+    const id = this.route.snapshot.paramMap.get('id');    
+    this.quadrilleService.addTransfers(mapData).then( response => {
+      this.selectedWorkers = [];
+
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
+      
+        this.isLoading = false;
+      });
+    });
+  }
+
+  /**
+   * cancelTransfer
+   */
+  public cancelTransfer = () => {    
+    // Map data to store
+        
+    const mapData = this.mapDataToMemory(this.quadrille.id, TransferActions.ApruebaRechazo);
+
+    // Store data
+    this.isLoading = true;
+    const id = this.route.snapshot.paramMap.get('id');    
+    this.quadrilleService.cancelTransfers(mapData).then( response => {
+      this.selectedWorkers = [];      
+
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
+      
+        this.isLoading = false;
+      });
+    });
+  }
+
+   /**
    * acceptWorkers
    */
   public acceptWorkers = () => {
-    this.transferWorkers(this.quadrille.id, WorkerStatus.APROBADO);
+    // Map data to store
+    const mapData = this.mapDataToMemory(this.selectedWorkers[0].quadrilleToApprove, TransferActions.Aprobado);
+
+    // Store data
+    this.isLoading = true;
+    const id = this.route.snapshot.paramMap.get('id');    
+    this.quadrilleService.acceptTransfers(mapData).then(response => {
+      this.selectedWorkers = [];            
+
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
+      
+        this.isLoading = false;
+      });
+    });
   }
 
   /**
    * rejectWorkers
    */
-  public rejectWorkers = () => {
-    this.transferWorkers(this.quadrille.id, WorkerStatus.RECHAZADO);
-  }
+  public rejectWorkers = () => {    
+    // Map data to store
+    const mapData = this.mapDataToMemory(this.quadrille.id, TransferActions.Rechazado);
 
-  /**
-   * acceptRejectWorkers
-   */
-  public acceptRejectWorkers = () => {
-    this.transferWorkers(this.quadrille.id, WorkerStatus['APRUEBA RECHAZO']);
-  }
-
-  /**
-   * buildButtons
-   */
-  private buildButtons = () => {
-    this.buttons = this.allQuadrilles
-      .filter(item => item !== this.quadrille)
-      .map(item => ({
-        text: item.name,
-        handler: () => {
-          this.transferWorkers(item.id, WorkerStatus['POR APROBAR']);
-        }
-      }));
-  }
-
-  /**
-   * transferWorkers
-   */
-  private transferWorkers = (quadrille: number, status: string) => {
-    const data = {
-      quadrille,
-      workers: this.selectedWorkers,
-      status
-    };
-
+    // Store data
     this.isLoading = true;
-    this.quadrilleService.transferWorkers(data).subscribe(() => {
+    const id = this.route.snapshot.paramMap.get('id');    
+    this.quadrilleService.rejectTransfers(mapData).then( response => {
+      this.selectedWorkers = [];            
+
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+        // console.log('transfers', transfers);
+
+        // Transfers
+        this.onMemoryTransfers = transfers;
+        
+        // Remove workers both in filtered and memory arrays
+        this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
+
+        // Make printable array
+        this.printableWorkers = this.mergeArrays();
+      
+        this.isLoading = false;
+      });
+    });
+  }
+
+  /**
+   * reload
+   * @param event
+   */
+  public reload = (event: any) => {
+    this.sendTransfers();
+    event.target.complete();
+  }
+
+  /**
+   * sendTransfers
+   */
+  private sendTransfers = () => {
+    this.isLoading = true;
+    this.quadrilleService.transferWorkers(this.onMemoryTransfers).subscribe(() => {
       this.selectedWorkers = [];      
 
-      // BANDERA DE SINCRONIZACION
-      this.stepperService.onlySyncREM();
-      this.isLoading = false;
+      const id = this.route.snapshot.paramMap.get('id');
+      this.quadrilleService.clearQuadrilleTransfers(+id).then( () => {
+        this.onMemoryTransfers = [];
+        this.printableWorkers = this.mergeArrays();
+        this.isLoading = false;
+      });            
     }, error => {
       this.isLoading = false;
       this.httpService.errorHandler(error);
@@ -250,6 +345,45 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     }
 
     return [...withTransfers, ...noTransfers];
+  }
+
+  /**
+   * mergeArrays
+   */
+  private mergeArrays = (): Array<any> => {
+    return [...this.onMemoryTransfers, ...this.filteredWorkers];
+  }
+
+  /**
+   * removeDuplicatedWorkers
+   * @param onMemoryTransfers 
+   * @param filteredWorkers 
+   */
+  private removeDuplicatedWorkers = (onMemoryTransfers: Array<any>, filteredWorkers: Array<any>): Array<any> => {
+    const mapped = onMemoryTransfers.map(x => x.id);
+    return filteredWorkers.filter(w => !mapped.includes(w.id));
+  }
+
+  /**
+   * mapDataToMemory
+   * @param quadrilleId 
+   * @param action 
+   */
+  private mapDataToMemory = (quadrilleId: number, action: string): Array<any> => {
+    return this.selectedWorkers.map( worker => {
+      return Object.assign({}, worker, {
+        quadrilleStatus: action,
+        quadrilleToApprove: quadrilleId,
+        memory: true
+      });
+    });
+  }
+
+  /**
+   * getTransferNames
+   */
+  public getTransferNames = () => {
+    return TransferActions;
   }
 
 }

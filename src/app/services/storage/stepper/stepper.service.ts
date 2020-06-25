@@ -11,6 +11,9 @@ import {Tally} from 'src/app/modules/tallies/tally.interface';
 import {NetworkService} from 'src/app/shared/services/network/network.service';
 import {DeviceSyncService} from '../device-sync/device-sync.service';
 import {DealsService} from '../../../modules/tratos/services/deals/deals.service';
+import { HttpService } from 'src/app/shared/services/http/http.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { isNull } from 'util';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +33,8 @@ export class StepperService {
   private devicesRecorded: Array<number> = [];
   private devicesWithErrors: Array<any> = [];
 
+  private syncError = null;
+
   constructor(
     private storeService: StoreService,
     private syncService: SyncService,
@@ -40,7 +45,8 @@ export class StepperService {
     private nfcService: NfcService,
     private _dealService: DealsService,
     private networkService: NetworkService,
-    private _deviceSyncService: DeviceSyncService
+    private _deviceSyncService: DeviceSyncService,
+    private httpService: HttpService
   ) {
     this.networkService.getNetworkStatus().subscribe(status => this.isOnline = status);
   }
@@ -48,13 +54,15 @@ export class StepperService {
   /**
    * syncAll
    */
-  public syncAll = async () => {
+  public syncAll = async () => {    
     // Sync if online and logged in
-    if (this.isOnline && this.storeService.getLoginStatus()) {
+    if (this.isOnline && this.storeService.getLoginStatus()) {      
+      let data = null;
+      this.syncError = null;
 
       // If tallies sync
       const talliesBuilded = await this.buildTalliesArray();
-      if (talliesBuilded.length) {
+      if (talliesBuilded.length && isNull(this.syncError)) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Tarjas' });
         this.stepsArraySubject.next(this.stepsArray);
         await this.onlySyncTallies(talliesBuilded);
@@ -62,7 +70,7 @@ export class StepperService {
 
       // If devices sync
       const devicesToRecord = await this._deviceSyncService.getDevicesToRecord();
-      if (devicesToRecord.length) {
+      if (devicesToRecord.length && isNull(this.syncError)) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Dispositivos' });
         this.stepsArraySubject.next(this.stepsArray);
         await this.onlySyncDevices(devicesToRecord);
@@ -70,19 +78,30 @@ export class StepperService {
 
       // If deals sync
       const validDeals = await this.getValidDeals();
-      if (validDeals.length) {
+      if (validDeals.length && isNull(this.syncError)) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Tratos y Tarjas' });
         this.stepsArraySubject.next(this.stepsArray);
+        this.onlySyncDeals(validDeals);
       }
 
       // Sync data
-      this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
-      this.stepsArraySubject.next(this.stepsArray);
-      const data = await this.syncData();
+      if (isNull(this.syncError)) {
+        this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
+        this.stepsArraySubject.next(this.stepsArray);
+        data = await this.syncData();
 
-      // Store Data
-      this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
-      this.storeAllSyncData(data);
+        if (data instanceof HttpErrorResponse) {
+          this.httpService.errorHandler(data);          
+          data = null;
+          this.syncError = true;
+        }
+      }
+
+      if (isNull(this.syncError)) {
+        // Store Data
+        this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
+        this.storeAllSyncData(data);
+      }      
 
       // Terminado
       setTimeout(() => {
@@ -96,7 +115,7 @@ export class StepperService {
    * syncData
    */
   private syncData = (): Promise<any> => {
-    return new Promise( (resolve, reject) => {
+    return new Promise( (resolve) => {
       const userData = this.storeService.getUser();
       const username = userData.username;
       const activeConnection = this.storeService.getActiveConnection();
@@ -104,7 +123,7 @@ export class StepperService {
       this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe(success => {
         resolve(success['data']);
       }, error => {
-        reject(error);
+        resolve(error);
       });
     });
   }
@@ -133,11 +152,17 @@ export class StepperService {
   public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {
     console.log('onlySyncTallies');
     const log = await this.syncTallies(talliesBuilded);
-    this.checkRecordedTallies(log);
-    await this.tallySyncService.addTalliesToSyncedTallies(this.talliesRecorded);
-    await this.cleanTalliesMemory();
-    this.talliesRecorded = [];
-    this.talliesWithErrors = [];
+
+    if (log instanceof HttpErrorResponse) {
+      this.httpService.errorHandler(log);                
+      this.syncError = true;
+    } else {
+      this.checkRecordedTallies(log);
+      await this.tallySyncService.addTalliesToSyncedTallies(this.talliesRecorded);
+      await this.cleanTalliesMemory();
+      this.talliesRecorded = [];
+      this.talliesWithErrors = [];
+    }  
   }
 
   /**
@@ -195,11 +220,11 @@ export class StepperService {
    * syncTallies
    */
   private syncTallies = (tallies: Array<Tally>): Promise<any> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.tallyService.recordTallies(tallies).subscribe((success: any) => {
         resolve(success.log);
       }, error => {
-        reject(error);
+        resolve(error);
       });
     });
   }
@@ -221,11 +246,17 @@ export class StepperService {
   public onlySyncDevices = async (devicesToRecord: Array<any>) => {
     console.log('onlySyncDevices');
     const log = await this.syncDevices(devicesToRecord);
-    this.checkRecordedDevices(log);
-    await this.storageSyncService.addDevicesToSyncedDevices(devicesToRecord);
-    await this.cleanDevicesMemory();
-    this.devicesWithErrors = [];
-    this.devicesRecorded = [];
+
+    if (log instanceof HttpErrorResponse) {
+      this.httpService.errorHandler(log);                
+      this.syncError = true;
+    } else {
+      this.checkRecordedDevices(log);
+      await this.storageSyncService.addDevicesToSyncedDevices(devicesToRecord);
+      await this.cleanDevicesMemory();
+      this.devicesWithErrors = [];
+      this.devicesRecorded = [];
+    }
   }
 
   /**
@@ -298,7 +329,13 @@ export class StepperService {
   public onlySyncDeals = async (dealsToRecord: Array<any>) => {
     console.log('onlySyncDevices');
     const log = await this.syncDeals(dealsToRecord);
-    await this.cleanDealsMemory();
+
+    if (log instanceof HttpErrorResponse) {
+      this.httpService.errorHandler(log);                
+      this.syncError = true;
+    } else {
+      await this.cleanDealsMemory();
+    }
   }
 
   /**

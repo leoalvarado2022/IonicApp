@@ -3,7 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {RemQuadrillePage} from './rem-quadrille.page';
 import {SharedModule} from '../../../shared/shared.module';
-import {QuadrilleService} from './services/quadrille/quadrille.service';
+import { QuadrilleService } from '../services/quadrille/quadrille.service';
 
 const routes: Routes = [
   {

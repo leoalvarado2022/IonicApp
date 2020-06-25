@@ -6,6 +6,7 @@ import {environment} from '../../../../../environments/environment';
 import {Device} from '@ionic-native/device/ngx';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import {iosDeviceNames} from '../../../../../environments/ios-device-names';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 
 @Component({
   selector: 'app-welcome',
@@ -23,7 +24,8 @@ export class WelcomePage implements OnInit {
     private alertController: AlertController,
     private toastService: ToastService,
     public device: Device,
-    private platform: Platform
+    private platform: Platform,
+    private storageSyncService: StorageSyncService
   ) {
     this.platform.ready().then(() => {
       this.showCordovaFeatures = this.platform.is('cordova');
@@ -59,9 +61,11 @@ export class WelcomePage implements OnInit {
           }
         }, {
           text: 'Si',
-          handler: async () => {
-            await this.cleanCache();
-            this.storeService.clearStore();
+          handler: () => {                        
+            this.storageSyncService.clearStorage().then( () => {
+              this.storeService.clearStore();
+              this.cleanCache();              
+            });                        
           }
         }
       ]
@@ -88,7 +92,7 @@ export class WelcomePage implements OnInit {
       await this.storage.clearAllRow();
     }
 
-    this.storeService.setUserLocaStorage(user);
+    this.storeService.setUserLocaStorage(user);    
     this.toastService.successToast('Datos eliminados');
   }
 

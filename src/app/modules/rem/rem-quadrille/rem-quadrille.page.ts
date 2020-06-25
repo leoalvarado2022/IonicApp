@@ -39,9 +39,10 @@ export class RemQuadrillePage implements OnInit {
 
     this.isLoading = true;
     const activeCompany = this.storeService.getActiveCompany();
+    const access = this.storeService.getAccess();    
 
     Promise.all([
-      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user),
+      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
       this.storageSyncService.getWorkers()
     ]).then( (data) => {
       this.workers = [...data[1]];

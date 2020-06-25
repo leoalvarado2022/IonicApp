@@ -23,4 +23,5 @@ export enum StorageKeys {
   // On memory data
   TalliesToRecord = 'talliesToRecord',
   TalliesWithErrors = 'talliesWithErrors',
+  WorkersTransfers = "workersTransfers"
 }

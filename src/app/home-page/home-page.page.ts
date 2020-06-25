@@ -1,3 +1,4 @@
+import { HttpService } from './../shared/services/http/http.service';
 import {Component} from '@angular/core';
 import {AuthService} from '../shared/services/auth/auth.service';
 import {StoreService} from '../shared/services/store/store.service';
@@ -5,6 +6,7 @@ import { TimerService } from '../services/storage/timer/timer.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from '../services/storage/stepper/stepper.service';
 import { Router, NavigationEnd } from '@angular/router';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-home-page',
@@ -21,21 +23,11 @@ export class HomePagePage {
     private storeService: StoreService,
     private timerService: TimerService,
     private stepperService: StepperService,
-    private router: Router
+    private router: Router,
+    private httpService: HttpService,
+    private platform: Platform
   ) {
-    /*
-    this.router$ = this.router.events.subscribe(route => {
-      if (route instanceof NavigationEnd ) {
-        if (route.url === '/home-page') {
-          console.log('estamos en home-page');
-          this.timerService.startResume();
-        } else {
-          console.log('NO estamos en home-page');
-          this.timerService.pauseStop();
-        }
-      }
-    });
-    */
+
   }
 
   ionViewWillEnter() {
@@ -78,11 +70,19 @@ export class HomePagePage {
   /**
    * storePushToken
    */
-  private storePushToken = (): void => {
+  private storePushToken = (): any => {
     const user = this.storeService.getUser();
     const token = this.storeService.getPushToken();
 
-    this.authService.savePushToken(user.id, token).subscribe();
+    this.platform.ready().then( () => {      
+      if ( this.platform.is('cordova')) {
+        this.authService.savePushToken(user.id, token).subscribe( () => {
+          // NO SE HACE NADA
+        }, error => {
+          this.httpService.errorHandler(error);
+        });
+      }
+    });    
   }
 
 }

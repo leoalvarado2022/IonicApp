@@ -10,11 +10,10 @@
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar class="toolbar-search">
       <ion-searchbar 
-        placeholder="Buscar..."
         animated
-        class="production" 
+        placeholder="Buscar..."
         showCancelButton="never"
         (ionChange)="searchWorker($event.target.value)"
         (ionClear)="cancelSearch()">

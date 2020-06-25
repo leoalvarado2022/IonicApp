@@ -10,8 +10,14 @@
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar>
-    <ion-searchbar placeholder="Buscar..." (ionChange)="searchHarvest($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>    
+  <ion-toolbar class="toolbar-search">
+    <ion-searchbar
+      animated
+      placeholder="Buscar..."
+      showCancelButton="never"      
+      (ionChange)="searchHarvest($event.target.value)"
+      (ionClear)="cancelSearch()">
+    </ion-searchbar>    
   </ion-toolbar>
 </ion-header>
 

@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button class="header-back-button" text=""></ion-back-button>
+      <ion-button (click)="goBack()" color="secondary">
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
       <strong>Trabajadores</strong>
@@ -10,10 +12,9 @@
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar class="toolbar-search">
     <ion-searchbar 
       animated
-      class="production"
       showCancelButton="never"
       placeholder="Buscar..." 
       (ionChange)="searchWorker($event.target.value)"
@@ -31,7 +32,7 @@
 
   <ng-container *ngIf="!isLoading">
     
-    <h2 class="ion-text-center" style="font-size: 20px">
+    <h2 *ngIf="quadrille" class="ion-text-center" style="font-size: 20px">
       {{ quadrille.name | titlecase }}
       <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary"> {{ printableWorkers.length }} </ion-badge>
     </h2>

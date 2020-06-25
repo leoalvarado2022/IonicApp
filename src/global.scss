@@ -22,6 +22,26 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+
+.toolbar-search {  
+  --background: var(--ion-color-primary);
+  padding: 0;
+  margin: 0;
+
+  ion-searchbar {
+    padding: 0;
+    margin: 0;
+    --background: var(--ion-color-primary);
+    --border-radius: 50px;
+    --box-shadow: none;
+    --clear-button-color: white;
+    --icon-color: white;
+    --placeholder-color: white;
+    --color: white;
+    --placeholder-font-weight: bold;
+  }
+}
+
 .full-screen-modal {
   width: 100vw;
   height: 100vh;

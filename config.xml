@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="cl.primetec.fx11" version="1.0.84" xmlns="http://www.w3.org/ns/widgets">
+<widget id="cl.primetec.fx11" version="1.0.85" xmlns="http://www.w3.org/ns/widgets">
     <name>FX360 Movil</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>

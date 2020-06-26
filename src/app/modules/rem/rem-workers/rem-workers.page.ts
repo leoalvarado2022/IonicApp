@@ -44,16 +44,14 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private storeService: StoreService,
     private router: Router
   ) {
-
-  }
-
-  ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
       if (steps.length === 0 && !this.firstLoad ) {
         this.loadWorkers();
       }
     });    
+  }
 
+  ngOnInit() {    
     this.loadWorkers();
   }
 
@@ -185,17 +183,13 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   private addTransfer = (quadrille: number, status: string) => {
   
     // Map data to store
-    const mapData = this.mapDataToMemory(quadrille, status);    
-
-    console.log('addTransfer', mapData);
+    const mapData = this.mapDataToMemory(quadrille, status);        
 
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');    
     this.quadrilleService.addTransfers(mapData).then( response => {
-      this.selectedWorkers = [];
-
-      console.log('all data', response);
+      this.selectedWorkers = [];      
 
       this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
         // Transfers
@@ -318,6 +312,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       const id = this.route.snapshot.paramMap.get('id');
       this.quadrilleService.clearQuadrilleTransfers(+id).then( () => {
+        this.onMemoryTransfers = [];
+        this.printableWorkers = this.mergeArrays();
         this.stepperService.onlySyncREM();        
       });            
     }, error => {

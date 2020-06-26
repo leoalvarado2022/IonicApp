@@ -32,7 +32,6 @@ export class RemQuadrillePage implements OnInit {
    * loadQuadrilles
    */
   private loadQuadrilles = () => {
-
     this.isLoading = true;
     const activeCompany = this.storeService.getActiveCompany();
     const access = this.storeService.getAccess();    

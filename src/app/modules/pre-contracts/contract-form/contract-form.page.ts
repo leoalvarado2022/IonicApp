@@ -21,6 +21,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public contractForm: FormGroup;
   public currentStep = 1;
   public isSearching = false;
+  public customPickerOptions: any;
 
   public nationalities: Array<any> = [];
   public contractTypes: Array<any> = [];
@@ -55,6 +56,24 @@ export class ContractFormPage implements OnInit, OnDestroy {
     private storageSyncService: StorageSyncService,
     private stepperService: StepperService
   ) {
+    this.customPickerOptions = {
+      animated: true,
+      backdropDismiss: false,
+      keyboardClose: false,
+      buttons: [{
+        text: 'Ok',
+        handler: (data) => {
+          this.contractForm.get('step2.dob').patchValue(moment(`${data.year.text}-${data.month.text}-${data.day.text}`).format('YYYY-MM-DD'));
+        } 
+      }, {
+        role: 'cancel',
+        text: 'Cancelar',
+        handler: () => {          
+          
+        }
+      }]
+    }
+
     this.contractForm = this.formBuilder.group({
       id: [0],
       companyId: 0,
@@ -301,6 +320,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
     this.contractsService.checkWorker(clean).subscribe((success: any) => {
       const worker = success.data;
 
+      console.log('worker', worker);
+
       if (worker) {
         this.contractForm.patchValue({
           workerId: worker.id,
@@ -317,9 +338,9 @@ export class ContractFormPage implements OnInit, OnDestroy {
             civilStatus: worker.civilStatus
           },
           step3: {
-            afp: worker.afpId,
-            isapre: worker.isapreId,
-            quadrille: worker.quadrilleId
+            afp: worker.afpId || this.afps.length === 1 ? this.afps[0].id : '',
+            isapre: worker.isapreId || this.isapres.length === 1 ? this.isapres[0].id : '',
+            quadrille: worker.quadrilleId || this.quadrilles.length === 1 ? this.quadrilles[0].id : ''
           }
         });
 

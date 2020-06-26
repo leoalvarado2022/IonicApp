@@ -187,11 +187,15 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Map data to store
     const mapData = this.mapDataToMemory(quadrille, status);    
 
+    console.log('addTransfer', mapData);
+
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');    
     this.quadrilleService.addTransfers(mapData).then( response => {
       this.selectedWorkers = [];
+
+      console.log('all data', response);
 
       this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
         // Transfers
@@ -314,9 +318,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       const id = this.route.snapshot.paramMap.get('id');
       this.quadrilleService.clearQuadrilleTransfers(+id).then( () => {
-        this.onMemoryTransfers = [];
-        this.printableWorkers = this.mergeArrays();
-        this.isLoading = false;
+        this.stepperService.onlySyncREM();        
       });            
     }, error => {
       this.isLoading = false;
@@ -389,7 +391,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * 
    */
   public goBack = () => {
-    this.sendTransfers();
+    // this.sendTransfers();
     this.router.navigate(['/home-page/tarja_cuadrillas']);
   }
 

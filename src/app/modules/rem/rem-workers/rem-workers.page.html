@@ -38,7 +38,7 @@
     </h2>
 
     <ion-list>
-      <ion-item *ngFor="let worker of printableWorkers" lines="none" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" style="height: 83px">
+      <ion-item *ngFor="let worker of printableWorkers" lines="none" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
         <ion-icon name="person" slot="start"></ion-icon>
         <ion-label>
           <h3 class="label-padding">{{ worker.name | titlecase }}</h3>

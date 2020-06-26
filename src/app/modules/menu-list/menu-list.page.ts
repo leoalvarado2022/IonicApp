@@ -38,8 +38,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.network$ = this.networkService.getNetworkStatus().subscribe( status => this.isOnline = status);
     this.step$ = this.stepperService.getStepper().subscribe( (steps: Array<any>) => {
-      if (steps.length === 0 && !this.firstLoad) {
-        console.log('calga data pe');
+      if (steps.length === 0 && !this.firstLoad) {        
         this.loadData();
       }
     });

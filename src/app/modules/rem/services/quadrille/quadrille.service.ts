@@ -68,7 +68,6 @@ export class QuadrilleService {
    */
   public clearQuadrilleTransfers = (quadrilleId: number): Promise<Array<any>> => {
     return this.getTransfers().then( (transfers: Array<any>) => {
-
       const toRemove = [];
       transfers.forEach(item => {
         if (item.quadrille === quadrilleId || item.quadrilleToApprove === quadrilleId) {          
@@ -79,7 +78,7 @@ export class QuadrilleService {
 
       for (let index = 0; index < toRemove.length; index++) {
         transfers = transfers.splice( toRemove[index], 1);
-      }      
+      }
       
       return this.storage.set(StorageKeys.WorkersTransfers,  transfers);
     });    

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ActionSheetController} from '@ionic/angular';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
@@ -28,7 +28,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   private onMemoryTransfers: Array<any> = [];  
 
-  private firstLoad = false;
+  private firstLoad = true;
   public isLoading = false;
   private buttons: Array<any> = [];    
 
@@ -41,7 +41,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private storageSyncService: StorageSyncService,
     private stepperService: StepperService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private router: Router
   ) {
 
   }
@@ -51,15 +52,13 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       if (steps.length === 0 && !this.firstLoad ) {
         this.loadWorkers();
       }
-    });
+    });    
+
+    this.loadWorkers();
   }
 
   ngOnDestroy(): void {
     this.stepper$.unsubscribe();
-  }
-
-  ionViewDidEnter() {
-    this.loadWorkers();
   }
 
   /**
@@ -188,11 +187,15 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Map data to store
     const mapData = this.mapDataToMemory(quadrille, status);    
 
+    console.log('addTransfer', mapData);
+
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');    
     this.quadrilleService.addTransfers(mapData).then( response => {
       this.selectedWorkers = [];
+
+      console.log('all data', response);
 
       this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
         // Transfers
@@ -315,9 +318,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
       const id = this.route.snapshot.paramMap.get('id');
       this.quadrilleService.clearQuadrilleTransfers(+id).then( () => {
-        this.onMemoryTransfers = [];
-        this.printableWorkers = this.mergeArrays();
-        this.isLoading = false;
+        this.stepperService.onlySyncREM();        
       });            
     }, error => {
       this.isLoading = false;
@@ -384,6 +385,14 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    */
   public getTransferNames = () => {
     return TransferActions;
+  }
+
+  /**
+   * 
+   */
+  public goBack = () => {
+    // this.sendTransfers();
+    this.router.navigate(['/home-page/tarja_cuadrillas']);
   }
 
 }

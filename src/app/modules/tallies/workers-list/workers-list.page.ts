@@ -67,14 +67,12 @@ export class WorkersListPage implements OnInit, OnDestroy {
         this.minimunDataReload();
       }
     });
+
+    this.loadData();
   }
 
   ngOnDestroy(): void {
     this.stepper$.unsubscribe();
-  }
-
-  ionViewDidEnter() {
-    this.loadData();
   }
 
   /**

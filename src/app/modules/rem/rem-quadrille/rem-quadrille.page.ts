@@ -24,19 +24,14 @@ export class RemQuadrillePage implements OnInit {
 
   }
 
-  ionViewDidEnter() {
-    this.loadQuadrilles();
-  }
-
   ngOnInit() {
-
-  }
+    this.loadQuadrilles();
+  }  
 
   /**
    * loadQuadrilles
    */
   private loadQuadrilles = () => {
-
     this.isLoading = true;
     const activeCompany = this.storeService.getActiveCompany();
     const access = this.storeService.getAccess();    

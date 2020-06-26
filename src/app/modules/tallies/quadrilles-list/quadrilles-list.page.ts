@@ -23,7 +23,6 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
   private firstLoad = true;
   public isLoading = false;
 
-
   private stepper$: Subscription;
 
   constructor(
@@ -41,14 +40,12 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
         this.loadData();
       }
     });
+
+    this.loadData();
   }
 
   ngOnDestroy() {
     this.stepper$.unsubscribe();
-  }
-
-  ionViewDidEnter() {
-    this.loadData();
   }
 
   /**

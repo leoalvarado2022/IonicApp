@@ -43,14 +43,12 @@ export class ContractsListPage implements OnInit, OnDestroy {
         this.loadPreContracts();
       }
     });
+
+    this.loadPreContracts();
   }
 
   ngOnDestroy(): void {
     this.stepper$.unsubscribe();
-  }
-
-  ionViewDidEnter() {
-    this.loadPreContracts();
   }
 
   /**

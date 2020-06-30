@@ -66,20 +66,18 @@ export class QuadrilleService {
    * clearQuadrilleTransfers
    * @param quadrilleId 
    */
-  public clearQuadrilleTransfers = (quadrilleId: number): Promise<Array<any>> => {
+  public clearQuadrilleTransfers = (quadrilleId: number): Promise<Array<any>> => {    
     return this.getTransfers().then( (transfers: Array<any>) => {
-      const toRemove = [];
-      transfers.forEach(item => {
+      const toRemove = [];      
+
+      transfers.forEach(item => {        
         if (item.quadrille === quadrilleId || item.quadrilleToApprove === quadrilleId) {          
           const index = transfers.indexOf(item);
           toRemove.push(index);
         }
       });
-
-      for (let index = 0; index < toRemove.length; index++) {
-        transfers = transfers.splice( toRemove[index], 1);
-      }
       
+      transfers = transfers.filter( (item, index) => !toRemove.includes(index));      
       return this.storage.set(StorageKeys.WorkersTransfers,  transfers);
     });    
   }

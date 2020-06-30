@@ -62,17 +62,17 @@ export class MenuListPage implements OnInit, OnDestroy {
     const activeCompany = this.storeService.getActiveCompany();
     const access = this.storeService.getAccess();
 
-    Promise.all([
-      this.storageSyncService.getMenus(),
-      this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
-      this.storageSyncService.getWorkers(),
-    ]).then(data => {
-
-      this.menus = [...data[0]];
-      const quadrilles = data[1].map(q => q.id);
-      this.workers = data[2].filter(x => quadrilles.includes(x.quadrille))  || [];      
-      
-    });
+    if (activeCompany) {
+      Promise.all([
+        this.storageSyncService.getMenus(),
+        this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
+        this.storageSyncService.getWorkers(),
+      ]).then(data => {
+        this.menus = [...data[0]];
+        const quadrilles = data[1].map(q => q.id);
+        this.workers = data[2].filter(x => quadrilles.includes(x.quadrille))  || [];      
+      });
+    }
   }
 
   /**

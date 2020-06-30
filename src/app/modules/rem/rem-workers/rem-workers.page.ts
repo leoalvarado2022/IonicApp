@@ -131,7 +131,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     } else {
       if (this.selectedWorkers.length > 0) {
         this.selectedWorkers = this.selectedWorkers.filter(item => {
-          return (worker.quadrille === item.quadrille && item.quadrilleStatus.toLowerCase() === worker.quadrilleStatus.toLowerCase());
+          return (item.quadrille === worker.quadrille || item.quadrilleToApprove === worker.quadrilleToApprove) && item.quadrilleStatus.toLowerCase() === worker.quadrilleStatus.toLowerCase();
         });
       }
 
@@ -276,9 +276,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.quadrilleService.rejectTransfers(mapData).then( response => {
       this.selectedWorkers = [];            
 
-      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
-        // console.log('transfers', transfers);
-
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {        
         // Transfers
         this.onMemoryTransfers = transfers;
         

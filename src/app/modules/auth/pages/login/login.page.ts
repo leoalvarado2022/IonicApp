@@ -75,11 +75,10 @@ export class LoginPage implements OnInit, OnDestroy {
   /**
    * onSubmit
    */
-  public onSubmit = async () => {
+  public onSubmit = () => {
     const data = Object.assign({}, this.loginForm.value);
     data.username = data.username.toLowerCase();
-    const login = await this.login(data);
-
+    
     if (data.remember) {
       this.storeService.setRemember(true);
       this.storeService.setRememberData(data);
@@ -90,17 +89,22 @@ export class LoginPage implements OnInit, OnDestroy {
       this.storeService.removeRememberData();
     }
 
-    if (login && login.code === 1) {
-      this.addPin(login);
-    } else {
-      if (login !== null) {
-        this.storeService.setUser(login.user);
-        this.storeService.setUserConnections(login.connections);
-        this.storeService.setToken(login.token);
-        this.storeService.setLoginStatus(true);
-        this.makeLogin();
+    this.login(data).then( login => {      
+      if (login && login.code === 1) {
+        this.addPin(login);
+      } else {
+        if (login !== null) {
+          this.storeService.setUser(login.user);
+          this.storeService.setUserConnections(login.connections);
+          this.storeService.setToken(login.token);
+          this.storeService.setLoginStatus(true);        
+          
+          // MAKE LOGIN
+          this.loginForm.reset();          
+          this.router.navigate(['/home-page']);
+        }
       }
-    }
+    });
   }
 
   /**
@@ -112,15 +116,6 @@ export class LoginPage implements OnInit, OnDestroy {
     this.loginForm.reset();
     this.storeService.setToken(login.token);
     this.router.navigate(['auth/pin']);
-  }
-
-  /**
-   * @description hacer login si no tiene pin
-   */
-  public makeLogin = () => {
-    this.loginForm.reset();
-    console.log('make login');
-    this.router.navigate(['/home-page']);
   }
 
   /**

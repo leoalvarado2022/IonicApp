@@ -24,14 +24,15 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher (ionRefresh)="reload($event)" class="refresher" slot="fixed"></ion-refresher>
+  <ion-refresher (ionRefresh)="reload($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
   <ng-container *ngIf="isLoading">
     <h1 class="ion-text-center">Cargando...</h1>
   </ng-container>
 
-  <ng-container *ngIf="!isLoading">
-    
+  <ng-container *ngIf="!isLoading">    
     <h2 *ngIf="quadrille" class="ion-text-center" style="font-size: 20px">
       {{ quadrille.name | titlecase }}
       <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary"> {{ printableWorkers.length }} </ion-badge>

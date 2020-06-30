@@ -21,8 +21,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
+<ion-content>  
+  <ion-refresher (ionRefresh)="reSync($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
 
   <h2 class="ion-text-center">
     Pre-Contratos

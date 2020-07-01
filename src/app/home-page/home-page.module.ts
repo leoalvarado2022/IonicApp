@@ -96,7 +96,12 @@ const routes: Routes = [
       {
         path: 'tallies-list/:id/:date',
         loadChildren: () => import('../modules/tallies/tallies-list/tallies-list.module').then( m => m.TalliesListPageModule)
-      }
+      },
+      {
+        path: 'uso_maquinaria',
+        loadChildren: () => import('../modules/machinery/machinery.module').then( m => m.MachineryModule)
+      },
+      { path: '**', redirectTo: ''},
     ]
   },
 ];

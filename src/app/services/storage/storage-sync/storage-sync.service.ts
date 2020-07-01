@@ -33,7 +33,9 @@ export class StorageSyncService {
       civilStatus,
       afps,
       isapres,
-      devices
+      devices,
+      machinery,
+      costCenterTypes
     } = data;
 
     return Promise.all([
@@ -51,7 +53,9 @@ export class StorageSyncService {
       this.setCivilStatus(civilStatus),
       this.setAfps(afps),
       this.setIsapres(isapres),
-      this.setDevices(devices)
+      this.setDevices(devices),
+      this.setMachinery(machinery),
+      this.setCostCenterTypes(costCenterTypes)
     ]);
   }
 
@@ -69,7 +73,7 @@ export class StorageSyncService {
 
   /**
    * storePreContractsSyncData
-   * @param data 
+   * @param data
    */
   public storePreContractsSyncData = (data: Sync): Promise<any> => {
     const { preContracts } = data;
@@ -98,7 +102,7 @@ export class StorageSyncService {
       this.setCostCentersCustom(costCentersCustom),
       this.setLabors(labors),
       this.setDeals(deals),
-      this.setBonds(bonds)
+      this.setBonds(bonds),
     ]);
   }
 
@@ -120,8 +124,8 @@ export class StorageSyncService {
 
   /**
    * getQuadrillesByCurrentUser
-   * @param currentUserId 
-   * @param isSuper 
+   * @param currentUserId
+   * @param isSuper
    */
   public getQuadrillesByCurrentUser = (currentUserId: number, isSuper: boolean = false): Promise<Array<Quadrille>> => {
     return this.storage.get(StorageKeys.Quadrilles).then( (quadrilles: Array<Quadrille>) => {
@@ -236,7 +240,7 @@ export class StorageSyncService {
   /**
    * setMenus
    */
-  public setMenus = (menus: Array<TabMenu>): Promise<Array<TabMenu>> => {
+  private setMenus = (menus: Array<TabMenu>): Promise<Array<TabMenu>> => {
     return this.storage.set(StorageKeys.TabMenus, menus);
   }
 
@@ -252,7 +256,7 @@ export class StorageSyncService {
   /**
    * setPreContracts
    */
-  public setPreContracts = (preContracts: Array<any>): Promise<Array<any>>  => {
+  private setPreContracts = (preContracts: Array<any>): Promise<Array<any>>  => {
     return this.storage.set(StorageKeys.PreContracts, preContracts);
   }
 
@@ -269,7 +273,7 @@ export class StorageSyncService {
    * setCountries
    * @param countries
    */
-  public setCountries = (countries: Array<any>): Promise<Array<any>> => {
+  private setCountries = (countries: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Countries, countries);
   }
 
@@ -286,7 +290,7 @@ export class StorageSyncService {
    * setContractTypes
    * @param contractTypes
    */
-  public setContractTypes = (contractTypes: Array<any>): Promise<Array<any>> => {
+  private setContractTypes = (contractTypes: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.ContractTypes, contractTypes);
   }
 
@@ -303,7 +307,7 @@ export class StorageSyncService {
    * setCivilStatus
    * @param civilStatus
    */
-  public setCivilStatus(civilStatus: Array<any>): Promise<Array<any>> {
+  private setCivilStatus(civilStatus: Array<any>): Promise<Array<any>> {
     return this.storage.set(StorageKeys.CivilStatus, civilStatus);
   }
 
@@ -320,7 +324,7 @@ export class StorageSyncService {
    * setAfps
    * @param afps
    */
-  public setAfps = (afps: Array<any> = []): Promise<Array<any>> => {
+  private setAfps = (afps: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Afp, afps);
   }
 
@@ -337,7 +341,7 @@ export class StorageSyncService {
    * setIsapres
    * @param isapres
    */
-  public setIsapres = (isapres: Array<any> = []): Promise<Array<any>> => {
+  private setIsapres = (isapres: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Isapre, isapres);
   }
 
@@ -354,7 +358,7 @@ export class StorageSyncService {
    * setDevices
    * @param devices
    */
-  public setDevices = (devices: Array<any> = []): Promise<Array<any>> => {
+  private setDevices = (devices: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Devices, devices);
   }
 
@@ -366,6 +370,93 @@ export class StorageSyncService {
       return devices ? devices : [];
     });
   }
+
+  /**
+   * setMachinery
+   */
+  private setMachinery = (machinery: Array<any> = []): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Machinery, machinery);
+  }
+
+  /**
+   * getMachinery
+   */
+  public getMachinery = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Machinery).then((machinery: Array<any>) => {
+      return machinery ? machinery : [];
+    });
+  }
+
+  /**
+   * getMachineryByCostCenter
+   * @param costCenterId
+   */
+  public getMachineryByCostCenter = (costCenterId: number, userId: number, date: string): Promise<Array<any>> => {
+    return this.getMachinery().then( (machinery: Array<any>) => {
+      return machinery.filter(item => {
+        const splitDate = item.date.split('T')[0];
+
+        return item.machineryCostCenterId === costCenterId && item.workerId === userId && splitDate === date;
+      });
+    });
+  }
+
+  /**
+   * setCostCenterTypes
+   * @param costCenterTypes
+   */
+  private setCostCenterTypes = (costCenterTypes: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.CostCenterTypes, costCenterTypes);
+  }
+
+  /**
+   * getCostCenterTypes
+   */
+  public getCostCenterTypes = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.CostCenterTypes).then((costCenterTypes: Array<any>) => {
+      return costCenterTypes ? costCenterTypes : [];
+    });
+  }
+
+  /**
+   * getMachineryTypeCostCenters
+   */
+  public getMachineryTypeCostCenters = (): Promise<Array<any>> => {
+    return Promise.all([
+      this.getCostCenterTypes(),
+      this.getCostCentersCustom(),
+    ]).then((data: Array<any>) => {
+
+      const machineryTypes = data[0].filter(item => item.costCenterTypeId === 4);
+
+      if (machineryTypes.length > 0){
+        const mapped = machineryTypes.map(item => item.costCenterId);
+        return data[1].filter(item => mapped.includes(item.id));
+      }
+
+      return [];
+    });
+  }
+
+  /**
+   * getNotMachineryTypeCostCenters
+   */
+  public getNotMachineryTypeCostCenters = (): Promise<Array<any>> => {
+    return Promise.all([
+      this.getCostCenterTypes(),
+      this.getCostCentersCustom(),
+    ]).then((data: Array<any>) => {
+      const machineryTypes = data[0].filter(item => item.costCenterTypeId === 4);
+
+      if (machineryTypes.length > 0){
+        const mapped = machineryTypes.map(item => item.costCenterId);
+        return data[1].filter(item => !mapped.includes(item.id));
+      }
+
+      return [];
+    });
+  }
+
 
   /**
    * setTally Temp
@@ -403,11 +494,11 @@ export class StorageSyncService {
 
   /**
    * deletePreContractFromStorage
-   * @param preContractId 
+   * @param preContractId
    */
   public deletePreContractFromStorage = (preContractId: number): Promise<Array<any>> => {
     return this.getPreContracts().then( (preContracts: Array<any>) => {
-      
+
       if (preContracts) {
         const filtered = preContracts.filter(x => x.id !== preContractId);
         return this.setPreContracts(filtered);

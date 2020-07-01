@@ -14,6 +14,8 @@ export enum StorageKeys {
   Afp = 'afps',
   Isapre = 'isapres',
   Devices = 'devices',
+  Machinery = 'machinery',
+  CostCenterTypes = 'costCenterTypes',
   DevicesToRecord = 'devicesToRecord',
   DeviceTempId = 'deviceTempId',
   DealsTemp = 'dealsTemp',

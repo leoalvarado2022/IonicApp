@@ -27,8 +27,8 @@
 
       <ion-item>
         <ion-label position="fixed">% de Exportación</ion-label>
-        <ion-input clearInput formControlName="exportPercentage" placeholder="Ingrese el %" type="number"></ion-input>        
-      </ion-item>      
+        <ion-input clearInput formControlName="exportPercentage" placeholder="Ingrese el %" type="number"></ion-input>
+      </ion-item>
 
       <ng-container *ngIf="qualityForm.get(['quality', 'exportPercentage']).hasError('max')">
         <span class="errorMsg">El porcentaje maximo es 100</span>

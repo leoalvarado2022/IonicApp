@@ -90,7 +90,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
         costCentersCustom: [],
         tallies: [],
         devices: [],
-        bonds: []
+        bonds: [],
+        machinery: [],
+        costCenterTypes: []
       },
       contract: {
         activeCostCenter: null,

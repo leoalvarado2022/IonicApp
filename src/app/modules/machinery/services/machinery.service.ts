@@ -3,8 +3,6 @@ import { Storage } from '@ionic/storage';
 import { StorageKeys } from 'src/app/services/storage/storage-keys';
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { HttpClient } from '@angular/common/http';
-import { unwatchFile } from 'fs';
-import { find } from 'rxjs/operators';
 
 @Injectable()
 export class MachineryService {

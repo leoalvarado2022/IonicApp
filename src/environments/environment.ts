@@ -8,7 +8,7 @@ export const environment = {
   production: false,
   app_name: 'FX10',
   api_url: 'http://127.0.0.1:5572',
-  appVersion: 'v1.0.87',
+  appVersion: 'v1.0.88',
   tz: 'America/Santiago',
   iosDeviceNames,
   syncTimerMinutes: 10

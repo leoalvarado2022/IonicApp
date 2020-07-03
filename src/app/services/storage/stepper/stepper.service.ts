@@ -86,14 +86,12 @@ export class StepperService {
       }
 
       // If Machinery
-      /*
       const validMachinery = await this.machineryService.getMachineryToRecord();
       if (validMachinery.length && isNull(this.syncError)) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Maquinaria' });
         this.stepsArraySubject.next(this.stepsArray);
         this.onlySyncMachinery(validMachinery);
       }
-      */
 
       // Sync data
       if (isNull(this.syncError)) {

@@ -3,13 +3,15 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 import { ActivatedRoute } from '@angular/router';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import * as moment from 'moment';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonItemSliding } from '@ionic/angular';
 import { MachineryFormComponent } from '../machinery-form/machinery-form.component';
 import { Company } from '@primetec/primetec-angular';
 import { MachineryService } from '../services/machinery.service';
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-machinery-list',
@@ -22,7 +24,6 @@ export class MachineryListPage implements OnInit, OnDestroy {
   private machineryToRecord: Array<any> = [];
   public filteredMachinery: Array<any> = [];
 
-  private selectedCostCenter: any;
   private costCenters: Array<any> = [];
   private labors: Array<any> = [];
   private units: Array<any> = [];
@@ -40,6 +41,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
     private machineryService: MachineryService,
     private httpService: HttpService,
     private stepperService: StepperService,
+    private alertService: AlertService
   ) {
 
   }
@@ -137,6 +139,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
       componentProps: {
         companyId: this.activeCompany.id,
         costCenters: this.costCenters,
+        machineryCostCenterId: +this.activatedRoute.snapshot.paramMap.get('id'),
         labors: this.labors,
         units: this.units,
         workers: this.workers
@@ -150,6 +153,50 @@ export class MachineryListPage implements OnInit, OnDestroy {
     });
 
     return await modal.present();
+  }
+
+  /**
+   * editMachinery
+   * @param machinery
+   * @param slide
+   */
+  public editMachinery = async (machinery: any, slide: IonItemSliding) => {
+    const modal = await this.modalController.create({
+      component: MachineryFormComponent,
+      componentProps: {
+        companyId: this.activeCompany.id,
+        costCenters: this.costCenters,
+        machineryCostCenterId: +this.activatedRoute.snapshot.paramMap.get('id'),
+        labors: this.labors,
+        units: this.units,
+        workers: this.workers,
+        editMachinery: machinery
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
+
+    modal.onDidDismiss().then(() => {
+      slide.close();
+      this.loadData();
+    });
+
+    return await modal.present();
+  }
+
+  /**
+   * deleteMachinery
+   * @param machineryTempId
+   * @param slide
+   */
+  public deleteMachinery = async (machineryTempId: number, slide: IonItemSliding) => {
+    const sayYes = await this.alertService.confirmAlert('Confirmar borrar esta maquinaria?');
+
+    if(sayYes){
+      await this.machineryService.deleteMachinery(machineryTempId);
+      slide.close();
+      this.loadData();
+    }
   }
 
 }

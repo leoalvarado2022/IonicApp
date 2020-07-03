@@ -11,10 +11,12 @@ import { MachineryService } from '../services/machinery.service';
 export class MachineryFormComponent implements OnInit {
 
   @Input() companyId: number;
+  @Input() machineryCostCenterId: number;
   @Input() costCenters: Array<any> = [];
   @Input() labors: Array<any> = [];
   @Input() units: Array<any> = [];
   @Input() workers: Array<any> = [];
+  @Input() editMachinery: any;
 
   public machineryForm: FormGroup;
 
@@ -46,19 +48,48 @@ export class MachineryFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.machineryForm = this.formBuilder.group({
-      costCenterId: ['', Validators.required],
-      laborId: ['', Validators.required],
-      unitId: ['', Validators.required],
-      workerId: ['', Validators.required],
-      quantity: ['', [
-        Validators.required,
-        Validators.min(0.1),
-        Validators.pattern(this.decimalRegex)
-      ]]
-    });
+    if (this.editMachinery) {
+      this.machineryForm = this.formBuilder.group({
+        costCenterId: [this.editMachinery.costCenterId, Validators.required],
+        laborId: [this.editMachinery.laborId, Validators.required],
+        unitId: [this.editMachinery.unitId, Validators.required],
+        workerId: [this.editMachinery.workerId, Validators.required],
+        quantity: [this.editMachinery.quantity, [
+          Validators.required,
+          Validators.min(0.1),
+          Validators.pattern(this.decimalRegex)
+        ]]
+      });
 
-    this.getTempId();
+      // Centros de costo
+      const findCostCenter = this.costCenters.find(item => item.id === this.editMachinery.costCenterId)
+      this.costCenterName = findCostCenter.name;
+      this.costCenterCode = findCostCenter.code;
+
+      // Labor
+      const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId)
+      this.laborName = findLabor.name;
+      this.laborCode = findLabor.code;
+
+      // Trabajador
+      const findWorker = this.workers.find(item => item.id === this.editMachinery.workerId)
+      this.workerName = findWorker.nombre;
+
+    } else {
+      this.machineryForm = this.formBuilder.group({
+        costCenterId: ['', Validators.required],
+        laborId: ['', Validators.required],
+        unitId: ['', Validators.required],
+        workerId: ['', Validators.required],
+        quantity: ['', [
+          Validators.required,
+          Validators.min(0.1),
+          Validators.pattern(this.decimalRegex)
+        ]]
+      });
+
+      this.getTempId();
+    }
   }
 
   /**
@@ -97,6 +128,7 @@ export class MachineryFormComponent implements OnInit {
     this.machineryForm.get('costCenterId').patchValue('');
     this.filteredCostCenters = [];
     this.costCenterName = null;
+    this.costCenterCode = null;
   }
 
   /**
@@ -105,10 +137,7 @@ export class MachineryFormComponent implements OnInit {
   public selectCostCenter = (costCenter: any): void => {
     this.machineryForm.get('costCenterId').patchValue(costCenter.id);
     this.costCenterName = costCenter.name;
-    this.costCenterName = costCenter.code;
-
-    console.log('costCenter', costCenter);
-
+    this.costCenterCode = costCenter.code;
     this.filteredCostCenters = [];
   }
 
@@ -192,22 +221,63 @@ export class MachineryFormComponent implements OnInit {
    * submitForm
    */
   public submitForm = () => {
-    const data = Object.assign({}, this.machineryForm.value, {
-      tempId: this.tempId,
-      companyId: this.companyId,
-      reference: '',
-      useId: 0,
-      implementCostCenterId: 0,
-      costCenterCode: this.costCenterName,
-      costCenterName: this.costCenterCode,
-      laborCode: this.laborCode,
-      laborName: this.laborName,
-      unitCode: this.unitCode,
-      unitName: this.unitName,
-      workerName: this.workerName
-    });
+    if (this.editMachinery) {
+      const data = Object.assign({}, this.machineryForm.value, {
+        tempId: this.editMachinery.tempId,
+        companyId: this.editMachinery.companyId,
+        reference: '',
+        useId: 0,
+        implementCostCenterId: 0,
+        machineryCostCenterId: this.machineryCostCenterId,
+        costCenterCode: this.costCenterName,
+        costCenterName: this.costCenterCode,
+        laborCode: this.laborCode,
+        laborName: this.laborName,
+        unitCode: this.unitCode,
+        unitName: this.unitName,
+        workerName: this.workerName
+      });
 
+      this.updateMachinery(data);
+
+    } else {
+      const data = Object.assign({}, this.machineryForm.value, {
+        tempId: this.tempId,
+        companyId: this.companyId,
+        reference: '',
+        useId: 0,
+        implementCostCenterId: 0,
+        machineryCostCenterId: this.machineryCostCenterId,
+        costCenterCode: this.costCenterName,
+        costCenterName: this.costCenterCode,
+        laborCode: this.laborCode,
+        laborName: this.laborName,
+        unitCode: this.unitCode,
+        unitName: this.unitName,
+        workerName: this.workerName
+      });
+
+      this.addMachinery(data);
+    }
+  }
+
+  /**
+   * addMachinery
+   */
+  private addMachinery = (data: any) => {
     this.machineryService.addMachinery(data).then(() => {
+      this.machineryService.increaseTempId().then(() => {
+        this.modalController.dismiss();
+      });
+    });
+  }
+
+  /**
+   * updateMachinery
+   * @param data
+   */
+  private updateMachinery = (data: any) => {
+    this.machineryService.updateMachinery(data).then(() => {
       this.modalController.dismiss();
     });
   }

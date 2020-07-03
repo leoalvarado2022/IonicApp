@@ -15,7 +15,6 @@ import { HttpService } from 'src/app/shared/services/http/http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { isNull } from 'util';
 import { MachineryService } from 'src/app/modules/machinery/services/machinery.service';
-import { error } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -86,13 +85,15 @@ export class StepperService {
         this.onlySyncDeals(validDeals);
       }
 
-      // Machinery
+      // If Machinery
+      /*
       const validMachinery = await this.machineryService.getMachineryToRecord();
       if (validMachinery.length && isNull(this.syncError)) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Maquinaria' });
         this.stepsArraySubject.next(this.stepsArray);
         this.onlySyncMachinery(validMachinery);
       }
+      */
 
       // Sync data
       if (isNull(this.syncError)) {

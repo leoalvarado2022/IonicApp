@@ -3,6 +3,8 @@ import { Storage } from '@ionic/storage';
 import { StorageKeys } from 'src/app/services/storage/storage-keys';
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { HttpClient } from '@angular/common/http';
+import { unwatchFile } from 'fs';
+import { find } from 'rxjs/operators';
 
 @Injectable()
 export class MachineryService {
@@ -78,6 +80,32 @@ export class MachineryService {
    */
   public clearMachinery = (): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.MachineryToRecord, []);
+  }
+
+  /**
+   * deleteMachinery
+   * @param machineryTempId
+   */
+  public deleteMachinery = (machineryTempId: number): Promise<Array<any>> => {
+    return this.getMachineryToRecord().then((machineryToRecord: Array<any>) => {
+      machineryToRecord = machineryToRecord.filter(item => item.tempId !== machineryTempId);
+      return this.storage.set(StorageKeys.MachineryToRecord, machineryToRecord);
+    });
+  }
+
+  /**
+   * updateMachinery
+   * @param machinery
+   */
+  public updateMachinery = (machinery: any): Promise<Array<any>> => {
+    return this.getMachineryToRecord().then((machineryToRecord: Array<any>) => {
+      const findIndex = machineryToRecord.findIndex(item => item.tempId === machinery.tempId);
+      if (findIndex > -1) {
+        machineryToRecord[findIndex] = machinery;
+      }
+
+      return this.storage.set(StorageKeys.MachineryToRecord, machineryToRecord);
+    });
   }
 
 }

@@ -18,8 +18,10 @@
     <ion-item>
       <ion-label position="stacked">Centro de Costo</ion-label>
       <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
-      <ion-text color="danger" *ngIf="machineryForm.dirty && machineryForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
     </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('costCenterId').hasError('required')">
+      Seleccione un Centro de Costo
+    </ion-text>
 
     <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
       <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
@@ -31,8 +33,10 @@
     <ion-item>
       <ion-label position="stacked">Labor</ion-label>
       <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()" placeholder="Buscar"></ion-searchbar>
-      <ion-text color="danger" *ngIf="machineryForm.dirty && machineryForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
     </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('laborId').hasError('required')">
+      Seleccione una Labor
+    </ion-text>
 
     <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
       <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
@@ -43,11 +47,11 @@
      <!-- Unidad -->
     <ion-item>
       <ion-label position="stacked">Unidad</ion-label>
-      <ion-select formControlName="unitId" placeholder="Unidad" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+      <ion-select formControlName="unitId" placeholder="Unidad" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectUnit($event.detail.value)">
         <ion-select-option *ngFor="let unit of units" [value]="unit.id">{{ unit.name }}</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-text color="danger" *ngIf="machineryForm.get('unitId').hasError('required')">
+    <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('unitId').dirty && machineryForm.get('unitId').hasError('required')">
       Seleccione una Unidad
     </ion-text>
 
@@ -55,12 +59,14 @@
     <ion-item>
       <ion-label position="stacked">Worker</ion-label>
       <ion-searchbar [value]="workerName" (keyup)="searchWorker($event.target.value)" (ionClear)="cleanWorkerSearch()" placeholder="Buscar"></ion-searchbar>
-      <ion-text color="danger" *ngIf="machineryForm.dirty && machineryForm.get('workerId').hasError('required')">Seleccione un Trabajador</ion-text>
     </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('workerId').hasError('required')">
+      Seleccione un Trabajador
+    </ion-text>
 
     <ion-list class="searchbar-results-list" *ngIf="filteredWorkers.length > 0">
       <ion-item *ngFor="let worker of filteredWorkers" (click)="selectWorker(worker)">
-        {{ worker.name  }}
+        {{ worker.nombre }}
       </ion-item>
     </ion-list>
 
@@ -69,20 +75,23 @@
       <ion-label position="stacked">Cantidad</ion-label>
       <ion-input formControlName="quantity"></ion-input>
     </ion-item>
-    <ion-text color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">
-      La cantidad es requerida
-    </ion-text>
-    <ion-text color="danger" *ngIf="machineryForm.get('quantity').hasError('min')">
-      La cantidad debe ser mayor a 0
-    </ion-text>
-    <ion-text color="danger" *ngIf="machineryForm.get('quantity').hasError('pattern')">
-      Ingrese valores con . y maximo 3 decimales
-    </ion-text>
+    <ng-container *ngIf="machineryForm.get('quantity').dirty">
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">
+        La cantidad es requerida
+      </ion-text>
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('min')">
+        La cantidad debe ser mayor a 0.1
+      </ion-text>
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('pattern')">
+        Ingrese valores con . y maximo 3 decimales
+      </ion-text>
+    </ng-container>
+
   </form>
 </ion-content>
 
 <ion-footer>
-  <ion-button color="primary" expand="block">
+  <ion-button color="primary" expand="block" [disabled]="machineryForm.invalid" (click)="submitForm()">
     Guardar
   </ion-button>
 </ion-footer>

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MachineryService } from '../services/machinery.service';
 
 @Component({
   selector: 'app-machinery-form',
@@ -9,6 +10,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class MachineryFormComponent implements OnInit {
 
+  @Input() companyId: number;
   @Input() costCenters: Array<any> = [];
   @Input() labors: Array<any> = [];
   @Input() units: Array<any> = [];
@@ -16,12 +18,18 @@ export class MachineryFormComponent implements OnInit {
 
   public machineryForm: FormGroup;
 
-  public costCenterName: string;
   public filteredCostCenters: Array<any> = [];
+  public costCenterName: string;
+  public costCenterCode: string;
   public laborName: string;
+  public laborCode: string;
+  public unitName: string;
+  public unitCode: string;
   public filteredLabors: Array<any> = [];
   public workerName: string;
   public filteredWorkers: Array<any> = [];
+  private tempId: number;
+
   private readonly decimalRegex = /^\d*(.\d{1,3})?$/;
   public readonly actionHeader: any = {
     header: 'Seleccione',
@@ -32,6 +40,7 @@ export class MachineryFormComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
+    private machineryService: MachineryService
   ) {
 
   }
@@ -44,33 +53,29 @@ export class MachineryFormComponent implements OnInit {
       workerId: ['', Validators.required],
       quantity: ['', [
         Validators.required,
-        Validators.min(1),
+        Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]]
     });
 
-    /**
-     *  id_par_entidades_empresa='${machine.companyId}',
-            fecha_registro='${currentDate}',
-            glosa='Generado desde movil',
-            referencia='${machine.reference}',
-            id_pro_uso_maquinaria='${machine.useId}',
-            id_par_centros_costos_maquinaria='${machine.machineryCostCenterId}',
-            id_par_centros_costos_implemento='${machine.implementCostCenterId}',
-            id_par_centros_costos='${machine.costCenterId}',
-            id_par_labores='${machine.laborId}',
-            id_par_unidades='${machine.unitId}',
-            id_par_entidades_trabajador='${machine.workerId}',
-            cantidad='${machine.quantity}'>
-     */
+    this.getTempId();
   }
 
   /**
    * closeModal
    */
-  public closeModal = (status: boolean = false) => {
+  public closeModal = () => {
     this.machineryForm.reset();
-    this.modalController.dismiss(status);
+    this.modalController.dismiss();
+  }
+
+  /**
+   * getTempId
+   */
+  private getTempId = () => {
+    this.machineryService.getTempId().then( (tempId: number) => {
+      this.tempId = tempId;
+    });
   }
 
   /**
@@ -100,6 +105,10 @@ export class MachineryFormComponent implements OnInit {
   public selectCostCenter = (costCenter: any): void => {
     this.machineryForm.get('costCenterId').patchValue(costCenter.id);
     this.costCenterName = costCenter.name;
+    this.costCenterName = costCenter.code;
+
+    console.log('costCenter', costCenter);
+
     this.filteredCostCenters = [];
   }
 
@@ -122,6 +131,7 @@ export class MachineryFormComponent implements OnInit {
     this.machineryForm.get('laborId').patchValue('');
     this.filteredLabors = [];
     this.laborName = null;
+    this.laborCode = null;
   }
 
   /**
@@ -131,6 +141,7 @@ export class MachineryFormComponent implements OnInit {
   public selectLabor = (labor: any): void => {
     this.machineryForm.get('laborId').patchValue(labor.id);
     this.laborName = labor.name;
+    this.laborCode = labor.code;
     this.filteredLabors = [];
   }
 
@@ -140,7 +151,7 @@ export class MachineryFormComponent implements OnInit {
    */
   public searchWorker = (search: string): void => {
     if (search) {
-      this.filteredWorkers = this.workers.filter(item => item.id.toString().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase()));
+      this.filteredWorkers = this.workers.filter(item => item.id.toString().includes(search.toLowerCase()) || item.nombre.toLowerCase().includes(search.toLowerCase()));
     } else {
       this.filteredWorkers = [];
     }
@@ -160,8 +171,46 @@ export class MachineryFormComponent implements OnInit {
    */
   public selectWorker = (worker: any): void => {
     this.machineryForm.get('workerId').patchValue(worker.id);
-    this.workerName = worker.name;
+    this.workerName = worker.nombre;
     this.filteredWorkers = [];
   }
 
+  /**
+   * selectUnit
+   * @param event
+   */
+  public selectUnit = (unitId: number) => {
+    const find = this.units.find(item => item.id === unitId);
+
+    if (find) {
+      this.unitCode = find.code;
+      this.unitName = find.name;
+    }
+  }
+
+  /**
+   * submitForm
+   */
+  public submitForm = () => {
+    const data = Object.assign({}, this.machineryForm.value, {
+      tempId: this.tempId,
+      companyId: this.companyId,
+      reference: '',
+      useId: 0,
+      implementCostCenterId: 0,
+      costCenterCode: this.costCenterName,
+      costCenterName: this.costCenterCode,
+      laborCode: this.laborCode,
+      laborName: this.laborName,
+      unitCode: this.unitCode,
+      unitName: this.unitName,
+      workerName: this.workerName
+    });
+
+    this.machineryService.addMachinery(data).then(() => {
+      this.modalController.dismiss();
+    });
+  }
+
 }
+

@@ -12,9 +12,21 @@ ion-title {
 }
 
 ion-item {
+
   ion-searchbar {
     padding-right: 0;
     padding-left: 0;
     padding-bottom: 0;
   }
+
+  ion-select {
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+
+}
+
+.error-message {
+  padding-left: 20px;
 }

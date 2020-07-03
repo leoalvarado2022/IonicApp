@@ -14,7 +14,9 @@
     <ion-searchbar
       animated
       placeholder="Buscar..."
-      showCancelButton="never">
+      showCancelButton="never"
+      (ionChange)="searchMachinery($event.target.value)"
+      (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
@@ -33,11 +35,23 @@
     <div *virtualItem="let machinery">
       <ion-item>
         <ion-label>
-          <ion-badge>{{ machinery.machineryCostCenterCode }}</ion-badge>
-          <h2>{{ machinery.machineryCostCenterName }}</h2>
-          <p>{{ machinery.laborName }}</p>
-          <p>{{ machinery.unitCode }}</p>
-          <p>{{ machinery.workerName }}</p>
+          <ion-row>
+            <ion-col>
+              <div class="ion-text-start">
+                <ion-badge>{{ machinery.costCenterCode }}</ion-badge>
+              </div>
+            </ion-col>
+            <ion-col>
+              <div class="ion-text-end" *ngIf="machinery.tempId">
+                <ion-badge color="danger">Pendiente</ion-badge>
+              </div>
+            </ion-col>
+          </ion-row>
+
+          <h2>{{ machinery.costCenterName | titlecase }}</h2>
+          <p>{{ machinery.laborName | titlecase }}</p>
+          <p>{{ machinery.unitName | titlecase }}</p>
+          <p>{{ machinery.workerName | titlecase }}</p>
         </ion-label>
       </ion-item>
     </div>

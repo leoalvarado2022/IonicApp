@@ -25,5 +25,9 @@ export enum StorageKeys {
   // On memory data
   TalliesToRecord = 'talliesToRecord',
   TalliesWithErrors = 'talliesWithErrors',
-  WorkersTransfers = "workersTransfers"
+  WorkersTransfers = "workersTransfers",
+
+  // Machinery
+  MachineryTempId = 'machineryTempId',
+  MachineryToRecord = 'machineryToRecord',
 }

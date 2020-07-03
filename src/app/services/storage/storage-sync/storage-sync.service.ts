@@ -391,12 +391,12 @@ export class StorageSyncService {
    * getMachineryByCostCenter
    * @param costCenterId
    */
-  public getMachineryByCostCenter = (costCenterId: number, userId: number, date: string): Promise<Array<any>> => {
+  public getMachineryByCostCenter = (costCenterId: number, userId: number, date: string, companyId: number): Promise<Array<any>> => {
     return this.getMachinery().then( (machinery: Array<any>) => {
       return machinery.filter(item => {
         const splitDate = item.date.split('T')[0];
 
-        return item.machineryCostCenterId === costCenterId && item.workerId === userId && splitDate === date;
+        return item.machineryCostCenterId === costCenterId && item.workerId === userId && splitDate === date && item.companyId === companyId;
       });
     });
   }

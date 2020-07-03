@@ -14,6 +14,7 @@ import { TimerService } from './storage/timer/timer.service';
 import { StepperService } from './storage/stepper/stepper.service';
 import { HttpClientModule } from '@angular/common/http';
 import {DeviceSyncService} from './storage/device-sync/device-sync.service';
+import { MachineryService } from '../modules/machinery/services/machinery.service';
 
 @NgModule({
   imports: [
@@ -22,7 +23,7 @@ import {DeviceSyncService} from './storage/device-sync/device-sync.service';
       driverOrder: ['indexeddb', 'sqlite', 'websql'],
     }),
     HttpClientModule
-  ],  
+  ],
   providers: [
     LoaderService,
     NetworkService,
@@ -37,7 +38,8 @@ import {DeviceSyncService} from './storage/device-sync/device-sync.service';
     TallySyncService,
     TimerService,
     StepperService,
-    DeviceSyncService
+    DeviceSyncService,
+    MachineryService
   ]
 })
 export class CoreServicesModule {

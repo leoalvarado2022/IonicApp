@@ -38,7 +38,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.network$ = this.networkService.getNetworkStatus().subscribe( status => this.isOnline = status);
     this.step$ = this.stepperService.getStepper().subscribe( (steps: Array<any>) => {
-      if (steps.length === 0 && !this.firstLoad) {        
+      if (steps.length === 0 && !this.firstLoad) {
         this.loadData();
       }
     });
@@ -70,7 +70,7 @@ export class MenuListPage implements OnInit, OnDestroy {
       ]).then(data => {
         this.menus = [...data[0]];
         const quadrilles = data[1].map(q => q.id);
-        this.workers = data[2].filter(x => quadrilles.includes(x.quadrille))  || [];      
+        this.workers = data[2].filter(x => quadrilles.includes(x.quadrille))  || [];
       });
     }
   }

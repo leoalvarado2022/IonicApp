@@ -32,12 +32,12 @@
       <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
     </ion-item>
 
-    <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">        
+    <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
       <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
         {{ labor.name  }}
       </ion-item>
     </ion-list>
-    
+
     <!-- DEAL -->
     <ng-container *ngIf="availableDeals.length > 0">
       <ion-item>
@@ -45,7 +45,7 @@
         <ion-select formControlName="dealValidity" placeholder="Trato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectDeal($event.detail.value)">
           <ion-select-option *ngFor="let deal of availableDeals" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
         </ion-select>
-      </ion-item>   
+      </ion-item>
     </ng-container>
 
     <!-- BOND -->

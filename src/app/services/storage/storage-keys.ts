@@ -14,6 +14,8 @@ export enum StorageKeys {
   Afp = 'afps',
   Isapre = 'isapres',
   Devices = 'devices',
+  Machinery = 'machinery',
+  CostCenterTypes = 'costCenterTypes',
   DevicesToRecord = 'devicesToRecord',
   DeviceTempId = 'deviceTempId',
   DealsTemp = 'dealsTemp',
@@ -23,5 +25,9 @@ export enum StorageKeys {
   // On memory data
   TalliesToRecord = 'talliesToRecord',
   TalliesWithErrors = 'talliesWithErrors',
-  WorkersTransfers = "workersTransfers"
+  WorkersTransfers = "workersTransfers",
+
+  // Machinery
+  MachineryTempId = 'machineryTempId',
+  MachineryToRecord = 'machineryToRecord',
 }

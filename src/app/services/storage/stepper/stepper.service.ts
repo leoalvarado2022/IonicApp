@@ -14,6 +14,7 @@ import {DealsService} from '../../../modules/tratos/services/deals/deals.service
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { isNull } from 'util';
+import { MachineryService } from 'src/app/modules/machinery/services/machinery.service';
 
 @Injectable({
   providedIn: 'root'
@@ -41,12 +42,12 @@ export class StepperService {
     private storageSyncService: StorageSyncService,
     private tallySyncService: TallySyncService,
     private tallyService: TallyService,
-    private toastService: ToastService,
     private nfcService: NfcService,
     private _dealService: DealsService,
     private networkService: NetworkService,
     private _deviceSyncService: DeviceSyncService,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private machineryService: MachineryService
   ) {
     this.networkService.getNetworkStatus().subscribe(status => this.isOnline = status);
   }
@@ -54,9 +55,9 @@ export class StepperService {
   /**
    * syncAll
    */
-  public syncAll = async () => {    
+  public syncAll = async () => {
     // Sync if online and logged in
-    if (this.isOnline && this.storeService.getLoginStatus()) {      
+    if (this.isOnline && this.storeService.getLoginStatus()) {
       let data = null;
       this.syncError = null;
 
@@ -84,6 +85,14 @@ export class StepperService {
         this.onlySyncDeals(validDeals);
       }
 
+      // If Machinery
+      const validMachinery = await this.machineryService.getMachineryToRecord();
+      if (validMachinery.length && isNull(this.syncError)) {
+        this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Maquinaria' });
+        this.stepsArraySubject.next(this.stepsArray);
+        this.onlySyncMachinery(validMachinery);
+      }
+
       // Sync data
       if (isNull(this.syncError)) {
         this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
@@ -91,7 +100,7 @@ export class StepperService {
         data = await this.syncData();
 
         if (data instanceof HttpErrorResponse) {
-          this.httpService.errorHandler(data);          
+          this.httpService.errorHandler(data);
           data = null;
           this.syncError = true;
         }
@@ -101,7 +110,7 @@ export class StepperService {
         // Store Data
         this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
         this.storeAllSyncData(data);
-      }      
+      }
 
       // Terminado
       setTimeout(() => {
@@ -154,7 +163,7 @@ export class StepperService {
     const log = await this.syncTallies(talliesBuilded);
 
     if (log instanceof HttpErrorResponse) {
-      this.httpService.errorHandler(log);                
+      this.httpService.errorHandler(log);
       this.syncError = true;
     } else {
       this.checkRecordedTallies(log);
@@ -162,7 +171,7 @@ export class StepperService {
       await this.cleanTalliesMemory();
       this.talliesRecorded = [];
       this.talliesWithErrors = [];
-    }  
+    }
   }
 
   /**
@@ -248,7 +257,7 @@ export class StepperService {
     const log = await this.syncDevices(devicesToRecord);
 
     if (log instanceof HttpErrorResponse) {
-      this.httpService.errorHandler(log);                
+      this.httpService.errorHandler(log);
       this.syncError = true;
     } else {
       this.checkRecordedDevices(log);
@@ -327,15 +336,29 @@ export class StepperService {
    * onlySyncDeals
    */
   public onlySyncDeals = async (dealsToRecord: Array<any>) => {
-    console.log('onlySyncDevices');
     const log = await this.syncDeals(dealsToRecord);
 
     if (log instanceof HttpErrorResponse) {
-      this.httpService.errorHandler(log);                
+      this.httpService.errorHandler(log);
       this.syncError = true;
     } else {
       await this.cleanDealsMemory();
     }
+  }
+
+  /**
+   * onlySyncMachinery
+   */
+  public onlySyncMachinery = async (machineryToRecord: Array<any>) => {
+    const user = this.storeService.getUser();
+    delete user.avatar;
+
+    this.machineryService.syncMachinery(machineryToRecord, user).subscribe( success => {
+      this.machineryService.clearMachinery();
+    }, error => {
+      this.httpService.errorHandler(error);
+      this.syncError = true;
+    });
   }
 
   /**

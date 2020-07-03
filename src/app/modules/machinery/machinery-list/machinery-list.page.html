@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Maquinaria</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="toolbar-search">
+    <ion-searchbar
+      animated
+      placeholder="Buscar..."
+      showCancelButton="never"
+      (ionChange)="searchMachinery($event.target.value)"
+      (ionClear)="cancelSearch()">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="reload($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <h2 class="ion-text-center" style="font-size: 20px">
+    Maquinaria
+    <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary">{{ filteredMachinery.length }}</ion-badge>
+  </h2>
+
+  <ion-virtual-scroll [items]="filteredMachinery">
+    <div *virtualItem="let machinery">
+      <ion-item-sliding #slide [disabled]="!machinery.tempId">
+        <ion-item>
+          <ion-label>
+            <ion-row>
+              <ion-col>
+                <div class="ion-text-start">
+                  <ion-badge>{{ machinery.costCenterCode | uppercase }}</ion-badge>
+                </div>
+              </ion-col>
+              <ion-col>
+                <div class="ion-text-end" *ngIf="machinery.tempId">
+                  <ion-badge color="danger">Pendiente</ion-badge>
+                </div>
+              </ion-col>
+            </ion-row>
+
+            <h2>{{ machinery.costCenterName | titlecase }}</h2>
+            <p>{{ machinery.laborName | titlecase }}</p>
+            <p>{{ machinery.unitName | titlecase }}</p>
+            <p>{{ machinery.workerName | titlecase }}</p>
+            <p>tempId: {{ machinery.tempId }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="warning" (click)="editMachinery(machinery, slide)">
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="deleteMachinery(machinery.tempId, slide)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </div>
+  </ion-virtual-scroll>
+
+  <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+    <ion-fab-button (click)="openForm()" size="small">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

@@ -350,8 +350,10 @@ export class StepperService {
    * onlySyncMachinery
    */
   public onlySyncMachinery = async (machineryToRecord: Array<any>) => {
-    const user = this.storeService.getUser();
-    delete user.avatar;
+    const activeCompany = this.storeService.getActiveCompany();
+    const user = {
+      id: activeCompany.user
+    }
 
     this.machineryService.syncMachinery(machineryToRecord, user).subscribe( success => {
       this.machineryService.clearMachinery();

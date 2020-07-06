@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MachineryService } from '../services/machinery.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-machinery-form',
@@ -11,6 +12,7 @@ import { MachineryService } from '../services/machinery.service';
 export class MachineryFormComponent implements OnInit {
 
   @Input() companyId: number;
+  @Input() userId: number;
   @Input() machineryCostCenterId: number;
   @Input() costCenters: Array<any> = [];
   @Input() labors: Array<any> = [];
@@ -72,7 +74,7 @@ export class MachineryFormComponent implements OnInit {
       this.laborCode = findLabor.code;
 
       // Trabajador
-      const findWorker = this.workers.find(item => item.id === this.editMachinery.workerId)
+      const findWorker = this.workers.find(item => +item.id === this.editMachinery.workerId)
       this.workerName = findWorker.nombre;
 
     } else {
@@ -80,13 +82,17 @@ export class MachineryFormComponent implements OnInit {
         costCenterId: ['', Validators.required],
         laborId: ['', Validators.required],
         unitId: ['', Validators.required],
-        workerId: ['', Validators.required],
+        workerId: [this.userId, Validators.required],
         quantity: ['', [
           Validators.required,
           Validators.min(0.1),
           Validators.pattern(this.decimalRegex)
         ]]
       });
+
+      // Trabajador
+      const findWorker = this.workers.find(item => +item.id === this.userId);
+      this.workerName = findWorker.nombre;
 
       this.getTempId();
     }

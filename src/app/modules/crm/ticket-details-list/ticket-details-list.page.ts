@@ -114,4 +114,11 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
 
     return difference + ' h';
   }
+
+  /**
+   * goBack
+   */
+  public goBack = () => {
+    this.router.navigate(['/home-page/crm_tickets/me']);
+  }
 }

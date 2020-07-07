@@ -11,7 +11,6 @@ import { HttpService } from 'src/app/shared/services/http/http.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
-import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-machinery-list',
@@ -83,8 +82,8 @@ export class MachineryListPage implements OnInit, OnDestroy {
       this.costCenters = data[1];
       this.labors = data[2];
       this.units = units;
-      this.machineryToRecord = data[3];
 
+      this.machineryToRecord = data[3].filter(item => item.machineryCostCenterId === +id);
       this.filteredMachinery = [ ...this.machineryToRecord, ...this.machinery];
     });
 
@@ -138,6 +137,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
       component: MachineryFormComponent,
       componentProps: {
         companyId: this.activeCompany.id,
+        userId: this.activeCompany.user,
         costCenters: this.costCenters,
         machineryCostCenterId: +this.activatedRoute.snapshot.paramMap.get('id'),
         labors: this.labors,

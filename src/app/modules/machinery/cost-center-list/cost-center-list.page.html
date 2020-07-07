@@ -33,7 +33,7 @@
 
   <ion-virtual-scroll [items]="filteredCostCenters">
     <div *virtualItem="let costCenter">
-      <ion-item lines="none" (click)="goToMachinery(costCenter.id)">
+      <ion-item lines="none" (click)="goToMachinery(costCenter.id)" button="true">
         <ion-label>
           <p>
             <ion-badge color="primary">{{ costCenter.code }}</ion-badge>

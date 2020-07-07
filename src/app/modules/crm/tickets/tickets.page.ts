@@ -13,9 +13,12 @@ export class TicketsPage implements OnInit, OnDestroy {
   numberTicket = 0;
   private store$: Subscription;
 
-  constructor(private storeService: StoreService,
-              private router: Router,
-              private route: ActivatedRoute) {
+  constructor(
+    private storeService: StoreService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+
   }
 
   ngOnDestroy(): void {
@@ -38,9 +41,12 @@ export class TicketsPage implements OnInit, OnDestroy {
     return tab === url[3];
   }
 
-  change(event: any) {
+  /**
+   * change
+   * @param event
+   */
+  public change = (event: any) => {
     this.numberTicket = 0;
-    console.log(event);
   }
 
 }

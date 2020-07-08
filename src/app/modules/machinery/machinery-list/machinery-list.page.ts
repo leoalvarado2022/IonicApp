@@ -11,6 +11,7 @@ import { HttpService } from 'src/app/shared/services/http/http.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-machinery-list',
@@ -23,7 +24,9 @@ export class MachineryListPage implements OnInit, OnDestroy {
   private machineryToRecord: Array<any> = [];
   public filteredMachinery: Array<any> = [];
 
-  private costCenters: Array<any> = [];
+  private machineryCostCenters: Array<any> = [];
+  private allCostCenters: Array<any> = [];
+  private implements: Array<any> = [];
   private labors: Array<any> = [];
   private units: Array<any> = [];
   private workers: Array<any> = [];
@@ -32,17 +35,24 @@ export class MachineryListPage implements OnInit, OnDestroy {
   private activeCompany: Company;
   private stepper$: Subscription;
 
+  // Dates
+  public readonly originalDate: any;
+  public currentDate: any;
+  public readonly dateFormat = 'DD/MM/YYYY';
+  public readonly maxDate = '2030';
+
   constructor(
     private storageSyncService: StorageSyncService,
     private activatedRoute: ActivatedRoute,
     private storeService: StoreService,
     private modalController: ModalController,
     private machineryService: MachineryService,
-    private httpService: HttpService,
     private stepperService: StepperService,
     private alertService: AlertService
   ) {
 
+    this.currentDate = moment().format('YYYY-MM-DD');
+    this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
@@ -68,29 +78,31 @@ export class MachineryListPage implements OnInit, OnDestroy {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.activeCompany = this.storeService.getActiveCompany();
     const user = this.storeService.getUser();
-    const date = moment().format('YYYY-MM-DD');
     const units = this.storeService.getUnits();
+    const access = this.storeService.getAccess();
+    const date = moment(this.currentDate).format('YYYY-MM-DD');
 
     Promise.all([
-      this.storageSyncService.getMachineryByCostCenter(+id, this.activeCompany.user, date, this.activeCompany.id),
-      this.storageSyncService.getNotMachineryTypeCostCenters(),
+      this.storageSyncService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
+      this.machineryService.getMachineryToRecordByCompany(this.activeCompany.id, date),
       this.storageSyncService.getLabors(),
-      this.machineryService.getMachineryToRecord(),
+      this.machineryService.getWorkers(user).toPromise(),
+      this.storageSyncService.getMachineryTypeCostCenters(),
+      this.storageSyncService.getCostCentersCustom(),
+      this.storageSyncService.getImplementTypeCostCenters()
     ]).then( (data: Array<any>) => {
 
-      this.machinery = data[0];
-      this.costCenters = data[1];
-      this.labors = data[2];
       this.units = units;
 
-      this.machineryToRecord = data[3].filter(item => item.machineryCostCenterId === +id);
+      this.machinery = data[0];
+      this.machineryToRecord = data[1];
       this.filteredMachinery = [ ...this.machineryToRecord, ...this.machinery];
-    });
 
-    this.machineryService.getWorkers(user).subscribe(success => {
-      this.workers = success['data'];
-    }, error => {
-      this.httpService.errorHandler(error);
+      this.labors = data[2];
+      this.workers = data[3]['data']; //  HTTP
+      this.machineryCostCenters = data[4];
+      this.allCostCenters = data[5];
+      this.implements = data[6];
     });
   }
 
@@ -138,8 +150,9 @@ export class MachineryListPage implements OnInit, OnDestroy {
       componentProps: {
         companyId: this.activeCompany.id,
         userId: this.activeCompany.user,
-        costCenters: this.costCenters,
-        machineryCostCenterId: +this.activatedRoute.snapshot.paramMap.get('id'),
+        allCostCenters: this.allCostCenters,
+        machineryCostCenters: this.machineryCostCenters,
+        implements: this.implements,
         labors: this.labors,
         units: this.units,
         workers: this.workers
@@ -165,8 +178,8 @@ export class MachineryListPage implements OnInit, OnDestroy {
       component: MachineryFormComponent,
       componentProps: {
         companyId: this.activeCompany.id,
-        costCenters: this.costCenters,
-        machineryCostCenterId: +this.activatedRoute.snapshot.paramMap.get('id'),
+        allCostCenters: this.allCostCenters,
+        machineryCostCenters: this.machineryCostCenters,
         labors: this.labors,
         units: this.units,
         workers: this.workers,
@@ -195,6 +208,26 @@ export class MachineryListPage implements OnInit, OnDestroy {
     if(sayYes){
       await this.machineryService.deleteMachinery(machineryTempId);
       slide.close();
+      this.loadData();
+    }
+  }
+
+  /**
+   * subtractDayToDate
+   */
+  public subtractDayToDate = (): void => {
+    if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
+      this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.loadData();
+    }
+  }
+
+  /**
+   * addDayToDate
+   */
+  public addDayToDate = (): void => {
+    if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
+      this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
       this.loadData();
     }
   }

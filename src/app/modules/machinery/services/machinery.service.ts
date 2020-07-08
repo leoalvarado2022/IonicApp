@@ -62,6 +62,20 @@ export class MachineryService {
   }
 
   /**
+   * getMachineryToRecordByCompany
+   * @param companyId
+   * @param date
+   */
+  public getMachineryToRecordByCompany = (companyId: number, date: string): Promise<Array<any>> => {
+    return this.getMachineryToRecord().then( (machineryToRecord: Array<any>) => {
+      return machineryToRecord.filter(item => {
+        const splitDate = item.date.split('T')[0];
+        return item.companyId === companyId && date === splitDate;
+      });
+    });
+  }
+
+  /**
    * addMachinery
    * @param machinery
    */

@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
     <ion-title>
-      <strong>Crear Maquinaria</strong>
+      <strong>Crear uso de Maquinaria</strong>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -14,6 +14,21 @@
 <ion-content>
 
   <form [formGroup]="machineryForm">
+    <!-- Machinery -->
+    <ion-item>
+      <ion-label position="stacked">Maquinaria</ion-label>
+      <ion-searchbar [value]="machineryName" (keyup)="searchMachinery($event.target.value)" (ionClear)="cleanMachinerySearch()" placeholder="Buscar"></ion-searchbar>
+    </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('machineryCostCenterId').hasError('required')">
+      Seleccione una Maquinaria
+    </ion-text>
+
+    <ion-list class="searchbar-results-list" *ngIf="filteredMachinery.length > 0">
+      <ion-item *ngFor="let machinery of filteredMachinery" (click)="selectMachinery(machinery)">
+        {{ machinery.name | titlecase  }}
+      </ion-item>
+    </ion-list>
+
     <!-- COST CENTER -->
     <ion-item>
       <ion-label position="stacked">Centro de Costo</ion-label>
@@ -44,20 +59,9 @@
       </ion-item>
     </ion-list>
 
-     <!-- Unidad -->
-    <ion-item>
-      <ion-label position="stacked">Unidad</ion-label>
-      <ion-select formControlName="unitId" placeholder="Unidad" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectUnit($event.detail.value)">
-        <ion-select-option *ngFor="let unit of units" [value]="unit.id">{{ unit.name }}</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('unitId').dirty && machineryForm.get('unitId').hasError('required')">
-      Seleccione una Unidad
-    </ion-text>
-
     <!-- Trabajador -->
     <ion-item>
-      <ion-label position="stacked">Worker</ion-label>
+      <ion-label position="stacked">Trabajador</ion-label>
       <ion-searchbar [value]="workerName" (keyup)="searchWorker($event.target.value)" (ionClear)="cleanWorkerSearch()" placeholder="Buscar"></ion-searchbar>
     </ion-item>
     <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('workerId').hasError('required')">
@@ -69,6 +73,25 @@
         {{ worker.nombre }}
       </ion-item>
     </ion-list>
+
+    <!-- Implemento -->
+    <ng-container *ngIf="filteredImplements.length > 0">
+      <ion-item>
+        <ion-label position="stacked">Implemento</ion-label>
+        <ion-select formControlName="implementCostCenterId" placeholder="Implemento" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+          <ion-select-option *ngFor="let implement of filteredImplements" [value]="implement.id">{{ implement.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('implementCostCenterId').dirty && machineryForm.get('implementCostCenterId').hasError('required')">
+        Seleccione un Implemento
+      </ion-text>
+    </ng-container>
+
+    <!-- Cantidad -->
+    <ion-item>
+      <ion-label position="stacked">Unidad</ion-label>
+      <ion-input disabled="true" [value]="unitName"></ion-input>
+    </ion-item>
 
     <!-- Cantidad -->
     <ion-item>

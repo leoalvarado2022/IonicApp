@@ -10,6 +10,7 @@ import { MachineryService } from '../services/machinery.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import { Machinery } from '../machinery.interface';
 
 @Component({
   selector: 'app-machinery-list',
@@ -18,9 +19,9 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 })
 export class MachineryListPage implements OnInit, OnDestroy {
 
-  private machinery: Array<any> = [];
-  private machineryToRecord: Array<any> = [];
-  public filteredMachinery: Array<any> = [];
+  private machinery: Array<Machinery> = [];
+  private machineryToRecord: Array<Machinery> = [];
+  public filteredMachinery: Array<Machinery> = [];
 
   private machineryCostCenters: Array<any> = [];
   private allCostCenters: Array<any> = [];
@@ -94,7 +95,12 @@ export class MachineryListPage implements OnInit, OnDestroy {
 
       this.machinery = data[0];
       this.machineryToRecord = data[1];
-      this.filteredMachinery = [ ...this.machineryToRecord, ...this.machinery];
+
+      const filteredToRecord = this.machineryToRecord.filter(item => item.id < 0)
+      const mapped = filteredToRecord.map(item => (item.id * -1));
+      const filtered = this.machinery.filter(item => !mapped.includes(item.id));
+
+      this.filteredMachinery = [ ...filteredToRecord, ...filtered];
 
       this.labors = data[2];
       this.workers = data[3]['data']; //  HTTP
@@ -140,9 +146,9 @@ export class MachineryListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * openForm
+   * createMachinery
    */
-  public openForm = async () => {
+  public createMachinery = async () => {
     const modal = await this.modalController.create({
       component: MachineryFormComponent,
       componentProps: {
@@ -172,7 +178,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
    * @param machinery
    * @param slide
    */
-  public editMachinery = async (machinery: any, slide: IonItemSliding) => {
+  public editMachinery = async (machinery: Machinery, slide: IonItemSliding) => {
     const modal = await this.modalController.create({
       component: MachineryFormComponent,
       componentProps: {
@@ -201,23 +207,29 @@ export class MachineryListPage implements OnInit, OnDestroy {
 
   /**
    * deleteMachinery
-   * @param machineryTempId
+   * @param machinery
    * @param slide
    */
-  public deleteMachinery = async (machineryTempId: number, slide: IonItemSliding) => {
+  public deleteMachinery = async (machinery: Machinery, slide: IonItemSliding) => {
     const sayYes = await this.alertService.confirmAlert('Confirmar borrar esta maquinaria?');
 
     if(sayYes){
-      await this.machineryService.deleteMachinery(machineryTempId);
-      slide.close();
-      this.loadData();
+      if (machinery.tempId) { // Machinery on memory
+        await this.machineryService.deleteMachinery(machinery.tempId);
+        slide.close();
+        this.loadData();
+      } else { // Machinery syced
+        await this.machineryService.markMachineryToDelete(machinery);
+        slide.close();
+        this.loadData();
+      }
     }
   }
 
   /**
    * copyMachinery
    */
-  public copyMachinery = async (machinery: any, slide: IonItemSliding) => {
+  public copyMachinery = async (machinery: Machinery, slide: IonItemSliding) => {
     const modal = await this.modalController.create({
       component: MachineryFormComponent,
       componentProps: {

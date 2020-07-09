@@ -3,6 +3,8 @@ import { ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MachineryService } from '../services/machinery.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
+import { Machinery } from '../machinery.interface';
+import { MachineryModule } from '../machinery.module';
 
 @Component({
   selector: 'app-machinery-form',
@@ -20,7 +22,7 @@ export class MachineryFormComponent implements OnInit {
   @Input() workers: Array<any> = [];
   @Input() implements: Array<any> = [];
   @Input() date: string;
-  @Input() editMachinery: any;
+  @Input() editMachinery: Machinery;
   @Input() isCopy: boolean = false;
 
   // FORM
@@ -303,55 +305,90 @@ export class MachineryFormComponent implements OnInit {
    */
   public submitForm = () => {
     if (this.editMachinery) {
-      const data = Object.assign({}, this.machineryForm.value, {
-        id: this.isCopy ? 0 : this.editMachinery.id,
-        tempId: this.isCopy ? this.tempId : this.editMachinery.tempId,
-        companyId: this.editMachinery.companyId,
-        reference: '',
-        useId: 0,
-        costCenterCode: this.costCenterName,
-        costCenterName: this.costCenterCode,
-        laborCode: this.laborCode,
-        laborName: this.laborName,
-        unitCode: this.unitCode,
-        unitName: this.unitName,
-        workerName: this.workerName,
-        date: this.date
-      });
-
-      this.updateMachinery(data);
+      if(this.isCopy) {
+        const newMachineryCopied = this.buildCopyMachinery();
+        this.addMachinery(newMachineryCopied);
+      }else {
+        const editMachinery = this.buildEditMachinery();
+        this.updateMachinery(editMachinery);
+      }
     } else {
-      const data = Object.assign({}, this.machineryForm.value, {
-        id: 0,
-        tempId: this.tempId,
-        companyId: this.companyId,
-        reference: '',
-        useId: 0,
-        costCenterCode: this.costCenterName,
-        costCenterName: this.costCenterCode,
-        laborCode: this.laborCode,
-        laborName: this.laborName,
-        unitCode: this.unitCode,
-        unitName: this.unitName,
-        workerName: this.workerName,
-        date: this.date
-      });
-
-      this.addMachinery(data);
+      const newMachinery = this.buildNewMachinery();
+      this.addMachinery(newMachinery);
     }
+  }
 
+  /**
+   * buildNewMachinery
+   */
+  private buildNewMachinery = (): Machinery => {
+    return Object.assign({}, this.machineryForm.value, {
+      id: 0,
+      tempId: this.tempId,
+      companyId: this.companyId,
+      reference: '',
+      useId: 0,
+      costCenterCode: this.costCenterName,
+      costCenterName: this.costCenterCode,
+      laborCode: this.laborCode,
+      laborName: this.laborName,
+      unitCode: this.unitCode,
+      unitName: this.unitName,
+      workerName: this.workerName,
+      date: this.date,
+      status: 'new'
+    });
+  }
 
-    // Crear
-    // Editar en memoria
-    // Editar sync
-    // Borrar memoria
-    // Borrar sync
+  /**
+   * buildEditMachinery
+   */
+  private buildEditMachinery = (): Machinery => {
+    return Object.assign({}, this.machineryForm.value, {
+      id:  this.editMachinery.id,
+      tempId: this.editMachinery.tempId  ? this.editMachinery.tempId : this.tempId,
+      companyId: this.editMachinery.companyId,
+      reference: '',
+      useId: 0,
+      costCenterCode: this.costCenterName,
+      costCenterName: this.costCenterCode,
+      laborCode: this.laborCode,
+      laborName: this.laborName,
+      unitCode: this.unitCode,
+      unitName: this.unitName,
+      workerName: this.workerName,
+      date: this.date,
+      status: 'edit'
+    });
+
+  }
+
+  /**
+   * buildCopyMachinery
+   */
+  private buildCopyMachinery =  (): Machinery => {
+    return  Object.assign({}, this.machineryForm.value, {
+      id: 0,
+      tempId: this.tempId,
+      companyId: this.editMachinery.companyId,
+      reference: '',
+      useId: 0,
+      costCenterCode: this.costCenterName,
+      costCenterName: this.costCenterCode,
+      laborCode: this.laborCode,
+      laborName: this.laborName,
+      unitCode: this.unitCode,
+      unitName: this.unitName,
+      workerName: this.workerName,
+      date: this.date,
+      status: 'new'
+    });
   }
 
   /**
    * addMachinery
    */
-  private addMachinery = (data: any) => {
+  private addMachinery = (data: Machinery) => {
     this.machineryService.addMachinery(data).then(() => {
       this.machineryService.increaseTempId().then(() => {
         this.modalController.dismiss();
@@ -363,7 +400,7 @@ export class MachineryFormComponent implements OnInit {
    * updateMachinery
    * @param data
    */
-  private updateMachinery = (data: any) => {
+  private updateMachinery = (data: Machinery) => {
     this.machineryService.updateMachinery(data).then(() => {
       this.modalController.dismiss();
     });

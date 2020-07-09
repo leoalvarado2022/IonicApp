@@ -4,6 +4,7 @@ import { Sync } from 'src/app/shared/services/store/store-interface';
 import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { Machinery } from 'src/app/modules/machinery/machinery.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -381,8 +382,8 @@ export class StorageSyncService {
   /**
    * getMachinery
    */
-  public getMachinery = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.Machinery).then((machinery: Array<any>) => {
+  public getMachinery = (): Promise<Array<Machinery>> => {
+    return this.storage.get(StorageKeys.Machinery).then((machinery: Array<Machinery>) => {
       return machinery ? machinery : [];
     });
   }
@@ -394,8 +395,8 @@ export class StorageSyncService {
    * @param date
    * @param isSuper
    */
-  public getMachineryByCompany = (companyId: number, userId: number, date: string, isSuper: boolean = false): Promise<Array<any>> => {
-    return this.getMachinery().then( (machinery: Array<any>) => {
+  public getMachineryByCompany = (companyId: number, userId: number, date: string, isSuper: boolean = false): Promise<Array<Machinery>> => {
+    return this.getMachinery().then( (machinery: Array<Machinery>) => {
       if(isSuper) {
         return machinery.filter(item => {
           const splitDate = item.date.split('T')[0];

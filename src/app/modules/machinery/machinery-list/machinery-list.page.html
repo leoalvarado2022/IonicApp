@@ -45,7 +45,7 @@
 
   <ion-virtual-scroll [items]="filteredMachinery">
     <div *virtualItem="let machinery">
-      <ion-item-sliding #slide>
+      <ion-item-sliding #slide *ngIf="machinery.id > -1">
         <ion-item>
           <ion-label>
             <ion-row>
@@ -75,7 +75,7 @@
           <ion-item-option color="warning" (click)="editMachinery(machinery, slide)">
             <ion-icon slot="icon-only" name="pencil"></ion-icon>
           </ion-item-option>
-          <ion-item-option color="danger" (click)="deleteMachinery(machinery.tempId, slide)">
+          <ion-item-option color="danger" (click)="deleteMachinery(machinery, slide)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>
           </ion-item-option>
         </ion-item-options>
@@ -84,7 +84,7 @@
   </ion-virtual-scroll>
 
   <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-    <ion-fab-button (click)="openForm()" size="small">
+    <ion-fab-button (click)="createMachinery()" size="small">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

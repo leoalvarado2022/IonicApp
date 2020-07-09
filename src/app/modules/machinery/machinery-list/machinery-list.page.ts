@@ -7,11 +7,9 @@ import { ModalController, IonItemSliding } from '@ionic/angular';
 import { MachineryFormComponent } from '../machinery-form/machinery-form.component';
 import { Company } from '@primetec/primetec-angular';
 import { MachineryService } from '../services/machinery.service';
-import { HttpService } from 'src/app/shared/services/http/http.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-machinery-list',
@@ -155,7 +153,8 @@ export class MachineryListPage implements OnInit, OnDestroy {
         implements: this.implements,
         labors: this.labors,
         units: this.units,
-        workers: this.workers
+        workers: this.workers,
+        date: moment(this.currentDate).format('YYYY-MM-DD')
       },
       backdropDismiss: false,
       keyboardClose: false
@@ -178,12 +177,15 @@ export class MachineryListPage implements OnInit, OnDestroy {
       component: MachineryFormComponent,
       componentProps: {
         companyId: this.activeCompany.id,
+        userId: this.activeCompany.user,
         allCostCenters: this.allCostCenters,
         machineryCostCenters: this.machineryCostCenters,
+        implements: this.implements,
         labors: this.labors,
         units: this.units,
         workers: this.workers,
-        editMachinery: machinery
+        editMachinery: machinery,
+        date: moment(this.currentDate).format('YYYY-MM-DD')
       },
       backdropDismiss: false,
       keyboardClose: false
@@ -210,6 +212,37 @@ export class MachineryListPage implements OnInit, OnDestroy {
       slide.close();
       this.loadData();
     }
+  }
+
+  /**
+   * copyMachinery
+   */
+  public copyMachinery = async (machinery: any, slide: IonItemSliding) => {
+    const modal = await this.modalController.create({
+      component: MachineryFormComponent,
+      componentProps: {
+        companyId: this.activeCompany.id,
+        userId: this.activeCompany.user,
+        allCostCenters: this.allCostCenters,
+        machineryCostCenters: this.machineryCostCenters,
+        implements: this.implements,
+        labors: this.labors,
+        units: this.units,
+        workers: this.workers,
+        editMachinery: machinery,
+        date: moment(this.currentDate).format('YYYY-MM-DD'),
+        isCopy: true
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
+
+    modal.onDidDismiss().then(() => {
+      slide.close();
+      this.loadData();
+    });
+
+    return await modal.present();
   }
 
   /**

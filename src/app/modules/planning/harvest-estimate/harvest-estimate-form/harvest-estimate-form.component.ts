@@ -9,7 +9,6 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {debounceTime} from 'rxjs/operators';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import {Subscription} from 'rxjs';
-import { worker } from 'cluster';
 
 @Component({
   selector: 'app-harvest-estimate-form',

@@ -4,6 +4,7 @@ import { Sync } from 'src/app/shared/services/store/store-interface';
 import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { Machinery } from 'src/app/modules/machinery/machinery.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -381,23 +382,32 @@ export class StorageSyncService {
   /**
    * getMachinery
    */
-  public getMachinery = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.Machinery).then((machinery: Array<any>) => {
+  public getMachinery = (): Promise<Array<Machinery>> => {
+    return this.storage.get(StorageKeys.Machinery).then((machinery: Array<Machinery>) => {
       return machinery ? machinery : [];
     });
   }
 
   /**
-   * getMachineryByCostCenter
-   * @param costCenterId
+   * getMachineryByCompany
+   * @param companyId
+   * @param userId
+   * @param date
+   * @param isSuper
    */
-  public getMachineryByCostCenter = (costCenterId: number, userId: number, date: string, companyId: number): Promise<Array<any>> => {
-    return this.getMachinery().then( (machinery: Array<any>) => {
-      return machinery.filter(item => {
-        const splitDate = item.date.split('T')[0];
-
-        return item.machineryCostCenterId === costCenterId && item.workerId === userId && splitDate === date && item.companyId === companyId;
-      });
+  public getMachineryByCompany = (companyId: number, userId: number, date: string, isSuper: boolean = false): Promise<Array<Machinery>> => {
+    return this.getMachinery().then( (machinery: Array<Machinery>) => {
+      if(isSuper) {
+        return machinery.filter(item => {
+          const splitDate = item.date.split('T')[0];
+          return item.companyId === companyId && date === splitDate;
+        });
+      } else {
+        return machinery.filter(item => {
+          const splitDate = item.date.split('T')[0];
+          return item.companyId === companyId && item.workerId === userId && date === splitDate;
+        });
+      }
     });
   }
 
@@ -426,37 +436,49 @@ export class StorageSyncService {
       this.getCostCenterTypes(),
       this.getCostCentersCustom(),
     ]).then((data: Array<any>) => {
-
+       /**
+        * Primer Filtro
+        * - Centros de costo que esten el array de centros de costo tipo = maquinaria
+        */
       const machineryTypes = data[0].filter(item => item.costCenterTypeId === 4);
-
-      if (machineryTypes.length > 0){
-        const mapped = machineryTypes.map(item => item.costCenterId);
-        return data[1].filter(item => mapped.includes(item.id));
+      if (machineryTypes.length ===  0) {
+        return [];
       }
 
-      return [];
+      /**
+       * Segundo filtro
+       * - filtrar tipo de maquinaria Automata o Maquinaria
+       */
+      const mapped = machineryTypes.map(item => item.costCenterId);
+      return data[1].filter(item => mapped.includes(item.id) && (item.machineryType.toLowerCase() === 'automata' || item.machineryType.toLowerCase() === 'maquinaria'));
     });
   }
 
   /**
-   * getNotMachineryTypeCostCenters
+   * getImplementTypeCostCenters
    */
-  public getNotMachineryTypeCostCenters = (): Promise<Array<any>> => {
+  public getImplementTypeCostCenters = (): Promise<Array<any>> => {
     return Promise.all([
       this.getCostCenterTypes(),
       this.getCostCentersCustom(),
     ]).then((data: Array<any>) => {
+       /**
+        * Primer Filtro
+        * - Centros de costo que esten el array de centros de costo tipo = maquinaria
+        */
       const machineryTypes = data[0].filter(item => item.costCenterTypeId === 4);
-
-      if (machineryTypes.length > 0){
-        const mapped = machineryTypes.map(item => item.costCenterId);
-        return data[1].filter(item => !mapped.includes(item.id));
+      if (machineryTypes.length ===  0) {
+        return [];
       }
 
-      return [];
+      /**
+       * Segundo filtro
+       * - filtrar tipo de maquinaria Implemento
+       */
+      const mapped = machineryTypes.map(item => item.costCenterId);
+      return data[1].filter(item => mapped.includes(item.id) && item.machineryType.toLowerCase() === 'implemento');
     });
   }
-
 
   /**
    * setTally Temp

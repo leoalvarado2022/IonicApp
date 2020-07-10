@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { StorageKeys } from 'src/app/services/storage/storage-keys';
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { HttpClient } from '@angular/common/http';
+import { Machinery } from '../machinery.interface';
 
 @Injectable()
 export class MachineryService {
@@ -55,9 +56,23 @@ export class MachineryService {
   /**
    * getMachineryToRecord
    */
-  public getMachineryToRecord = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.MachineryToRecord).then( (machineryToRecord: Array<any>) => {
+  public getMachineryToRecord = (): Promise<Array<Machinery>> => {
+    return this.storage.get(StorageKeys.MachineryToRecord).then( (machineryToRecord: Array<Machinery>) => {
       return machineryToRecord ? machineryToRecord: [];
+    });
+  }
+
+  /**
+   * getMachineryToRecordByCompany
+   * @param companyId
+   * @param date
+   */
+  public getMachineryToRecordByCompany = (companyId: number, date: string): Promise<Array<Machinery>> => {
+    return this.getMachineryToRecord().then( (machineryToRecord: Array<Machinery>) => {
+      return machineryToRecord.filter(item => {
+        const splitDate = item.date.split('T')[0];
+        return item.companyId === companyId && date === splitDate;
+      });
     });
   }
 
@@ -65,8 +80,8 @@ export class MachineryService {
    * addMachinery
    * @param machinery
    */
-  public addMachinery = (machinery: any): Promise<Array<any>> => {
-    return this.getMachineryToRecord().then((machineryToRecord: Array<any>) => {
+  public addMachinery = (machinery: Machinery): Promise<Array<Machinery>> => {
+    return this.getMachineryToRecord().then((machineryToRecord: Array<Machinery>) => {
       machineryToRecord.push(machinery);
 
       return this.storage.set(StorageKeys.MachineryToRecord, machineryToRecord);
@@ -76,8 +91,25 @@ export class MachineryService {
   /**
    * clearMachinery
    */
-  public clearMachinery = (): Promise<Array<any>> => {
+  public clearMachinery = (): Promise<Array<Machinery>> => {
     return this.storage.set(StorageKeys.MachineryToRecord, []);
+  }
+
+  /**
+   * updateMachinery
+   * @param machinery
+   */
+  public updateMachinery = (machinery: Machinery): Promise<Array<Machinery>> => {
+    return this.getMachineryToRecord().then((machineryToRecord: Array<Machinery>) => {
+      const findIndex = machineryToRecord.findIndex(item => item.tempId === machinery.tempId);
+      if (findIndex > -1) {
+        machineryToRecord[findIndex] = machinery;
+      } else {
+        machineryToRecord.push(machinery);
+      }
+
+      return this.storage.set(StorageKeys.MachineryToRecord, machineryToRecord);
+    });
   }
 
   /**
@@ -92,18 +124,12 @@ export class MachineryService {
   }
 
   /**
-   * updateMachinery
+   * markMachineryToDelete
    * @param machinery
    */
-  public updateMachinery = (machinery: any): Promise<Array<any>> => {
-    return this.getMachineryToRecord().then((machineryToRecord: Array<any>) => {
-      const findIndex = machineryToRecord.findIndex(item => item.tempId === machinery.tempId);
-      if (findIndex > -1) {
-        machineryToRecord[findIndex] = machinery;
-      }
-
-      return this.storage.set(StorageKeys.MachineryToRecord, machineryToRecord);
-    });
+  public markMachineryToDelete = (machinery: Machinery): Promise<Array<Machinery>> => {
+    const toDelete = Object.assign({}, machinery, { id: ( machinery.id * -1), status: 'delete' });
+    return this.addMachinery(toDelete);
   }
 
 }

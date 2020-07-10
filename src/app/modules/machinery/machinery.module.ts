@@ -8,12 +8,8 @@ import { MachineryFormComponent } from './machinery-form/machinery-form.componen
 const routes: Routes = [
   {
     path: '',
-    component: CostCenterListPage
-  },
-  {
-    path: 'machinery/:id',
     component: MachineryListPage
-  }
+  },
 ];
 
 @NgModule({

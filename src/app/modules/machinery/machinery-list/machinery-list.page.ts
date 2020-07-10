@@ -7,10 +7,10 @@ import { ModalController, IonItemSliding } from '@ionic/angular';
 import { MachineryFormComponent } from '../machinery-form/machinery-form.component';
 import { Company } from '@primetec/primetec-angular';
 import { MachineryService } from '../services/machinery.service';
-import { HttpService } from 'src/app/shared/services/http/http.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import { Machinery } from '../machinery.interface';
 
 @Component({
   selector: 'app-machinery-list',
@@ -19,11 +19,13 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 })
 export class MachineryListPage implements OnInit, OnDestroy {
 
-  private machinery: Array<any> = [];
-  private machineryToRecord: Array<any> = [];
-  public filteredMachinery: Array<any> = [];
+  private machinery: Array<Machinery> = [];
+  private machineryToRecord: Array<Machinery> = [];
+  public filteredMachinery: Array<Machinery> = [];
 
-  private costCenters: Array<any> = [];
+  private machineryCostCenters: Array<any> = [];
+  private allCostCenters: Array<any> = [];
+  private implements: Array<any> = [];
   private labors: Array<any> = [];
   private units: Array<any> = [];
   private workers: Array<any> = [];
@@ -32,17 +34,24 @@ export class MachineryListPage implements OnInit, OnDestroy {
   private activeCompany: Company;
   private stepper$: Subscription;
 
+  // Dates
+  public readonly originalDate: any;
+  public currentDate: any;
+  public readonly dateFormat = 'DD/MM/YYYY';
+  public readonly maxDate = '2030';
+
   constructor(
     private storageSyncService: StorageSyncService,
     private activatedRoute: ActivatedRoute,
     private storeService: StoreService,
     private modalController: ModalController,
     private machineryService: MachineryService,
-    private httpService: HttpService,
     private stepperService: StepperService,
     private alertService: AlertService
   ) {
 
+    this.currentDate = moment().format('YYYY-MM-DD');
+    this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
@@ -68,29 +77,36 @@ export class MachineryListPage implements OnInit, OnDestroy {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.activeCompany = this.storeService.getActiveCompany();
     const user = this.storeService.getUser();
-    const date = moment().format('YYYY-MM-DD');
     const units = this.storeService.getUnits();
+    const access = this.storeService.getAccess();
+    const date = moment(this.currentDate).format('YYYY-MM-DD');
 
     Promise.all([
-      this.storageSyncService.getMachineryByCostCenter(+id, this.activeCompany.user, date, this.activeCompany.id),
-      this.storageSyncService.getNotMachineryTypeCostCenters(),
+      this.storageSyncService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
+      this.machineryService.getMachineryToRecordByCompany(this.activeCompany.id, date),
       this.storageSyncService.getLabors(),
-      this.machineryService.getMachineryToRecord(),
+      this.machineryService.getWorkers(user).toPromise(),
+      this.storageSyncService.getMachineryTypeCostCenters(),
+      this.storageSyncService.getCostCentersCustom(),
+      this.storageSyncService.getImplementTypeCostCenters()
     ]).then( (data: Array<any>) => {
 
-      this.machinery = data[0];
-      this.costCenters = data[1];
-      this.labors = data[2];
       this.units = units;
 
-      this.machineryToRecord = data[3].filter(item => item.machineryCostCenterId === +id);
-      this.filteredMachinery = [ ...this.machineryToRecord, ...this.machinery];
-    });
+      this.machinery = data[0];
+      this.machineryToRecord = data[1];
 
-    this.machineryService.getWorkers(user).subscribe(success => {
-      this.workers = success['data'];
-    }, error => {
-      this.httpService.errorHandler(error);
+      const filteredToRecord = this.machineryToRecord.filter(item => item.id < 0)
+      const mapped = filteredToRecord.map(item => (item.id * -1));
+      const filtered = this.machinery.filter(item => !mapped.includes(item.id));
+
+      this.filteredMachinery = [ ...filteredToRecord, ...filtered];
+
+      this.labors = data[2];
+      this.workers = data[3]['data']; //  HTTP
+      this.machineryCostCenters = data[4];
+      this.allCostCenters = data[5];
+      this.implements = data[6];
     });
   }
 
@@ -130,19 +146,21 @@ export class MachineryListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * openForm
+   * createMachinery
    */
-  public openForm = async () => {
+  public createMachinery = async () => {
     const modal = await this.modalController.create({
       component: MachineryFormComponent,
       componentProps: {
         companyId: this.activeCompany.id,
         userId: this.activeCompany.user,
-        costCenters: this.costCenters,
-        machineryCostCenterId: +this.activatedRoute.snapshot.paramMap.get('id'),
+        allCostCenters: this.allCostCenters,
+        machineryCostCenters: this.machineryCostCenters,
+        implements: this.implements,
         labors: this.labors,
         units: this.units,
-        workers: this.workers
+        workers: this.workers,
+        date: moment(this.currentDate).format('YYYY-MM-DD')
       },
       backdropDismiss: false,
       keyboardClose: false
@@ -160,17 +178,20 @@ export class MachineryListPage implements OnInit, OnDestroy {
    * @param machinery
    * @param slide
    */
-  public editMachinery = async (machinery: any, slide: IonItemSliding) => {
+  public editMachinery = async (machinery: Machinery, slide: IonItemSliding) => {
     const modal = await this.modalController.create({
       component: MachineryFormComponent,
       componentProps: {
         companyId: this.activeCompany.id,
-        costCenters: this.costCenters,
-        machineryCostCenterId: +this.activatedRoute.snapshot.paramMap.get('id'),
+        userId: this.activeCompany.user,
+        allCostCenters: this.allCostCenters,
+        machineryCostCenters: this.machineryCostCenters,
+        implements: this.implements,
         labors: this.labors,
         units: this.units,
         workers: this.workers,
-        editMachinery: machinery
+        editMachinery: machinery,
+        date: moment(this.currentDate).format('YYYY-MM-DD')
       },
       backdropDismiss: false,
       keyboardClose: false
@@ -186,15 +207,72 @@ export class MachineryListPage implements OnInit, OnDestroy {
 
   /**
    * deleteMachinery
-   * @param machineryTempId
+   * @param machinery
    * @param slide
    */
-  public deleteMachinery = async (machineryTempId: number, slide: IonItemSliding) => {
+  public deleteMachinery = async (machinery: Machinery, slide: IonItemSliding) => {
     const sayYes = await this.alertService.confirmAlert('Confirmar borrar esta maquinaria?');
 
     if(sayYes){
-      await this.machineryService.deleteMachinery(machineryTempId);
+      if (machinery.tempId) { // Machinery on memory
+        await this.machineryService.deleteMachinery(machinery.tempId);
+        slide.close();
+        this.loadData();
+      } else { // Machinery syced
+        await this.machineryService.markMachineryToDelete(machinery);
+        slide.close();
+        this.loadData();
+      }
+    }
+  }
+
+  /**
+   * copyMachinery
+   */
+  public copyMachinery = async (machinery: Machinery, slide: IonItemSliding) => {
+    const modal = await this.modalController.create({
+      component: MachineryFormComponent,
+      componentProps: {
+        companyId: this.activeCompany.id,
+        userId: this.activeCompany.user,
+        allCostCenters: this.allCostCenters,
+        machineryCostCenters: this.machineryCostCenters,
+        implements: this.implements,
+        labors: this.labors,
+        units: this.units,
+        workers: this.workers,
+        editMachinery: machinery,
+        date: moment(this.currentDate).format('YYYY-MM-DD'),
+        isCopy: true
+      },
+      backdropDismiss: false,
+      keyboardClose: false
+    });
+
+    modal.onDidDismiss().then(() => {
       slide.close();
+      this.loadData();
+    });
+
+    return await modal.present();
+  }
+
+  /**
+   * subtractDayToDate
+   */
+  public subtractDayToDate = (): void => {
+    if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
+      this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.loadData();
+    }
+  }
+
+  /**
+   * addDayToDate
+   */
+  public addDayToDate = (): void => {
+    if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
+      this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
       this.loadData();
     }
   }

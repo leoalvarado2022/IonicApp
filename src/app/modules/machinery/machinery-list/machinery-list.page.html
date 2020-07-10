@@ -31,9 +31,21 @@
     <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary">{{ filteredMachinery.length }}</ion-badge>
   </h2>
 
+  <!-- DAY SELECTOR -->
+  <ion-item>
+    <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
+      <ion-icon name="arrow-back" slot="start"></ion-icon>
+    </ion-button>
+    <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat">
+    </ion-datetime>
+    <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
+      <ion-icon name="arrow-forward" slot="end"></ion-icon>
+    </ion-button>
+  </ion-item>
+
   <ion-virtual-scroll [items]="filteredMachinery">
     <div *virtualItem="let machinery">
-      <ion-item-sliding #slide [disabled]="!machinery.tempId">
+      <ion-item-sliding #slide *ngIf="machinery.id > -1">
         <ion-item>
           <ion-label>
             <ion-row>
@@ -57,10 +69,13 @@
         </ion-item>
 
         <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="copyMachinery(machinery, slide)" expandable="true">
+            <ion-icon slot="icon-only" name="copy"></ion-icon>
+          </ion-item-option>
           <ion-item-option color="warning" (click)="editMachinery(machinery, slide)">
             <ion-icon slot="icon-only" name="pencil"></ion-icon>
           </ion-item-option>
-          <ion-item-option color="danger" (click)="deleteMachinery(machinery.tempId, slide)">
+          <ion-item-option color="danger" (click)="deleteMachinery(machinery, slide)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>
           </ion-item-option>
         </ion-item-options>
@@ -69,7 +84,7 @@
   </ion-virtual-scroll>
 
   <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-    <ion-fab-button (click)="openForm()" size="small">
+    <ion-fab-button (click)="createMachinery()" size="small">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -13,7 +13,7 @@
   <ion-toolbar class="toolbar-search">
     <ion-searchbar
       animated
-      placeholder="Buscar..."       
+      placeholder="Buscar..."
       showCancelButton="never"
       (ionChange)="searchContract($event.target.value)"
       (ionClear)="cancelSearch()">
@@ -21,7 +21,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>  
+<ion-content>
   <ion-refresher (ionRefresh)="reSync($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -45,12 +45,12 @@
         </app-contract-list-item>
       </div>
     </ion-virtual-scroll>
-  
+
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button (click)="contractForm()">
+      <ion-fab-button size="small" (click)="contractForm()">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-  </ng-container>  
+  </ng-container>
 
 </ion-content>

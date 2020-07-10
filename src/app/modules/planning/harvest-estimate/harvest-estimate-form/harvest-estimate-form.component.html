@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()" color="secondary">
-        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title> {{ harvestEstimate ? 'Ver' : 'Registrar'  }}  Estimacion</ion-title>
@@ -11,6 +11,8 @@
 
 <ion-content>
   <form [formGroup]="harvestForm">
+
+    <!-- CANTIDAD -->
     <ion-item>
       <ion-label position="floating">
         Cantidad {{ showUnitName() | uppercase }}
@@ -22,6 +24,7 @@
       </ng-container>
     </ion-item>
 
+    <!-- CANTIDAD DIARIA -->
     <ion-item>
       <ion-label position="floating">
         Cantidad Diaria {{ showUnitName() | uppercase }}
@@ -33,6 +36,7 @@
       </ng-container>
     </ion-item>
 
+    <!-- Trabaja festivos -->
     <ion-list>
       <ion-radio-group [value]="harvestForm.get('workHolidays').value" (ionChange)="workHolidaysEvent($event.detail.value)">
         <ion-list-header>
@@ -52,13 +56,13 @@
             </ion-item>
           </ion-col>
         </ion-row>
-
-        <ng-container *ngIf="harvestForm.get('workHolidays').dirty && harvestForm.get('workHolidays').hasError('required')">
-          <span class="errorMsg">Indique si trabaja los feriados.</span>
-        </ng-container>
       </ion-radio-group>
     </ion-list>
+    <ng-container *ngIf="harvestForm.get('workHolidays').dirty && harvestForm.get('workHolidays').hasError('required')">
+      <span class="errorMsg">Indique si trabaja los feriados.</span>
+    </ng-container>
 
+    <!-- Fecha Inicio -->
     <ion-item>
       <ion-label position="floating">Fecha Inicio</ion-label>
       <ion-datetime [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat" formControlName="startDate" placeholder="Ingresar Fecha Inicio"></ion-datetime>
@@ -67,29 +71,32 @@
       </ng-container>
     </ion-item>
 
+    <!-- Fecha fin -->
     <ion-item>
       <ion-label position="floating">Fecha Fin</ion-label>
-      <ion-input [value]=" harvestForm.get('endDate').value" disabled="true"></ion-input>
+      <ion-input [value]="harvestForm.get('endDate').value" disabled="true"></ion-input>
     </ion-item>
 
+    <!-- Plantas de proceso -->
     <ion-item>
       <ion-label position="fixed">Plantas de Proceso</ion-label>
       <ion-select [interfaceOptions]="sheetActions" [selectedText]="getSelectedProcessPlant()" cancelText="Cancelar" formControlName="processPlant" interface="action-sheet">
         <ion-select-option *ngFor="let plant of processPlants" [value]="plant.id">
-          {{ plant.name }}
+          {{ plant.name | titlecase }}
         </ion-select-option>
       </ion-select>
     </ion-item>
 
+    <!-- Destino -->
     <ion-item>
       <ion-label position="fixed">Destino</ion-label>
       <ion-select [interfaceOptions]="sheetActions" [selectedText]="getSelectedDestination()" cancelText="Cancelar" formControlName="destination" interface="action-sheet">
         <ion-select-option *ngFor="let destination of destinations" [value]="destination.id">
-          {{ destination.name }}
+          {{ destination.name | titlecase }}
         </ion-select-option>
       </ion-select>
     </ion-item>
-    
+
   </form>
 </ion-content>
 

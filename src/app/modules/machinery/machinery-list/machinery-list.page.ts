@@ -100,7 +100,10 @@ export class MachineryListPage implements OnInit, OnDestroy {
       this.allCostCenters = data[4];
       this.implements = data[5];
 
-      this.isLoading = false;
+      // Healthy delay
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 1000);
     });
   }
 
@@ -161,7 +164,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
     });
 
     modal.onDidDismiss().then(() => {
-      this.loadData();
+      this.minimunReload();
     });
 
     return await modal.present();
@@ -193,7 +196,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then(() => {
       slide.close();
-      this.loadData();
+      this.minimunReload();
     });
 
     return await modal.present();
@@ -211,11 +214,11 @@ export class MachineryListPage implements OnInit, OnDestroy {
       if (machinery.tempId) { // Machinery on memory
         await this.machineryService.deleteMachinery(machinery.tempId);
         slide.close();
-        this.loadData();
+        this.minimunReload();
       } else { // Machinery syced
         await this.machineryService.markMachineryToDelete(machinery);
         slide.close();
-        this.loadData();
+        this.minimunReload();
       }
     }
   }
@@ -245,7 +248,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
 
     modal.onDidDismiss().then(() => {
       slide.close();
-      this.loadData();
+      this.minimunReload();
     });
 
     return await modal.present();
@@ -257,7 +260,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
   public subtractDayToDate = (): void => {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
-      this.loadData();
+      this.minimunReload();
     }
   }
 
@@ -267,8 +270,26 @@ export class MachineryListPage implements OnInit, OnDestroy {
   public addDayToDate = (): void => {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
-      this.loadData();
+      this.minimunReload();
     }
+  }
+
+  /**
+   * minimunReload
+   */
+  private minimunReload = () => {
+    this.isLoading = true;
+
+    setTimeout(() => {
+      const access = this.storeService.getAccess();
+      const date = moment(this.currentDate).format('YYYY-MM-DD');
+
+      this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5))
+        .then( (machinery: Array<Machinery>) => {
+          this.filteredMachinery = [...machinery];
+          this.isLoading = false;
+        });
+    }, 1000);
   }
 
 }

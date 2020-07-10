@@ -82,7 +82,6 @@ export class MachineryService {
         return item.companyId === companyId && date === splitDate && item.status !== 'delete';
       });
 
-
       // BLOQUE SYNC
       const synced = data[0].filter((item: Machinery) => {
         const splitDate = item.date.split('T')[0];

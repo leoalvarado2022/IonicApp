@@ -14,10 +14,10 @@
     <ion-searchbar
       animated
       placeholder="Buscar..."
-      showCancelButton="never"      
+      showCancelButton="never"
       (ionChange)="searchHarvest($event.target.value)"
       (ionClear)="cancelSearch()">
-    </ion-searchbar>    
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -38,7 +38,7 @@
 
   <ng-container *ngIf="checkButton()">
     <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-      <ion-fab-button (click)="openForm()" [disabled]="!costCenter || !isOnline" color="warning">
+      <ion-fab-button size="small" (click)="openForm()" [disabled]="!costCenter || !isOnline" color="warning">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

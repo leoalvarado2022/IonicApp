@@ -218,13 +218,13 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
       startDate
     } = this.harvestForm.value;
 
+    const holidays = [];
+    const daysAdded = 0;
     if (quantity && dailyAmount) {
       const days = Math.ceil((this.cleanParseNumber(quantity) > 0 ? this.cleanParseNumber(quantity) : 1) / (this.cleanParseNumber(dailyAmount) > 0 ? this.cleanParseNumber(dailyAmount) : 1));
-      const holidays = [];
-      const daysAdded = 1;
       let momentDate = moment.utc(startDate);
 
-      if (workHolidays === 0) {
+      if (+workHolidays === 0) {
         this.holidays.forEach(holiday => {
           holidays.push(moment.utc(holiday.fecha).format(this.dateFormat));
         });
@@ -232,7 +232,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
       momentDate = this.computeEndDate(days, daysAdded, momentDate, holidays);
 
-      this.harvestForm.get('endDate').patchValue(momentDate.format(this.dateFormat));
+      this.harvestForm.get('endDate').patchValue(momentDate.format(this.dateFormat), { emitEvent: false });
     }
   }
 
@@ -254,10 +254,14 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    * @param daysAdded
    * @param momentDate
    */
-  private computeEndDate = (workingDays: number = 1, daysAdded: number = 1, momentDate: any, holidays: Array<any> = []) => {
-    if (workingDays > daysAdded && daysAdded < 60) {
+  private computeEndDate = (workingDays: number = 1, daysAdded: number = 0, momentDate: any, holidays: Array<any> = []) => {
+    if (daysAdded < workingDays && daysAdded < 60) {
       if (momentDate.weekday() > 0 && !holidays.includes(momentDate.format(this.dateFormat))) {
         daysAdded++;
+      }
+
+      if(daysAdded === workingDays){
+        return momentDate;
       }
 
       momentDate = momentDate.add(1, 'days');

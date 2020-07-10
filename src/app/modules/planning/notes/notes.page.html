@@ -10,7 +10,7 @@
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar class="toolbar-search">    
+  <ion-toolbar class="toolbar-search">
     <ion-searchbar
       animated
       placeholder="Buscar..."
@@ -37,7 +37,7 @@
 
   <ng-container *ngIf="checkButton()">
     <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-      <ion-fab-button (click)="openForm()" [disabled]="!costCenter || !isOnline" color="danger">
+      <ion-fab-button size="small" (click)="openForm()" [disabled]="!costCenter || !isOnline" color="danger">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

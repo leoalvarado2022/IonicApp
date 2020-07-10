@@ -2,7 +2,7 @@
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
       <ion-button (click)="closeModal()" color="secondary">
-        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-title>
@@ -40,7 +40,7 @@
 
     <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
       <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
-        {{ costCenter.name  }}
+        {{ costCenter.name | titlecase  }}
       </ion-item>
     </ion-list>
 
@@ -55,7 +55,7 @@
 
     <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
       <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
-        {{ labor.name  }}
+        {{ labor.name | titlecase  }}
       </ion-item>
     </ion-list>
 
@@ -70,7 +70,7 @@
 
     <ion-list class="searchbar-results-list" *ngIf="filteredWorkers.length > 0">
       <ion-item *ngFor="let worker of filteredWorkers" (click)="selectWorker(worker)">
-        {{ worker.nombre }}
+        {{ worker.nombre | titlecase }}
       </ion-item>
     </ion-list>
 
@@ -79,7 +79,9 @@
       <ion-item>
         <ion-label position="stacked">Implemento</ion-label>
         <ion-select formControlName="implementCostCenterId" placeholder="Implemento" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let implement of filteredImplements" [value]="implement.id">{{ implement.name }}</ion-select-option>
+          <ion-select-option *ngFor="let implement of filteredImplements" [value]="implement.id">
+            {{ implement.name | titlecase }}
+          </ion-select-option>
         </ion-select>
       </ion-item>
       <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('implementCostCenterId').dirty && machineryForm.get('implementCostCenterId').hasError('required')">
@@ -96,7 +98,7 @@
     <!-- Cantidad -->
     <ion-item>
       <ion-label position="stacked">Cantidad</ion-label>
-      <ion-input formControlName="quantity"></ion-input>
+      <ion-input formControlName="quantity" type="number"></ion-input>
     </ion-item>
     <ng-container *ngIf="machineryForm.get('quantity').dirty">
       <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">

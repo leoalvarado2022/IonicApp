@@ -30,6 +30,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
   private units: Array<any> = [];
   private workers: Array<any> = [];
 
+  public isLoading = false;
   private firstLoad = true;
   private activeCompany: Company;
   private stepper$: Subscription;
@@ -73,6 +74,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
    */
   private loadData = () => {
     this.firstLoad = false;
+    this.isLoading = true;
 
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.activeCompany = this.storeService.getActiveCompany();
@@ -82,31 +84,23 @@ export class MachineryListPage implements OnInit, OnDestroy {
     const date = moment(this.currentDate).format('YYYY-MM-DD');
 
     Promise.all([
-      this.storageSyncService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
-      this.machineryService.getMachineryToRecordByCompany(this.activeCompany.id, date),
+      this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
       this.storageSyncService.getLabors(),
       this.machineryService.getWorkers(user).toPromise(),
       this.storageSyncService.getMachineryTypeCostCenters(),
       this.storageSyncService.getCostCentersCustom(),
       this.storageSyncService.getImplementTypeCostCenters()
     ]).then( (data: Array<any>) => {
-
       this.units = units;
 
-      this.machinery = data[0];
-      this.machineryToRecord = data[1];
+      this.filteredMachinery = [...data[0]];
+      this.labors = data[1];
+      this.workers = data[2]['data']; //  HTTP
+      this.machineryCostCenters = data[3];
+      this.allCostCenters = data[4];
+      this.implements = data[5];
 
-      const filteredToRecord = this.machineryToRecord.filter(item => item.id < 0)
-      const mapped = filteredToRecord.map(item => (item.id * -1));
-      const filtered = this.machinery.filter(item => !mapped.includes(item.id));
-
-      this.filteredMachinery = [ ...filteredToRecord, ...filtered];
-
-      this.labors = data[2];
-      this.workers = data[3]['data']; //  HTTP
-      this.machineryCostCenters = data[4];
-      this.allCostCenters = data[5];
-      this.implements = data[6];
+      this.isLoading = false;
     });
   }
 

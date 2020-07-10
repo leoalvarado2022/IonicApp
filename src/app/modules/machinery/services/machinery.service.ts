@@ -63,10 +63,45 @@ export class MachineryService {
   }
 
   /**
+   *
+   * @param companyId
+   * @param userId
+   * @param date
+   * @param isSuper
+   */
+  public getMachineryByCompany = (companyId: number, userId: number, date: string, isSuper: boolean = false): Promise<Array<Machinery>> => {
+    return Promise.all([
+      this.storage.get(StorageKeys.Machinery),
+      this.getMachineryToRecord()
+    ]).then( (data: Array<any>) => {
+      const markedForDelete = data[1].filter((item: Machinery) => item.id < 0).map((item: Machinery) => (item.id * -1));
+
+      // BLOQUE MEMORIA
+      const onMemory =  data[1].filter( (item: Machinery) => {
+        const splitDate = item.date.split('T')[0];
+        return item.companyId === companyId && date === splitDate && item.status !== 'delete';
+      });
+
+
+      // BLOQUE SYNC
+      const synced = data[0].filter((item: Machinery) => {
+        const splitDate = item.date.split('T')[0];
+
+        return isSuper ?
+          item.companyId === companyId && date === splitDate && !markedForDelete.includes(item.id):
+          item.companyId === companyId && item.workerId === userId && date === splitDate && !markedForDelete.includes(item.id);
+      });
+
+      return [...onMemory, ...synced];
+    });
+  }
+
+  /**
    * getMachineryToRecordByCompany
    * @param companyId
    * @param date
    */
+  /*
   public getMachineryToRecordByCompany = (companyId: number, date: string): Promise<Array<Machinery>> => {
     return this.getMachineryToRecord().then( (machineryToRecord: Array<Machinery>) => {
       return machineryToRecord.filter(item => {
@@ -75,6 +110,7 @@ export class MachineryService {
       });
     });
   }
+  */
 
   /**
    * addMachinery

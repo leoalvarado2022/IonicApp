@@ -4,7 +4,7 @@ export const environment = {
   production: true,
   app_name: 'FX10',
   api_url: 'https://apiqa.fx360.cl',
-  appVersion: 'v1.0.89',
+  appVersion: 'v1.0.90',
   tz: 'America/Santiago',
   iosDeviceNames,
   syncTimerMinutes: 5

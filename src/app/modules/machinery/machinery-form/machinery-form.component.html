@@ -29,6 +29,21 @@
       </ion-item>
     </ion-list>
 
+    <!-- Implemento -->
+    <ng-container *ngIf="filteredImplements.length > 0">
+      <ion-item>
+        <ion-label position="stacked">Implemento</ion-label>
+        <ion-select formControlName="implementCostCenterId" placeholder="Implemento" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+          <ion-select-option *ngFor="let implement of filteredImplements" [value]="implement.id">
+            {{ implement.name | titlecase }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('implementCostCenterId').dirty && machineryForm.get('implementCostCenterId').hasError('required')">
+        Seleccione un Implemento
+      </ion-text>
+    </ng-container>
+
     <!-- COST CENTER -->
     <ion-item>
       <ion-label position="stacked">Centro de Costo</ion-label>
@@ -73,21 +88,6 @@
         {{ worker.nombre | titlecase }}
       </ion-item>
     </ion-list>
-
-    <!-- Implemento -->
-    <ng-container *ngIf="filteredImplements.length > 0">
-      <ion-item>
-        <ion-label position="stacked">Implemento</ion-label>
-        <ion-select formControlName="implementCostCenterId" placeholder="Implemento" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let implement of filteredImplements" [value]="implement.id">
-            {{ implement.name | titlecase }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('implementCostCenterId').dirty && machineryForm.get('implementCostCenterId').hasError('required')">
-        Seleccione un Implemento
-      </ion-text>
-    </ng-container>
 
     <!-- Cantidad -->
     <ion-item>

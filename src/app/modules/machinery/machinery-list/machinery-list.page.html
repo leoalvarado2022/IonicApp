@@ -43,7 +43,7 @@
     </ion-button>
   </ion-item>
 
-  <ng-container *ngIf="!isLoading">
+  <ng-container *ngIf="!isLoading; else loading">
     <ion-virtual-scroll [items]="filteredMachinery">
       <div *virtualItem="let machinery">
         <ion-item-sliding #slide *ngIf="machinery.id > -1">
@@ -84,6 +84,10 @@
       </div>
     </ion-virtual-scroll>
   </ng-container>
+
+  <ng-template #loading>
+    <p class="ion-text-center">Cargando</p>
+  </ng-template>
 
   <ion-fab horizontal="end" slot="fixed" vertical="bottom">
     <ion-fab-button (click)="createMachinery()" size="small">

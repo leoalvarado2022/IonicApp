@@ -74,7 +74,10 @@ export class MachineryService {
       this.storage.get(StorageKeys.Machinery),
       this.getMachineryToRecord()
     ]).then( (data: Array<any>) => {
+      // Marked for delete
       const markedForDelete = data[1].filter((item: Machinery) => item.id < 0).map((item: Machinery) => (item.id * -1));
+      // Marked for edit
+      const markedForEdit = data[1].filter((item: Machinery) => item.status === 'edit' ).map((item: Machinery) => item.id);
 
       // BLOQUE MEMORIA
       const onMemory =  data[1].filter( (item: Machinery) => {
@@ -87,8 +90,8 @@ export class MachineryService {
         const splitDate = item.date.split('T')[0];
 
         return isSuper ?
-          item.companyId === companyId && date === splitDate && !markedForDelete.includes(item.id):
-          item.companyId === companyId && item.workerId === userId && date === splitDate && !markedForDelete.includes(item.id);
+          item.companyId === companyId && date === splitDate && !markedForDelete.includes(item.id) && !markedForEdit.includes(item.id):
+          item.companyId === companyId && item.workerId === userId && date === splitDate && !markedForDelete.includes(item.id) && !markedForEdit.includes(item.id);
       });
 
       return [...onMemory, ...synced];

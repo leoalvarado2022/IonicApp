@@ -2,9 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MachineryService } from '../services/machinery.service';
-import { StoreService } from 'src/app/shared/services/store/store.service';
 import { Machinery } from '../machinery.interface';
-import { MachineryModule } from '../machinery.module';
 
 @Component({
   selector: 'app-machinery-form',
@@ -64,7 +62,6 @@ export class MachineryFormComponent implements OnInit {
 
   ngOnInit() {
     if (this.editMachinery) {
-
       this.machineryForm = this.formBuilder.group({
         costCenterId: [ this.isCopy ? '' : this.editMachinery.costCenterId, Validators.required],
         laborId: [ this.isCopy ? '' : this.editMachinery.laborId, Validators.required],
@@ -91,19 +88,20 @@ export class MachineryFormComponent implements OnInit {
       const findWorker = this.workers.find(item => +item.id === this.editMachinery.workerId)
       this.workerName = findWorker.nombre;
 
+      this.getTempId();
+
       if (!this.isCopy) {
         // Centros de costo
         const findCostCenter = this.allCostCenters.find(item => item.id === this.editMachinery.costCenterId)
-        this.costCenterName = findCostCenter.name;
         this.costCenterCode = findCostCenter.code;
+        this.costCenterName = findCostCenter.name;
 
         // Labor
         const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId)
-        this.laborName = findLabor.name;
         this.laborCode = findLabor.code;
-      }else {
-        this.getTempId();
+        this.laborName = findLabor.name;
       }
+
     } else {
       this.machineryForm = this.formBuilder.group({
         costCenterId: ['', Validators.required],
@@ -228,8 +226,8 @@ export class MachineryFormComponent implements OnInit {
   public cleanLaborSearch = (): void => {
     this.machineryForm.get('laborId').patchValue('');
     this.filteredLabors = [];
-    this.laborName = null;
     this.laborCode = null;
+    this.laborName = null;
   }
 
   /**
@@ -238,8 +236,8 @@ export class MachineryFormComponent implements OnInit {
    */
   public selectLabor = (labor: any): void => {
     this.machineryForm.get('laborId').patchValue(labor.id);
-    this.laborName = labor.name;
     this.laborCode = labor.code;
+    this.laborName = labor.name;
     this.filteredLabors = [];
   }
 
@@ -310,6 +308,7 @@ export class MachineryFormComponent implements OnInit {
         this.addMachinery(newMachineryCopied);
       }else {
         const editMachinery = this.buildEditMachinery();
+        console.log('editMachinery', editMachinery);
         this.updateMachinery(editMachinery);
       }
     } else {
@@ -328,8 +327,8 @@ export class MachineryFormComponent implements OnInit {
       companyId: this.companyId,
       reference: '',
       useId: 0,
-      costCenterCode: this.costCenterName,
-      costCenterName: this.costCenterCode,
+      costCenterCode: this.costCenterCode,
+      costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
       unitCode: this.unitCode,
@@ -346,12 +345,12 @@ export class MachineryFormComponent implements OnInit {
   private buildEditMachinery = (): Machinery => {
     return Object.assign({}, this.machineryForm.value, {
       id:  this.editMachinery.id,
-      tempId: this.editMachinery.tempId  ? this.editMachinery.tempId : this.tempId,
+      tempId: this.editMachinery.tempId ? this.editMachinery.tempId : this.tempId,
       companyId: this.editMachinery.companyId,
       reference: '',
       useId: 0,
-      costCenterCode: this.costCenterName,
-      costCenterName: this.costCenterCode,
+      costCenterCode: this.costCenterCode,
+      costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
       unitCode: this.unitCode,
@@ -373,8 +372,8 @@ export class MachineryFormComponent implements OnInit {
       companyId: this.editMachinery.companyId,
       reference: '',
       useId: 0,
-      costCenterCode: this.costCenterName,
-      costCenterName: this.costCenterCode,
+      costCenterCode: this.costCenterCode,
+      costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
       unitCode: this.unitCode,

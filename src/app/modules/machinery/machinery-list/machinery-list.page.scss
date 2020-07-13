@@ -5,3 +5,44 @@ ion-menu-button {
 ion-title {
   color: white;
 }
+
+.item-card {
+  --padding-end: 0;
+  --padding-start: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --inner-border-width: 0;
+  --inner-padding-bottom: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-top: 0;
+
+  ion-card {
+    width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 1px;
+    width: 100%;
+  }
+
+}
+
+
+.tally-card {
+  width: 100%;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 1px;
+}
+
+.no-padding-item {
+  --padding-end: 0;
+  --padding-start: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --inner-border-width: 0;
+  --inner-padding-bottom: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-top: 0;
+}

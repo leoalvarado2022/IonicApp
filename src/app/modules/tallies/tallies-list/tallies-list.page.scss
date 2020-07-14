@@ -6,14 +6,7 @@ ion-title {
   color: white;
 }
 
-.tally-card {
-  width: 100%;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 1px;
-}
-
-.no-padding-item {
+.item-card {
   --padding-end: 0;
   --padding-start: 0;
   --padding-top: 0;
@@ -23,4 +16,12 @@ ion-title {
   --inner-padding-end: 0;
   --inner-padding-start: 0;
   --inner-padding-top: 0;
+
+  ion-card {
+    width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 1px;
+    width: 100%;
+  }
 }

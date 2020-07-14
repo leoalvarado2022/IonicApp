@@ -26,10 +26,12 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <h2 class="ion-text-center" style="font-size: 20px">
-    Maquinaria
-    <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary">{{ filteredMachinery.length }}</ion-badge>
-  </h2>
+  <ion-item>
+    <ion-label>
+      <h2>Maquinaria</h2>
+    </ion-label>
+    <ion-badge slot="end"  color="primary">{{ filteredMachinery.length }}</ion-badge>
+  </ion-item>
 
   <!-- DAY SELECTOR -->
   <ion-item>

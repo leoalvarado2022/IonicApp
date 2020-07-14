@@ -11,7 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-      <ion-searchbar 
+      <ion-searchbar
         animated
         placeholder="Buscar..."
         showCancelButton="never"
@@ -21,25 +21,25 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>  
+<ion-content>
   <ion-refresher (ionRefresh)="reload($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- TRABAJADORES -->  
-  <h2 class="ion-text-center">
-    Trabajadores
-
-    <ion-badge class="quadrille-badge" color="primary">{{ filteredWorkers.length }}</ion-badge>
-  </h2>
+  <!-- TRABAJADORES -->
+  <ion-item>
+    <ion-label>
+      <h2>Trabajadores</h2>
+    </ion-label>
+    <ion-badge slot="end"  color="primary">{{ filteredWorkers.length }}</ion-badge>
+  </ion-item>
 
   <!-- DAY SELECTOR -->
   <ion-item>
     <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
       <ion-icon name="arrow-back" slot="start"></ion-icon>
     </ion-button>
-    <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat">
-    </ion-datetime>
+    <ion-input class="ion-text-center" [ngModel]="showDate" readonly></ion-input>
     <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
       <ion-icon name="arrow-forward" slot="end"></ion-icon>
     </ion-button>
@@ -51,20 +51,22 @@
 
   <ng-container *ngIf="!isLoading">
     <ion-virtual-scroll [items]="filteredWorkers" approxItemHeight="100px">
-      <div *virtualItem="let worker">
-        <ion-item (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" detail="true">
-          <ion-icon name="person" slot="start"></ion-icon>
-          <ion-label>
-            <h2>{{ worker.name | titlecase }}</h2>
-            <p class="label-padding">{{ worker.identifier | rut }}</p>
-            <p class="label-padding">
-              <ion-badge color="primary">
-                {{ getTotalWorkerWork(worker) | number }} JR
-              </ion-badge>
-            </p>
-          </ion-label>
+      <ion-card *virtualItem="let worker" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" style="margin-bottom: 5px">
+        <ion-item >
+          <ion-icon slot="start" name="person" color="primary"></ion-icon>
+          <ion-label class="ion-text-wrap">{{ worker.name | titlecase }}</ion-label>
+          <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
         </ion-item>
-      </div>
+
+        <ion-card-content>
+          <p> <strong>Identificador</strong>: {{ worker.identifier | rut }}</p>
+          <p style="padding-bottom: 15px">
+            <ion-badge class="ion-float-end" color="primary">
+              {{ getTotalWorkerWork(worker) | number }} JR
+            </ion-badge>
+          </p>
+        </ion-card-content>
+      </ion-card>
     </ion-virtual-scroll>
   </ng-container>
 

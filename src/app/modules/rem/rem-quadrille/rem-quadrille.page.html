@@ -26,10 +26,12 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <h2 class="ion-text-center" style="font-size: 20px">
-    Tus Cuadrillas
-    <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary">{{ filteredQuadrilles.length }}</ion-badge>
-  </h2>
+  <ion-item>
+    <ion-label>
+      <h2>Tus Cuadrillas</h2>
+    </ion-label>
+    <ion-badge slot="end"  color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+  </ion-item>
 
   <ng-container *ngIf="isLoading">
     <h1 class="ion-text-center">Cargando...</h1>
@@ -37,21 +39,20 @@
 
   <ng-container *ngIf="!isLoading">
     <ion-virtual-scroll [items]="filteredQuadrilles">
-      <div *virtualItem="let quadrille">
-        <ion-item (click)="goToWorkers(quadrille)" detail="true">
-          <ion-icon *ngIf="showBadge(quadrille.id) === 0" name="clipboard" slot="start"></ion-icon>
-          <ion-badge color="success" *ngIf="showBadge(quadrille.id) > 0" slot="start">{{ showBadge(quadrille.id) }}</ion-badge>
-          <ion-label>
-            <h2>{{ quadrille.name | titlecase }}</h2>
-            <p class="label-padding">{{ quadrille.responsibleName | titlecase }}</p>
-            <p class="label-padding">
-              <ion-badge color="primary">
-                {{ getQuadrilleWorkers(quadrille.id) }} Personas
-              </ion-badge>
-            </p>
-          </ion-label>
+      <ion-card *virtualItem="let quadrille" (click)="goToWorkers(quadrille)" button>
+        <ion-item>
+          <ion-badge slot="start">{{ quadrille.code | uppercase }}</ion-badge>
+          <ion-label>{{ quadrille.name | titlecase }}</ion-label>
+          <ion-badge  *ngIf="showBadge(quadrille.id) > 0" color="warning" slot="end">{{ showBadge(quadrille.id) }}</ion-badge>
         </ion-item>
-      </div>
+
+        <ion-card-content>
+          <p> <strong>Personas</strong>: {{ getQuadrilleWorkers(quadrille.id) }}</p>
+          <p>
+            <strong>Responsable</strong>: {{ quadrille.responsibleName | titlecase }}
+          </p>
+        </ion-card-content>
+      </ion-card>
     </ion-virtual-scroll>
   </ng-container>
 

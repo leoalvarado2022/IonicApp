@@ -165,8 +165,10 @@ export class MachineryListPage implements OnInit, OnDestroy {
       keyboardClose: false
     });
 
-    modal.onDidDismiss().then(() => {
-      this.minimunReload();
+    modal.onDidDismiss().then( (data: any) => {
+      if (data['data']) {
+        this.minimunReload();
+      }
     });
 
     return await modal.present();
@@ -196,9 +198,12 @@ export class MachineryListPage implements OnInit, OnDestroy {
       keyboardClose: false
     });
 
-    modal.onDidDismiss().then(() => {
+    modal.onDidDismiss().then( (data: any) => {
       slide.close();
-      this.minimunReload();
+
+      if (data['data']) {
+        this.minimunReload();
+      }
     });
 
     return await modal.present();
@@ -248,9 +253,12 @@ export class MachineryListPage implements OnInit, OnDestroy {
       keyboardClose: false
     });
 
-    modal.onDidDismiss().then(() => {
+    modal.onDidDismiss().then( (data: any) => {
       slide.close();
-      this.minimunReload();
+
+      if (data['data']) {
+        this.minimunReload();
+      }
     });
 
     return await modal.present();

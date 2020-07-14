@@ -51,6 +51,9 @@ export class MachineryFormComponent implements OnInit {
   public filteredWorkers: Array<any> = [];
   // Implements
   public filteredImplements: Array<any> = [];
+  public implementCode: string;
+  public implementName: string;
+  public showImplement: boolean = false;
 
   constructor(
     private modalController: ModalController,
@@ -80,14 +83,27 @@ export class MachineryFormComponent implements OnInit {
       const findMachineryCostCenter = this.machineryCostCenters.find(item => item.id === this.editMachinery.machineryCostCenterId);
       this.machineryName = findMachineryCostCenter.name;
 
-      // Load Implements
-      this.selectUnit(this.editMachinery.unitId);
-      this.showImplements(findMachineryCostCenter.machineryType);
+      // Implement
+      if (this.editMachinery.implementCostCenterId) {
+        const findImplement = this.implements.find(item => item.id === this.editMachinery.implementCostCenterId);
+        this.implementCode = findImplement.code;
+        this.implementName = findImplement.name;
+      }
+
+      // Labor
+      const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId)
+      this.laborCode = findLabor.code;
+      this.laborName = findLabor.name;
 
       // Trabajador
       const findWorker = this.workers.find(item => +item.id === this.editMachinery.workerId)
       this.workerName = findWorker.nombre;
 
+      // Load Implements
+      this.selectUnit(this.editMachinery.unitId);
+      this.showImplements(findMachineryCostCenter.machineryType);
+
+      // Get next ID
       this.getTempId();
 
       if (!this.isCopy) {
@@ -95,13 +111,7 @@ export class MachineryFormComponent implements OnInit {
         const findCostCenter = this.allCostCenters.find(item => item.id === this.editMachinery.costCenterId)
         this.costCenterCode = findCostCenter.code;
         this.costCenterName = findCostCenter.name;
-
-        // Labor
-        const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId)
-        this.laborCode = findLabor.code;
-        this.laborName = findLabor.name;
       }
-
     } else {
       this.machineryForm = this.formBuilder.group({
         costCenterId: ['', Validators.required],
@@ -128,9 +138,9 @@ export class MachineryFormComponent implements OnInit {
   /**
    * closeModal
    */
-  public closeModal = () => {
+  public closeModal = (status: boolean = false) => {
     this.machineryForm.reset();
-    this.modalController.dismiss();
+    this.modalController.dismiss(status);
   }
 
   /**
@@ -292,9 +302,9 @@ export class MachineryFormComponent implements OnInit {
    */
   private showImplements =  (machineryType: string) => {
     if ( machineryType.toLowerCase() === 'automata') { // machinery.machineryType === automata 'Ocultar implemento'
-      this.filteredImplements = [];
+      this.showImplement = false;
     } else if ( machineryType.toLowerCase() === 'maquinaria') { // machinery.machineryType === maquinaria 'Mostrart implemento'
-      this.filteredImplements = this.implements;
+      this.showImplement = true;
     }
   }
 
@@ -308,7 +318,6 @@ export class MachineryFormComponent implements OnInit {
         this.addMachinery(newMachineryCopied);
       }else {
         const editMachinery = this.buildEditMachinery();
-        console.log('editMachinery', editMachinery);
         this.updateMachinery(editMachinery);
       }
     } else {
@@ -390,7 +399,7 @@ export class MachineryFormComponent implements OnInit {
   private addMachinery = (data: Machinery) => {
     this.machineryService.addMachinery(data).then(() => {
       this.machineryService.increaseTempId().then(() => {
-        this.modalController.dismiss();
+        this.modalController.dismiss(true);
       });
     });
   }
@@ -401,8 +410,41 @@ export class MachineryFormComponent implements OnInit {
    */
   private updateMachinery = (data: Machinery) => {
     this.machineryService.updateMachinery(data).then(() => {
-      this.modalController.dismiss();
+      this.modalController.dismiss(true);
     });
+  }
+
+  /**
+   * searchImplement
+   * @param search
+   */
+  public searchImplement = (search: string): void => {
+    if (search) {
+      this.filteredImplements = this.implements.filter(item => item.code.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase()));
+    } else {
+      this.filteredImplements = [];
+    }
+  }
+
+  /**
+   * cleanImplementSearch
+   */
+  public cleanImplementSearch = (): void => {
+    this.machineryForm.get('implementCostCenterId').patchValue('');
+    this.filteredImplements = [];
+    this.implementCode = null;
+    this.implementName = null;
+  }
+
+  /**
+   * selectImplement
+   * @param implement
+   */
+  public selectImplement = (implement: any): void => {
+    this.machineryForm.get('implementCostCenterId').patchValue(implement.id);
+    this.implementCode = implement.code;
+    this.implementName = implement.name;
+    this.filteredImplements = [];
   }
 
 }

@@ -57,6 +57,9 @@
               <p> <strong>Labor:</strong> {{ machinery.laborName | titlecase }}</p>
               <p> <strong>Unidad:</strong> {{ machinery.unitName | titlecase }}</p>
               <p> <strong>Trabajador:</strong> {{ machinery.workerName | titlecase }}</p>
+              <p *ngIf="machinery.implementCostCenterName">
+                <strong>Implemento:</strong> {{ machinery.implementCostCenterName | titlecase }}
+              </p>
             </ion-card-content>
           </ion-card>
         </ion-item>

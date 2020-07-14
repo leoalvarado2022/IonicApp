@@ -2,9 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MachineryService } from '../services/machinery.service';
-import { StoreService } from 'src/app/shared/services/store/store.service';
 import { Machinery } from '../machinery.interface';
-import { MachineryModule } from '../machinery.module';
 
 @Component({
   selector: 'app-machinery-form',
@@ -53,6 +51,9 @@ export class MachineryFormComponent implements OnInit {
   public filteredWorkers: Array<any> = [];
   // Implements
   public filteredImplements: Array<any> = [];
+  public implementCode: string;
+  public implementName: string;
+  public showImplement: boolean = false;
 
   constructor(
     private modalController: ModalController,
@@ -64,7 +65,6 @@ export class MachineryFormComponent implements OnInit {
 
   ngOnInit() {
     if (this.editMachinery) {
-
       this.machineryForm = this.formBuilder.group({
         costCenterId: [ this.isCopy ? '' : this.editMachinery.costCenterId, Validators.required],
         laborId: [ this.isCopy ? '' : this.editMachinery.laborId, Validators.required],
@@ -83,26 +83,34 @@ export class MachineryFormComponent implements OnInit {
       const findMachineryCostCenter = this.machineryCostCenters.find(item => item.id === this.editMachinery.machineryCostCenterId);
       this.machineryName = findMachineryCostCenter.name;
 
-      // Load Implements
-      this.selectUnit(this.editMachinery.unitId);
-      this.showImplements(findMachineryCostCenter.machineryType);
+      // Implement
+      if (this.editMachinery.implementCostCenterId) {
+        const findImplement = this.implements.find(item => item.id === this.editMachinery.implementCostCenterId);
+        this.implementCode = findImplement.code;
+        this.implementName = findImplement.name;
+      }
+
+      // Labor
+      const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId)
+      this.laborCode = findLabor.code;
+      this.laborName = findLabor.name;
 
       // Trabajador
       const findWorker = this.workers.find(item => +item.id === this.editMachinery.workerId)
       this.workerName = findWorker.nombre;
 
+      // Load Implements
+      this.selectUnit(this.editMachinery.unitId);
+      this.showImplements(findMachineryCostCenter.machineryType);
+
+      // Get next ID
+      this.getTempId();
+
       if (!this.isCopy) {
         // Centros de costo
         const findCostCenter = this.allCostCenters.find(item => item.id === this.editMachinery.costCenterId)
-        this.costCenterName = findCostCenter.name;
         this.costCenterCode = findCostCenter.code;
-
-        // Labor
-        const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId)
-        this.laborName = findLabor.name;
-        this.laborCode = findLabor.code;
-      }else {
-        this.getTempId();
+        this.costCenterName = findCostCenter.name;
       }
     } else {
       this.machineryForm = this.formBuilder.group({
@@ -130,9 +138,9 @@ export class MachineryFormComponent implements OnInit {
   /**
    * closeModal
    */
-  public closeModal = () => {
+  public closeModal = (status: boolean = false) => {
     this.machineryForm.reset();
-    this.modalController.dismiss();
+    this.modalController.dismiss(status);
   }
 
   /**
@@ -228,8 +236,8 @@ export class MachineryFormComponent implements OnInit {
   public cleanLaborSearch = (): void => {
     this.machineryForm.get('laborId').patchValue('');
     this.filteredLabors = [];
-    this.laborName = null;
     this.laborCode = null;
+    this.laborName = null;
   }
 
   /**
@@ -238,8 +246,8 @@ export class MachineryFormComponent implements OnInit {
    */
   public selectLabor = (labor: any): void => {
     this.machineryForm.get('laborId').patchValue(labor.id);
-    this.laborName = labor.name;
     this.laborCode = labor.code;
+    this.laborName = labor.name;
     this.filteredLabors = [];
   }
 
@@ -294,9 +302,9 @@ export class MachineryFormComponent implements OnInit {
    */
   private showImplements =  (machineryType: string) => {
     if ( machineryType.toLowerCase() === 'automata') { // machinery.machineryType === automata 'Ocultar implemento'
-      this.filteredImplements = [];
+      this.showImplement = false;
     } else if ( machineryType.toLowerCase() === 'maquinaria') { // machinery.machineryType === maquinaria 'Mostrart implemento'
-      this.filteredImplements = this.implements;
+      this.showImplement = true;
     }
   }
 
@@ -328,8 +336,8 @@ export class MachineryFormComponent implements OnInit {
       companyId: this.companyId,
       reference: '',
       useId: 0,
-      costCenterCode: this.costCenterName,
-      costCenterName: this.costCenterCode,
+      costCenterCode: this.costCenterCode,
+      costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
       unitCode: this.unitCode,
@@ -346,12 +354,12 @@ export class MachineryFormComponent implements OnInit {
   private buildEditMachinery = (): Machinery => {
     return Object.assign({}, this.machineryForm.value, {
       id:  this.editMachinery.id,
-      tempId: this.editMachinery.tempId  ? this.editMachinery.tempId : this.tempId,
+      tempId: this.editMachinery.tempId ? this.editMachinery.tempId : this.tempId,
       companyId: this.editMachinery.companyId,
       reference: '',
       useId: 0,
-      costCenterCode: this.costCenterName,
-      costCenterName: this.costCenterCode,
+      costCenterCode: this.costCenterCode,
+      costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
       unitCode: this.unitCode,
@@ -373,8 +381,8 @@ export class MachineryFormComponent implements OnInit {
       companyId: this.editMachinery.companyId,
       reference: '',
       useId: 0,
-      costCenterCode: this.costCenterName,
-      costCenterName: this.costCenterCode,
+      costCenterCode: this.costCenterCode,
+      costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
       unitCode: this.unitCode,
@@ -391,7 +399,7 @@ export class MachineryFormComponent implements OnInit {
   private addMachinery = (data: Machinery) => {
     this.machineryService.addMachinery(data).then(() => {
       this.machineryService.increaseTempId().then(() => {
-        this.modalController.dismiss();
+        this.modalController.dismiss(true);
       });
     });
   }
@@ -402,8 +410,41 @@ export class MachineryFormComponent implements OnInit {
    */
   private updateMachinery = (data: Machinery) => {
     this.machineryService.updateMachinery(data).then(() => {
-      this.modalController.dismiss();
+      this.modalController.dismiss(true);
     });
+  }
+
+  /**
+   * searchImplement
+   * @param search
+   */
+  public searchImplement = (search: string): void => {
+    if (search) {
+      this.filteredImplements = this.implements.filter(item => item.code.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase()));
+    } else {
+      this.filteredImplements = [];
+    }
+  }
+
+  /**
+   * cleanImplementSearch
+   */
+  public cleanImplementSearch = (): void => {
+    this.machineryForm.get('implementCostCenterId').patchValue('');
+    this.filteredImplements = [];
+    this.implementCode = null;
+    this.implementName = null;
+  }
+
+  /**
+   * selectImplement
+   * @param implement
+   */
+  public selectImplement = (implement: any): void => {
+    this.machineryForm.get('implementCostCenterId').patchValue(implement.id);
+    this.implementCode = implement.code;
+    this.implementName = implement.name;
+    this.filteredImplements = [];
   }
 
 }

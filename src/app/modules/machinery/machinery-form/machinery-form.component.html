@@ -16,11 +16,11 @@
   <form [formGroup]="machineryForm">
     <!-- Machinery -->
     <ion-item>
-      <ion-label position="stacked">Maquinaria</ion-label>
+      <ion-label position="stacked">Maquina</ion-label>
       <ion-searchbar [value]="machineryName" (keyup)="searchMachinery($event.target.value)" (ionClear)="cleanMachinerySearch()" placeholder="Buscar"></ion-searchbar>
     </ion-item>
     <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('machineryCostCenterId').hasError('required')">
-      Seleccione una Maquinaria
+      Seleccione una Maquina
     </ion-text>
 
     <ion-list class="searchbar-results-list" *ngIf="filteredMachinery.length > 0">
@@ -30,34 +30,21 @@
     </ion-list>
 
     <!-- Implemento -->
-    <ng-container *ngIf="filteredImplements.length > 0">
+    <ng-container *ngIf="showImplement">
       <ion-item>
         <ion-label position="stacked">Implemento</ion-label>
-        <ion-select formControlName="implementCostCenterId" placeholder="Implemento" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let implement of filteredImplements" [value]="implement.id">
-            {{ implement.name | titlecase }}
-          </ion-select-option>
-        </ion-select>
+        <ion-searchbar [value]="implementName" (keyup)="searchImplement($event.target.value)" (ionClear)="cleanImplementSearch()" placeholder="Buscar"></ion-searchbar>
       </ion-item>
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('implementCostCenterId').dirty && machineryForm.get('implementCostCenterId').hasError('required')">
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('implementCostCenterId').hasError('required')">
         Seleccione un Implemento
       </ion-text>
+
+      <ion-list class="searchbar-results-list" *ngIf="filteredImplements.length > 0">
+        <ion-item *ngFor="let implement of filteredImplements" (click)="selectImplement(implement)">
+          {{ implement.name | titlecase  }}
+        </ion-item>
+      </ion-list>
     </ng-container>
-
-    <!-- COST CENTER -->
-    <ion-item>
-      <ion-label position="stacked">Centro de Costo</ion-label>
-      <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
-    </ion-item>
-    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('costCenterId').hasError('required')">
-      Seleccione un Centro de Costo
-    </ion-text>
-
-    <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
-      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
-        {{ costCenter.name | titlecase  }}
-      </ion-item>
-    </ion-list>
 
     <!-- LABOR -->
     <ion-item>
@@ -89,11 +76,20 @@
       </ion-item>
     </ion-list>
 
-    <!-- Cantidad -->
+    <!-- COST CENTER -->
     <ion-item>
-      <ion-label position="stacked">Unidad</ion-label>
-      <ion-input disabled="true" [value]="unitName"></ion-input>
+      <ion-label position="stacked">Centro de Costo</ion-label>
+      <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
     </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('costCenterId').hasError('required')">
+      Seleccione un Centro de Costo
+    </ion-text>
+
+    <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
+      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
+        {{ costCenter.name | titlecase  }}
+      </ion-item>
+    </ion-list>
 
     <!-- Cantidad -->
     <ion-item>
@@ -112,6 +108,11 @@
       </ion-text>
     </ng-container>
 
+    <!-- Unidad -->
+    <ion-item>
+      <ion-label position="stacked">Unidad</ion-label>
+      <ion-input readonly="true" [value]="unitName"></ion-input>
+    </ion-item>
   </form>
 </ion-content>
 

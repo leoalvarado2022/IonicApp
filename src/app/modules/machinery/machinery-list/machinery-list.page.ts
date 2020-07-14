@@ -38,6 +38,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
   // Dates
   public readonly originalDate: any;
   public currentDate: any;
+  public showDate: any;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
 
@@ -52,6 +53,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
   ) {
 
     this.currentDate = moment().format('YYYY-MM-DD');
+    this.showDate = moment(this.currentDate).format(this.dateFormat);
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
@@ -163,8 +165,10 @@ export class MachineryListPage implements OnInit, OnDestroy {
       keyboardClose: false
     });
 
-    modal.onDidDismiss().then(() => {
-      this.minimunReload();
+    modal.onDidDismiss().then( (data: any) => {
+      if (data['data']) {
+        this.minimunReload();
+      }
     });
 
     return await modal.present();
@@ -194,9 +198,12 @@ export class MachineryListPage implements OnInit, OnDestroy {
       keyboardClose: false
     });
 
-    modal.onDidDismiss().then(() => {
+    modal.onDidDismiss().then( (data: any) => {
       slide.close();
-      this.minimunReload();
+
+      if (data['data']) {
+        this.minimunReload();
+      }
     });
 
     return await modal.present();
@@ -246,9 +253,12 @@ export class MachineryListPage implements OnInit, OnDestroy {
       keyboardClose: false
     });
 
-    modal.onDidDismiss().then(() => {
+    modal.onDidDismiss().then( (data: any) => {
       slide.close();
-      this.minimunReload();
+
+      if (data['data']) {
+        this.minimunReload();
+      }
     });
 
     return await modal.present();
@@ -260,6 +270,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
   public subtractDayToDate = (): void => {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.minimunReload();
     }
   }
@@ -270,6 +281,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
   public addDayToDate = (): void => {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
+      this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.minimunReload();
     }
   }

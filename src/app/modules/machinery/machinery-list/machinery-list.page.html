@@ -26,18 +26,19 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <h2 class="ion-text-center" style="font-size: 20px">
-    Maquinaria
-    <ion-badge class="quadrille-badge" style="font-size: 14px" color="primary">{{ filteredMachinery.length }}</ion-badge>
-  </h2>
+  <ion-item>
+    <ion-label>
+      <h2>Maquinaria</h2>
+    </ion-label>
+    <ion-badge slot="end"  color="primary">{{ filteredMachinery.length }}</ion-badge>
+  </ion-item>
 
   <!-- DAY SELECTOR -->
   <ion-item>
     <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
       <ion-icon name="arrow-back" slot="start"></ion-icon>
     </ion-button>
-    <ion-datetime [(ngModel)]="currentDate" [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat">
-    </ion-datetime>
+    <ion-input class="ion-text-center" [ngModel]="showDate" readonly></ion-input>
     <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
       <ion-icon name="arrow-forward" slot="end"></ion-icon>
     </ion-button>
@@ -45,43 +46,38 @@
 
   <ng-container *ngIf="!isLoading; else loading">
     <ion-virtual-scroll [items]="filteredMachinery">
-      <div *virtualItem="let machinery">
-        <ion-item-sliding #slide *ngIf="machinery.id > -1">
-          <ion-item>
-            <ion-label>
-              <ion-row>
-                <ion-col>
-                  <div class="ion-text-start">
-                    <ion-badge>{{ machinery.costCenterCode | uppercase }}</ion-badge>
-                  </div>
-                </ion-col>
-                <ion-col>
-                  <div class="ion-text-end" *ngIf="machinery.tempId">
-                    <ion-badge color="danger">Pendiente</ion-badge>
-                  </div>
-                </ion-col>
-              </ion-row>
+      <ion-item-sliding #slide *virtualItem="let machinery">
+        <ion-item class="item-card">
+          <ion-card>
+            <ion-item>
+              <ion-badge slot="start">{{ machinery.costCenterCode | uppercase }}</ion-badge>
+              <ion-label>{{ machinery.costCenterName | titlecase }}</ion-label>
+              <ion-icon *ngIf="machinery.tempId" name="server" slot="end" color="danger"></ion-icon>
+            </ion-item>
 
-              <h2>{{ machinery.costCenterName | titlecase }}</h2>
-              <p>{{ machinery.laborName | titlecase }}</p>
-              <p>{{ machinery.unitName | titlecase }}</p>
-              <p>{{ machinery.workerName | titlecase }}</p>
-            </ion-label>
-          </ion-item>
+            <ion-card-content>
+              <p> <strong>Labor:</strong> {{ machinery.laborName | titlecase }}</p>
+              <p> <strong>Unidad:</strong> {{ machinery.unitName | titlecase }}</p>
+              <p> <strong>Trabajador:</strong> {{ machinery.workerName | titlecase }}</p>
+              <p *ngIf="machinery.implementCostCenterName">
+                <strong>Implemento:</strong> {{ machinery.implementCostCenterName | titlecase }}
+              </p>
+            </ion-card-content>
+          </ion-card>
+        </ion-item>
 
-          <ion-item-options side="end">
-            <ion-item-option color="primary" (click)="copyMachinery(machinery, slide)" expandable="true">
-              <ion-icon slot="icon-only" name="copy"></ion-icon>
-            </ion-item-option>
-            <ion-item-option color="warning" (click)="editMachinery(machinery, slide)">
-              <ion-icon slot="icon-only" name="pencil"></ion-icon>
-            </ion-item-option>
-            <ion-item-option color="danger" (click)="deleteMachinery(machinery, slide)">
-              <ion-icon slot="icon-only" name="trash"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      </div>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="copyMachinery(machinery, slide)" expandable="true">
+            <ion-icon slot="icon-only" name="copy"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="warning" (click)="editMachinery(machinery, slide)">
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="deleteMachinery(machinery, slide)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
     </ion-virtual-scroll>
   </ng-container>
 

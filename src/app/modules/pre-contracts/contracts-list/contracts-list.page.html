@@ -26,10 +26,12 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <h2 class="ion-text-center">
-    Pre-Contratos
-    <ion-badge class="quadrille-badge" color="primary">{{ filteredContracts.length }}</ion-badge>
-  </h2>
+  <ion-item>
+    <ion-label>
+      <h2>Pre-Contratos</h2>
+    </ion-label>
+    <ion-badge slot="end"  color="primary">{{ filteredContracts.length }}</ion-badge>
+  </ion-item>
 
   <ng-container *ngIf="isLoading">
     <h1 class="ion-text-center">Cargando...</h1>

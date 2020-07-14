@@ -1,29 +1,21 @@
-<ng-container *ngIf="costCenter">
-  <ion-card (click)="showDetails()" [disabled]="!isOnline" [routerDirection]="'forward'" button="true" class="cost-center-size">
-    <ion-card-header>
-      <ion-card-subtitle><span class="code-const-center">{{ costCenter.code }}</span> <span class="ion-float-right"># {{ costCenter.contractDocumentNumber }}</span></ion-card-subtitle>
-      <ion-card-title>{{ costCenter.name }}</ion-card-title>
-    </ion-card-header>
+<ion-card [disabled]="!isOnline" (click)="showDetails()">
+  <ion-item>
+    <ion-badge slot="start" color="primary">{{ costCenter.code | uppercase }}</ion-badge>
+    <ion-label>
+      {{ costCenter.name }}
+    </ion-label>
+    <ion-badge slot="end" color="primary"># {{ costCenter.contractDocumentNumber }}</ion-badge>
+  </ion-item>
 
-    <ion-card-content>
-      <div>
-        <p class="production-name">
-          {{ costCenter.producerName }}
-        </p>
-        <p>
-          {{ costCenter.speciesName }} <strong>/</strong> {{ costCenter.varietyName }}
-        </p>
-        <p *ngIf="costCenter.contractResponsible" class="production-name">
-          {{ costCenter.contractResponsible }}
-        </p>
-        <div class="bottom-info">
-          <span class="bottom__date">Fecha Inicio Cosecha: {{ costCenter.harvestDate | customDate }}</span>
-          <span class="bottom__icon">
-            <ion-icon color="success" name="clipboard"></ion-icon>&nbsp;<span>{{ costCenter.contractsNumber }}</span>
-          </span>
-        </div>
+  <ion-card-content>
+    <p>{{ costCenter.producerName }}</p>
+    <p> {{ costCenter.speciesName }} <strong>/</strong> {{ costCenter.varietyName }}</p>
+    <p *ngIf="costCenter.contractResponsible">{{ costCenter.contractResponsible }}</p>
+    <p class="bottom__date"> <strong>Fecha Inicio Cosecha</strong>: {{ costCenter.harvestDate | customDate }}</p>
 
-      </div>
-    </ion-card-content>
-  </ion-card>
-</ng-container>
+    <ion-chip class="ion-float-end">
+      <ion-icon name="clipboard" color="success"></ion-icon>
+      <ion-label>{{ costCenter.contractsNumber }}</ion-label>
+    </ion-chip>
+  </ion-card-content>
+</ion-card>

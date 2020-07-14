@@ -9,4 +9,9 @@ ion-title {
 .workerSelected {
   --background: var(--ion-color-medium);
   --color: var(--ion-color-light);
+
+  ion-item {
+    --background: var(--ion-color-medium);
+    --color: var(--ion-color-light);
+  }
 }

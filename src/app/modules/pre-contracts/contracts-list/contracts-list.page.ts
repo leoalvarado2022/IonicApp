@@ -5,10 +5,8 @@ import {ContractListItem} from '../contract-interfaces';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {Subscription} from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
-import { NumericOrderPipe } from 'src/app/shared/pipes/numeric-order/numeric-order.pipe';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
-import { StepNames } from 'src/app/services/storage/step-names';
 
 @Component({
   selector: 'app-contracts-list',
@@ -30,7 +28,6 @@ export class ContractsListPage implements OnInit, OnDestroy {
     private contractsService: ContractsService,
     private httpService: HttpService,
     private alertService: AlertService,
-    private numericOrderPipe: NumericOrderPipe,
     private storageSyncService: StorageSyncService,
     private stepperService: StepperService
   ) {
@@ -129,7 +126,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * @param data
    */
   public deleteContract = async (data: any): Promise<void> => {
-    const {contract, slide} = data;    
+    const {contract, slide} = data;
     slide.close();
 
     const sayYes = await this.alertService.confirmAlert('Seguro que desea borrar este pre-contrato?');

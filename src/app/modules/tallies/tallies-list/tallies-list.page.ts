@@ -6,7 +6,6 @@ import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync
 import { Tally } from '../tally.interface';
 import { CostCenterList } from '@primetec/primetec-angular';
 import { Subscription } from 'rxjs';
-import { StepNames } from 'src/app/services/storage/step-names';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import * as moment from 'moment';
 import { ModalController, IonItemSliding } from '@ionic/angular';
@@ -329,7 +328,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
     this.isLoading = true;
 
     this.currentDate = this.activatedRoute.snapshot.paramMap.get('date');
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
+  const id = this.activatedRoute.snapshot.paramMap.get('id');
 
     Promise.all([
       this.tallySyncService.getWorkerSyncedTallies(+id),
@@ -350,6 +349,11 @@ export class TalliesListPage implements OnInit, OnDestroy {
       this.isLoading = false;
     });
 
+  }
+
+  public showNote(noteSpan: HTMLElement) {
+    const status = noteSpan.hidden ? !noteSpan.hidden : true;
+    noteSpan.hidden = status;
   }
 
 }

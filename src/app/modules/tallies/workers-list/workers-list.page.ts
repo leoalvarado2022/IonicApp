@@ -31,6 +31,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
   // Dates
   public readonly originalDate: any;
   public currentDate: any;
+  public showDate: any;
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
 
@@ -58,6 +59,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.currentDate = moment().format('YYYY-MM-DD');
+    this.showDate = moment(this.currentDate).format(this.dateFormat);
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
@@ -147,6 +149,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
   public addDayToDate = (): void => {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
+      this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.selectedWorkers = [];
     }
   }
@@ -157,6 +160,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
   public subtractDayToDate = (): void => {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.selectedWorkers = [];
     }
   }

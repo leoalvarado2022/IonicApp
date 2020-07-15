@@ -28,7 +28,6 @@ export class TratosListPage {
   }
 
   ionViewWillEnter() {
-    console.log('tratos-list.ionViewWillEnter',);
     this.loadData();
   }
 
@@ -179,13 +178,13 @@ export class TratosListPage {
    */
   activeTrato = async () => {
     const deals = await this._DealService.getDeals();
+
     const modal = await this.modalController.create({
       component: AddTratoPage,
       componentProps: {deals}
     });
 
     modal.onDidDismiss().then((data) => {
-      console.log(data, 'data.onDidDismiss');
       this.loadData();
     });
 

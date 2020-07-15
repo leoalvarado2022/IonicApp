@@ -67,7 +67,7 @@ export class MachineryFormComponent implements OnInit {
     if (this.editMachinery) {
       this.machineryForm = this.formBuilder.group({
         costCenterId: [ this.isCopy ? '' : this.editMachinery.costCenterId, Validators.required],
-        laborId: [ this.isCopy ? '' : this.editMachinery.laborId, Validators.required],
+        laborId: [ this.editMachinery.laborId, Validators.required],
         unitId: [this.editMachinery.unitId, Validators.required],
         workerId: [this.editMachinery.workerId, Validators.required],
         machineryCostCenterId: [this.editMachinery.machineryCostCenterId, Validators.required],

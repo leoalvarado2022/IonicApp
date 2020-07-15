@@ -79,16 +79,15 @@ export class DealsService {
    */
   public getDeals = (): Promise<any> => {
     return this._StorageSyncService.getDeals().then(deals => {
-      if (!deals || !deals || !deals.length) {
-        return [];
-      }
+
       const list = deals.filter(value => {
-        const vigente = moment().isBetween(moment.utc(value.date_init), moment.utc(value.date_end), null, '[]');
-        return vigente;
+        const startDate = moment.utc(value.date_init);
+        const endDate =  moment.utc(value.date_end);
+
+        return moment().isBetween(startDate, endDate);
       });
 
-      const groups = this.groupBy(list, (item) => item.id);
-
+      const groups = this.groupBy(list, item => item.id);
       const response = [];
 
       groups.forEach((valor, clave, map) => {

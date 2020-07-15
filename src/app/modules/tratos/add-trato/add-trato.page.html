@@ -23,15 +23,15 @@
               <ion-row>
                 <ion-col size="12">
                   <ion-item style="width: 100%;">
-                    <ion-label position="floating">Elegir tratos</ion-label>
+                    <ion-label position="floating">Elegir trato</ion-label>
                     <ion-select formControlName="id" interface="action-sheet" (ionChange)="change($event)">
-                      <ion-select-option [value]="deal.id"
-                                         *ngFor="let deal of deals">{{deal.name_deal}}</ion-select-option>
+                      <ion-select-option *ngFor="let deal of deals" [value]="deal.id" >{{deal.name_deal}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                   <ng-container *ngIf="activeForm.get('id').errors && !activeForm.invalid">
-                    <span *ngIf="activeForm.get('id').hasError('required')"
-                          style="color: red">Debe elegir un trato.</span>
+                    <span *ngIf="activeForm.get('id').hasError('required')" style="color: red">
+                      Debe elegir un trato
+                    </span>
                   </ng-container>
                 </ion-col>
               </ion-row>

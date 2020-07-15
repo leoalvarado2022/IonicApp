@@ -83,30 +83,12 @@ export class AddCenterCostPage implements OnInit {
   };
 
   /**
-   * @description lista de centro de costo agrupado por trato
-   * @param deal
-   */
-  listCenterCosts(deal: any) {
-    this._storeSync.getCostCentersCustom().then(( costCentersCustom: Array<any>) => {
-       const filtered =  costCentersCustom.filter(item => {
-        return deal.allCostCenters || item.id === deal.id_costCenter;
-      });
-
-      console.log('filtered', filtered);
-      console.log('deal', deal);
-    });
-
-    return [];
-  }
-
-  /**
    * @description logica para enviar a escaneo
    */
   sendScanned() {
     const scanned = Object.assign({}, this.centerForm.value);
     scanned.currentDate = this.currentDate;
     scanned.center_cost = this.listCenterCost.find(value => value.id === scanned.center_cost_id);
-
 
     this._dealService.setDataScanned(scanned);
     this._router.navigate(['home-page/tarja_tratos/deal-scanned']);

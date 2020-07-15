@@ -28,7 +28,6 @@ export class TratosListPage {
   }
 
   ionViewWillEnter() {
-    console.log('tratos-list.ionViewWillEnter',);
     this.loadData();
   }
 

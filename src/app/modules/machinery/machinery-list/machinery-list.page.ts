@@ -21,6 +21,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
 
   private machinery: Array<Machinery> = [];
   private machineryToRecord: Array<Machinery> = [];
+  private originalMachinery: Array<Machinery> = [];
   public filteredMachinery: Array<Machinery> = [];
 
   private machineryCostCenters: Array<any> = [];
@@ -95,6 +96,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
     ]).then( (data: Array<any>) => {
       this.units = units;
 
+      this.originalMachinery = [...data[0]];
       this.filteredMachinery = [...data[0]];
       this.labors = data[1];
       this.workers = data[2]['data']; //  HTTP
@@ -122,18 +124,20 @@ export class MachineryListPage implements OnInit, OnDestroy {
    * @param search
    */
   public searchMachinery = (search: string): void => {
+
     if (search) {
-      this.filteredMachinery = [ ...this.machineryToRecord, ...this.machinery].filter(item => {
+      this.filteredMachinery = this.originalMachinery.filter(item => {
         return (
           item.costCenterCode.toLowerCase().includes(search.toLowerCase()) ||
           item.costCenterName.toLowerCase().includes(search.toLowerCase()) ||
           item.laborName.toLowerCase().includes(search.toLowerCase()) ||
           item.unitName.toLowerCase().includes(search.toLowerCase()) ||
-          item.workerName.toLowerCase().includes(search.toLowerCase())
+          item.workerName.toLowerCase().includes(search.toLowerCase()) ||
+          (item.implementCostCenterName && item.implementCostCenterName.toLowerCase().includes(search.toLowerCase()))
         );
       });
     } else {
-      this.filteredMachinery = [ ...this.machineryToRecord, ...this.machinery];
+      this.filteredMachinery = [ ...this.originalMachinery];
     }
   }
 
@@ -298,6 +302,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
 
       this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5))
         .then( (machinery: Array<Machinery>) => {
+          this.originalMachinery = [...machinery];
           this.filteredMachinery = [...machinery];
           this.isLoading = false;
         });

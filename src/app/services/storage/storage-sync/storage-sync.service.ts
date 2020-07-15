@@ -195,12 +195,21 @@ export class StorageSyncService {
    * @param deal
    */
   public getCostCentersCustomByDeal = (deal: any): Promise<Array<any>> => {
-    return this.getCostCentersCustom().then( (costCentersCustom: Array<any>) => {
+    return Promise.all([
+      this.getCostCentersCustom(),
+      this.getDeals()
+    ]).then( (data: Array<any>) => {
+      const costCentersCustom: Array<any> = data[0];
+      const deals: Array<any> = data[1];
+
       if (deal.allCostCenters) {
         return costCentersCustom;
       } else {
+        // FILTRAR LOS TRATOS POR ID Y TOMAR LOS IDS DE LOS CENTROS DE COSTO
+        const validCostCenters = deals.filter(item => item.id === deal.id).map(item => item.id_costCenter);
+
         return costCentersCustom.filter(item => {
-          return  item.id === deal.id_costCenter;
+          return validCostCenters.includes(item.id);
         });
       }
     });

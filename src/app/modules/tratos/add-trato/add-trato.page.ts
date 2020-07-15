@@ -14,17 +14,20 @@ import {DealsService} from '../services/deals/deals.service';
 export class AddTratoPage implements OnInit {
 
   @Input() deals: any;
+
   public activeForm: FormGroup;
 
-  constructor(public modalController: ModalController,
-              private formBuilder: FormBuilder,
-              private _storeService: StoreService,
-              private _dealService: DealsService) {
+  constructor(
+    public modalController: ModalController,
+    private formBuilder: FormBuilder,
+    private _storeService: StoreService,
+    private _dealService: DealsService
+  ) {
+
   }
 
 
   ngOnInit() {
-    // console.log(this.deals, 'deal modal');
     this.activeForm = this.formBuilder.group({
       id: ['', Validators.required],
       option: ['', Validators.required],
@@ -99,7 +102,6 @@ export class AddTratoPage implements OnInit {
    * @param event
    */
   public change(event: any) {
-
     const deal = this.deals.find(data => data.id === event.target.value);
 
     if (deal) {

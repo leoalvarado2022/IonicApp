@@ -191,6 +191,22 @@ export class StorageSyncService {
   }
 
   /**
+   * getCostCentersCustomByDeal
+   * @param deal
+   */
+  public getCostCentersCustomByDeal = (deal: any): Promise<Array<any>> => {
+    return this.getCostCentersCustom().then( (costCentersCustom: Array<any>) => {
+      if (deal.allCostCenters) {
+        return costCentersCustom;
+      } else {
+        return costCentersCustom.filter(item => {
+          return  item.id === deal.id_costCenter;
+        });
+      }
+    });
+  }
+
+  /**
    * setLabors
    */
   private setLabors = (labors: Array<any>): Promise<Array<any>> => {

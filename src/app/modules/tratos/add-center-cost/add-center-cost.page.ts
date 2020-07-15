@@ -37,7 +37,8 @@ export class AddCenterCostPage implements OnInit {
 
   ngOnInit() {
     this.deal = this._dealService.getDealLocal();
-    this.listCenterCost = this.listCenterCosts(this.deal);
+    //this.listCenterCost = this.listCenterCosts(this.deal);
+    this._storeSync.getCostCentersCustomByDeal(this.deal).then( data => this.listCenterCost = data);
 
     if (this.deal.count || this.deal.weight) {
       this.centerForm = this.formBuilder.group({
@@ -85,28 +86,17 @@ export class AddCenterCostPage implements OnInit {
    * @description lista de centro de costo agrupado por trato
    * @param deal
    */
-  listCenterCosts(deal) {
-    let response = [];
-    Promise.all([
-      this._storeSync.getDeals(),
-      this._storeSync.getCostCentersCustom()
-    ]).then((data) => {
-
-      let list = data[0].filter((res: any) => {
-        return res.id === deal.id;
+  listCenterCosts(deal: any) {
+    this._storeSync.getCostCentersCustom().then(( costCentersCustom: Array<any>) => {
+       const filtered =  costCentersCustom.filter(item => {
+        return deal.allCostCenters || item.id === deal.id_costCenter;
       });
-      for (const obj of list) {
-        if (obj.id_costCenter !== null) {
-          const exist = data[1].find(value => value.id === obj.id_costCenter);
-          if (exist && !response.find(value => value.id === exist.id)) {
-            response.push(exist);
-          }
-        }
-      }
 
+      console.log('filtered', filtered);
+      console.log('deal', deal);
     });
 
-    return response;
+    return [];
   }
 
   /**

@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
-import {StoreService} from '../../../shared/services/store/store.service';
 import {DealsService} from '../services/deals/deals.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalController} from '@ionic/angular';
 import {Router} from '@angular/router';
 
 @Component({
@@ -17,18 +15,23 @@ export class AddCenterCostPage implements OnInit {
   // Form dates
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
+
   public currentDate: any;
+  public showDate: any;
+
   public readonly originalDate: any;
   public listCenterCost: any;
   public deal: any;
   public centerForm: FormGroup;
 
-  constructor(private _storeSync: StorageSyncService,
-              private _dealService: DealsService,
-              private formBuilder: FormBuilder,
-              private _modalController: ModalController,
-              private _router: Router) {
+  constructor(
+    private _storeSync: StorageSyncService,
+    private _dealService: DealsService,
+    private formBuilder: FormBuilder,
+    private _router: Router
+  ) {
     this.currentDate = moment().format('YYYY-MM-DD');
+    this.showDate = moment(this.currentDate).format(this.dateFormat);
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
@@ -41,7 +44,7 @@ export class AddCenterCostPage implements OnInit {
         deal: this.deal,
         center_cost_id: ['', Validators.required],
         unit_control_count: ['', Validators.required],
-        currentDate: ['2020-06-03', Validators.required],
+        currentDate: [this.currentDate, Validators.required],
         automatic: true
       });
     } else {
@@ -49,7 +52,7 @@ export class AddCenterCostPage implements OnInit {
         deal: this.deal,
         center_cost_id: ['', Validators.required],
         unit_control_count: [0],
-        currentDate: ['2020-06-03', Validators.required],
+        currentDate: [this.currentDate, Validators.required],
         automatic: true
       });
     }
@@ -62,6 +65,8 @@ export class AddCenterCostPage implements OnInit {
   public subtractDayToDate = (): void => {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.showDate = moment(this.currentDate).format(this.dateFormat);
+      this.centerForm.get('currentDate').patchValue(this.currentDate);
     }
   };
 
@@ -71,6 +76,8 @@ export class AddCenterCostPage implements OnInit {
   public addDayToDate = (): void => {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
+      this.showDate = moment(this.currentDate).format(this.dateFormat);
+      this.centerForm.get('currentDate').patchValue(this.currentDate);
     }
   };
 
@@ -114,6 +121,5 @@ export class AddCenterCostPage implements OnInit {
     this._dealService.setDataScanned(scanned);
     this._router.navigate(['home-page/tarja_tratos/deal-scanned']);
   }
-
 
 }

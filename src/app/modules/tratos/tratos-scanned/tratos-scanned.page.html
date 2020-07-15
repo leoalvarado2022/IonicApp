@@ -66,26 +66,18 @@
       </ion-grid>
     </ion-card-content>
   </ion-card>
+
   <ion-list class="ion-list-worker">
     <ion-card *ngFor="let worker of workersSuccess" class="ion-card-worker">
-      <ion-card-content style="padding: 0;">
-        <ion-item>
-          <ion-grid>
-            <ion-row>
-              <ion-col size="2">
-                <img src="assets/imgs/contract/worker-icon.png" style="width: 60%">
-              </ion-col>
-              <ion-col size="8" style="text-align: left;">
-                <div class="title-row-scanned">{{worker.name}}</div>
-              </ion-col>
-              <ion-col size="2">
-                <span>{{worker.count | number:'1.0-3'}}</span>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
-      </ion-card-content>
+      <ion-item>
+        <ion-avatar slot="start">
+          <img src="assets/imgs/contract/worker-icon.png">
+        </ion-avatar>
+        <ion-label>
+          {{ worker.name | titlecase }}
+        </ion-label>
+        <ion-badge slot="end" color="default">{{ worker.count }}</ion-badge>
+      </ion-item>
     </ion-card>
   </ion-list>
-
 </ion-content>

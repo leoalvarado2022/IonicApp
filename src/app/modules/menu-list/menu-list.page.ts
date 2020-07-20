@@ -113,4 +113,13 @@ export class MenuListPage implements OnInit, OnDestroy {
     return 0;
   }
 
+
+  /**
+   * getIconUrl
+   * @param url
+   */
+  public getIconUrl = (url: string): string => {
+    return `/assets/svg_icons/${url}.svg`;
+  }
+
 }

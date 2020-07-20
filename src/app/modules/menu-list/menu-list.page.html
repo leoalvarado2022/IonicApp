@@ -16,16 +16,17 @@
 
   <ng-container *ngIf="(stepperService.getStepper() | async)?.length > 0 ; else render">
     <ion-list lines="none">
-      <ion-item *ngFor="let step of stepperService.getStepper() | async; let i = index">      
+      <ion-item *ngFor="let step of stepperService.getStepper() | async; let i = index">
         <ion-icon [color]="step['index'] < i ? 'success': 'warning'"  slot="start" name="checkmark-circle"></ion-icon>
-        <ion-label>{{ step['name'] }}</ion-label>         
-      </ion-item>      
+        <ion-label>{{ step['name'] }}</ion-label>
+      </ion-item>
     </ion-list>
   </ng-container>
 
+  <!--
   <ng-template #render>
-    <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>  
-  
+    <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
+
     <div *ngFor="let menu of menus; let i = index" class="card-menu-item">
       <div
         (click)="navigate(menu)"
@@ -40,6 +41,51 @@
         </div>
       </div>
     </div>
+  </ng-template>
+  -->
+
+  <ng-template #render>
+    <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
+
+    <ion-row>
+      <ion-col *ngFor="let menu of menus; let i = index" size="6">
+        <ion-card class="item-card" (click)="navigate(menu)">
+          <ion-card-content>
+            <p class="ion-text-center">
+              <ion-icon [src]="getIconUrl(menu.icon_url)" style="font-size: 64px"></ion-icon>
+              <ion-badge *ngIf="showBadge(menu) > 0" class="menu-bagde">{{ showBadge(menu) }}</ion-badge>
+            </p>
+            <p class="ion-text-center">
+              <strong>{{ menu.caption | titlecase }}  </strong>
+            </p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+
+
+        <!--
+          <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" style="font-size: 64px"></ion-icon>
+        <div  class="card-menu-item">
+          <div
+            (click)="navigate(menu)"
+            [ngClass]="{ 'disabled': checkDisabled(menu) }"
+            class="ion-text-center card-menu row-menu">
+            <div>
+              <ion-icon [color]="menu.icon_color" [name]="menu.icon_url" class="icon-size"></ion-icon>
+              <ion-badge *ngIf="showBadge(menu) > 0" class="menu-bagde">{{ showBadge(menu) }}</ion-badge>
+              <p class="title-menu ion-text-capitalize">
+                {{ menu.caption }}
+              </p>
+            </div>
+          </div>
+        </div>
+        -->
+    </ion-row>
+
+
+
+
   </ng-template>
 
 </ion-content>

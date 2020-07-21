@@ -1,17 +1,23 @@
-<ion-card class="ticket-detail-item">
-  <div class="reasignado" *ngIf="detail.active_assigned">
-    <p>Asignado: {{ detail.assignedName }}</p>
-    <p>Resignado: {{ detail.creatorName }}</p>
-  </div>
-  <ion-item *ngIf="!detail.active_assigned">
-    <ion-label style="font-size: 12px;font-weight: bold;">
-      {{ detail.creatorName }} <br>
-      Asignado: {{ detail.assignedName }} <br>
-      <span style="color: grey;font-size: 10px;">{{detail.create}}</span>
+<ion-card class="card-item">
+  <ion-item *ngIf="detail.active_assigned" class="reasignado" lines="full">
+    <ion-label>
+      <p>Asignado: {{ detail.assignedName }}</p>
+      <p>Resignado: {{ detail.creatorName }}</p>
     </ion-label>
-    <ion-icon color="primary" name="lock-open" slot="end" *ngIf="detail.public"></ion-icon>
-    <ion-icon color="primary" name="lock-closed" slot="end" *ngIf="!detail.public"></ion-icon>
   </ion-item>
+
+  <ion-item *ngIf="!detail.active_assigned" lines="full">
+    <ion-label style="font-size: 12px;font-weight: bold;">
+      <p>{{ detail.creatorName }}</p>
+      <p>Asignado: {{ detail.assignedName }}</p>
+      <p>
+        <span style="color: grey;font-size: 10px;">{{detail.create}}</span>
+      </p>
+    </ion-label>
+    <ion-icon color="primary" name="lock-open" slot="start" *ngIf="detail.public"></ion-icon>
+    <ion-icon color="primary" name="lock-closed" slot="start" *ngIf="!detail.public"></ion-icon>
+  </ion-item>
+
   <ion-card-content>
     <p *ngIf="detail.priorityChange" style="color: grey;font-size: 12px;"><span >Prioridad:</span> {{ detail.priority }}</p>
     <p *ngIf="detail.stateChange" style="color: grey;font-size: 12px;"><strong>Estado:</strong> {{ detail.state }}</p>
@@ -29,6 +35,5 @@
         </p>
       </ng-container>
     </ng-container>
-
   </ion-card-content>
 </ion-card>

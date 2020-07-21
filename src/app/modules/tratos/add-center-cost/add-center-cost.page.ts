@@ -40,23 +40,13 @@ export class AddCenterCostPage implements OnInit {
     //this.listCenterCost = this.listCenterCosts(this.deal);
     this._storeSync.getCostCentersCustomByDeal(this.deal).then( data => this.listCenterCost = data);
 
-    if (this.deal.count || this.deal.weight) {
-      this.centerForm = this.formBuilder.group({
-        deal: this.deal,
-        center_cost_id: ['', Validators.required],
-        unit_control_count: ['', Validators.required],
-        currentDate: [this.currentDate, Validators.required],
-        automatic: true
-      });
-    } else {
-      this.centerForm = this.formBuilder.group({
-        deal: this.deal,
-        center_cost_id: ['', Validators.required],
-        unit_control_count: [0],
-        currentDate: [this.currentDate, Validators.required],
-        automatic: true
-      });
-    }
+    this.centerForm = this.formBuilder.group({
+      deal: this.deal,
+      center_cost_id: ['', Validators.required],
+      unit_control_count: [ this.deal.count ? '': 0, Validators.required],
+      currentDate: [this.currentDate, Validators.required],
+      automatic: true
+    });
   }
 
 

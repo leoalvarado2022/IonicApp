@@ -40,68 +40,32 @@
       <ion-badge slot="end"  color="primary">{{ printableWorkers.length }}</ion-badge>
     </ion-item>
 
-    <ion-list>
-      <ion-card *ngFor="let worker of printableWorkers" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
-        <ion-item >
-          <ion-icon slot="start" name="person" color="primary"></ion-icon>
-          <ion-label>{{ worker.name | titlecase }}</ion-label>
-          <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
-        </ion-item>
-
-        <ion-card-content>
-          <p> <strong>Identificador</strong>: {{ worker.identifier | rut }}</p>
-          <p style="padding-bottom: 15px">
-            <ng-container *ngIf="worker.quadrilleToApprove > 0">
-              <ion-badge class="ion-float-end" *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id" color="warning">
-                Traspasando
-              </ion-badge>
-              <ion-badge class="ion-float-end" *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille !== quadrille.id" color="warning">
-                Por Aprobar
-              </ion-badge>
-            </ng-container>
-
-            <ng-container *ngIf="worker.quadrilleToApprove === 0">
-              <ion-badge class="ion-float-end" color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
-            </ng-container>
-          </p>
-        </ion-card-content>
-      </ion-card>
-
-      <!--
-      <ion-item *ngFor="let worker of printableWorkers" lines="none" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
-        <ion-icon name="person" slot="start"></ion-icon>
-        <ion-label>
-          <h3 class="label-padding">{{ worker.name | titlecase }}</h3>
-          <ion-row class="ion-no-padding ion-no-margin">
-            <ion-col class="ion-no-padding ion-no-margin">
-              <div class="ion-text-left">
-                {{ worker.identifier | rut }}
-              </div>
-            </ion-col>
-            <ion-col class="ion-no-padding ion-no-margin">
-              <div class="ion-text-right">
-                <ion-badge *ngIf="worker.memory" color="danger">
-                  Pendiente
-                </ion-badge>
-
-                <ng-container *ngIf="worker.quadrilleToApprove > 0">
-                  <ion-badge *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id" color="warning">
-                    Traspasando
-                  </ion-badge>
-                  <ion-badge *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille !== quadrille.id" color="warning">
-                    Por Aprobar
-                  </ion-badge>
-                </ng-container>
-                <ng-container *ngIf="worker.quadrilleToApprove === 0">
-                  <ion-badge color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
-                </ng-container>
-              </div>
-            </ion-col>
-          </ion-row>
-        </ion-label>
+    <ion-card *ngFor="let worker of printableWorkers" class="card-item" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+      <ion-item lines="full">
+        <ion-icon slot="start" name="person" color="primary"></ion-icon>
+        <ion-label>{{ worker.name | titlecase }}</ion-label>
+        <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
       </ion-item>
-      -->
-    </ion-list>
+
+      <ion-card-content>
+        <p> <strong>Identificador</strong>: {{ worker.identifier | rut }}</p>
+        <p style="padding-bottom: 15px">
+          <ng-container *ngIf="worker.quadrilleToApprove > 0">
+            <ion-badge class="ion-float-end" *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id" color="warning">
+              Traspasando
+            </ion-badge>
+            <ion-badge class="ion-float-end" *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille !== quadrille.id" color="warning">
+              Por Aprobar
+            </ion-badge>
+          </ng-container>
+
+          <ng-container *ngIf="worker.quadrilleToApprove === 0">
+            <ion-badge class="ion-float-end" color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
+          </ng-container>
+        </p>
+      </ion-card-content>
+    </ion-card>
+
   </ng-container>
 </ion-content>
 

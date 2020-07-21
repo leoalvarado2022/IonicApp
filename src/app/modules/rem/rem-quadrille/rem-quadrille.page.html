@@ -39,8 +39,8 @@
 
   <ng-container *ngIf="!isLoading">
     <ion-virtual-scroll [items]="filteredQuadrilles">
-      <ion-card *virtualItem="let quadrille" (click)="goToWorkers(quadrille)" button>
-        <ion-item>
+      <ion-card *virtualItem="let quadrille" (click)="goToWorkers(quadrille)" class="card-item">
+        <ion-item lines="full">
           <ion-badge slot="start">{{ quadrille.code | uppercase }}</ion-badge>
           <ion-label>{{ quadrille.name | titlecase }}</ion-label>
           <ion-badge  *ngIf="showBadge(quadrille.id) > 0" color="warning" slot="end">{{ showBadge(quadrille.id) }}</ion-badge>

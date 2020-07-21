@@ -232,8 +232,9 @@ export class TalliesListPage implements OnInit, OnDestroy {
    * deleteTally
    */
   public deleteTally = (tally: Tally, slide: IonItemSliding) => {
-    slide.close();
     this.alertService.confirmAlert('Esta seguro de que desea borrar esta tarja?').then(sayYes => {
+      slide.close();
+
       if (sayYes) {
         if (tally.status) {
           if (tally.status === 'new' || tally.status === 'edit')  {
@@ -328,7 +329,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
     this.isLoading = true;
 
     this.currentDate = this.activatedRoute.snapshot.paramMap.get('date');
-  const id = this.activatedRoute.snapshot.paramMap.get('id');
+    const id = this.activatedRoute.snapshot.paramMap.get('id');
 
     Promise.all([
       this.tallySyncService.getWorkerSyncedTallies(+id),

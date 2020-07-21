@@ -23,7 +23,43 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 
-.toolbar-search {  
+/** SLIDE ITEM */
+.slide-item {
+  --padding-end: 0;
+  --padding-start: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --inner-border-width: 0;
+  --inner-padding-bottom: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-top: 0;
+
+  ion-card {
+    margin: 5px;
+    padding: 0;
+    width: 100%;
+
+    ion-card-content {
+      padding-left: 15px;
+      padding-right: 5px;
+    }
+  }
+}
+
+/** CARD ITEM */
+.card-item {
+  margin: 5px;
+  padding: 0;
+
+  ion-card-content {
+    padding-left: 15px;
+    padding-right: 5px;
+  }
+}
+
+/* SEARCHBAR IN TOOLBAR */
+.toolbar-search {
   --background: var(--ion-color-primary);
   padding: 0;
   margin: 0;

@@ -47,6 +47,9 @@
             <ion-select-option value="">Seleccione</ion-select-option>
             <ion-select-option [value]="cc.id" *ngFor="let cc of listCenterCost">{{cc.name}}</ion-select-option>
           </ion-select>
+          <ion-text color="danger" *ngIf="centerForm.get('center_cost_id').hasError('required')">
+            Seleccione un Centro de Costo
+          </ion-text>
         </ion-item>
       </ion-col>
 
@@ -54,6 +57,9 @@
         <ion-item lines="none">
           <ion-label position="floating">{{deal.unit_control}}</ion-label>
           <ion-input formControlName="unit_control_count" type="number"></ion-input>
+          <ion-text color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
+            Ingrese {{deal.unit_control}}
+          </ion-text>
         </ion-item>
       </ion-col>
 

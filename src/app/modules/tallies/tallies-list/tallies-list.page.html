@@ -42,9 +42,9 @@
 
   <ng-container *ngIf="!isLoading">
     <ion-item-sliding #slide *ngFor="let tally of workerTallies">
-      <ion-item class="item-card">
+      <ion-item lines="none" class="slide-item">
         <ion-card>
-          <ion-item>
+          <ion-item lines="full">
             <ion-icon slot="start" name="reader" color="primary"></ion-icon>
             <ion-label>{{ getCostCenterName(tally.costCenterId) | titlecase }}</ion-label>
             <ion-icon *ngIf="tally.tempId" slot="end" name="server" color="danger" (click)="showTallyError(tally)"></ion-icon>

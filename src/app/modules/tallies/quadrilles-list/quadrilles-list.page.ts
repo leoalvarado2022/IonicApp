@@ -48,6 +48,12 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
     this.stepper$.unsubscribe();
   }
 
+  ionViewDidEnter () {
+    if (!this.firstLoad) {
+      this.loadData();
+    }
+  }
+
   /**
    * loadAsync
    */

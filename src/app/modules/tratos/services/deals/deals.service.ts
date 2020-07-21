@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {HttpService} from '../../../../shared/services/http/http.service';
-import {StoreService} from '../../../../shared/services/store/store.service';
 import * as moment from 'moment';
 import {Storage} from '@ionic/storage';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
-import {StoreActions} from '../../../../shared/services/store/actions';
 import {StorageKeys} from '../../../../services/storage/storage-keys';
 
 @Injectable({

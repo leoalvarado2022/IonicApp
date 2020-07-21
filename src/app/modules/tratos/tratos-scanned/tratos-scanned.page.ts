@@ -1,7 +1,6 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {AlertController, ModalController, NavController, Platform} from '@ionic/angular';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {AlertController, ModalController, Platform} from '@ionic/angular';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
-import {StoreService} from '../../../shared/services/store/store.service';
 import {TallyInterface} from '../interfaces/tally.interface';
 import * as moment from 'moment';
 import {Ndef, NFC} from '@ionic-native/nfc/ngx';
@@ -30,16 +29,19 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   //temp
   tallyTemp = [];
 
-  constructor(public _modalController: ModalController,
-              private _storageSyncService: StorageSyncService,
-              private _dealService: DealsService,
-              private _alertController: AlertController,
-              public _changeDetectorRef: ChangeDetectorRef,
-              private _platform: Platform,
-              private _route: Router,
-              public _nfc: NFC,
-              public _ndef: Ndef,
-              public nativeAudio: NativeAudio) {
+  constructor(
+    public _modalController: ModalController,
+    private _storageSyncService: StorageSyncService,
+    private _dealService: DealsService,
+    private _alertController: AlertController,
+    public _changeDetectorRef: ChangeDetectorRef,
+    private _platform: Platform,
+    private _route: Router,
+    public _nfc: NFC,
+    public _ndef: Ndef,
+    public nativeAudio: NativeAudio
+  ) {
+
   }
 
   ngOnInit() {
@@ -147,7 +149,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
             text: 'Cancelar',
             role: 'cancel',
             cssClass: 'secondary',
-            handler: (blah) => {
+            handler: () => {
               // console.log('Confirm Cancel: blah');
             }
           }, {
@@ -166,7 +168,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   /**
    * @description agregar informacion para el escaneo
    */
-  setInfo(id: any) {
+  setInfo(id: number) {
     const device = this.devices.find(value => value.id_device === id);
 
     if (device) {
@@ -270,25 +272,26 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           text: 'Ok',
           handler: (value) => {
             // calcular el rendimiento
-            let performance = +value.Rendimiento;
+            let performance = +value["Rendimiento"];
 
             if (performance === 0) {
               return;
             }
+
             let performanceTotal = 0;
             // si existe mas lo suma
             if (this.tallyTemp.length) {
+
               // filtrar por worker
               const tallyTemp = this.tallyTemp.filter(value => value.id_par_entidades_trabajador === worker.id &&
                 value.id_par_centros_costos === this.centerCost.center_cost_id &&
                 value.id_par_tratos_vigencias === this.centerCost.deal?.id_deal_validity);
 
-              // console.log(tallyTemp, 'tallyTemp');
-              // si hay le suma solo a el
               if (tallyTemp.length) {
-                performanceTotal = tallyTemp
-                  .map(obj => obj.rendimiento || 0)
+                performanceTotal = tallyTemp.map(obj => obj.rendimiento || 0)
                   .reduce((sum, current) => sum + current) + performance;
+
+                  console.log('performanceTotal', performanceTotal);
               }
             }
 
@@ -355,7 +358,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   /**
    * closeModal
    */
-  closeWork = async (data: any = null) => {
+  closeWork = async () => {
     await this._modalController.dismiss();
   };
 

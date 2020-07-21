@@ -35,7 +35,7 @@
   </ion-item>
 
   <!-- DAY SELECTOR -->
-  <ion-item>
+  <ion-item lines="none">
     <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
       <ion-icon name="arrow-back" slot="start"></ion-icon>
     </ion-button>
@@ -50,9 +50,9 @@
   </ng-container>
 
   <ng-container *ngIf="!isLoading">
-    <ion-virtual-scroll [items]="filteredWorkers" approxItemHeight="100px">
-      <ion-card *virtualItem="let worker" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }" style="margin-bottom: 5px">
-        <ion-item >
+    <ion-virtual-scroll [items]="filteredWorkers">
+      <ion-card *virtualItem="let worker" class="card-item margin-extra" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+        <ion-item lines="full">
           <ion-icon slot="start" name="person" color="primary"></ion-icon>
           <ion-label class="ion-text-wrap">{{ worker.name | titlecase }}</ion-label>
           <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
@@ -69,7 +69,6 @@
       </ion-card>
     </ion-virtual-scroll>
   </ng-container>
-
 </ion-content>
 
 <ion-footer>

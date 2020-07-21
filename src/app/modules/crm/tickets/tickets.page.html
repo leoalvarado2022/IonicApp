@@ -17,13 +17,22 @@
     <!-- Tab bar -->
     <ion-tab-bar slot="top">
       <ion-tab-button tab="me">
-        <span>Mis Tickets <span class="number" *ngIf="activeNumberTicket('me') && numberTicket > 0">{{numberTicket}}</span></span>
+        <ion-label>Mis Tickets</ion-label>
+        <ion-badge color="dark" *ngIf="activeNumberTicket('me') && numberTicket > 0">
+          {{ numberTicket }}
+        </ion-badge>
       </ion-tab-button>
       <ion-tab-button tab="all">
-        <span>Mi Equipo <span class="number" *ngIf="activeNumberTicket('all') && numberTicket > 0">{{numberTicket}}</span></span>
+        <ion-label>Mi Equipo</ion-label>
+        <ion-badge color="dark" *ngIf="activeNumberTicket('all') && numberTicket > 0">
+          {{ numberTicket }}
+        </ion-badge>
       </ion-tab-button>
       <ion-tab-button tab="active">
-        <span>Activos <span class="number" *ngIf="activeNumberTicket('active') && numberTicket > 0">{{numberTicket}}</span></span>
+        <ion-label>Activos</ion-label>
+        <ion-badge color="dark" *ngIf="activeNumberTicket('active') && numberTicket > 0">
+          {{ numberTicket }}
+        </ion-badge>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>

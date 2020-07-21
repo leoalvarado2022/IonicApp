@@ -89,7 +89,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
     Promise.all([
       this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
       this.storageSyncService.getLabors(),
-      this.machineryService.getWorkers(user).toPromise(),
+      this.storageSyncService.getWorkers(),
       this.storageSyncService.getMachineryTypeCostCenters(),
       this.storageSyncService.getCostCentersCustom(),
       this.storageSyncService.getImplementTypeCostCenters()
@@ -99,7 +99,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
       this.originalMachinery = [...data[0]];
       this.filteredMachinery = [...data[0]];
       this.labors = data[1];
-      this.workers = data[2]['data']; //  HTTP
+      this.workers = data[2];
       this.machineryCostCenters = data[3];
       this.allCostCenters = data[4];
       this.implements = data[5];

@@ -44,8 +44,11 @@ export class MachineryFormComponent implements OnInit {
   public laborName: string;
   public laborCode: string;
   // Unit
-  public unitName: string;
-  public unitCode: string;
+  public machineryUnitName: string;
+  public machineryUnitCode: string;
+  // Unit
+  public laborUnitName: string;
+  public laborUnitCode: string;
   // Worker
   public workerName: string;
   public filteredWorkers: Array<any> = [];
@@ -96,8 +99,8 @@ export class MachineryFormComponent implements OnInit {
       this.laborName = findLabor.name;
 
       // Trabajador
-      const findWorker = this.workers.find(item => +item.id === this.editMachinery.workerId)
-      this.workerName = findWorker.nombre;
+      const findWorker = this.workers.find(item => item.id === this.editMachinery.workerId)
+      this.workerName = findWorker ? findWorker.name : '';
 
       // Load Implements
       this.selectUnit(this.editMachinery.unitId);
@@ -128,8 +131,8 @@ export class MachineryFormComponent implements OnInit {
       });
 
       // Trabajador
-      const findWorker = this.workers.find(item => +item.id === this.userId);
-      this.workerName = findWorker.nombre;
+      const findWorker = this.workers.find(item => item.id === this.userId);
+      this.workerName = findWorker ? findWorker.name : '';
 
       this.getTempId();
     }
@@ -257,7 +260,7 @@ export class MachineryFormComponent implements OnInit {
    */
   public searchWorker = (search: string): void => {
     if (search) {
-      this.filteredWorkers = this.workers.filter(item => item.id.toString().includes(search.toLowerCase()) || item.nombre.toLowerCase().includes(search.toLowerCase()));
+      this.filteredWorkers = this.workers.filter(item => item.id.toString().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase()));
     } else {
       this.filteredWorkers = [];
     }
@@ -277,7 +280,7 @@ export class MachineryFormComponent implements OnInit {
    */
   public selectWorker = (worker: any): void => {
     this.machineryForm.get('workerId').patchValue(worker.id);
-    this.workerName = worker.nombre;
+    this.workerName = worker.name;
     this.filteredWorkers = [];
   }
 
@@ -291,8 +294,8 @@ export class MachineryFormComponent implements OnInit {
     if (find) {
       this.machineryForm.get('unitId').patchValue(unitId);
 
-      this.unitCode = find.code;
-      this.unitName = find.name;
+      this.machineryUnitCode = find.code;
+      this.machineryUnitName = find.name;
     }
   }
 
@@ -340,8 +343,8 @@ export class MachineryFormComponent implements OnInit {
       costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
-      unitCode: this.unitCode,
-      unitName: this.unitName,
+      unitCode: this.machineryUnitCode,
+      unitName: this.machineryUnitName,
       workerName: this.workerName,
       date: this.date,
       status: 'new'
@@ -362,8 +365,8 @@ export class MachineryFormComponent implements OnInit {
       costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
-      unitCode: this.unitCode,
-      unitName: this.unitName,
+      unitCode: this.machineryUnitCode,
+      unitName: this.machineryUnitName,
       workerName: this.workerName,
       date: this.date,
       status: 'edit'
@@ -385,8 +388,8 @@ export class MachineryFormComponent implements OnInit {
       costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
-      unitCode: this.unitCode,
-      unitName: this.unitName,
+      unitCode: this.machineryUnitCode,
+      unitName: this.machineryUnitName,
       workerName: this.workerName,
       date: this.date,
       status: 'new'

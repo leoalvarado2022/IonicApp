@@ -316,9 +316,12 @@ export class MachineryFormComponent implements OnInit {
    * @param machineryType
    */
   private showImplements =  (machineryType: string) => {
-    if ( machineryType.toLowerCase() === 'automata') { // machinery.machineryType === automata 'Ocultar implemento'
+    // machinery.machineryType === automata 'Ocultar implemento'
+    if ( machineryType.toLowerCase() === 'automata') {
       this.showImplement = false;
-    } else if ( machineryType.toLowerCase() === 'maquinaria') { // machinery.machineryType === maquinaria 'Mostrart implemento'
+      this.machineryForm.get('implementCostCenterId').patchValue(0);
+    } else if ( machineryType.toLowerCase() === 'maquinaria') {
+      // machinery.machineryType === maquinaria 'Mostrart implemento'
       this.showImplement = true;
     }
   }
@@ -355,8 +358,8 @@ export class MachineryFormComponent implements OnInit {
       costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
-      unitCode: this.machineryUnitCode,
-      unitName: this.machineryUnitName,
+      machineryUnitCode: this.machineryUnitCode,
+      machineryUnitName: this.machineryUnitName,
       workerName: this.workerName,
       date: this.date,
       status: 'new'
@@ -377,8 +380,8 @@ export class MachineryFormComponent implements OnInit {
       costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
-      unitCode: this.machineryUnitCode,
-      unitName: this.machineryUnitName,
+      machineryUnitCode: this.machineryUnitCode,
+      machineryUnitName: this.machineryUnitName,
       workerName: this.workerName,
       date: this.date,
       status: 'edit'
@@ -400,8 +403,8 @@ export class MachineryFormComponent implements OnInit {
       costCenterName: this.costCenterName,
       laborCode: this.laborCode,
       laborName: this.laborName,
-      unitCode: this.machineryUnitCode,
-      unitName: this.machineryUnitName,
+      machineryUnitCode: this.machineryUnitCode,
+      machineryUnitName: this.machineryUnitName,
       workerName: this.workerName,
       date: this.date,
       status: 'new'

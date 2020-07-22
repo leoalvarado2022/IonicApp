@@ -13,7 +13,6 @@
 </ion-header>
 
 <ion-content>
-
   <ion-grid>
     <ion-row>
       <ion-card>
@@ -22,30 +21,33 @@
             <ion-grid>
               <ion-row>
                 <ion-col size="12">
-                  <ion-item style="width: 100%;">
-                    <ion-label position="floating">Elegir trato</ion-label>
-                    <ion-select formControlName="id" interface="action-sheet" (ionChange)="change($event)">
-                      <ion-select-option *ngFor="let deal of deals" [value]="deal.id" >{{deal.name_deal}}</ion-select-option>
-                    </ion-select>
+                   <!-- Trato -->
+                  <ion-item class="item-searchbar" lines="none">
+                    <ion-label position="stacked">Elegir trato</ion-label>
+                    <ion-searchbar [value]="dealName" (keyup)="searchDeal($event.target.value)" (ionClear)="cleanDealSearch()" placeholder="Buscar"></ion-searchbar>
                   </ion-item>
-                  <ng-container *ngIf="activeForm.get('id').errors && !activeForm.invalid">
-                    <span *ngIf="activeForm.get('id').hasError('required')" style="color: red">
-                      Debe elegir un trato
-                    </span>
-                  </ng-container>
+                  <ion-text class="error-message" color="danger" *ngIf="activeForm.dirty && activeForm.get('id').hasError('required')">
+                    Debe elegir un trato
+                  </ion-text>
+
+                  <ion-list class="searchbar-results-list" *ngIf="filteredDeals.length > 0">
+                    <ion-item *ngFor="let deal of filteredDeals" (click)="selectDeal(deal)">
+                      {{ deal.name_deal | titlecase  }}
+                    </ion-item>
+                  </ion-list>
                 </ion-col>
               </ion-row>
               <ion-row>
                 <ion-col size="12">
                   <ion-item>
                     <ion-label position="floating">Labor</ion-label>
-                    <ion-input formControlName="name_labor" disabled></ion-input>
+                    <ion-input readonly [value]="activeForm.get('name_labor').value"></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col size="12">
                   <ion-item>
                     <ion-label position="floating">Unidad</ion-label>
-                    <ion-input formControlName="unit_control" disabled></ion-input>
+                    <ion-input readonly [value]="activeForm.get('unit_control').value"></ion-input>
                   </ion-item>
                 </ion-col>
               </ion-row>
@@ -70,6 +72,7 @@
                     <ion-label position="floating">Metodo de conexión</ion-label>
                     <ion-select formControlName="method" interface="action-sheet">
                       <ion-select-option value="nfc">NFC</ion-select-option>
+                      <ion-select-option value="qr">QR</ion-select-option>
                     </ion-select>
                   </ion-item>
                   <ng-container *ngIf="activeForm.get('option').errors && !activeForm.invalid">
@@ -85,18 +88,16 @@
                   </ion-item>
                 </ion-col>
               </ion-row>
-              <ion-row>
-                <ion-col size="12">
-                  <ion-button expand="block" [disabled]="activeForm.invalid" (click)="onSubmit()">Activar</ion-button>
-                </ion-col>
-              </ion-row>
             </ion-grid>
           </form>
         </ion-card-content>
       </ion-card>
-
     </ion-row>
   </ion-grid>
-
-
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" [disabled]="activeForm.invalid" (click)="onSubmit()">
+    Iniciar
+  </ion-button>
+</ion-footer>

@@ -41,3 +41,46 @@ ion-card {
   padding-left: 12px;
   padding-right: 12px;
 }
+
+
+
+
+
+
+
+ion-menu-button {
+  --color: white;
+}
+
+ion-title {
+  color: white;
+}
+
+.searchbar-results-list {
+  background-color: var(--ion-color-medium);
+  padding: 5px;
+}
+
+.item-searchbar {
+  --padding-end: 0;
+  --padding-start: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --inner-border-width: 0;
+  --inner-padding-bottom: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-padding-top: 0;
+
+  ion-searchbar {
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+    box-shadow: none;
+  }
+}
+
+.error-message {
+  padding-left: 20px;
+}
+

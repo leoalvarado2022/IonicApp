@@ -60,11 +60,12 @@
 
         <ion-card-content>
           <p> <strong>Identificador</strong>: {{ worker.identifier | rut }}</p>
-          <p style="padding-bottom: 15px">
-            <ion-badge class="ion-float-end" color="primary">
+
+          <ion-chip class="ion-float-end" color="primary">
+            <ion-label>
               {{ getTotalWorkerWork(worker) | number }} JR
-            </ion-badge>
-          </p>
+            </ion-label>
+          </ion-chip>
         </ion-card-content>
       </ion-card>
     </ion-virtual-scroll>

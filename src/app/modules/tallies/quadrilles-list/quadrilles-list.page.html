@@ -34,23 +34,21 @@
     <ion-badge slot="end"  color="primary">{{ filteredQuadrilles.length }}</ion-badge>
   </ion-item>
 
-  <ng-container *ngIf="isLoading">
-    <h1 class="ion-text-center">Cargando...</h1>
-  </ng-container>
+  <ion-virtual-scroll [items]="filteredQuadrilles">
+    <ion-card *virtualItem="let quadrille" class="card-item" (click)="selectQuadrille(quadrille.id)">
+      <ion-item lines="full">
+        <ion-badge slot="start" color="primary">{{ quadrille.code | uppercase }}</ion-badge>
+        <ion-label>{{ quadrille.name | titlecase }}</ion-label>
+      </ion-item>
 
-  <ng-container *ngIf="!isLoading">
-    <ion-virtual-scroll [items]="filteredQuadrilles">
-      <ion-card *virtualItem="let quadrille" class="card-item" (click)="selectQuadrille(quadrille.id)">
-        <ion-item lines="full">
-          <ion-badge slot="start" color="primary">{{ quadrille.code | uppercase }}</ion-badge>
-          <ion-label>{{ quadrille.name | titlecase }}</ion-label>
-        </ion-item>
+      <ion-card-content>
+        <p> <strong>Responsable</strong>: {{ quadrille.responsibleName | titlecase  }}</p>
 
-        <ion-card-content>
-          <p> <strong>Personas</strong>: {{ getQuadrilleNumberWorkers(quadrille.id) }}</p>
-          <p> <strong>Responsable</strong>: {{ quadrille.responsibleName | titlecase  }}</p>
-        </ion-card-content>
-      </ion-card>
-    </ion-virtual-scroll>
-  </ng-container>
+        <ion-chip class="ion-float-end">
+          <ion-icon name="people" color="primary"></ion-icon>
+          <ion-label>{{ getQuadrilleNumberWorkers(quadrille.id) }}</ion-label>
+        </ion-chip>
+      </ion-card-content>
+    </ion-card>
+  </ion-virtual-scroll>
 </ion-content>

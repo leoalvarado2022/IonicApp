@@ -89,13 +89,13 @@ export class MachineryListPage implements OnInit, OnDestroy {
     Promise.all([
       this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
       this.storageSyncService.getLabors(),
-      this.storageSyncService.getWorkers(),
+      this.machineryService.getWorkers(this.activeCompany.id, date),
       this.storageSyncService.getMachineryTypeCostCenters(),
       this.storageSyncService.getCostCentersCustom(),
       this.storageSyncService.getImplementTypeCostCenters()
     ]).then( (data: Array<any>) => {
-      this.units = units;
 
+      this.units = units;
       this.originalMachinery = [...data[0]];
       this.filteredMachinery = [...data[0]];
       this.labors = data[1];
@@ -104,10 +104,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
       this.allCostCenters = data[4];
       this.implements = data[5];
 
-      // Healthy delay
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 1000);
+      this.isLoading = false;
     });
   }
 
@@ -131,7 +128,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
           item.costCenterCode.toLowerCase().includes(search.toLowerCase()) ||
           item.costCenterName.toLowerCase().includes(search.toLowerCase()) ||
           item.laborName.toLowerCase().includes(search.toLowerCase()) ||
-          item.unitName.toLowerCase().includes(search.toLowerCase()) ||
+          item.machineryUnitName.toLowerCase().includes(search.toLowerCase()) ||
           item.workerName.toLowerCase().includes(search.toLowerCase()) ||
           (item.implementCostCenterName && item.implementCostCenterName.toLowerCase().includes(search.toLowerCase()))
         );
@@ -296,17 +293,19 @@ export class MachineryListPage implements OnInit, OnDestroy {
   private minimunReload = () => {
     this.isLoading = true;
 
-    setTimeout(() => {
-      const access = this.storeService.getAccess();
-      const date = moment(this.currentDate).format('YYYY-MM-DD');
+    const access = this.storeService.getAccess();
+    const date = moment(this.currentDate).format('YYYY-MM-DD');
 
-      this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5))
-        .then( (machinery: Array<Machinery>) => {
-          this.originalMachinery = [...machinery];
-          this.filteredMachinery = [...machinery];
-          this.isLoading = false;
-        });
-    }, 1000);
+    Promise.all([
+      this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
+      this.machineryService.getWorkers(this.activeCompany.id, date)
+    ]).then( (data: any) => {
+      this.originalMachinery = [...data[0]];
+      this.filteredMachinery = [...data[0]];
+      this.workers = [...data[1]];
+
+      this.isLoading = false;
+    });
   }
 
 }

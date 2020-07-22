@@ -62,6 +62,18 @@
               <p *ngIf="machinery.implementCostCenterName">
                 <strong>Implemento:</strong> {{ machinery.implementCostCenterName | titlecase }}
               </p>
+
+              <div class="ion-float-end">
+                <ion-chip>
+                  <ion-icon name="clipboard" color="primary"></ion-icon>
+                  <ion-label>{{ machinery.quantity }}</ion-label>
+                </ion-chip>
+
+                <ion-chip>
+                  <ion-icon name="bar-chart" color="secondary"></ion-icon>
+                  <ion-label>{{ machinery.performance }}</ion-label>
+                </ion-chip>
+              </div>
             </ion-card-content>
           </ion-card>
         </ion-item>

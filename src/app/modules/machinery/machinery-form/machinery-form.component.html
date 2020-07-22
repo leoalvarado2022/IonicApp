@@ -15,7 +15,7 @@
 
   <form [formGroup]="machineryForm">
     <!-- Machinery -->
-    <ion-item>
+    <ion-item lines="full">
       <ion-label position="stacked">Maquina</ion-label>
       <ion-searchbar [value]="machineryName" (keyup)="searchMachinery($event.target.value)" (ionClear)="cleanMachinerySearch()" placeholder="Buscar"></ion-searchbar>
     </ion-item>
@@ -95,7 +95,7 @@
     <ion-item>
       <ion-label>Cantidad</ion-label>
       <ion-input formControlName="quantity" type="number"></ion-input>
-      <ion-badge slot="end">{{ machineryUnitCode }}</ion-badge>
+      <ion-badge slot="end">{{ machineryUnitCode | uppercase  }}</ion-badge>
     </ion-item>
     <ng-container *ngIf="machineryForm.get('quantity').dirty">
       <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">
@@ -112,17 +112,11 @@
      <!-- Rendimiento -->
      <ion-item>
       <ion-label>Rendimiento</ion-label>
-      <ion-input type="number"></ion-input>
-      <ion-badge slot="end">{{ machineryUnitCode }}</ion-badge>
+      <ion-input formControlName="performance" type="number"></ion-input>
+      <ion-badge slot="end">{{ laborUnitCode | uppercase }}</ion-badge>
     </ion-item>
-    <ng-container *ngIf="machineryForm.get('quantity').dirty">
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">
-        La cantidad es requerida
-      </ion-text>
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('min')">
-        La cantidad debe ser mayor a 0.1
-      </ion-text>
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('pattern')">
+    <ng-container *ngIf="machineryForm.get('performance').dirty">
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('performance').hasError('pattern')">
         Ingrese valores con . y maximo 3 decimales
       </ion-text>
     </ng-container>

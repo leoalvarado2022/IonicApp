@@ -43,10 +43,10 @@ export class MachineryFormComponent implements OnInit {
   public filteredLabors: Array<any> = [];
   public laborName: string;
   public laborCode: string;
-  // Unit
+  // Machinery Unit
   public machineryUnitName: string;
   public machineryUnitCode: string;
-  // Unit
+  // Labor Unit
   public laborUnitName: string;
   public laborUnitCode: string;
   // Worker
@@ -71,13 +71,17 @@ export class MachineryFormComponent implements OnInit {
       this.machineryForm = this.formBuilder.group({
         costCenterId: [ this.isCopy ? '' : this.editMachinery.costCenterId, Validators.required],
         laborId: [ this.editMachinery.laborId, Validators.required],
-        unitId: [this.editMachinery.unitId, Validators.required],
         workerId: [this.editMachinery.workerId, Validators.required],
         machineryCostCenterId: [this.editMachinery.machineryCostCenterId, Validators.required],
         implementCostCenterId: [this.editMachinery.implementCostCenterId, Validators.required],
+        machineryUnitId: [this.editMachinery.machineryUnitId, Validators.required],
+        laborUnitId: [this.editMachinery.laborUnitId, Validators.required],
         quantity: [ this.isCopy ? '' : this.editMachinery.quantity, [
           Validators.required,
           Validators.min(0.1),
+          Validators.pattern(this.decimalRegex)
+        ]],
+        performance: [ this.isCopy ? '' : this.editMachinery.performance, [
           Validators.pattern(this.decimalRegex)
         ]]
       });
@@ -98,12 +102,14 @@ export class MachineryFormComponent implements OnInit {
       this.laborCode = findLabor.code;
       this.laborName = findLabor.name;
 
+      this.selectLaborUnit(findLabor.id);
+
       // Trabajador
       const findWorker = this.workers.find(item => item.id === this.editMachinery.workerId)
       this.workerName = findWorker ? findWorker.name : '';
 
       // Load Implements
-      this.selectUnit(this.editMachinery.unitId);
+      this.selectMachineryUnit(this.editMachinery.machineryUnitId);
       this.showImplements(findMachineryCostCenter.machineryType);
 
       // Get next ID
@@ -119,13 +125,17 @@ export class MachineryFormComponent implements OnInit {
       this.machineryForm = this.formBuilder.group({
         costCenterId: ['', Validators.required],
         laborId: ['', Validators.required],
-        unitId: [''],
         workerId: [this.userId, Validators.required],
         machineryCostCenterId: ['', Validators.required],
         implementCostCenterId: [0, Validators.required],
+        machineryUnitId: ['', Validators.required],
+        laborUnitId: ['', Validators.required],
         quantity: ['', [
           Validators.required,
           Validators.min(0.1),
+          Validators.pattern(this.decimalRegex)
+        ]],
+        performance: ['', [
           Validators.pattern(this.decimalRegex)
         ]]
       });
@@ -185,7 +195,7 @@ export class MachineryFormComponent implements OnInit {
     this.machineryName = machinery.name;
     this.filteredMachinery = [];
 
-    this.selectUnit(machinery.unitId);
+    this.selectMachineryUnit(machinery.unitId);
     this.showImplements(machinery.machineryType);
   }
 
@@ -252,6 +262,8 @@ export class MachineryFormComponent implements OnInit {
     this.laborCode = labor.code;
     this.laborName = labor.name;
     this.filteredLabors = [];
+
+    this.selectLaborUnit(labor.id);
   }
 
   /**
@@ -285,14 +297,14 @@ export class MachineryFormComponent implements OnInit {
   }
 
   /**
-   * selectUnit
+   * selectMachineryUnit
    * @param unitId
    */
-  private selectUnit = (unitId: number) => {
+  private selectMachineryUnit = (unitId: number) => {
     const find = this.units.find(item => item.id === unitId);
 
     if (find) {
-      this.machineryForm.get('unitId').patchValue(unitId);
+      this.machineryForm.get('machineryUnitId').patchValue(unitId);
 
       this.machineryUnitCode = find.code;
       this.machineryUnitName = find.name;
@@ -448,6 +460,22 @@ export class MachineryFormComponent implements OnInit {
     this.implementCode = implement.code;
     this.implementName = implement.name;
     this.filteredImplements = [];
+  }
+
+  /**
+  private selectLaborUnit = (unitId: number) => {
+   *
+   * @param unitId
+   */
+  private selectLaborUnit = (unitId: number) => {
+    const find = this.units.find(item => item.id === unitId);
+
+    if (find) {
+      this.machineryForm.get('laborUnitId').patchValue(unitId);
+
+      this.laborUnitCode = find.code;
+      this.laborUnitName = find.name;
+    }
   }
 
 }

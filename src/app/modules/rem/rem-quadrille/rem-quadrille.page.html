@@ -47,10 +47,14 @@
         </ion-item>
 
         <ion-card-content>
-          <p> <strong>Personas</strong>: {{ getQuadrilleWorkers(quadrille.id) }}</p>
           <p>
             <strong>Responsable</strong>: {{ quadrille.responsibleName | titlecase }}
           </p>
+
+          <ion-chip class="ion-float-end">
+            <ion-icon name="people" color="success"></ion-icon>
+            <ion-label>{{ getQuadrilleWorkers(quadrille.id) }}</ion-label>
+          </ion-chip>
         </ion-card-content>
       </ion-card>
     </ion-virtual-scroll>

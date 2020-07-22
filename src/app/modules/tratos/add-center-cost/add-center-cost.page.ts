@@ -20,9 +20,12 @@ export class AddCenterCostPage implements OnInit {
   public showDate: any;
 
   public readonly originalDate: any;
-  public listCenterCost: any;
+  private listCenterCost: Array<any> = [];
+  public filteredCostCenter: Array<any> = [];
   public deal: any;
   public centerForm: FormGroup;
+
+  public costCenterName: string;
 
   constructor(
     private _storeSync: StorageSyncService,
@@ -37,7 +40,6 @@ export class AddCenterCostPage implements OnInit {
 
   ngOnInit() {
     this.deal = this._dealService.getDealLocal();
-    //this.listCenterCost = this.listCenterCosts(this.deal);
     this._storeSync.getCostCentersCustomByDeal(this.deal).then( data => this.listCenterCost = data);
 
     this.centerForm = this.formBuilder.group({
@@ -82,6 +84,40 @@ export class AddCenterCostPage implements OnInit {
 
     this._dealService.setDataScanned(scanned);
     this._router.navigate(['home-page/tarja_tratos/deal-scanned']);
+  }
+
+  /**
+   * searchCostCenter
+   * @param search
+   */
+  public searchCostCenter = (search: string): void => {
+    if (search) {
+      this.filteredCostCenter = this.listCenterCost.filter(item => item.name.toLowerCase().includes(search.toLowerCase()) || item.code.toLowerCase().includes(search.toLowerCase()));
+    } else {
+      this.filteredCostCenter = [];
+    }
+  }
+
+  /**
+   * cleanCostCenterSearch
+   */
+  public cleanCostCenterSearch = (): void => {
+    this.centerForm.get('center_cost_id').patchValue('');
+    this.filteredCostCenter = [];
+    this.costCenterName = null;
+  }
+
+  /**
+   * selectCostCenter
+   * @param costCenter
+   */
+  public selectCostCenter = (costCenter: any): void => {
+    this.centerForm.patchValue({
+      center_cost_id: costCenter.id
+    });
+
+    this.costCenterName = costCenter.name;
+    this.filteredCostCenter = [];
   }
 
 }

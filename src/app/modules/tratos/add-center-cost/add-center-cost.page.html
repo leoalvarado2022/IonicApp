@@ -41,16 +41,19 @@
       </ion-col>
 
       <ion-col size="12">
-        <ion-item lines="none">
-          <ion-label position="floating">Centro de Costo</ion-label>
-          <ion-select formControlName="center_cost_id" interface="action-sheet">
-            <ion-select-option value="">Seleccione</ion-select-option>
-            <ion-select-option [value]="cc.id" *ngFor="let cc of listCenterCost">{{cc.name}}</ion-select-option>
-          </ion-select>
-          <ion-text color="danger" *ngIf="centerForm.get('center_cost_id').hasError('required')">
-            Seleccione un Centro de Costo
-          </ion-text>
+        <ion-item class="item-searchbar" lines="none">
+          <ion-label position="stacked">Centro de Costo</ion-label>
+          <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
         </ion-item>
+        <ion-text class="error-message" color="danger" *ngIf="centerForm.dirty && centerForm.get('center_cost_id').hasError('required')">
+          Seleccione un Centro de Costo
+        </ion-text>
+
+        <ion-list class="searchbar-results-list" *ngIf="filteredCostCenter.length > 0">
+          <ion-item *ngFor="let costCenter of filteredCostCenter" (click)="selectCostCenter(costCenter)">
+            {{ costCenter.name | titlecase  }}
+          </ion-item>
+        </ion-list>
       </ion-col>
 
       <ion-col *ngIf="deal.count" size="12">

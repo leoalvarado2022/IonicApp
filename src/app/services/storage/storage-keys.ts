@@ -30,4 +30,7 @@ export enum StorageKeys {
   // Machinery
   MachineryTempId = 'machineryTempId',
   MachineryToRecord = 'machineryToRecord',
+
+  // Deals
+  ActiveDeal = 'activeDeal'
 }

@@ -1,12 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {HttpService} from '../../../../shared/services/http/http.service';
-import {StoreService} from '../../../../shared/services/store/store.service';
 import * as moment from 'moment';
 import {Storage} from '@ionic/storage';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
-import {StoreActions} from '../../../../shared/services/store/actions';
 import {StorageKeys} from '../../../../services/storage/storage-keys';
+import { worker } from 'cluster';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +13,6 @@ import {StorageKeys} from '../../../../services/storage/storage-keys';
 export class DealsService {
 
   private readonly tallyScanneds = 'deal/scanneds';
-
-  public dataScanned: any;
 
   constructor(
     private httpClient: HttpClient,
@@ -25,20 +22,6 @@ export class DealsService {
   ) {
   }
 
-  /**
-   * get data scanned
-   */
-  getDataScanned() {
-    return this.dataScanned;
-  }
-
-  /**
-   * @description data scanned
-   * @param data
-   */
-  setDataScanned(data) {
-    this.dataScanned = data;
-  }
 
   /**
    * @description group
@@ -57,21 +40,6 @@ export class DealsService {
       }
     });
     return map;
-  }
-
-  /**
-   * @description set deal in localstorage
-   * @param item
-   */
-  public setDealLocal(item: any) {
-    localStorage.setItem('deal', JSON.stringify(item));
-  }
-
-  /**
-   * @description get deal in localstorage
-   */
-  public getDealLocal() {
-    return JSON.parse(localStorage.getItem('deal'));
   }
 
   /**
@@ -142,4 +110,40 @@ export class DealsService {
       return this.storage.set(StorageKeys.DealsTemp, filter);
     });
   };
+
+  /**
+   * setActiveDeal
+   * @param deal
+   */
+  public setActiveDeal = (deal: any): Promise<any> => {
+    return this.storage.set(StorageKeys.ActiveDeal, deal);
+  }
+
+  /**
+   * getActiveDeal
+   */
+  public getActiveDeal = (): Promise<any> => {
+    return this.storage.get(StorageKeys.ActiveDeal);
+  }
+
+  /**
+   * getTempDealsByUser
+   * @param userId
+   */
+  public getTempDealsByUser =  (userId: number): Promise<Array<any>> => {
+    return this.getDealsTemp().then( (tempDeals: Array<any>) => {
+      return tempDeals.filter(item => item.user.id === userId);
+    });
+  }
+
+  /**
+   * getTempDealsById
+   * @param dealId
+   */
+  public getTempDealsById = (dealId: number): Promise<any> => {
+    return this.getDealsTemp().then( (tempDeals: Array<any>) => {
+      return tempDeals.find(item => item.id === dealId);
+    });
+  }
+
 }

@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import {DealsService} from '../services/deals/deals.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-add-center-cost',
@@ -20,15 +20,18 @@ export class AddCenterCostPage implements OnInit {
   public showDate: any;
 
   public readonly originalDate: any;
-  public listCenterCost: any;
+  private listCenterCost: Array<any> = [];
+  public filteredCostCenter: Array<any> = [];
   public deal: any;
   public centerForm: FormGroup;
+  public costCenterName: string;
 
   constructor(
     private _storeSync: StorageSyncService,
     private _dealService: DealsService,
     private formBuilder: FormBuilder,
-    private _router: Router
+    private _router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.showDate = moment(this.currentDate).format(this.dateFormat);
@@ -36,27 +39,34 @@ export class AddCenterCostPage implements OnInit {
   }
 
   ngOnInit() {
-    this.deal = this._dealService.getDealLocal();
-    //this.listCenterCost = this.listCenterCosts(this.deal);
-    this._storeSync.getCostCentersCustomByDeal(this.deal).then( data => this.listCenterCost = data);
+    this.loadData();
 
-    if (this.deal.count || this.deal.weight) {
-      this.centerForm = this.formBuilder.group({
+    this.centerForm = this.formBuilder.group({
+      deal: null,
+      center_cost_id: ['', Validators.required],
+      unit_control_count: [0, Validators.required],
+      currentDate: [this.currentDate, Validators.required],
+      automatic: true
+    });
+  }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    const id = +this.activatedRoute.snapshot.paramMap.get('id');
+    this._dealService.getTempDealsById(id).then( deal => {
+      this.deal = deal;
+
+      this.centerForm.patchValue({
         deal: this.deal,
-        center_cost_id: ['', Validators.required],
-        unit_control_count: ['', Validators.required],
-        currentDate: [this.currentDate, Validators.required],
-        automatic: true
+        unit_control_count: this.deal.count ? '': 0
       });
-    } else {
-      this.centerForm = this.formBuilder.group({
-        deal: this.deal,
-        center_cost_id: ['', Validators.required],
-        unit_control_count: [0],
-        currentDate: [this.currentDate, Validators.required],
-        automatic: true
+
+      this._storeSync.getCostCentersCustomByDeal(this.deal).then( data => {
+        this.listCenterCost = [...data];
       });
-    }
+    });
   }
 
 
@@ -87,11 +97,46 @@ export class AddCenterCostPage implements OnInit {
    */
   sendScanned() {
     const scanned = Object.assign({}, this.centerForm.value);
-    scanned.currentDate = this.currentDate;
     scanned.center_cost = this.listCenterCost.find(value => value.id === scanned.center_cost_id);
 
-    this._dealService.setDataScanned(scanned);
-    this._router.navigate(['home-page/tarja_tratos/deal-scanned']);
+    // STORAGE
+    this._dealService.setActiveDeal(scanned).then( () => {
+      this._router.navigate(['home-page/tarja_tratos/deal-scanned']);
+    });
+  }
+
+  /**
+   * searchCostCenter
+   * @param search
+   */
+  public searchCostCenter = (search: string): void => {
+    if (search) {
+      this.filteredCostCenter = this.listCenterCost.filter(item => item.name.toLowerCase().includes(search.toLowerCase()) || item.code.toLowerCase().includes(search.toLowerCase()));
+    } else {
+      this.filteredCostCenter = [];
+    }
+  }
+
+  /**
+   * cleanCostCenterSearch
+   */
+  public cleanCostCenterSearch = (): void => {
+    this.centerForm.get('center_cost_id').patchValue('');
+    this.filteredCostCenter = [];
+    this.costCenterName = null;
+  }
+
+  /**
+   * selectCostCenter
+   * @param costCenter
+   */
+  public selectCostCenter = (costCenter: any): void => {
+    this.centerForm.patchValue({
+      center_cost_id: costCenter.id
+    });
+
+    this.costCenterName = costCenter.name;
+    this.filteredCostCenter = [];
   }
 
 }

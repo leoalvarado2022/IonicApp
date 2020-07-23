@@ -15,7 +15,7 @@
 
   <form [formGroup]="machineryForm">
     <!-- Machinery -->
-    <ion-item>
+    <ion-item lines="full">
       <ion-label position="stacked">Maquina</ion-label>
       <ion-searchbar [value]="machineryName" (keyup)="searchMachinery($event.target.value)" (ionClear)="cleanMachinerySearch()" placeholder="Buscar"></ion-searchbar>
     </ion-item>
@@ -61,21 +61,6 @@
       </ion-item>
     </ion-list>
 
-    <!-- Trabajador -->
-    <ion-item>
-      <ion-label position="stacked">Trabajador</ion-label>
-      <ion-searchbar [value]="workerName" (keyup)="searchWorker($event.target.value)" (ionClear)="cleanWorkerSearch()" placeholder="Buscar"></ion-searchbar>
-    </ion-item>
-    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('workerId').hasError('required')">
-      Seleccione un Trabajador
-    </ion-text>
-
-    <ion-list class="searchbar-results-list" *ngIf="filteredWorkers.length > 0">
-      <ion-item *ngFor="let worker of filteredWorkers" (click)="selectWorker(worker)">
-        {{ worker.nombre | titlecase }}
-      </ion-item>
-    </ion-list>
-
     <!-- COST CENTER -->
     <ion-item>
       <ion-label position="stacked">Centro de Costo</ion-label>
@@ -91,10 +76,26 @@
       </ion-item>
     </ion-list>
 
+    <!-- Operador -->
+    <ion-item>
+      <ion-label position="stacked">Operador</ion-label>
+      <ion-searchbar [value]="workerName" (keyup)="searchWorker($event.target.value)" (ionClear)="cleanWorkerSearch()" placeholder="Buscar"></ion-searchbar>
+    </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('workerId').hasError('required')">
+      Seleccione un Operador
+    </ion-text>
+
+    <ion-list class="searchbar-results-list" *ngIf="filteredWorkers.length > 0">
+      <ion-item *ngFor="let worker of filteredWorkers" (click)="selectWorker(worker)">
+        {{ worker.name | titlecase }}
+      </ion-item>
+    </ion-list>
+
     <!-- Cantidad -->
     <ion-item>
-      <ion-label position="stacked">Cantidad</ion-label>
+      <ion-label>Cantidad</ion-label>
       <ion-input formControlName="quantity" type="number"></ion-input>
+      <ion-badge slot="end">{{ machineryUnitCode | uppercase  }}</ion-badge>
     </ion-item>
     <ng-container *ngIf="machineryForm.get('quantity').dirty">
       <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">
@@ -108,11 +109,17 @@
       </ion-text>
     </ng-container>
 
-    <!-- Unidad -->
-    <ion-item>
-      <ion-label position="stacked">Unidad</ion-label>
-      <ion-input readonly="true" [value]="unitName"></ion-input>
+     <!-- Rendimiento -->
+     <ion-item>
+      <ion-label>Rendimiento</ion-label>
+      <ion-input formControlName="performance" type="number"></ion-input>
+      <ion-badge slot="end">{{ laborUnitCode | uppercase }}</ion-badge>
     </ion-item>
+    <ng-container *ngIf="machineryForm.get('performance').dirty">
+      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('performance').hasError('pattern')">
+        Ingrese valores con . y maximo 3 decimales
+      </ion-text>
+    </ng-container>
   </form>
 </ion-content>
 

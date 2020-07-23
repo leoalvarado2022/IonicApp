@@ -1,12 +1,16 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {TabMenu, Quadrille} from '@primetec/primetec-angular';
+import {TabMenu} from '@primetec/primetec-angular';
 import {SyncService} from '../../shared/services/sync/sync.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { NetworkService } from 'src/app/shared/services/network/network.service';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
+import { HttpClient } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
+import { error } from 'protractor';
+import { resolve } from 'dns';
 
 @Component({
   selector: 'app-menu-list',
@@ -19,6 +23,8 @@ export class MenuListPage implements OnInit, OnDestroy {
   private workers: Array<any> = [];
   private firstLoad = true;
 
+  public readonly defaultIcon = "/assets/svg_icons/default.svg";
+
   private isOnline: boolean;
   private network$: Subscription;
   private step$: Subscription;
@@ -30,7 +36,8 @@ export class MenuListPage implements OnInit, OnDestroy {
     private storageSyncService: StorageSyncService,
     private networkService: NetworkService,
     public stepperService: StepperService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private httpClient: HttpClient
   ) {
 
   }
@@ -68,7 +75,7 @@ export class MenuListPage implements OnInit, OnDestroy {
         this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
         this.storageSyncService.getWorkers(),
       ]).then(data => {
-        this.menus = [...data[0]];
+        this.processMenu(data[0]);
         const quadrilles = data[1].map(q => q.id);
         this.workers = data[2].filter(x => quadrilles.includes(x.quadrille))  || [];
       });
@@ -115,11 +122,35 @@ export class MenuListPage implements OnInit, OnDestroy {
 
 
   /**
-   * getIconUrl
-   * @param url
+   * processMenu
+   * @param menus
    */
-  public getIconUrl = (url: string): string => {
-    return `/assets/svg_icons/${url}.svg`;
+  private processMenu = async (menus: Array<TabMenu>) => {
+    for (let index = 0; index < menus.length; index++) {
+      const itemIcon = `/assets/svg_icons/${menus[index].icon_url}.svg`;
+      menus[index].icon_url = await this.checkIcon(itemIcon);;
+    }
+
+    this.menus = [...menus];
+  }
+
+  /**
+   * checkIcon
+   * @param path
+   */
+  private checkIcon = (path: string): Promise<string> =>  {
+    return new Promise(resolve => {
+      this.httpClient.get(path).subscribe( success => {
+        console.log('success')
+        resolve(path);
+      }, error => {
+        if(error.status === 200){
+          resolve(path);
+        }
+
+        resolve(this.defaultIcon);
+      });
+    })
   }
 
 }

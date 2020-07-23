@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { IonItemSliding } from '@ionic/angular';
 
 @Component({
   selector: 'app-contracts-list',
@@ -111,27 +112,26 @@ export class ContractsListPage implements OnInit, OnDestroy {
   }
 
   /**
-   * editContractEvent
-   * @param data
+   * editContract
+   * @param contract
+   * @param slide
    */
-  public editContractEvent = async (data: any) => {
-    const {contract, slide} = data;
+  public editContract = async (contract: ContractListItem, slide: IonItemSliding) => {
     slide.close();
-
     await this.contractForm(contract.id);
   }
 
   /**
    * deleteContract
-   * @param data
+   * @param contract
+   * @param slide
    */
-  public deleteContract = async (data: any): Promise<void> => {
-    const {contract, slide} = data;
-    slide.close();
-
+  public deleteContract = async (contract: any, slide: IonItemSliding): Promise<void> => {
     const sayYes = await this.alertService.confirmAlert('Seguro que desea borrar este pre-contrato?');
     if (sayYes) {
-      const newData = await this.storageSyncService.deletePreContractFromStorage(data.id);
+      slide.close();
+
+      const newData = await this.storageSyncService.deletePreContractFromStorage(contract.id);
       const preContractsMapped = newData.map(item => this.contractsService.mapPreContractToBeListed(item));
       this.contracts = [...preContractsMapped];
       this.filteredContracts = [...this.contracts];

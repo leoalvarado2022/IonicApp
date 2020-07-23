@@ -3,12 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 import {iosDeviceNames} from './ios-device-names';
+import { version } from './version';
 
 export const environment = {
   production: false,
   app_name: 'FX10',
   api_url: 'http://127.0.0.1:5572',
-  appVersion: 'v1.0.93',
+  appVersion: version.number,
   tz: 'America/Santiago',
   iosDeviceNames,
   syncTimerMinutes: 10

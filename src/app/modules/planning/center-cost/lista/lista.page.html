@@ -1,7 +1,8 @@
-<ion-content>
-
+<ion-header>
   <ion-refresher class="refresher-position" (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
+</ion-header>
 
+<ion-content>
   <ion-searchbar
     placeholder="Buscar..."
     animated
@@ -16,10 +17,30 @@
   </ng-container>
 
   <ng-container *ngIf="!isLoading">
-    <ion-virtual-scroll [items]="filteredCostCenters" approxItemHeight="180px">
-      <div *virtualItem="let item">
-        <app-cost-center-card (cardClicked)="costCenterSelected($event)" [costCenter]="item"></app-cost-center-card>
-      </div>
+    <ion-virtual-scroll [items]="filteredCostCenters">
+      <ion-card *virtualItem="let item" class="card-item" (click)="costCenterSelected(item)">
+        <ion-item lines="full">
+          <ion-badge slot="start" color="primary">{{ item.code | uppercase }}</ion-badge>
+          <ion-label>
+            {{ item.name }}
+          </ion-label>
+          <ion-badge slot="end" color="primary"># {{ item.contractDocumentNumber }}</ion-badge>
+        </ion-item>
+
+        <ion-card-content>
+          <p>{{ item.producerName }}</p>
+          <p> {{ item.speciesName }} <strong>/</strong> {{ item.varietyName }}</p>
+          <p *ngIf="item.contractResponsible">{{ item.contractResponsible }}</p>
+          <p class="bottom__date"> <strong>Fecha Inicio Cosecha</strong>: {{ item.harvestDate | customDate }}</p>
+
+          <ion-chip class="ion-float-end">
+            <ion-icon name="clipboard" color="success"></ion-icon>
+            <ion-label>{{ item.contractsNumber }}</ion-label>
+          </ion-chip>
+        </ion-card-content>
+      </ion-card>
+
+
     </ion-virtual-scroll>
   </ng-container>
 

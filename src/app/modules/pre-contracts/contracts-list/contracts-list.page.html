@@ -33,26 +33,40 @@
     <ion-badge slot="end"  color="primary">{{ filteredContracts.length }}</ion-badge>
   </ion-item>
 
-  <ng-container *ngIf="isLoading">
-    <h1 class="ion-text-center">Cargando...</h1>
-  </ng-container>
+  <ion-virtual-scroll [items]="filteredContracts">
+    <ion-item-sliding *virtualItem="let contract" #slide>
+      <ion-item lines="none" class="slide-item">
+        <ion-card>
+          <ion-item lines="full">
+            <ion-icon slot="start" name="document" color="primary"></ion-icon>
+            <ion-label>
+              {{ contract.workerName + ' ' + contract.workerLastName + ' ' + contract.workerSurname | titlecase }}
+            </ion-label>
+            <ion-icon *ngIf="contract.id < 1" name="server" slot="end" color="danger"></ion-icon>
+          </ion-item>
 
-  <ng-container *ngIf="!isLoading">
-    <ion-virtual-scroll [items]="filteredContracts">
-      <div *virtualItem="let contract">
-        <app-contract-list-item
-          [contract]="contract"
-          (editContractEvent)="editContractEvent($event)"
-          (deleteContractEvent)="deleteContract($event)">
-        </app-contract-list-item>
-      </div>
-    </ion-virtual-scroll>
+          <ion-card-content>
+            <p> <strong>Tipo Contrato:</strong> {{ contract.contractTypeName | titlecase }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
 
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button size="small" (click)="contractForm()">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-  </ng-container>
+      <ion-item-options side="end">
+        <ion-item-option color="warning" (click)="editContract(contract, slide)">
+          <ion-icon slot="icon-only" name="pencil"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteContract(contract, slide)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-virtual-scroll>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button size="small" (click)="contractForm()" [disabled]="isLoading">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 
 </ion-content>

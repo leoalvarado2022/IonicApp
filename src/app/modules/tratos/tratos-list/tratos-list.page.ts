@@ -19,15 +19,18 @@ export class TratosListPage {
   deals: any = [];
   tallyTemp = [];
 
-  constructor(public modalController: ModalController,
-              private _router: Router,
-              private _DealService: DealsService,
-              private _storeService: StoreService,
-              private _storageSyncService: StorageSyncService,
-              private _changeDetect: ChangeDetectorRef) {
+  constructor(
+    public modalController: ModalController,
+    private _router: Router,
+    private _DealService: DealsService,
+    private _storeService: StoreService,
+    private _storageSyncService: StorageSyncService,
+    private _changeDetect: ChangeDetectorRef
+  ) {
+
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.loadData();
   }
 
@@ -47,44 +50,14 @@ export class TratosListPage {
    * @description load data , phone db
    */
   loadData() {
-    Promise.all([
-      this._DealService.getDealsTemp(),
-      this._DealService.getDeals()
-    ]).then(data => {
-      // console.log(data, 'data');
-      let dealsToRecord = data[0];
-      if (dealsToRecord.length) {
-        // buscar el usuario logueado
-        const user = this._storeService.getUser();
+    const user = this._storeService.getUser();
 
-        /// filtrar por usuario
-        dealsToRecord = dealsToRecord.filter(value => value.user.id === user.id);
+    this._DealService.getTempDealsByUser(user.id).then( (tempDeals: Array<any>) => {
+      this.deals = tempDeals;
 
-        // comparar que exista en la lista
-        const deals = data[0];
-
-        let arr = [];
-
-        if (dealsToRecord.length) {
-          // recorrer lista filtrada
-          for (const d of dealsToRecord) {
-            // buscar si existe en la  lista de tratos activos
-            const new$ = deals.find(value => value.id === d.id);
-            // si existe sigue apareciendo
-            if (new$) {
-              arr.push(d);
-            } else {
-              // lo elimina del temporal si no existe
-              this._DealService.removeDealsTemp(d.id).then();
-            }
-          }
-        }
-
-        this.deals = [...arr];
-        // mapear deals
-        this.mapDeals();
-        this._changeDetect.detectChanges();
-      }
+      // mapear deals
+      this.mapDeals();
+      this._changeDetect.detectChanges();
     });
   }
 
@@ -169,8 +142,7 @@ export class TratosListPage {
   };
 
   goToRegister = (item: any) => {
-    this._DealService.setDealLocal(item);
-    this._router.navigate(['home-page/tarja_tratos/add-center-cost']);
+    this._router.navigate(['home-page/tarja_tratos/add-center-cost', item.id]);
   };
 
   /**

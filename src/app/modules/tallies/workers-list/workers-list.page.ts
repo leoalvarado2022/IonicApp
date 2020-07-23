@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
-import { StepNames } from 'src/app/services/storage/step-names';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +10,6 @@ import { ModalController } from '@ionic/angular';
 import { CostCenterList } from '@primetec/primetec-angular';
 import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
 import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-form-multiple.component';
-import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-workers-list',
@@ -75,6 +73,12 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stepper$.unsubscribe();
+  }
+
+  ionViewDidEnter () {
+    if (!this.firstLoad) {
+      this.minimunDataReload();
+    }
   }
 
   /**
@@ -324,6 +328,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * @param id
    */
   public goToWorkerTallyList = (id: number): void => {
+    this.selectedWorkers = [];
     this.router.navigate(['/home-page/tallies-list', id, this.currentDate]);
   }
 
@@ -403,6 +408,9 @@ export class WorkersListPage implements OnInit, OnDestroy {
 
     // START LOADING
     this.isLoading = true;
+    this.selectedWorkers = [];
+    this.syncedTallies = [];
+    this.talliesToRecord = [];
 
     Promise.all([
       this.storageSyncService.getTallies(),
@@ -410,7 +418,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
     ]).then( data => {
 
       // Workers
-      this.selectedWorkers = [];
+
 
       // Tallies
       this.syncedTallies = [...data[0]];
@@ -419,7 +427,6 @@ export class WorkersListPage implements OnInit, OnDestroy {
       // END LOADING
       this.isLoading = false;
     });
-
   }
 
 }

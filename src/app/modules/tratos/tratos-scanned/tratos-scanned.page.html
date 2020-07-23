@@ -4,7 +4,7 @@
       <ion-back-button class="header-back-button" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>
-      <strong>{{centerCost?.deal?.name_deal}}</strong>
+      <strong *ngIf="!isLoading">{{centerCost.deal.name_deal}}</strong>
     </ion-title>
     <ion-buttons slot="end">
       <app-toolbar-buttons></app-toolbar-buttons>
@@ -20,64 +20,69 @@
       </ion-button>
     </ion-col>
   </ion-row>
+  <ng-container *ngIf="isLoading">
+    CARGANDO
+  </ng-container>
 
-  <div class="content-box">
-    <div class="sub-title"><strong>Labor:</strong> {{centerCost?.deal?.name_labor}}</div>
-    <div class="sub-title"><strong>Centro:</strong> {{centerCost?.center_cost?.name}}</div>
-    <div class="sub-title"><strong>Fecha:</strong> {{centerCost?.currentDate | date : 'dd/MM/yyyy'}}</div>
-    <div class="sub-title"><strong>{{centerCost?.deal?.unit_control}}:</strong> {{centerCost?.unit_control_count || 0}}
+  <ng-container *ngIf="!isLoading">
+    <div class="content-box">
+      <div class="sub-title"><strong>Labor:</strong> {{centerCost?.deal?.name_labor}}</div>
+      <div class="sub-title"><strong>Centro:</strong> {{centerCost?.center_cost?.name}}</div>
+      <div class="sub-title"><strong>Fecha:</strong> {{centerCost?.currentDate | date : 'dd/MM/yyyy'}}</div>
+      <div class="sub-title"><strong>{{centerCost?.deal?.unit_control}}:</strong> {{centerCost?.unit_control_count || 0}}
+      </div>
     </div>
-  </div>
 
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <ion-button size="block" color="warning" (click)="escaneoOne()">
-          escaneo 1
-        </ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button size="block" color="warning" (click)="escaneoTwo()">
-          escaneo 2
-        </ion-button>
-      </ion-col>
-      <ion-col>
-        <ion-button size="block" color="warning" (click)="escaneoThree()">
-          escaneo 3
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button size="block" color="warning" (click)="escaneoOne()">
+            escaneo 1
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button size="block" color="warning" (click)="escaneoTwo()">
+            escaneo 2
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button size="block" color="warning" (click)="escaneoThree()">
+            escaneo 3
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
-  <ion-card *ngIf="worker" style="width: 98%;margin-bottom: 5px;">
-    <ion-card-content>
-      <ion-grid>
-        <ion-row>
-          <ion-col size="4">
-            <img src="assets/imgs/contract/tally-success-icon.png" *ngIf="exist" style="width: 90%">
-            <img src="assets/imgs/contract/tally-unsuccess-icon.png" *ngIf="!exist" style="width: 90%">
-          </ion-col>
-          <ion-col size="8" style="text-align: center;">
-            <span class="title-performance" *ngIf="exist">{{workersSuccess[0] ? workersSuccess[0].count : 0}}</span>
-            <div *ngIf="!exist" style="padding-top: 14%;">{{worker}}</div>
-            <div class="title-row" *ngIf="worker.indexOf('No existe') === -1">{{worker}}</div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-list class="ion-list-worker">
-    <ion-card *ngFor="let worker of workersSuccess" class="ion-card-worker">
-      <ion-item>
-        <ion-avatar slot="start">
-          <img src="assets/imgs/contract/worker-icon.png">
-        </ion-avatar>
-        <ion-label>
-          {{ worker.name | titlecase }}
-        </ion-label>
-        <ion-badge slot="end" color="default">{{ worker.count }}</ion-badge>
-      </ion-item>
+    <ion-card *ngIf="worker" style="width: 98%;margin-bottom: 5px;">
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <img src="assets/imgs/contract/tally-success-icon.png" *ngIf="exist" style="width: 90%">
+              <img src="assets/imgs/contract/tally-unsuccess-icon.png" *ngIf="!exist" style="width: 90%">
+            </ion-col>
+            <ion-col size="8" style="text-align: center;">
+              <span class="title-performance" *ngIf="exist">{{workersSuccess[0] ? workersSuccess[0].count : 0}}</span>
+              <div *ngIf="!exist" style="padding-top: 14%;">{{worker}}</div>
+              <div class="title-row" *ngIf="worker.indexOf('No existe') === -1">{{worker}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
     </ion-card>
-  </ion-list>
+
+    <ion-list class="ion-list-worker">
+      <ion-card *ngFor="let worker of workersSuccess" class="ion-card-worker">
+        <ion-item>
+          <ion-avatar slot="start">
+            <img src="assets/imgs/contract/worker-icon.png">
+          </ion-avatar>
+          <ion-label>
+            {{ worker.name | titlecase }}
+          </ion-label>
+          <ion-badge slot="end" color="default">{{ worker.count }}</ion-badge>
+        </ion-item>
+      </ion-card>
+    </ion-list>
+  </ng-container>
 </ion-content>

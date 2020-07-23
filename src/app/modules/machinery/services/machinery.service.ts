@@ -4,6 +4,7 @@ import { StorageKeys } from 'src/app/services/storage/storage-keys';
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { HttpClient } from '@angular/common/http';
 import { Machinery } from '../machinery.interface';
+import * as moment from 'moment';
 
 @Injectable()
 export class MachineryService {
@@ -27,13 +28,6 @@ export class MachineryService {
     return this.httpClient.post(url, this.httpService.buildBody({machinery, user}), {headers: this.httpService.getHeaders()});
   }
 
-  /**
-   * getWorkers
-   */
-  public getWorkers = (user: any) => {
-    const url = this.httpService.buildUrl(this.getWorkersUrl);
-    return this.httpClient.post(url, this.httpService.buildBody({user}), {headers: this.httpService.getHeaders()});
-  }
 
   /**
    * getTempId
@@ -99,22 +93,6 @@ export class MachineryService {
   }
 
   /**
-   * getMachineryToRecordByCompany
-   * @param companyId
-   * @param date
-   */
-  /*
-  public getMachineryToRecordByCompany = (companyId: number, date: string): Promise<Array<Machinery>> => {
-    return this.getMachineryToRecord().then( (machineryToRecord: Array<Machinery>) => {
-      return machineryToRecord.filter(item => {
-        const splitDate = item.date.split('T')[0];
-        return item.companyId === companyId && date === splitDate;
-      });
-    });
-  }
-  */
-
-  /**
    * addMachinery
    * @param machinery
    */
@@ -168,6 +146,24 @@ export class MachineryService {
   public markMachineryToDelete = (machinery: Machinery): Promise<Array<Machinery>> => {
     const toDelete = Object.assign({}, machinery, { id: ( machinery.id * -1), status: 'delete' });
     return this.addMachinery(toDelete);
+  }
+
+  /**
+   * getWorkers
+   * @param companyId
+   * @param date
+   */
+  public getWorkers = (companyId: number, date: string): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Workers).then( (workers: Array<any>) => {
+      if (workers) {
+        return workers.filter(item => {
+          const valid = moment(date).isBetween(moment(item.startDate), moment(item.endDate), null, '[]');
+          return valid && item.company === companyId;
+        });
+      }
+
+      return [];
+    });
   }
 
 }

@@ -1,9 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ValidateRut} from '@primetec/primetec-angular';
 import {StoreService} from '../../../shared/services/store/store.service';
-import {DeviceSyncService} from '../../../services/storage/device-sync/device-sync.service';
 import {DealsService} from '../services/deals/deals.service';
 
 @Component({
@@ -13,8 +11,10 @@ import {DealsService} from '../services/deals/deals.service';
 })
 export class AddTratoPage implements OnInit {
 
-  @Input() deals: any;
+  @Input() deals: Array<any>;
+  public filteredDeals: Array<any> = [];
 
+  public dealName: string;
   public activeForm: FormGroup;
 
   constructor(
@@ -98,17 +98,39 @@ export class AddTratoPage implements OnInit {
   }
 
   /**
-   * @description select change value
-   * @param event
+   * searchDeal
+   * @param search
    */
-  public change(event: any) {
-    const deal = this.deals.find(data => data.id === event.target.value);
-
-    if (deal) {
-      this.activeForm.patchValue({
-        name_labor: deal.name_labor,
-        unit_control: deal.unit_control
-      });
+  public searchDeal = (search: string): void => {
+    if (search) {
+      this.filteredDeals = this.deals.filter(item => item.name_deal.toLowerCase().includes(search.toLowerCase()));
+    } else {
+      this.filteredDeals = [];
     }
   }
+
+  /**
+   * cleanDealSearch
+   */
+  public cleanDealSearch = (): void => {
+    this.activeForm.get('id').patchValue('');
+    this.filteredDeals = [];
+    this.dealName = null;
+  }
+
+  /**
+   * selectDeal
+   * @param deal
+   */
+  public selectDeal = (deal: any): void => {
+    this.activeForm.patchValue({
+      id: deal.id,
+      name_labor: deal.name_labor,
+      unit_control: deal.unit_control
+    });
+
+    this.dealName = deal.name_deal;
+    this.filteredDeals = [];
+  }
+
 }

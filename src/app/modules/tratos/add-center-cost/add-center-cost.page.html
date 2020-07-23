@@ -4,13 +4,14 @@
       <ion-back-button class="header-back-button" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>
-      <strong>{{deal?.name_deal}}</strong>
+      <strong>{{ deal ? deal.name_deal : 'Cargando...' }}</strong>
     </ion-title>
     <ion-buttons slot="end">
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content>
 
@@ -56,15 +57,17 @@
         </ion-list>
       </ion-col>
 
-      <ion-col *ngIf="deal.count" size="12">
-        <ion-item lines="none">
-          <ion-label position="floating">{{deal.unit_control}}</ion-label>
-          <ion-input formControlName="unit_control_count" type="number"></ion-input>
-          <ion-text color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
-            Ingrese {{deal.unit_control}}
-          </ion-text>
-        </ion-item>
-      </ion-col>
+      <ng-container *ngIf="deal">
+        <ion-col *ngIf="deal.count" size="12">
+          <ion-item lines="none">
+            <ion-label position="floating">{{deal.unit_control}}</ion-label>
+            <ion-input formControlName="unit_control_count" type="number"></ion-input>
+            <ion-text color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
+              Ingrese {{deal.unit_control}}
+            </ion-text>
+          </ion-item>
+        </ion-col>
+      </ng-container>
 
       <ion-col size="12">
         <ion-item lines="none">
@@ -72,7 +75,6 @@
           <ion-checkbox slot="end" formControlName="automatic"></ion-checkbox>
         </ion-item>
       </ion-col>
-
     </ion-row>
   </form>
 </ion-content>
@@ -82,3 +84,4 @@
     Escanear
   </ion-button>
 </ion-footer>
+

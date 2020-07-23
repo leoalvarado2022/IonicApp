@@ -11,7 +11,7 @@ const routes: Routes = [
     component: TratosListPage
   },
   {
-    path: 'add-center-cost',
+    path: 'add-center-cost/:id',
     component: AddCenterCostPage
   },
   {

@@ -17,17 +17,22 @@ import {Router} from '@angular/router';
 })
 export class TratosScannedPage implements OnInit, OnDestroy {
 
-  centerCost: any;
-  workersSuccess = [];
-  worker = '';
-  devices: any;
-  workers: any;
-  exist: boolean = true;
-  notSupported = false;
-  $listener: Subscription;
+  public centerCost: any;
+  public workersSuccess = [];
+  public worker = '';
+  private devices: any;
+  private workers: any;
+  public exist: boolean = true;
+  public notSupported = false;
+  private listener$: Subscription;
 
   //temp
-  tallyTemp = [];
+  public tallyTemp = [];
+  private syncedTallies: Array<any> = [];
+  public previousPerformance: Array<any> = [];
+
+  public isLoading = false;
+  public isCordova = false;
 
   constructor(
     public _modalController: ModalController,
@@ -45,57 +50,90 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.centerCost = this._dealService.getDataScanned();
+    this.isLoading = true;
 
-    if (!this.centerCost) {
-      this._route.navigate(['home-page']);
-      return;
-    }
+    this._platform.ready().then( () => {
+      this.isCordova = this._platform.is('cordova');
 
-    Promise.all([
-      this._storageSyncService.getDevices(),
-      this._storageSyncService.getWorkers()
-    ]).then(data => {
-      this.devices = data[0];
-      this.workers = data[1];
-    });
-
-    this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3').then(() => {
-    }).catch((ex) => {
-      console.log(ex);
-    });
-    this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3').then(() => {
-    }).catch((ex) => {
-      console.log(ex);
-    });
-
-    this._storageSyncService.getTallyTemp().then(data => {
-      if (data && data.length) {
-        this.tallyTemp = data;
-        this.openNFCScanner();
+      if (this.isCordova) {
+        Promise.all([
+          this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3'),
+          this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
+        ]).then();
       }
     });
+
+    this.loadData();
   }
 
   /**
    * desacativar audios y unsuscribe data de la lista
    */
   ngOnDestroy(): void {
-    if (this.$listener) {
-      this.$listener.unsubscribe();
+    if (this.isCordova) {
+      Promise.all([
+        this.nativeAudio.unload('beep'),
+        this.nativeAudio.unload('error')
+      ]).then();
     }
-    this.nativeAudio.unload('beep').then(() => {
-    });
-    this.nativeAudio.unload('error').then(() => {
+
+    if (this.listener$) {
+      this.listener$.unsubscribe();
+    }
+  }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    this.isLoading = true;
+    this.centerCost = null;
+
+    Promise.all([
+      this._dealService.getActiveDeal(),
+      this._storageSyncService.getDevices(),
+      this._storageSyncService.getWorkers(),
+      this._storageSyncService.getTallyTemp(),
+      this._storageSyncService.getTallies()
+    ]).then( data => {
+      this.centerCost = data[0];
+      this.devices = data[1];
+      this.workers = this.filterWorkersByValidity(this.centerCost.currentDate, data[2]);
+      this.tallyTemp = data[3];
+      this.syncedTallies = data[4];
+
+      this.workers.forEach(worker => {
+
+        // Process tallies on memory
+        const tempTallies = this.getWorkerTempTallies(worker);
+        const tempPerformance = this.getTempTalliesPerformance(tempTallies);
+
+        // Process tallies on sync
+        const syncedTallies = this.getWorkerSyncedTallies(worker);
+        const syncedPerformance = this.getSyncedTalliesPerformance(syncedTallies);
+
+        // Total Performance
+        const total = tempPerformance + syncedPerformance;
+
+        // If worker has tallies
+        if (tempTallies.length || syncedTallies.length) {
+          // Add
+          this.addPreviousPerformance(worker, total);
+        }
+      });
+
+
+      this.isLoading = false;
+      this._changeDetectorRef.detectChanges();
     });
   }
 
   /**
    * @description abrir el escaner
    */
-  openNFCScanner() {
-    if (this.$listener) {
-      this.$listener.unsubscribe();
+  public openNFCScanner() {
+    if (this.listener$) {
+      this.listener$.unsubscribe();
     }
 
     if (this._platform.is('desktop') || this._platform.is('mobileweb')) {
@@ -107,7 +145,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       return;
     }
 
-    this.$listener =
+    this.listener$ =
       this._nfc
         .addTagDiscoveredListener(success => console.log(success, 'success'), onFailure => {
           if (onFailure === 'NFC_DISABLED') {
@@ -131,12 +169,10 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @param id
    */
   async pullDevice(id: any) {
-
     if (!this.centerCost) {
       this._route.navigate(['home-page']);
       return;
     }
-
 
     if (this.centerCost.automatic) {
       this.setInfo(id);
@@ -186,6 +222,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       this.worker = `No existe trabajador con el dispositivo ${id}`;
       this.exist = false;
     }
+
     this._changeDetectorRef.detectChanges();
   }
 
@@ -195,8 +232,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @param worker
    */
   setScanned(worker: any = null) {
-    // console.log(worker, 'worker', this.centerCost, 'centerCost');
-
     if (worker !== null) {
       if (this.centerCost.deal.count) {
         this.forCount(worker);
@@ -216,34 +251,27 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * cuando es por conteo
    * @param worker
    */
-  forCount(worker: any) {
-    // console.log(this.devices, 'devices');
-    // console.log(worker, 'worker');
-    // console.log(this.centerCost, 'centerCost');
-    // console.log(this.tallyTemp, 'tallyTemp');
-
+  private forCount = (worker: any) => {
     // calcular el rendimiento
-    let performance = this.centerCost.unit_control_count;
-    // si existe mas lo suma
-    if (this.tallyTemp.length) {
-      // filtrar por worker
-      const tallyTemp = this.tallyTemp.filter(value => value.id_par_entidades_trabajador === worker.id &&
-        value.id_par_centros_costos === this.centerCost.center_cost_id &&
-        value.id_par_tratos_vigencias === this.centerCost.deal?.id_deal_validity);
 
-      // console.log(tallyTemp, 'tallyTemp.filter')
-      // si hay le suma solo a el
-      if (tallyTemp.length) {
-        performance = tallyTemp
-          .map(obj => obj.rendimiento || 0)
-          .reduce((sum, current) => sum + current) + this.centerCost.unit_control_count;
-      }
-    }
+    // Process tallies on memory
+    const tempTallies = this.getWorkerTempTallies(worker);
+    const tempPerformance = this.getTempTalliesPerformance(tempTallies) + this.centerCost.unit_control_count;
+
+    // Process tallies on sync
+    const syncedTallies = this.getWorkerSyncedTallies(worker);
+    const syncedPerformance = this.getSyncedTalliesPerformance(syncedTallies);
+
+    // Total Performance
+    const performance = tempPerformance + syncedPerformance;
 
     // enviar a la lista
     this.pushPerformance(worker, performance);
+
     // enviar la tarja
     this.pushTally(worker);
+
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
@@ -278,28 +306,24 @@ export class TratosScannedPage implements OnInit, OnDestroy {
               return;
             }
 
-            let performanceTotal = 0;
-            // si existe mas lo suma
-            if (this.tallyTemp.length) {
+            // Process tallies on memory
+            const tempTallies = this.getWorkerTempTallies(worker);
+            const tempPerformance = this.getTempTalliesPerformance(tempTallies) + performance;
 
-              // filtrar por worker
-              const tallyTemp = this.tallyTemp.filter(value => value.id_par_entidades_trabajador === worker.id &&
-                value.id_par_centros_costos === this.centerCost.center_cost_id &&
-                value.id_par_tratos_vigencias === this.centerCost.deal?.id_deal_validity);
+            // Process tallies on sync
+            const syncedTallies = this.getWorkerSyncedTallies(worker);
+            const syncedPerformance = this.getSyncedTalliesPerformance(syncedTallies);
 
-              if (tallyTemp.length) {
-                performanceTotal = tallyTemp.map(obj => obj.rendimiento || 0)
-                  .reduce((sum, current) => sum + current) + performance;
-
-                  console.log('performanceTotal', performanceTotal);
-              }
-            }
+            // Total Performance
+            const performanceTotal = tempPerformance + syncedPerformance;
 
             // console.log('performance', performance);
             // enviar a la lista
             this.pushPerformance(worker, performanceTotal);
             // enviar la tarja
             this.pushTally(worker, performance);
+
+            this._changeDetectorRef.detectChanges();
           }
         }
       ]
@@ -342,17 +366,21 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @param performance
    */
   pushPerformance(worker: any, performance: number) {
-    const list = this.workersSuccess.find(value => value.id === worker.id);
+    const findIndex = this.workersSuccess.findIndex(value => value.id === worker.id);
 
-    if (list) {
-      const index = this.workersSuccess.indexOf(list);
-      this.workersSuccess.splice(index, 1);
+    if (findIndex > -1) {
+      this.workersSuccess[findIndex] = Object.assign({}, this.workersSuccess[findIndex], {
+        count: performance
+      });
+    } else {
+      this.workersSuccess.unshift({
+        name: worker.names,
+        count: performance,
+        id: worker.id
+      });
     }
-    this.workersSuccess.unshift({
-      name: worker.names,
-      count: performance,
-      id: worker.id
-    });
+
+    this._changeDetectorRef.detectChanges();
   }
 
   /**
@@ -379,4 +407,95 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     console.log('escaneoThree', id);
     this.pullDevice(id);
   }
+
+  /**
+   * filterWorkersByValidity
+   * @param date
+   * @param workers
+   */
+  private filterWorkersByValidity = (date: string, workers: Array<any>): Array<any> => {
+    return workers.filter( worker => {
+      const startDate = moment.utc(worker.startDate);
+      const endDate =  moment.utc(worker.endDate);
+
+      return moment(date).isBetween(startDate, endDate);
+    });
+  }
+
+  /**
+   * addPreviousPerformance
+   * @param worker
+   * @param performance
+   */
+  private addPreviousPerformance = (worker: any, performance: number) => {
+    const findIndex = this.workersSuccess.findIndex(item => item.id === worker.id);
+
+    if (findIndex > -1) {
+      const currentPerformance = this.workersSuccess[findIndex].count;
+      this.workersSuccess[findIndex] = Object.assign({}, this.workersSuccess[findIndex], {
+        count: currentPerformance + performance
+      });
+    }else {
+      this.workersSuccess.unshift({
+        name: worker.names,
+        count: performance,
+        id: worker.id
+      });
+    }
+  }
+
+  /**
+   * getWorkerTempTallies
+   * @param worker
+   */
+  private getWorkerTempTallies = (worker: any): Array<any> => {
+    return this.tallyTemp.filter(item => {
+      return item.id_par_entidades_trabajador === worker.id &&
+        item.id_par_centros_costos === this.centerCost.center_cost_id &&
+        item.id_par_tratos_vigencias === this.centerCost.deal?.id_deal_validity &&
+        item.fecha === this.centerCost.currentDate
+    });
+  }
+
+  /**
+   * getWorkerSyncedTallies
+   * @param worker
+   */
+  private getWorkerSyncedTallies = (worker: any) => {
+    return this.syncedTallies.filter(item => {
+      const splitDate = item.date.split("T")[0];
+
+      return item.workerId === worker.id &&
+        item.costCenterId === this.centerCost.center_cost_id &&
+        item.dealValidity === this.centerCost.deal?.id_deal_validity &&
+        splitDate === this.centerCost.currentDate
+    });
+  }
+
+  /**
+   * getTempTalliesPerformance
+   * @param tempTallies
+   */
+  private getTempTalliesPerformance = (tempTallies: Array<any>): number => {
+    if (tempTallies.length > 0) {
+      return tempTallies.map(obj => obj.rendimiento || 0).reduce((sum, current) => sum + current);
+    }
+
+    return 0;
+  }
+
+  /**
+   * getSyncedTalliesPerformance
+   * @param syncedTallies
+   */
+  private getSyncedTalliesPerformance = (syncedTallies: Array<any>): number =>  {
+    if (syncedTallies.length > 0) {
+      return syncedTallies.map(obj => obj.performance || 0).reduce((sum, current) => sum + current);
+    }
+
+    return 0;
+  }
+
+  private getOverAllPerformance
+
 }

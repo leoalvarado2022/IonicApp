@@ -93,8 +93,8 @@
 
     <!-- Cantidad -->
     <ion-item>
-      <ion-label>Cantidad</ion-label>
-      <ion-input formControlName="quantity" type="number"></ion-input>
+      <ion-label>Cantidad:</ion-label>
+      <ion-input class="input-number" formControlName="quantity" type="number"></ion-input>
       <ion-badge slot="end">{{ machineryUnitCode | uppercase  }}</ion-badge>
     </ion-item>
     <ng-container *ngIf="machineryForm.get('quantity').dirty">
@@ -111,8 +111,8 @@
 
      <!-- Rendimiento -->
      <ion-item>
-      <ion-label>Rendimiento</ion-label>
-      <ion-input formControlName="performance" type="number"></ion-input>
+      <ion-label>Rendimiento:</ion-label>
+      <ion-input class="input-number" formControlName="performance" type="number"></ion-input>
       <ion-badge slot="end">{{ laborUnitCode | uppercase }}</ion-badge>
     </ion-item>
     <ng-container *ngIf="machineryForm.get('performance').dirty">

@@ -296,16 +296,18 @@ export class MachineryListPage implements OnInit, OnDestroy {
     const access = this.storeService.getAccess();
     const date = moment(this.currentDate).format('YYYY-MM-DD');
 
-    Promise.all([
-      this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
-      this.machineryService.getWorkers(this.activeCompany.id, date)
-    ]).then( (data: any) => {
-      this.originalMachinery = [...data[0]];
-      this.filteredMachinery = [...data[0]];
-      this.workers = [...data[1]];
+    setTimeout(() => {
+      Promise.all([
+        this.machineryService.getMachineryByCompany(this.activeCompany.id, this.activeCompany.user, date, !!access.find(x => x.functionality === 5)),
+        this.machineryService.getWorkers(this.activeCompany.id, date)
+      ]).then( (data: any) => {
+        this.originalMachinery = [...data[0]];
+        this.filteredMachinery = [...data[0]];
+        this.workers = [...data[1]];
 
-      this.isLoading = false;
-    });
+        this.isLoading = false;
+      });
+    }, 500);
   }
 
 }

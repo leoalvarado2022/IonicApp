@@ -375,7 +375,7 @@ export class MachineryFormComponent implements OnInit {
       tempId: this.editMachinery.tempId ? this.editMachinery.tempId : this.tempId,
       companyId: this.editMachinery.companyId,
       reference: '',
-      useId: 0,
+      useId: this.editMachinery.useId,
       costCenterCode: this.costCenterCode,
       costCenterName: this.costCenterName,
       laborCode: this.laborCode,

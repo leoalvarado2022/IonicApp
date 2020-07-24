@@ -14,27 +14,27 @@
 
     <!-- CANTIDAD -->
     <ion-item>
-      <ion-label position="floating">
+      <ion-label position="fixed">
         Cantidad {{ showUnitName() | uppercase }}
       </ion-label>
-      <ion-input [value]="harvestForm.get('quantity').value | mask: 'separator'" clearInput formControlName="quantity" placeholder="Ingresar Cantidad" type="number"></ion-input>
-      <ng-container *ngIf="harvestForm.get('quantity').dirty">
-        <span *ngIf="harvestForm.get('quantity').hasError('required')" class="errorMsg">Ingrese Cantidad</span>
-        <span *ngIf="harvestForm.get('quantity').hasError('pattern')" class="errorMsg">Solo numeros</span>
-      </ng-container>
+      <ion-input class="input-number" [value]="harvestForm.get('quantity').value | mask: 'separator'" clearInput formControlName="quantity" placeholder="Ingresar Cantidad" type="number"></ion-input>
     </ion-item>
+    <ion-text color="danger" *ngIf="harvestForm.get('quantity').dirty">
+      <p *ngIf="harvestForm.get('quantity').hasError('required')">Ingrese Cantidad</p>
+      <p *ngIf="harvestForm.get('quantity').hasError('pattern')">Solo numeros</p>
+    </ion-text>
 
     <!-- CANTIDAD DIARIA -->
     <ion-item>
-      <ion-label position="floating">
+      <ion-label position="fixed">
         Cantidad Diaria {{ showUnitName() | uppercase }}
       </ion-label>
-      <ion-input [value]="harvestForm.get('dailyAmount') .value | mask: 'separator'" clearInput formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number"></ion-input>
-      <ng-container *ngIf="harvestForm.get('dailyAmount').dirty">
-        <span *ngIf="harvestForm.get('dailyAmount').hasError('required')" class="errorMsg">Ingrese cantidad diaria</span>
-        <span *ngIf="harvestForm.get('quantity').hasError('pattern')" class="errorMsg">Solo numeros</span>
-      </ng-container>
+      <ion-input class="input-number" [value]="harvestForm.get('dailyAmount') .value | mask: 'separator'" clearInput formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number"></ion-input>
     </ion-item>
+    <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').dirty">
+      <p *ngIf="harvestForm.get('dailyAmount').hasError('required')">Ingrese cantidad diaria</p>
+      <p *ngIf="harvestForm.get('quantity').hasError('pattern')">Solo numeros</p>
+    </ion-text>
 
     <!-- Trabaja festivos -->
     <ion-list>
@@ -58,18 +58,18 @@
         </ion-row>
       </ion-radio-group>
     </ion-list>
-    <ng-container *ngIf="harvestForm.get('workHolidays').dirty && harvestForm.get('workHolidays').hasError('required')">
-      <span class="errorMsg">Indique si trabaja los feriados.</span>
-    </ng-container>
+    <ion-text color="danger" *ngIf="harvestForm.get('workHolidays').dirty && harvestForm.get('workHolidays').hasError('required')">
+      <p>Indique si trabaja los feriados</p>
+    </ion-text>
 
     <!-- Fecha Inicio -->
     <ion-item>
       <ion-label position="floating">Fecha Inicio</ion-label>
       <ion-datetime [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat" formControlName="startDate" placeholder="Ingresar Fecha Inicio"></ion-datetime>
-      <ng-container *ngIf="harvestForm.get('startDate').dirty && harvestForm.get('startDate').hasError('required')">
-        <span class="errorMsg">Ingrese fecha inicio</span>
-      </ng-container>
     </ion-item>
+    <ion-text color="danger" *ngIf="harvestForm.get('startDate').dirty && harvestForm.get('startDate').hasError('required')">
+      <p>Ingrese fecha inicio</p>
+    </ion-text>
 
     <!-- Fecha fin -->
     <ion-item>

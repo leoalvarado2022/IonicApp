@@ -1,10 +1,13 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button class="header-back-button"></ion-back-button>
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>
       <strong>Maquinaria</strong>
+      <ion-badge color="dark" *ngIf="filteredMachinery.length > 0">
+        {{ filteredMachinery.length }}
+      </ion-badge>
     </ion-title>
     <ion-buttons slot="end">
       <app-toolbar-buttons></app-toolbar-buttons>
@@ -26,30 +29,25 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-item>
-    <ion-label>
-      <h2>Maquinaria</h2>
-    </ion-label>
-    <ion-badge slot="end"  color="primary">{{ filteredMachinery.length }}</ion-badge>
-  </ion-item>
-
-  <!-- DAY SELECTOR -->
-  <ion-item lines="none">
-    <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
-      <ion-icon name="arrow-back" slot="start"></ion-icon>
-    </ion-button>
-    <ion-input class="ion-text-center" [ngModel]="showDate" readonly></ion-input>
-    <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
-      <ion-icon name="arrow-forward" slot="end"></ion-icon>
-    </ion-button>
-  </ion-item>
+  <div class="maquinaria">
+    <!-- DAY SELECTOR -->
+    <ion-item lines="none">
+      <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+      </ion-button>
+      <ion-input class="ion-text-center" [ngModel]="showDate" readonly></ion-input>
+      <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
+        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </div>
 
   <ng-container *ngIf="!isLoading; else loading">
     <ion-virtual-scroll [items]="filteredMachinery">
       <ion-item-sliding #slide *virtualItem="let machinery">
         <ion-item class="slide-item" lines="none">
           <ion-card>
-            <ion-item lines="full">
+            <ion-item lines="full" class="full-maquinaria">
               <ion-badge slot="start">{{ machinery.costCenterCode | uppercase }}</ion-badge>
               <ion-label>{{ machinery.costCenterName | titlecase }}</ion-label>
               <ion-icon *ngIf="machinery.tempId" name="server" slot="end" color="danger"></ion-icon>

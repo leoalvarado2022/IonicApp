@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Consumos</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="toolbar-search">
+    <ion-searchbar
+      animated
+      placeholder="Buscar..."
+      showCancelButton="never">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="reload($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="maquinaria">
+    <!-- DAY SELECTOR -->
+    <ion-item lines="none">
+      <ion-button size="small" fill="clear" slot="start">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+      </ion-button>
+      <ion-input class="ion-text-center" [ngModel]="showDate" readonly></ion-input>
+      <ion-button size="small" fill="clear" slot="end">
+        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </div>
+
+  <ng-container *ngIf="!isLoading; else loading">
+    <ion-virtual-scroll [items]="filteredConsumptions">
+      <ion-item-sliding #slide *virtualItem="let machinery">
+        <ion-item class="slide-item" lines="none">
+          <ion-card>
+            <ion-item lines="full" class="full-maquinaria">
+              <ion-badge slot="start">{{ machinery.costCenterCode | uppercase }}</ion-badge>
+              <ion-label>{{ machinery.costCenterName | titlecase }}</ion-label>
+              <ion-icon *ngIf="machinery.tempId" name="server" slot="end" color="danger"></ion-icon>
+            </ion-item>
+
+            <ion-card-content>
+              <p> <strong>Labor:</strong> {{ machinery.laborName | titlecase }}</p>
+              <p> <strong>Unidad:</strong> {{ machinery.machineryUnitName | titlecase }}</p>
+              <p> <strong>Trabajador:</strong> {{ machinery.workerName | titlecase }}</p>
+              <p *ngIf="machinery.implementCostCenterName">
+                <strong>Implemento:</strong> {{ machinery.implementCostCenterName | titlecase }}
+              </p>
+
+              <div class="ion-float-end">
+                <ion-chip>
+                  <ion-icon name="clipboard" color="primary"></ion-icon>
+                  <ion-label>{{ machinery.quantity }}</ion-label>
+                </ion-chip>
+
+                <ion-chip>
+                  <ion-icon name="bar-chart" color="secondary"></ion-icon>
+                  <ion-label>{{ machinery.performance }}</ion-label>
+                </ion-chip>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="primary">
+            <ion-icon slot="icon-only" name="copy"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="warning">
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-virtual-scroll>
+  </ng-container>
+
+  <ng-template #loading>
+    <p class="ion-text-center">Cargando</p>
+  </ng-template>
+
+  <ion-fab horizontal="end" slot="fixed" vertical="bottom">
+    <ion-fab-button size="small" [disabled]="isLoading">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

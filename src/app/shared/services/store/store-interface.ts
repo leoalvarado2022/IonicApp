@@ -54,6 +54,8 @@ export interface Sync {
   bonds: Array<any>;
   machinery: Array<any>;
   costCenterTypes: Array<any>;
+  warehouses: Array<Warehouse>;
+  consumptions: Array<Consumption>;
 }
 
 export interface ContractInterface {
@@ -81,4 +83,27 @@ export interface ToRecord {
   devicesWithErrors: Array<any>;
   deviceTempId: number;
   dealsTemp: Array<any>;
+}
+
+export interface Warehouse {
+  id: number;
+  code: string;
+  name: string;
+  companyId: number;
+}
+
+export interface Consumption {
+  id: number;
+  warehouseOriginId: number;
+  warehouseOriginName: string;
+  itemId: number;
+  itemName: string;
+  costCenterId: number;
+  costCenterName: string;
+  quantity: number;
+  creatorId: number;
+  companyId: number;
+  date: string;
+  documentId: string;
+  notes?: string;
 }

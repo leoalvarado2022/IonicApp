@@ -21,6 +21,8 @@ export enum StorageKeys {
   DealsTemp = 'dealsTemp',
   DevicesWithErrors = 'devicesWithErrors',
   TallyTemp = 'tallyTemp',
+  Warehouses = 'warehouses',
+  Consumptions = 'consumptions',
 
   // On memory data
   TalliesToRecord = 'talliesToRecord',

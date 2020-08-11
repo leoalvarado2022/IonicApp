@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Sync } from 'src/app/shared/services/store/store-interface';
+import { Sync, Warehouse } from 'src/app/shared/services/store/store-interface';
 import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { Machinery } from 'src/app/modules/machinery/machinery.interface';
+import { Consumption } from './../../../shared/services/store/store-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,9 @@ export class StorageSyncService {
       isapres,
       devices,
       machinery,
-      costCenterTypes
+      costCenterTypes,
+      warehouses,
+      consumptions
     } = data;
 
     return Promise.all([
@@ -56,7 +59,9 @@ export class StorageSyncService {
       this.setIsapres(isapres),
       this.setDevices(devices),
       this.setMachinery(machinery),
-      this.setCostCenterTypes(costCenterTypes)
+      this.setCostCenterTypes(costCenterTypes),
+      this.setWarehouses(warehouses),
+      this.setConsumption(consumptions)
     ]);
   }
 
@@ -119,7 +124,7 @@ export class StorageSyncService {
    */
   public getAllQuadrilles = (): Promise<Array<Quadrille>> => {
     return this.storage.get(StorageKeys.Quadrilles).then( (quadrilles: Array<Quadrille>) => {
-      return quadrilles ? quadrilles: [];
+      return quadrilles ? quadrilles : [];
     });
   }
 
@@ -133,7 +138,7 @@ export class StorageSyncService {
       if (quadrilles) {
         if (isSuper) {
           return quadrilles;
-        }else {
+        } else {
           return quadrilles.filter(x => x.responsible === currentUserId);
         }
       }
@@ -422,7 +427,7 @@ export class StorageSyncService {
    */
   public getMachineryByCompany = (companyId: number, userId: number, date: string, isSuper: boolean = false): Promise<Array<Machinery>> => {
     return this.getMachinery().then( (machinery: Array<Machinery>) => {
-      if(isSuper) {
+      if (isSuper) {
         return machinery.filter(item => {
           const splitDate = item.date.split('T')[0];
           return item.companyId === companyId && date === splitDate;
@@ -450,6 +455,40 @@ export class StorageSyncService {
   public getCostCenterTypes = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.CostCenterTypes).then((costCenterTypes: Array<any>) => {
       return costCenterTypes ? costCenterTypes : [];
+    });
+  }
+
+  /**
+   * setWarehouses
+   * @param warehouses
+   */
+  private setWarehouses = (warehouses: Array<Warehouse>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Warehouses, warehouses);
+  }
+
+  /**
+   * getWarehouses
+   */
+  public getWarehouses = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Warehouses).then((warehouses: Array<Warehouse>) => {
+      return warehouses ? warehouses : [];
+    });
+  }
+
+  /**
+   * setConsumption
+   * @param consumptions
+   */
+  private setConsumption = (consumptions: Array<Consumption>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Consumptions, consumptions);
+  }
+
+  /**
+   * getConsumption
+   */
+  public getConsumption = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Consumptions).then((consumptions: Array<Consumption>) => {
+      return consumptions ? consumptions : [];
     });
   }
 

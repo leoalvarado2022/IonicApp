@@ -61,7 +61,7 @@ export class StorageSyncService {
       this.setMachinery(machinery),
       this.setCostCenterTypes(costCenterTypes),
       this.setWarehouses(warehouses),
-      this.setConsumption(consumptions)
+      this.setConsumptions(consumptions)
     ]);
   }
 
@@ -479,14 +479,14 @@ export class StorageSyncService {
    * setConsumption
    * @param consumptions
    */
-  private setConsumption = (consumptions: Array<Consumption>): Promise<Array<any>> => {
+  private setConsumptions = (consumptions: Array<Consumption>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Consumptions, consumptions);
   }
 
   /**
    * getConsumption
    */
-  public getConsumption = (): Promise<Array<any>> => {
+  public getConsumptions = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.Consumptions).then((consumptions: Array<Consumption>) => {
       return consumptions ? consumptions : [];
     });

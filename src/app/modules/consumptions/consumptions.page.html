@@ -39,32 +39,24 @@
 
   <ng-container *ngIf="!isLoading; else loading">
     <ion-virtual-scroll [items]="filteredConsumptions">
-      <ion-item-sliding #slide *virtualItem="let machinery">
+      <ion-item-sliding #slide *virtualItem="let consumption">
         <ion-item class="slide-item" lines="none">
           <ion-card>
             <ion-item lines="full" class="full-maquinaria">
-              <ion-badge slot="start">{{ machinery.costCenterCode | uppercase }}</ion-badge>
-              <ion-label>{{ machinery.costCenterName | titlecase }}</ion-label>
-              <ion-icon *ngIf="machinery.tempId" name="server" slot="end" color="danger"></ion-icon>
+              <ion-badge slot="start">#</ion-badge>
+              <ion-label>{{ consumption.warehouseOriginName | titlecase }}</ion-label>
+              <ion-icon *ngIf="consumption.tempId" name="server" slot="end" color="danger"></ion-icon>
             </ion-item>
 
             <ion-card-content>
-              <p> <strong>Labor:</strong> {{ machinery.laborName | titlecase }}</p>
-              <p> <strong>Unidad:</strong> {{ machinery.machineryUnitName | titlecase }}</p>
-              <p> <strong>Trabajador:</strong> {{ machinery.workerName | titlecase }}</p>
-              <p *ngIf="machinery.implementCostCenterName">
-                <strong>Implemento:</strong> {{ machinery.implementCostCenterName | titlecase }}
-              </p>
+              <p> <strong>Centro de Costo:</strong> {{ consumption.costCenterName | titlecase }}</p>
+              <p> <strong>Fecha:</strong> {{ consumption.date | date:'dd/MM/yyyy' }}</p>
+              <p> <strong>Producto:</strong> {{ consumption.itemName | titlecase }}</p>
 
               <div class="ion-float-end">
                 <ion-chip>
                   <ion-icon name="clipboard" color="primary"></ion-icon>
-                  <ion-label>{{ machinery.quantity }}</ion-label>
-                </ion-chip>
-
-                <ion-chip>
-                  <ion-icon name="bar-chart" color="secondary"></ion-icon>
-                  <ion-label>{{ machinery.performance }}</ion-label>
+                  <ion-label>{{ consumption.quantity }}</ion-label>
                 </ion-chip>
               </div>
             </ion-card-content>
@@ -91,7 +83,7 @@
   </ng-template>
 
   <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-    <ion-fab-button size="small" [disabled]="isLoading">
+    <ion-fab-button size="small" [disabled]="isLoading" (click)="openConsumptionForm()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -1,0 +1,23 @@
+ion-menu-button {
+  --color: white;
+}
+
+ion-title {
+  color: white;
+}
+
+ion-content{
+  --background: #f4f4f4;
+}
+
+.maquinaria{
+  margin: 0 auto;
+  padding: 5px;
+  ion-item{
+    --inner-border-width: 0;
+  }
+}
+
+.full-maquinaria{
+  padding: 0 10px 0 10px;
+}

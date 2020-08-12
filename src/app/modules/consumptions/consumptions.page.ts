@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { Machinery } from 'src/app/modules/machinery/machinery.interface';
+import { StorageSyncService } from './../../services/storage/storage-sync/storage-sync.service';
+import { Consumption } from './../../shared/services/store/store-interface';
+import { ModalController } from '@ionic/angular';
+import { ConsumptionFormComponent } from './consumption-form/consumption-form.component';
 
 @Component({
   selector: 'app-consumptions',
@@ -9,7 +12,8 @@ import { Machinery } from 'src/app/modules/machinery/machinery.interface';
 })
 export class ConsumptionsPage implements OnInit {
 
-  public filteredConsumptions: Array<any> = [];
+  public filteredConsumptions: Array<Consumption> = [];
+  private consumptions: Array<Consumption> = [];
 
   public isLoading = false;
   private firstLoad = true;
@@ -21,42 +25,37 @@ export class ConsumptionsPage implements OnInit {
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
 
-  constructor() {
+  constructor(
+    private storageSyncService: StorageSyncService,
+    private modalController: ModalController,
+  ) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.showDate = moment(this.currentDate).format(this.dateFormat);
     this.originalDate = moment().format('YYYY-MM-DD');
   }
 
   ngOnInit() {
-    const test = {
-      companyId: 1,
-      costCenterCode: 'CC20',
-      costCenterId: 10,
-      costCenterName: 'arandanos',
-      creatorId: 48,
-      date: '2020-08-06T00:00:00.000Z',
-      id: 134,
-      implementCostCenterId: null,
-      laborCode: '002',
-      laborId: 2,
-      laborName: 'Cosechando',
-      laborUnitId: 2,
-      machineryCostCenterCode: 'cc99',
-      machineryCostCenterId: 16,
-      machineryCostCenterName: 'camioneta',
-      machineryUnitCode: 'KM',
-      machineryUnitId: 12,
-      machineryUnitName: 'Kilometros',
-      performance: 4,
-      quantity: 1,
-      useId: 47,
-      workerId: 11,
-      workerName: 'Bravo Fraure Fernando'
-    };
+    this.loadData();
+  }
 
-    this.filteredConsumptions.push(test);
+  /**
+   * loadData
+   */
+  private loadData = () => {
+    this.firstLoad = false;
+    this.isLoading = true;
 
-    this.isLoading = false;
+    Promise.all([
+      this.storageSyncService.getConsumptions()
+    ]).then( (data: any) => {
+
+      console.log('data', data);
+
+      this.consumptions = data[0];
+      this.filteredConsumptions = data[0];
+
+      this.isLoading = false;
+    });
   }
 
   /**
@@ -64,6 +63,23 @@ export class ConsumptionsPage implements OnInit {
    */
   public reload = (event: any) => {
     event.target.complete();
+  }
+
+  /**
+   * openConsumptionForm
+   */
+  public openConsumptionForm = async () => {
+    const modal = await this.modalController.create({
+      component: ConsumptionFormComponent
+    });
+
+    modal.onDidDismiss().then( (data: any) => {
+      if (data['data']) {
+
+      }
+    });
+
+    return await modal.present();
   }
 
 }

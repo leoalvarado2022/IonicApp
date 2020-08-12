@@ -1,16 +1,14 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {TabMenu} from '@primetec/primetec-angular';
-import {SyncService} from '../../shared/services/sync/sync.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { TabMenu } from '@primetec/primetec-angular';
+import { SyncService } from '../../shared/services/sync/sync.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { NetworkService } from 'src/app/shared/services/network/network.service';
-import { Subscription, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { HttpClient } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
-import { error } from 'protractor';
-import { resolve } from 'dns';
+import { ToastService } from './../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-menu-list',
@@ -18,14 +16,14 @@ import { resolve } from 'dns';
   styleUrls: ['./menu-list.page.scss'],
 })
 export class MenuListPage implements OnInit, OnDestroy {
-
   public menus: Array<TabMenu> = [];
   private workers: Array<any> = [];
   private firstLoad = true;
 
-  public readonly defaultIcon = "/assets/svg_icons/default.svg";
+  public readonly defaultIcon = '/assets/svg_icons/default.svg';
 
   private isOnline: boolean;
+
   private network$: Subscription;
   private step$: Subscription;
 
@@ -37,14 +35,15 @@ export class MenuListPage implements OnInit, OnDestroy {
     private networkService: NetworkService,
     public stepperService: StepperService,
     private storeService: StoreService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private toastService: ToastService
   ) {
 
   }
 
   ngOnInit() {
-    this.network$ = this.networkService.getNetworkStatus().subscribe( status => this.isOnline = status);
-    this.step$ = this.stepperService.getStepper().subscribe( (steps: Array<any>) => {
+    this.network$ = this.networkService.getNetworkStatus().subscribe((status) => (this.isOnline = status));
+    this.step$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
       if (steps.length === 0 && !this.firstLoad) {
         this.loadData();
       }
@@ -70,14 +69,10 @@ export class MenuListPage implements OnInit, OnDestroy {
     const access = this.storeService.getAccess();
 
     if (activeCompany) {
-      Promise.all([
-        this.storageSyncService.getMenus(),
-        this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),
-        this.storageSyncService.getWorkers(),
-      ]).then(data => {
+      Promise.all([this.storageSyncService.getMenus(), this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find((x) => x.functionality === 4)), this.storageSyncService.getWorkers()]).then((data) => {
         this.processMenu(data[0]);
-        const quadrilles = data[1].map(q => q.id);
-        this.workers = data[2].filter(x => quadrilles.includes(x.quadrille))  || [];
+        const quadrilles = data[1].map((q) => q.id);
+        this.workers = data[2].filter((x) => quadrilles.includes(x.quadrille)) || [];
       });
     }
   }
@@ -97,7 +92,7 @@ export class MenuListPage implements OnInit, OnDestroy {
    */
   public navigate = (menu: TabMenu) => {
     if (this.isOnline || (!this.isOnline && menu.offlineMenu)) {
-      this.router.navigate([menu.menu_url], {relativeTo: this.activatedRoute});
+      this.router.navigate([`/home-page/${menu.menu_url}`]);
     }
   }
 
@@ -114,12 +109,11 @@ export class MenuListPage implements OnInit, OnDestroy {
    */
   public showBadge = (menu: TabMenu): number => {
     if (menu.menu_url.toLowerCase() === 'tarja_cuadrillas') {
-      return this.workers.filter(item => item.quadrilleStatus !== '').length;
+      return this.workers.filter((item) => item.quadrilleStatus !== '').length;
     }
 
     return 0;
   }
-
 
   /**
    * processMenu
@@ -128,7 +122,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   private processMenu = async (menus: Array<TabMenu>) => {
     for (let index = 0; index < menus.length; index++) {
       const itemIcon = `/assets/svg_icons/${menus[index].icon_url}.svg`;
-      menus[index].icon_url = await this.checkIcon(itemIcon);;
+      menus[index].icon_url = await this.checkIcon(itemIcon);
     }
 
     this.menus = [...menus];
@@ -138,19 +132,22 @@ export class MenuListPage implements OnInit, OnDestroy {
    * checkIcon
    * @param path
    */
-  private checkIcon = (path: string): Promise<string> =>  {
-    return new Promise(resolve => {
-      this.httpClient.get(path).subscribe( success => {
-        console.log('success')
-        resolve(path);
-      }, error => {
-        if(error.status === 200){
+  private checkIcon = (path: string): Promise<string> => {
+    return new Promise((resolve) => {
+      this.httpClient.get(path).subscribe(
+        (success) => {
+          console.log('success');
           resolve(path);
-        }
+        },
+        (error) => {
+          if (error.status === 200) {
+            resolve(path);
+          }
 
-        resolve(this.defaultIcon);
-      });
-    })
+          resolve(this.defaultIcon);
+        }
+      );
+    });
   }
 
 }

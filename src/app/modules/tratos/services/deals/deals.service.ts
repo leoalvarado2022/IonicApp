@@ -5,7 +5,6 @@ import * as moment from 'moment';
 import {Storage} from '@ionic/storage';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
 import {StorageKeys} from '../../../../services/storage/storage-keys';
-import { worker } from 'cluster';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,7 @@ export class DealsService {
   constructor(
     private httpClient: HttpClient,
     private httpService: HttpService,
-    private _StorageSyncService: StorageSyncService,
+    private storageSyncService: StorageSyncService,
     private storage: Storage,
   ) {
   }
@@ -46,7 +45,7 @@ export class DealsService {
    * @description get deals
    */
   public getDeals = (): Promise<any> => {
-    return this._StorageSyncService.getDeals().then(deals => {
+    return this.storageSyncService.getDeals().then(deals => {
 
       const list = deals.filter(value => {
         const startDate = moment.utc(value.date_init);
@@ -66,7 +65,7 @@ export class DealsService {
 
       return response;
     });
-  };
+  }
 
   /**
    * @description save saveTalliesToRecord
@@ -78,7 +77,7 @@ export class DealsService {
     return this.httpClient.post(url, this.httpService.buildBody({tallyScanneds, user}), {
       headers: this.httpService.getHeaders()
     });
-  };
+  }
 
   /**
    * setDealsTemp
@@ -90,7 +89,7 @@ export class DealsService {
       filter.push(dealsToRecordRow);
       return this.storage.set(StorageKeys.DealsTemp, filter);
     });
-  };
+  }
 
   /**
    * getDealsTemp
@@ -99,7 +98,7 @@ export class DealsService {
     return this.storage.get(StorageKeys.DealsTemp).then((dealsTemp: Array<any>) => {
       return dealsTemp ? dealsTemp : [];
     });
-  };
+  }
 
   /**
    * removeDealsTemp
@@ -109,7 +108,7 @@ export class DealsService {
       const filter = row.filter(value => value.id !== id);
       return this.storage.set(StorageKeys.DealsTemp, filter);
     });
-  };
+  }
 
   /**
    * setActiveDeal

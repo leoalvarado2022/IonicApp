@@ -466,8 +466,7 @@ export class MachineryFormComponent implements OnInit {
   }
 
   /**
-  private selectLaborUnit = (unitId: number) => {
-   *
+   * selectLaborUnit
    * @param unitId
    */
   private selectLaborUnit = (unitId: number) => {

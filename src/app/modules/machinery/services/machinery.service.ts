@@ -34,7 +34,7 @@ export class MachineryService {
    */
   public getTempId = (): Promise<number> => {
     return this.storage.get(StorageKeys.MachineryTempId).then( (tempId: number) => {
-      return tempId ? tempId: 1;
+      return tempId ? tempId : 1;
     });
   }
 
@@ -52,7 +52,7 @@ export class MachineryService {
    */
   public getMachineryToRecord = (): Promise<Array<Machinery>> => {
     return this.storage.get(StorageKeys.MachineryToRecord).then( (machineryToRecord: Array<Machinery>) => {
-      return machineryToRecord ? machineryToRecord: [];
+      return machineryToRecord ? machineryToRecord : [];
     });
   }
 
@@ -84,7 +84,7 @@ export class MachineryService {
         const splitDate = item.date.split('T')[0];
 
         return isSuper ?
-          item.companyId === companyId && date === splitDate && !markedForDelete.includes(item.id) && !markedForEdit.includes(item.id):
+          item.companyId === companyId && date === splitDate && !markedForDelete.includes(item.id) && !markedForEdit.includes(item.id) :
           item.companyId === companyId && item.workerId === userId && date === splitDate && !markedForDelete.includes(item.id) && !markedForEdit.includes(item.id);
       });
 

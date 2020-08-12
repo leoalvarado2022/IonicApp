@@ -56,6 +56,7 @@ export interface Sync {
   costCenterTypes: Array<any>;
   warehouses: Array<Warehouse>;
   consumptions: Array<Consumption>;
+  products: Array<Product>;
 }
 
 export interface ContractInterface {
@@ -95,6 +96,7 @@ export interface Warehouse {
 export interface Consumption {
   id: number;
   warehouseOriginId: number;
+  warehouseOriginCode: string;
   warehouseOriginName: string;
   itemId: number;
   itemName: string;
@@ -106,4 +108,11 @@ export interface Consumption {
   date: string;
   documentId: string;
   notes?: string;
+  tempId: number;
+}
+
+export interface Product {
+  id: number;
+  code: string;
+  name: string;
 }

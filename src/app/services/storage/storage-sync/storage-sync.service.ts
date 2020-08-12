@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Sync, Warehouse } from 'src/app/shared/services/store/store-interface';
+import { Sync, Warehouse, Product } from 'src/app/shared/services/store/store-interface';
 import { Quadrille, TabMenu } from '@primetec/primetec-angular';
 import { StorageKeys } from '../storage-keys';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
@@ -39,7 +39,8 @@ export class StorageSyncService {
       machinery,
       costCenterTypes,
       warehouses,
-      consumptions
+      consumptions,
+      products
     } = data;
 
     return Promise.all([
@@ -61,7 +62,8 @@ export class StorageSyncService {
       this.setMachinery(machinery),
       this.setCostCenterTypes(costCenterTypes),
       this.setWarehouses(warehouses),
-      this.setConsumptions(consumptions)
+      this.setConsumptions(consumptions),
+      this.setProducts(products)
     ]);
   }
 
@@ -489,6 +491,23 @@ export class StorageSyncService {
   public getConsumptions = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.Consumptions).then((consumptions: Array<Consumption>) => {
       return consumptions ? consumptions : [];
+    });
+  }
+
+  /**
+   * setProducts
+   * @param products
+   */
+  private setProducts = (products: Array<Product>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.Products, products);
+  }
+
+  /**
+   * getProducts
+   */
+  public getProducts = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.Products).then((products: Array<Product>) => {
+      return products ? products : [];
     });
   }
 

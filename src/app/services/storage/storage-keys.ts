@@ -23,16 +23,23 @@ export enum StorageKeys {
   TallyTemp = 'tallyTemp',
   Warehouses = 'warehouses',
   Consumptions = 'consumptions',
+  Products = 'products',
 
-  // On memory data
+  // Tallies
   TalliesToRecord = 'talliesToRecord',
   TalliesWithErrors = 'talliesWithErrors',
-  WorkersTransfers = "workersTransfers",
+
+  // Workers
+  WorkersTransfers = 'workersTransfers',
 
   // Machinery
   MachineryTempId = 'machineryTempId',
   MachineryToRecord = 'machineryToRecord',
 
   // Deals
-  ActiveDeal = 'activeDeal'
+  ActiveDeal = 'activeDeal',
+
+  // Consumptions
+  ConsumptionTempId = 'consumptionTempId',
+  ConsumptionsToRecord = 'consumptionsToRecord'
 }

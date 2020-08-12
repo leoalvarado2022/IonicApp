@@ -94,7 +94,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
         machinery: [],
         costCenterTypes: [],
         warehouses: [],
-        consumptions: []
+        consumptions: [],
+        products: []
       },
       contract: {
         activeCostCenter: null,

@@ -109,6 +109,7 @@ export interface Consumption {
   documentId: string;
   notes?: string;
   tempId: number;
+  status?: 'new' | 'edit' | 'delete';
 }
 
 export interface Product {

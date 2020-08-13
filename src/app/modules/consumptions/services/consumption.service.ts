@@ -21,13 +21,13 @@ export class ConsumptionService {
   }
 
   /**
-   * recordConsumption
-   * @param consumption
+   * syncConsumptions
+   * @param consumptions
    * @param user
    */
-  public recordConsumption = (consumption: any, user: any) => {
+  public syncConsumptions = (consumptions: Array<Consumption>, user: any) => {
     const url = this.httpService.buildUrl(this.recordConsumptionUrl);
-    return this.httpClient.post(url, this.httpService.buildBody({consumption, user}), {headers: this.httpService.getHeaders()});
+    return this.httpClient.post(url, this.httpService.buildBody({consumptions, user}), {headers: this.httpService.getHeaders()});
   }
 
   /**
@@ -100,6 +100,46 @@ export class ConsumptionService {
     return this.getConsumptionsToRecord().then((consumptionsToRecord: Array<Consumption>) => {
       consumptionsToRecord = consumptionsToRecord.filter(item => item.tempId !== consumptionTempId);
       return this.storage.set(StorageKeys.ConsumptionsToRecord, consumptionsToRecord);
+    });
+  }
+
+  /**
+   * markConsumptionToDelete
+   * @param consumption
+   */
+  public markConsumptionToDelete = (consumption: Consumption): Promise<Array<Consumption>> => {
+    const toDelete = Object.assign({}, consumption, { id: ( consumption.id * -1), status: 'delete' });
+    return this.addConsumption(toDelete);
+  }
+
+  /**
+   * getConsumptionsByCompany
+   * @param companyId
+   * @param date
+   */
+  public getConsumptionsByCompany = (companyId: number, date: string): Promise<Array<Consumption>> => {
+    return Promise.all([
+      this.getConsumptionsToRecord(),
+      this.storage.get(StorageKeys.Consumptions)
+    ]).then( (data: any) => {
+      // Marked for delete
+      const markedForDelete = data[0].filter((item: Consumption) => item.id < 0).map((item: Consumption) => (item.id * -1));
+      // Marked for edit
+      const markedForEdit = data[0].filter((item: Consumption) => item.status === 'edit' ).map((item: Consumption) => item.id);
+
+      // Memory
+      const onMemory = data[0].filter( (item: Consumption) => {
+        const splitDate = item.date.split('T')[0];
+        return item.companyId === companyId && date === splitDate && item.status !== 'delete';
+      });
+
+      // Synced
+      const onSync = data[1].filter((item: Consumption) => {
+        const splitDate = item.date.split('T')[0];
+        return item.companyId === companyId && date === splitDate && !markedForDelete.includes(item.id) && !markedForEdit.includes(item.id);
+      });
+
+      return [...onMemory, ...onSync];
     });
   }
 

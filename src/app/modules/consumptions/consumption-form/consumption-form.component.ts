@@ -3,6 +3,8 @@ import { ModalController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Warehouse, Product } from 'src/app/shared/services/store/store-interface';
 import { ConsumptionService } from '../services/consumption.service';
+import { Consumption } from './../../../shared/services/store/store-interface';
+import { find } from 'rxjs/operators';
 
 @Component({
   selector: 'app-consumption-form',
@@ -17,12 +19,16 @@ export class ConsumptionFormComponent implements OnInit {
   @Input() date: string;
   @Input() userId: number;
   @Input() companyId: number;
+  @Input() editConsumption: Consumption;
+  @Input() isCopy: boolean = false;
 
   public consumptionForm: FormGroup;
+  private tempId: number;
 
   // Warehouses
   public filteredWarehouses: Array<Warehouse> = [];
   public warehouseName: string;
+  public warehouseCode: string;
 
   // Products
   public filteredProducts: Array<Product> = [];
@@ -48,19 +54,50 @@ export class ConsumptionFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.consumptionForm = this.formBuilder.group({
-      id: [0, Validators.required],
-      companyId: [this.companyId, Validators.required],
-      date: [this.date, Validators.required],
-      documentId: [0, Validators.required],
-      costCenterId: [0, Validators.required],
-      warehouseOriginId: [0, Validators.required],
-      itemId: [0, Validators.required],
-      itemName: ['', Validators.required],
-      creatorId: [this.userId, Validators.required],
-      quantity: ['', Validators.required],
-      notes: [''],
-    });
+    if (this.editConsumption) {
+      this.consumptionForm = this.formBuilder.group({
+        id: [ this.isCopy ? 0 : this.editConsumption.id, Validators.required],
+        companyId: [this.editConsumption.companyId, Validators.required],
+        date: [this.editConsumption.date, Validators.required],
+        documentId: [this.editConsumption.documentId, Validators.required],
+        costCenterId: [this.editConsumption.costCenterId, Validators.required],
+        warehouseOriginId: [this.editConsumption.warehouseOriginId, Validators.required],
+        itemId: [this.editConsumption.itemId, Validators.required],
+        itemName: [this.editConsumption.itemName, Validators.required],
+        creatorId: [this.userId, Validators.required],
+        quantity: [this.editConsumption.quantity, Validators.required],
+        notes: [this.editConsumption.notes],
+      });
+
+      // Cost Center
+      const findCostCenter = this.costCenters.find(costCenter => costCenter.id === this.editConsumption.costCenterId);
+      this.costCenterName = findCostCenter.name;
+
+      // Warehouse
+      const findWarehouse = this.warehouses.find(warehouse => warehouse.id === this.editConsumption.warehouseOriginId);
+      this.warehouseCode = findWarehouse.code;
+      this.warehouseName = findWarehouse.name;
+
+      // Product
+      const findProduct = this.products.find(product => product.id === this.editConsumption.itemId);
+      this.productName = findProduct.name;
+    } else {
+      this.consumptionForm = this.formBuilder.group({
+        id: [0, Validators.required],
+        companyId: [this.companyId, Validators.required],
+        date: [this.date, Validators.required],
+        documentId: [0, Validators.required],
+        costCenterId: [0, Validators.required],
+        warehouseOriginId: [0, Validators.required],
+        itemId: [0, Validators.required],
+        itemName: ['', Validators.required],
+        creatorId: [this.userId, Validators.required],
+        quantity: ['', Validators.required],
+        notes: [''],
+      });
+    }
+
+    this.getTempId();
   }
 
   /**
@@ -68,6 +105,15 @@ export class ConsumptionFormComponent implements OnInit {
    */
   public closeModal = (status: boolean = false) => {
     this.modalController.dismiss(status);
+  }
+
+  /**
+   * getTempId
+   */
+  private getTempId = () => {
+    this.consumptionService.getTempId().then( (tempId: number) => {
+      this.tempId = tempId;
+    });
   }
 
   /**
@@ -89,6 +135,7 @@ export class ConsumptionFormComponent implements OnInit {
     this.consumptionForm.get('warehouseOriginId').patchValue('');
     this.filteredWarehouses = [];
     this.warehouseName = null;
+    this.warehouseCode = null;
   }
 
   /**
@@ -98,6 +145,7 @@ export class ConsumptionFormComponent implements OnInit {
   public selectWarehouse = (warehouse: Warehouse): void => {
     this.consumptionForm.get('warehouseOriginId').patchValue(warehouse.id);
     this.warehouseName = warehouse.name;
+    this.warehouseCode = warehouse.code;
     this.filteredWarehouses = [];
   }
 
@@ -167,12 +215,76 @@ export class ConsumptionFormComponent implements OnInit {
    * submitForm
    */
   public submitForm = () => {
-    const data = Object.assign({}, this.consumptionForm.value);
+    if (this.editConsumption) {
+      if (this.isCopy) {
+        const copiedConsumption = this.buildCopyConsumption();
+        this.addConsumption(copiedConsumption);
+      } else {
+        const editConsumption = this.buildEditConsumption();
+        this.updateConsumption(editConsumption);
+      }
+    } else {
+      const newConsumption = this.buildNewConsumption();
+      this.addConsumption(newConsumption);
+    }
+  }
 
-    this.consumptionService.recordConsumption(data, this.userId).subscribe( success => {
+  /**
+   * buildNewConsumption
+   */
+  private buildNewConsumption = (): Consumption => {
+    return Object.assign({}, this.consumptionForm.value, {
+      warehouseOriginCode: this.warehouseCode,
+      warehouseOriginName: this.warehouseName,
+      tempId: this.tempId,
+      status: 'new'
+    });
+  }
+
+  /**
+   * addConsumption
+   * @param data
+   */
+  private addConsumption = (data: Consumption) => {
+    this.consumptionService.addConsumption(data).then(() => {
+      this.consumptionService.increaseTempId().then(() => {
+        this.closeModal(true);
+      });
+    });
+  }
+
+  /**
+   * buildEditConsumption
+   */
+  private buildEditConsumption = (): Consumption => {
+    return Object.assign({}, this.consumptionForm.value, {
+      warehouseOriginCode: this.warehouseCode,
+      warehouseOriginName: this.warehouseName,
+      tempId: this.editConsumption.tempId ? this.editConsumption.tempId : this.tempId,
+      status: 'edit'
+    });
+  }
+
+  /**
+   * updateConsumption
+   * @param data
+   */
+  private updateConsumption = (data: Consumption) => {
+    this.consumptionService.updateConsumption(data).then(() => {
       this.closeModal(true);
-    }, error => {
-      console.log('error', error);
+    });
+  }
+
+  /**
+   * buildCopyConsumption
+   */
+  private buildCopyConsumption = (): Consumption => {
+    return Object.assign({}, this.consumptionForm.value, {
+      id: 0,
+      tempId: this.tempId,
+      warehouseOriginCode: this.warehouseCode,
+      warehouseOriginName: this.warehouseName,
+      status: 'new'
     });
   }
 

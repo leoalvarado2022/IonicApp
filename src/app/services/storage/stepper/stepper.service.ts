@@ -1,20 +1,20 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {StoreService} from 'src/app/shared/services/store/store.service';
-import {SyncService} from 'src/app/shared/services/sync/sync.service';
-import {StorageSyncService} from '../storage-sync/storage-sync.service';
-import {TallySyncService} from '../tally-sync/tally-sync.service';
-import {TallyService} from 'src/app/modules/tallies/services/tally/tally.service';
-import {ToastService} from 'src/app/shared/services/toast/toast.service';
-import {NfcService} from 'src/app/shared/services/nfc/nfc.service';
-import {Tally} from 'src/app/modules/tallies/tally.interface';
-import {NetworkService} from 'src/app/shared/services/network/network.service';
-import {DeviceSyncService} from '../device-sync/device-sync.service';
-import {DealsService} from '../../../modules/tratos/services/deals/deals.service';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { StoreService } from 'src/app/shared/services/store/store.service';
+import { SyncService } from 'src/app/shared/services/sync/sync.service';
+import { StorageSyncService } from '../storage-sync/storage-sync.service';
+import { TallySyncService } from '../tally-sync/tally-sync.service';
+import { TallyService } from 'src/app/modules/tallies/services/tally/tally.service';
+import { NfcService } from 'src/app/shared/services/nfc/nfc.service';
+import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { NetworkService } from 'src/app/shared/services/network/network.service';
+import { DeviceSyncService } from '../device-sync/device-sync.service';
+import { DealsService } from '../../../modules/tratos/services/deals/deals.service';
 import { HttpService } from 'src/app/shared/services/http/http.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { isNull } from 'util';
 import { MachineryService } from 'src/app/modules/machinery/services/machinery.service';
+import { ConsumptionService } from './../../../modules/consumptions/services/consumption.service';
+import { Consumption } from './../../../shared/services/store/store-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -43,11 +43,12 @@ export class StepperService {
     private tallySyncService: TallySyncService,
     private tallyService: TallyService,
     private nfcService: NfcService,
-    private _dealService: DealsService,
+    private dealService: DealsService,
     private networkService: NetworkService,
-    private _deviceSyncService: DeviceSyncService,
+    private deviceSyncService: DeviceSyncService,
     private httpService: HttpService,
-    private machineryService: MachineryService
+    private machineryService: MachineryService,
+    private consumptionService: ConsumptionService
   ) {
     this.networkService.getNetworkStatus().subscribe(status => this.isOnline = status);
   }
@@ -63,15 +64,15 @@ export class StepperService {
 
       // If tallies sync
       const talliesBuilded = await this.buildTalliesArray();
-      if (talliesBuilded.length && isNull(this.syncError)) {
+      if (talliesBuilded.length && this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Tarjas' });
         this.stepsArraySubject.next(this.stepsArray);
         await this.onlySyncTallies(talliesBuilded);
       }
 
       // If devices sync
-      const devicesToRecord = await this._deviceSyncService.getDevicesToRecord();
-      if (devicesToRecord.length && isNull(this.syncError)) {
+      const devicesToRecord = await this.deviceSyncService.getDevicesToRecord();
+      if (devicesToRecord.length && this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Dispositivos' });
         this.stepsArraySubject.next(this.stepsArray);
         await this.onlySyncDevices(devicesToRecord);
@@ -79,7 +80,7 @@ export class StepperService {
 
       // If deals sync
       const validDeals = await this.getValidDeals();
-      if (validDeals.length && isNull(this.syncError)) {
+      if (validDeals.length && this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Tratos y Tarjas' });
         this.stepsArraySubject.next(this.stepsArray);
         this.onlySyncDeals(validDeals);
@@ -87,15 +88,23 @@ export class StepperService {
 
       // If Machinery
       const validMachinery = await this.machineryService.getMachineryToRecord();
-      if (validMachinery.length && isNull(this.syncError)) {
+      if (validMachinery.length && this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Maquinaria' });
         this.stepsArraySubject.next(this.stepsArray);
         this.onlySyncMachinery(validMachinery);
       }
 
+      // If Consumptions
+      const validConsumptions = await this.consumptionService.getConsumptionsToRecord();
+      if (validConsumptions.length && this.syncError === null) {
+        this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Consumos' });
+        this.stepsArraySubject.next(this.stepsArray);
+        this.onlySyncConsumptions(validConsumptions);
+      }
+
       // Sync data
-      if (isNull(this.syncError)) {
-        this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
+      if (this.syncError === null) {
+        this.stepsArray.push({ index: this.stepsArray.length, name: 'Sincronizando' });
         this.stepsArraySubject.next(this.stepsArray);
         data = await this.syncData();
 
@@ -106,9 +115,9 @@ export class StepperService {
         }
       }
 
-      if (isNull(this.syncError)) {
+      if (this.syncError === null) {
         // Store Data
-        this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
+        this.stepsArray.push({ index: this.stepsArray.length, name: 'Almacenando en memoria' });
         this.storeAllSyncData(data);
       }
 
@@ -124,7 +133,7 @@ export class StepperService {
    * syncData
    */
   private syncData = (): Promise<any> => {
-    return new Promise( (resolve) => {
+    return new Promise((resolve) => {
       const userData = this.storeService.getUser();
       const username = userData.username;
       const activeConnection = this.storeService.getActiveConnection();
@@ -206,15 +215,15 @@ export class StepperService {
       if (talliesToRecord) {
         return talliesToRecord.map(item => {
           if (item.status === 'delete') {
-            return Object.assign({}, item, {order: 1});
+            return Object.assign({}, item, { order: 1 });
           }
 
           if (item.status === 'edit') {
-            return Object.assign({}, item, {order: 2});
+            return Object.assign({}, item, { order: 2 });
           }
 
           if (item.status === 'new') {
-            return Object.assign({}, item, {order: 3});
+            return Object.assign({}, item, { order: 3 });
           }
 
           return item;
@@ -313,8 +322,8 @@ export class StepperService {
    */
   private cleanDevicesMemory = (): Promise<any> => {
     return Promise.all([
-      this._deviceSyncService.addDevicesWithErrors(this.devicesWithErrors),
-      this._deviceSyncService.removeDevicesToRecord(this.devicesRecorded)
+      this.deviceSyncService.addDevicesWithErrors(this.devicesWithErrors),
+      this.deviceSyncService.removeDevicesToRecord(this.devicesRecorded)
     ]);
   }
 
@@ -353,9 +362,9 @@ export class StepperService {
     const activeCompany = this.storeService.getActiveCompany();
     const user = {
       id: activeCompany.user
-    }
+    };
 
-    this.machineryService.syncMachinery(machineryToRecord, user).subscribe( success => {
+    this.machineryService.syncMachinery(machineryToRecord, user).subscribe(success => {
       this.machineryService.clearMachinery();
     }, error => {
       this.httpService.errorHandler(error);
@@ -367,11 +376,11 @@ export class StepperService {
    * syncDeals
    */
   private syncDeals = (dealsToRecord: Array<any>) => {
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const user = this.storeService.getUser();
       delete user.avatar;
 
-      this._dealService.saveTalliesToRecord(dealsToRecord, user).subscribe((success: any) => {
+      this.dealService.saveTalliesToRecord(dealsToRecord, user).subscribe((success: any) => {
         resolve(true);
       }, error => {
         reject(error);
@@ -391,12 +400,12 @@ export class StepperService {
    */
   public onlySyncREM = async () => {
     // SYNC
-    this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
+    this.stepsArray.push({ index: this.stepsArray.length, name: 'Sincronizando' });
     this.stepsArraySubject.next(this.stepsArray);
     const data = await this.syncData();
 
     // STORE
-    this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
+    this.stepsArray.push({ index: this.stepsArray.length, name: 'Almacenando en memoria' });
     await this.storageSyncService.storeRemSyncData(data);
 
     // Terminado
@@ -413,12 +422,12 @@ export class StepperService {
    */
   public onlySyncPreContracts = async () => {
     // SYNC
-    this.stepsArray.push({index: this.stepsArray.length, name: 'Sincronizando' });
+    this.stepsArray.push({ index: this.stepsArray.length, name: 'Sincronizando' });
     this.stepsArraySubject.next(this.stepsArray);
     const data = await this.syncData();
 
     // STORE
-    this.stepsArray.push({index: this.stepsArray.length, name: 'Almacenando en memoria' });
+    this.stepsArray.push({ index: this.stepsArray.length, name: 'Almacenando en memoria' });
     await this.storageSyncService.storePreContractsSyncData(data);
 
     // Terminado
@@ -427,6 +436,23 @@ export class StepperService {
       this.stepsArray = [];
       this.stepsArraySubject.next([]);
     }, 1000);
+  }
+
+  /**
+   * onlySyncConsumptions
+   */
+  public onlySyncConsumptions = async (consumptionsToRecord: Array<Consumption>) => {
+    const activeCompany = this.storeService.getActiveCompany();
+    const user = {
+      id: activeCompany.user
+    };
+
+    this.consumptionService.syncConsumptions(consumptionsToRecord, user).subscribe(success => {
+      this.consumptionService.clearConsumptions();
+    }, error => {
+      this.httpService.errorHandler(error);
+      this.syncError = true;
+    });
   }
 
 }

@@ -1,11 +1,10 @@
 import { HttpService } from './../shared/services/http/http.service';
-import {Component} from '@angular/core';
-import {AuthService} from '../shared/services/auth/auth.service';
-import {StoreService} from '../shared/services/store/store.service';
+import { Component } from '@angular/core';
+import { AuthService } from '../shared/services/auth/auth.service';
+import { StoreService } from '../shared/services/store/store.service';
 import { TimerService } from '../services/storage/timer/timer.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from '../services/storage/stepper/stepper.service';
-import { Router, NavigationEnd } from '@angular/router';
 import { Platform } from '@ionic/angular';
 
 @Component({
@@ -14,21 +13,9 @@ import { Platform } from '@ionic/angular';
   styleUrls: ['./home-page.page.scss'],
 })
 export class HomePagePage {
-
   private timer$: Subscription;
-  private router$: Subscription;
 
-  constructor(
-    private authService: AuthService,
-    private storeService: StoreService,
-    private timerService: TimerService,
-    private stepperService: StepperService,
-    private router: Router,
-    private httpService: HttpService,
-    private platform: Platform
-  ) {
-
-  }
+  constructor(private authService: AuthService, private storeService: StoreService, private timerService: TimerService, private stepperService: StepperService, private httpService: HttpService, private platform: Platform) {}
 
   ionViewWillEnter() {
     // Store push token
@@ -52,7 +39,7 @@ export class HomePagePage {
       }
       */
 
-     this.stepperService.syncAll();
+      this.stepperService.syncAll();
     });
 
     // StartTimer
@@ -74,15 +61,17 @@ export class HomePagePage {
     const user = this.storeService.getUser();
     const token = this.storeService.getPushToken();
 
-    this.platform.ready().then( () => {      
-      if ( this.platform.is('cordova')) {
-        this.authService.savePushToken(user.id, token).subscribe( () => {
-          // NO SE HACE NADA
-        }, error => {
-          this.httpService.errorHandler(error);
-        });
+    this.platform.ready().then(() => {
+      if (this.platform.is('cordova')) {
+        this.authService.savePushToken(user.id, token).subscribe(
+          () => {
+            // NO SE HACE NADA
+          },
+          (error) => {
+            this.httpService.errorHandler(error);
+          }
+        );
       }
-    });    
+    });
   }
-
 }

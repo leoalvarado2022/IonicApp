@@ -218,7 +218,7 @@ export class MachineryListPage implements OnInit, OnDestroy {
   public deleteMachinery = async (machinery: Machinery, slide: IonItemSliding) => {
     const sayYes = await this.alertService.confirmAlert('Confirmar borrar esta maquinaria?');
 
-    if(sayYes){
+    if (sayYes) {
       if (machinery.tempId) { // Machinery on memory
         await this.machineryService.deleteMachinery(machinery.tempId);
         slide.close();

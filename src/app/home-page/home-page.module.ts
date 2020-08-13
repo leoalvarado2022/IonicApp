@@ -1,11 +1,10 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {HomePagePage} from './home-page.page';
-import {SharedModule} from '../shared/shared.module';
-import {MenuComponent} from '../components/menu/menu.component';
-import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomePagePage } from './home-page.page';
+import { SharedModule } from '../shared/shared.module';
+import { MenuComponent } from '../components/menu/menu.component';
+import { ContractDetailService } from '../modules/planning/services/contract-detail/contract-detail.service';
 import { AuthGuard } from '../guards/auth/auth.guard';
-import { IonicModule } from '@ionic/angular';
 
 const routes: Routes = [
   {
@@ -15,109 +14,105 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () => import('../modules/menu-list/menu-list.module').then(module => module.MenuListPageModule)
+        loadChildren: () => import('../modules/menu-list/menu-list.module').then((module) => module.MenuListPageModule),
       },
       {
         path: 'companies',
-        loadChildren: () => import('../modules/companies/companies.module').then(module => module.CompaniesPageModule)
+        loadChildren: () => import('../modules/companies/companies.module').then((module) => module.CompaniesPageModule),
       },
       {
         path: 'connections',
-        loadChildren: () => import('../modules/connections/connections.module').then(module => module.ConnectionsPageModule)
+        loadChildren: () => import('../modules/connections/connections.module').then((module) => module.ConnectionsPageModule),
       },
       {
         path: 'profile',
-        loadChildren: () => import('../modules/planning/profile/profile.module').then(module => module.ProfilePageModule)
+        loadChildren: () => import('../modules/planning/profile/profile.module').then((module) => module.ProfilePageModule),
       },
       {
         path: 'produccion_centrocosto',
-        loadChildren: () => import('../modules/planning/center-cost/center-cost.module').then(module => module.CenterCostPageModule)
+        loadChildren: () => import('../modules/planning/center-cost/center-cost.module').then((module) => module.CenterCostPageModule),
       },
       {
         path: 'contract-detail',
-        loadChildren: () => import('../modules/planning/contract-detail/contract-detail.module').then(module => module.ContractDetailPageModule),
+        loadChildren: () => import('../modules/planning/contract-detail/contract-detail.module').then((module) => module.ContractDetailPageModule),
       },
       {
         path: 'harvest-estimate',
-        loadChildren: () => import('../modules/planning/harvest-estimate/harvest-estimate.module').then(module => module.HarvestEstimatePageModule),
+        loadChildren: () => import('../modules/planning/harvest-estimate/harvest-estimate.module').then((module) => module.HarvestEstimatePageModule),
       },
       {
         path: 'quality-estimate',
-        loadChildren: () => import('../modules/planning/quality-estimate/quality-estimate.module').then(module => module.QualityEstimatePageModule),
+        loadChildren: () => import('../modules/planning/quality-estimate/quality-estimate.module').then((module) => module.QualityEstimatePageModule),
       },
       {
         path: 'notes',
-        loadChildren: () => import('../modules/planning/notes/notes.module').then(module => module.NotesPageModule)
+        loadChildren: () => import('../modules/planning/notes/notes.module').then((module) => module.NotesPageModule),
       },
       {
         path: 'tarja_cuadrillas',
-        loadChildren: () => import('../modules/rem/rem-quadrille/rem-quadrille.module').then(module => module.RemQuadrillePageModule)
+        loadChildren: () => import('../modules/rem/rem-quadrille/rem-quadrille.module').then((module) => module.RemQuadrillePageModule),
       },
       {
         path: 'rem-workers',
-        loadChildren: () => import('../modules/rem/rem-workers/rem-workers.module').then(module => module.RemWorkersPageModule)
+        loadChildren: () => import('../modules/rem/rem-workers/rem-workers.module').then((module) => module.RemWorkersPageModule),
       },
       {
         path: 'crm_tickets',
-        loadChildren: () => import('../modules/crm/tickets/tickets.module').then(module => module.TicketsPageModule)
+        loadChildren: () => import('../modules/crm/tickets/tickets.module').then((module) => module.TicketsPageModule),
       },
       {
         path: 'ticket-details-list',
-        loadChildren: () => import('../modules/crm/ticket-details-list/ticket-details-list.module').then(module => module.TicketDetailsListPageModule)
+        loadChildren: () => import('../modules/crm/ticket-details-list/ticket-details-list.module').then((module) => module.TicketDetailsListPageModule),
       },
       {
         path: 'ticket-form',
-        loadChildren: () => import('../modules/crm/ticket-form/ticket-form.module').then(module => module.TicketFormPageModule)
+        loadChildren: () => import('../modules/crm/ticket-form/ticket-form.module').then((module) => module.TicketFormPageModule),
       },
       {
         path: 'tarja_contrato',
-        loadChildren: () => import('../modules/pre-contracts/contracts-list/contracts-list.module').then(module => module.ContractsListPageModule)
+        loadChildren: () => import('../modules/pre-contracts/contracts-list/contracts-list.module').then((module) => module.ContractsListPageModule),
       },
       {
         path: 'contract-form',
-        loadChildren: () => import('../modules/pre-contracts/contract-form/contract-form.module').then(module => module.ContractFormPageModule)
+        loadChildren: () => import('../modules/pre-contracts/contract-form/contract-form.module').then((module) => module.ContractFormPageModule),
       },
       {
         path: 'tarja_asociarnfc',
-        loadChildren: () => import('../modules/associate/nfc/nfc.module').then(m => m.NfcPageModule)
+        loadChildren: () => import('../modules/associate/nfc/nfc.module').then((m) => m.NfcPageModule),
       },
       {
         path: 'tarja_tratos',
-        loadChildren: () => import('../modules/tratos/tratos-list/tratos-list.module').then(m => m.TratosListPageModule)
+        loadChildren: () => import('../modules/tratos/tratos-list/tratos-list.module').then((m) => m.TratosListPageModule),
       },
       {
         path: 'tarja_tarjas',
-        loadChildren: () => import('../modules/tallies/quadrilles-list/quadrilles-list.module').then( m => m.QuadrillesListPageModule)
+        loadChildren: () => import('../modules/tallies/quadrilles-list/quadrilles-list.module').then((m) => m.QuadrillesListPageModule),
       },
       {
         path: 'tally-workers-list/:id',
-        loadChildren: () => import('../modules/tallies/workers-list/workers-list.module').then( m => m.WorkersListPageModule)
+        loadChildren: () => import('../modules/tallies/workers-list/workers-list.module').then((m) => m.WorkersListPageModule),
       },
       {
         path: 'tallies-list/:id/:date',
-        loadChildren: () => import('../modules/tallies/tallies-list/tallies-list.module').then( m => m.TalliesListPageModule)
+        loadChildren: () => import('../modules/tallies/tallies-list/tallies-list.module').then((m) => m.TalliesListPageModule),
       },
       {
         path: 'uso_maquinaria',
-        loadChildren: () => import('../modules/machinery/machinery.module').then( m => m.MachineryModule)
+        loadChildren: () => import('../modules/machinery/machinery.module').then((m) => m.MachineryModule),
       },
-      { path: '**', redirectTo: ''},
-    ]
+      {
+        path: 'consumos',
+        loadChildren: () => import('../modules/consumptions/consumptions.module').then((m) => m.ConsumptionsPageModule),
+      },
+      { path: '**', redirectTo: '' },
+    ],
   },
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [
-    HomePagePage,
-    MenuComponent
-  ],
-  providers: [
-    ContractDetailService
-  ]
+  imports: [SharedModule, RouterModule.forChild(routes)],
+  declarations: [HomePagePage, MenuComponent],
+  providers: [ContractDetailService],
 })
 export class HomePagePageModule {
 

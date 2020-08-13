@@ -331,10 +331,10 @@ export class MachineryFormComponent implements OnInit {
    */
   public submitForm = () => {
     if (this.editMachinery) {
-      if(this.isCopy) {
+      if (this.isCopy) {
         const newMachineryCopied = this.buildCopyMachinery();
         this.addMachinery(newMachineryCopied);
-      }else {
+      } else {
         const editMachinery = this.buildEditMachinery();
         this.updateMachinery(editMachinery);
       }
@@ -466,8 +466,7 @@ export class MachineryFormComponent implements OnInit {
   }
 
   /**
-  private selectLaborUnit = (unitId: number) => {
-   *
+   * selectLaborUnit
    * @param unitId
    */
   private selectLaborUnit = (unitId: number) => {

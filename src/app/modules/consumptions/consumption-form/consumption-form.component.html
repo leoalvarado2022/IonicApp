@@ -59,11 +59,26 @@
       </ion-item>
     </ion-list>
 
+    <br>
+
+
     <!-- QUANTITY -->
     <ion-item>
       <ion-label>Cantidad</ion-label>
       <ion-input formControlName="quantity" class="input-number" type="number"></ion-input>
+      <ion-badge slot="end">{{ unitCode | uppercase  }}</ion-badge>
     </ion-item>
+    <ng-container *ngIf="consumptionForm.get('quantity').dirty">
+      <ion-text class="error-message" color="danger" *ngIf="consumptionForm.get('quantity').hasError('required')">
+        La cantidad es requerida
+      </ion-text>
+      <ion-text class="error-message" color="danger" *ngIf="consumptionForm.get('quantity').hasError('min')">
+        La cantidad debe ser mayor a 0.1
+      </ion-text>
+      <ion-text class="error-message" color="danger" *ngIf="consumptionForm.get('quantity').hasError('pattern')">
+        Ingrese valores con . y maximo 3 decimales
+      </ion-text>
+    </ng-container>
 
     <!-- Textarea in an item with a floating label -->
     <ion-item>

@@ -54,6 +54,7 @@
               <p> <strong>Centro de Costo:</strong> {{ consumption.costCenterName | titlecase }}</p>
               <p> <strong>Fecha:</strong> {{ consumption.date | date:'dd/MM/yyyy' }}</p>
               <p> <strong>Producto:</strong> {{ consumption.itemName | titlecase }}</p>
+              <p *ngIf="consumption.unitName"> <strong>Unidad:</strong> {{ consumption.unitName | titlecase }}</p>
 
               <div class="ion-float-end">
                 <ion-chip>

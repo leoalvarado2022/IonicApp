@@ -107,6 +107,9 @@ export interface Consumption {
   companyId: number;
   date: string;
   documentId: string;
+  unitId: number;
+  unitCode: string;
+  unitName: string;
   notes?: string;
   tempId: number;
   status?: 'new' | 'edit' | 'delete';
@@ -116,4 +119,7 @@ export interface Product {
   id: number;
   code: string;
   name: string;
+  unitId: number;
+  unitCode: string;
+  unitName: string;
 }

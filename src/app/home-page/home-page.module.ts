@@ -104,6 +104,10 @@ const routes: Routes = [
         path: 'consumos',
         loadChildren: () => import('../modules/consumptions/consumptions.module').then((m) => m.ConsumptionsPageModule),
       },
+      {
+        path: 'test',
+        loadChildren: () => import('../modules/test-bl/test-bl.module').then( m => m.TestBlPageModule)
+      },
       { path: '**', redirectTo: '' },
     ],
   },

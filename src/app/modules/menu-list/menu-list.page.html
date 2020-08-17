@@ -40,6 +40,19 @@
           </ion-card-content>
         </ion-card>
       </ion-col>
+
+      <ion-col size="6">
+        <ion-card class="item-card" (click)="test()">
+          <ion-card-content>
+            <p class="ion-text-center">
+              <ion-icon name="bluetooth-outline" style="font-size: 64px"></ion-icon>              
+            </p>
+            <p class="ion-text-center">
+              <strong>{{ 'BL' | titlecase }}</strong>
+            </p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
     </ion-row>
   </ng-template>
 

@@ -150,4 +150,8 @@ export class MenuListPage implements OnInit, OnDestroy {
     });
   }
 
+  public test() {
+    this.router.navigate([`/home-page/test`]);
+  }
+
 }

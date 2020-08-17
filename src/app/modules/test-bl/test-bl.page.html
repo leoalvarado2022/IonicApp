@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Consumos</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>  
+</ion-header>
+
+<ion-content>
+  <p>Bluetooth Activado: {{ isBluetoothEnabled ? 'Si' : 'No' }}</p>  
+  
+  <ion-button *ngIf="isBluetoothEnabled" expand="full" (click)="scan()">
+    Buscar Dispositivos
+  </ion-button>
+
+  <ng-container *ngIf="isSearching">
+    Buscando...
+  </ng-container>
+
+  <ng-container *ngIf="isConnecting">
+    Conectando...
+  </ng-container>
+
+  <ng-container *ngIf="!selectedDevice && devicesList.length > 0">
+    <ion-list>
+      <ion-item *ngFor="let device of devicesList" (click)="connectDevice(device)">
+        <ion-label>{{ device.name ? device.name : device.address }}</ion-label>
+        <ion-icon slot="end" name="bluetooth-outline"></ion-icon>
+      </ion-item>  
+    </ion-list>
+  </ng-container>
+
+  <ng-container *ngIf="selectedDevice">
+    Seleccionado
+    <pre>
+      {{ selectedDevice | json }}
+    </pre>
+  </ng-container>
+
+
+  <ion-button expand="full" (click)="leerData()">Leer</ion-button>
+  
+</ion-content>

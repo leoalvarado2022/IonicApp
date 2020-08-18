@@ -1,54 +1,52 @@
-import { Component, OnInit } from '@angular/core';
-import { timer, Subject } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { BluetoothService } from '../../services/bluetooth/bluetooth.service';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-
-interface Device {
-  id: string;
-  class: number;
-  address: string;    
-  name?: string;
-}
+import { BluetoothDevice } from 'src/app/services/bluetooth/bluetooth-device.interface';
 
 @Component({
   selector: 'app-test-bl',
   templateUrl: './test-bl.page.html',
   styleUrls: ['./test-bl.page.scss'],
 })
-export class TestBlPage implements OnInit {
+export class TestBlPage implements OnInit, OnDestroy {
 
-  public isBluetoothEnabled: boolean;  
-  public devicesList: Array<Device> = [];
-  public isSearching = false;
-  public isConnecting = false;
-  public selectedDevice: Device;
-
-  private unsubscriber = new Subject();
   
-  constructor(private bluetoothSerial: BluetoothSerial) {
-    /*
-    this.bluetoothSerial.subscribe('\n').subscribe( data => {
-      console.log('data subscribe', data);
-    });
-    */    
+  public isBluetoothEnabled: boolean;
+  public isDeviceConnected: boolean;
+  public isSearching: boolean;
+  public lastWeight: number; 
 
-    this.bluetoothSerial.list().then( data => {
-      console.log('list', data);
-    }, error => {
-      console.log('list error', error);
-    })
+  private unsubscriber = new Subject();    
+
+  constructor(private bluetoothService: BluetoothService) {
+    this.bluetoothService.getBluetoothStatus().pipe(
+      takeUntil(this.unsubscriber)
+    ).subscribe( (status: boolean) => {
+      this.isBluetoothEnabled = status;
+    });
+
+    this.bluetoothService.getConnectionStatus().pipe(
+      takeUntil(this.unsubscriber)
+    ).subscribe( (status: boolean) => {
+      this.isDeviceConnected = status;
+    });
+
+    this.bluetoothService.getSearchingStatus().pipe(
+      takeUntil(this.unsubscriber)
+    ).subscribe( (status: boolean) => {
+      this.isSearching = status;
+    });
+
+    this.bluetoothService.getLastWeight().pipe(
+      takeUntil(this.unsubscriber)
+    ).subscribe( (weight: number) => {
+      this.lastWeight = weight;
+    });
   }
 
-  ngOnInit() {    
-    timer(0, 1000 * 30).pipe(
-      takeUntil(this.unsubscriber)
-    ).subscribe( () => {
-      this.bluetoothSerial.isEnabled().then( success => {
-        this.isBluetoothEnabled = success === 'OK';
-      }, error => {
-        this.isBluetoothEnabled = false;
-      });
-    });
+  ngOnInit() {
+
   }
 
   ngOnDestroy(){
@@ -56,47 +54,47 @@ export class TestBlPage implements OnInit {
   }
 
   /**
-   * scan
+   * getPairedDevices
    */
-  public scan = () => {    
-    this.isSearching = true;
-    this.devicesList = [];
+  public getPairedDevices = () => {
+    return this.bluetoothService.getPairedDevices();
+  }
 
-    this.bluetoothSerial.discoverUnpaired().then( (data: Array<Device>) => {
-      console.log('devices', data);
+  /**
+   * getAvailableDevices
+   */
+  public getAvailableDevices = () => {
+    return this.bluetoothService.getAvailableDevices();
+  }
 
-      this.devicesList = data;
-      this.isSearching = false;
-    }, error => {
-      this.devicesList = [];
-      this.isSearching = false;
-    });
+  /**
+   * scanDevices
+   */
+  public scanDevices = () => {
+    return this.bluetoothService.scanDevices();
   }
 
   /**
    * connectDevice
    * @param device 
    */
-  public connectDevice = (device: Device) => {
-    this.isConnecting = true;
-    this.bluetoothSerial.connect(device.address).subscribe(success => {
-      this.selectedDevice = device;
-      this.isConnecting = false;
-      // MENSAJE CONECTADO
-    }, error => {
-      this.selectedDevice = null;
-      this.isConnecting = false;
-      // MENSAJE ERROR
-    });
+  public connectDevice = (device: BluetoothDevice) => {
+    this.bluetoothService.connectDevice(device);
   }
 
-  public leerData(){
-    this.bluetoothSerial.read().then( data => {
-      console.log('readUntil', data);
-      console.log('0', data[0]);
-    }, error => {
-      console.log('error', error);
-    });
+  /**
+   * disconnectDevice
+   * @param device 
+   */
+  public disconnectDevice = (device: BluetoothDevice) => {
+    this.bluetoothService.disconnectDevice();    
   }
+
+  /**
+   * readData
+   */
+  public readData = () => {
+    this.bluetoothService.getDeviceData();
+  }  
 
 }

@@ -15,6 +15,7 @@ import { StepperService } from './storage/stepper/stepper.service';
 import { HttpClientModule } from '@angular/common/http';
 import {DeviceSyncService} from './storage/device-sync/device-sync.service';
 import { MachineryService } from '../modules/machinery/services/machinery.service';
+import { BluetoothService } from '../services/bluetooth/bluetooth.service';
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { MachineryService } from '../modules/machinery/services/machinery.servic
     ToastService,
     HttpService,
     AlertService,
+    BluetoothService,
 
     // Storage Services Block
     StorageSyncService,

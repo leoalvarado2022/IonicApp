@@ -1,16 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BluetoothService } from '../../services/bluetooth/bluetooth.service';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/internal/Subject';
+import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { BluetoothDevice } from 'src/app/services/bluetooth/bluetooth-device.interface';
 
 @Component({
-  selector: 'app-test-bl',
-  templateUrl: './test-bl.page.html',
-  styleUrls: ['./test-bl.page.scss'],
+  selector: 'app-bluetooth-manager',
+  templateUrl: './bluetooth-manager.page.html',
+  styleUrls: ['./bluetooth-manager.page.scss'],
 })
-export class TestBlPage implements OnInit, OnDestroy {
-
+export class BluetoothManagerPage implements OnInit, OnDestroy {
   
   public isBluetoothEnabled: boolean;
   public isDeviceConnected: boolean;
@@ -20,6 +19,10 @@ export class TestBlPage implements OnInit, OnDestroy {
   private unsubscriber = new Subject();    
 
   constructor(private bluetoothService: BluetoothService) {
+    
+  }
+
+  ngOnInit() {
     this.bluetoothService.getBluetoothStatus().pipe(
       takeUntil(this.unsubscriber)
     ).subscribe( (status: boolean) => {
@@ -43,10 +46,6 @@ export class TestBlPage implements OnInit, OnDestroy {
     ).subscribe( (weight: number) => {
       this.lastWeight = weight;
     });
-  }
-
-  ngOnInit() {
-
   }
 
   ngOnDestroy(){
@@ -95,6 +94,13 @@ export class TestBlPage implements OnInit, OnDestroy {
    */
   public readData = () => {
     this.bluetoothService.getDeviceData();
-  }  
+  } 
+
+  /**
+   * enableBlueetooth
+   */
+  public enableBlueetooth = () => {
+    this.bluetoothService.enableBlueetooth();
+  }
 
 }

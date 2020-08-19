@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { TestBlPage } from './test-bl.page';
+import { BluetoothManagerPage } from './bluetooth-manager.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: TestBlPage
+    component: BluetoothManagerPage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class TestBlPageRoutingModule {}
+export class BluetoothManagerPageRoutingModule {}

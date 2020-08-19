@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { TestBlPage } from './test-bl.page';
+import { BluetoothManagerPage } from './bluetooth-manager.page';
 
-describe('TestBlPage', () => {
-  let component: TestBlPage;
-  let fixture: ComponentFixture<TestBlPage>;
+describe('BluetoothManagerPage', () => {
+  let component: BluetoothManagerPage;
+  let fixture: ComponentFixture<BluetoothManagerPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TestBlPage ],
+      declarations: [ BluetoothManagerPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TestBlPage);
+    fixture = TestBed.createComponent(BluetoothManagerPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

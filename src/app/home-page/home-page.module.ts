@@ -104,6 +104,10 @@ const routes: Routes = [
         path: 'consumos',
         loadChildren: () => import('../modules/consumptions/consumptions.module').then((m) => m.ConsumptionsPageModule),
       },
+      {
+        path: 'asociar_bluetooth',
+        loadChildren: () => import('../modules/bluetooth-manager/bluetooth-manager.module').then( m => m.BluetoothManagerPageModule)
+      },      
       { path: '**', redirectTo: '' },
     ],
   },

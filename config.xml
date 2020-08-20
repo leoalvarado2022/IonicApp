@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="cl.primetec.fx11" version="1.0.98" xmlns="http://www.w3.org/ns/widgets">
+<widget id="cl.primetec.fx11" version="1.0.99" xmlns="http://www.w3.org/ns/widgets">
     <name>FX360 Movil</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
@@ -86,7 +86,7 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationAlwaysAndWhenInUseUsageDescription">
             <string>We use your location for full functionality of certain app features.</string>
         </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysAndWhenInUseUsageDescription">
+        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysUsageDescription">
             <string>Bluetooth will be used to connect to devices such as digital weights</string>
         </edit-config>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />

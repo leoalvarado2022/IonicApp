@@ -8,8 +8,7 @@ import { version } from './version';
 export const environment = {
   production: false,
   app_name: 'FX10',
-  // api_url: 'http://127.0.0.1:5572',
-  api_url: 'https://apiqa.fx360.cl',
+  api_url: 'http://127.0.0.1:5572',
   appVersion: version.number,
   tz: 'America/Santiago',
   iosDeviceNames,

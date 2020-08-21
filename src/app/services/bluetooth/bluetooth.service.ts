@@ -23,14 +23,11 @@ export class BluetoothService {
     private toastService: ToastService
   ) {
     timer(0, 1000 * 5).subscribe(() => {
-      this.bluetoothSerial.isEnabled().then(success => {
-        console.log('isEnabled success', success);
-        this.isBluetoothEnabled.next(success === 'OK');
-
+      this.bluetoothSerial.isEnabled().then(success => {        
+        this.isBluetoothEnabled.next(true);
         this.checkConnection();
         this.listPairedDevices();
-      }, error => {
-        console.log('isEnabled error', error);
+      }, error => {        
         this.isBluetoothEnabled.next(false);
       });
     });
@@ -82,11 +79,9 @@ export class BluetoothService {
    * checkConnection
    */
   private checkConnection = () => {
-    this.bluetoothSerial.isConnected().then(data => {
-      console.log('isConnected success', data);
-      this.isDeviceConnected.next(data === 'OK');
-    }, error => {
-      console.log('isConnected error', error);
+    this.bluetoothSerial.isConnected().then(data => {      
+      this.isDeviceConnected.next(true);
+    }, error => {      
       this.isDeviceConnected.next(false);
     });
   }

@@ -3,6 +3,7 @@ import { Subject } from 'rxjs/internal/Subject';
 import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { BluetoothDevice } from 'src/app/services/bluetooth/bluetooth-device.interface';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-bluetooth-manager',
@@ -18,7 +19,10 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
 
   private unsubscriber = new Subject();    
 
-  constructor(private bluetoothService: BluetoothService) {
+  constructor(
+    private bluetoothService: BluetoothService,
+    private platform: Platform
+  ) {
     
   }
 

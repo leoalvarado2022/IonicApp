@@ -24,11 +24,13 @@ export class BluetoothService {
   ) {
     timer(0, 1000 * 5).subscribe(() => {
       this.bluetoothSerial.isEnabled().then(success => {
+        console.log('isEnabled success', success);
         this.isBluetoothEnabled.next(success === 'OK');
 
         this.checkConnection();
         this.listPairedDevices();
       }, error => {
+        console.log('isEnabled error', error);
         this.isBluetoothEnabled.next(false);
       });
     });
@@ -81,8 +83,10 @@ export class BluetoothService {
    */
   private checkConnection = () => {
     this.bluetoothSerial.isConnected().then(data => {
+      console.log('isConnected success', data);
       this.isDeviceConnected.next(data === 'OK');
     }, error => {
+      console.log('isConnected error', error);
       this.isDeviceConnected.next(false);
     });
   }
@@ -92,8 +96,10 @@ export class BluetoothService {
    */
   private listPairedDevices = () => {
     this.bluetoothSerial.list().then(data => {
+      console.log('list success', data);
       this.pairedDevices.next(data);
     }, error => {
+      console.log('list error', error);
       this.pairedDevices.next([]);
     });
   }
@@ -104,8 +110,10 @@ export class BluetoothService {
    */
   public connectDevice = (device: BluetoothDevice) => {
     this.bluetoothSerial.connect(device.address).subscribe(success => {
+      console.log('connect success', success);
       this.toastService.successToast('Dispositivo Conectado');
     }, error => {
+      console.log('connect error', error);
       this.toastService.errorToast('Ocurrio un error al conectar el dispositivo');
     });
   }
@@ -115,9 +123,11 @@ export class BluetoothService {
    */
   public disconnectDevice = () => {
     this.bluetoothSerial.disconnect().then(success => {
+      console.log('disconnect success', success);
       this.listPairedDevices();
       this.toastService.warningToast('Dispositivo Desconectado');
     }, error => {
+      console.log('disconnect error', error);
       this.listPairedDevices();
       this.toastService.errorToast('Ocurrio un error desconectando dispositivo');
     });
@@ -131,9 +141,11 @@ export class BluetoothService {
     this.availableDevices.next([]);
 
     this.bluetoothSerial.discoverUnpaired().then((data: Array<BluetoothDevice>) => {
+      console.log('discoverUnpaired success', data);
       this.availableDevices.next(data);
       this.isSearchingDevices.next(false);
     }, error => {
+      console.log('discoverUnpaired error', error);
       this.availableDevices.next([]);
       this.isSearchingDevices.next(false);
     });
@@ -183,10 +195,10 @@ export class BluetoothService {
    * enableBlueetooth
    */
   public enableBlueetooth = () => {
-    this.bluetoothSerial.enable().then(() => {
-
+    this.bluetoothSerial.enable().then((data) => {
+      console.log('enable success', data);
     }, error => {
-
+      console.log('enable error', error);
     });
   }
 

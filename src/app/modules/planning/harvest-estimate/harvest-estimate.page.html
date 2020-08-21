@@ -22,23 +22,36 @@
 </ion-header>
 
 <ion-content class="content">
-  <ng-container *ngFor="let harvest of filteredHarvestEstimate ; let index =index">
-    <div class="card-sli">
-      <div class="card-sli-back">
-        <app-harvest-estimate-item
-          (deleteHarvest)="deleteHarvest($event)"
-          (harvestSelected)="viewHarvest($event)"
-          [isOld]="index > 0"
-          [item]="harvest"
-          [slideDisabled]="false">
-        </app-harvest-estimate-item>
+  <ng-container *ngIf="filteredHarvestEstimate.length > 0; else noResults">
+    <ng-container *ngFor="let harvest of filteredHarvestEstimate ; let index =index">
+      <div class="card-sli">
+        <div class="card-sli-back">
+          <app-harvest-estimate-item
+            (deleteHarvest)="deleteHarvest($event)"
+            (harvestSelected)="viewHarvest($event)"
+            (duplicateHarvest)="duplicateHarvestEstimate($event)"            
+            [units]="units"
+            [isOld]="index > 0"
+            [item]="harvest"
+            [slideDisabled]="false">
+          </app-harvest-estimate-item>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </ng-container>
+
+  <ng-template #noResults>
+    <!-- Default Item -->
+    <ion-item lines="none">
+      <ion-label>
+        Sin estimaciones
+      </ion-label>
+    </ion-item>    
+  </ng-template>
 
   <ng-container *ngIf="checkButton()">
     <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-      <ion-fab-button size="small" (click)="openForm()" [disabled]="!costCenter || !isOnline" color="warning">
+      <ion-fab-button size="small" (click)="newHarvestEstimate()" [disabled]="!costCenter || !isOnline" color="warning">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

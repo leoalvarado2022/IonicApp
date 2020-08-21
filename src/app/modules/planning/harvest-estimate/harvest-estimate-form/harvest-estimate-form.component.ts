@@ -67,9 +67,10 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         startDate: [{value: moment.utc(this.harvestEstimate.startDate).format('YYYY-MM-DD'), disabled: true}],
         endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY')],
         processPlant: [{value: this.harvestEstimate ? this.harvestEstimate.processPlant : '', disabled: true}, Validators.required],
-        destination: [{value: this.harvestEstimate ? this.harvestEstimate.destination : '', disabled: true}, Validators.required]
+        destination: [{value: this.harvestEstimate ? this.harvestEstimate.destination : '', disabled: true}, Validators.required],
+        referenceId: 0
       });
-    } else {
+    } else {      
       this.harvestForm = this.formBuilder.group({
         id: [0, Validators.required],
         costCenter: [this.costCenter.id],
@@ -89,7 +90,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : this.costCenter.harvestDate, Validators.required],
         endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required],
         processPlant: [this.previous ? this.previous.processPlant : '', Validators.required],
-        destination: [this.previous ? this.previous.destination : '', Validators.required]
+        destination: [this.previous ? this.previous.destination : '', Validators.required],
+        referenceId: this.previous ? this.previous.id : 0
       });
     }
 

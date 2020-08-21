@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
-import {CostCenter, HarvestEstimate} from '@primetec/primetec-angular';
+import {CostCenter, HarvestEstimate, Unit} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
@@ -18,14 +18,15 @@ import {StoreService} from '../../../shared/services/store/store.service';
 })
 export class HarvestEstimatePage implements OnInit, OnDestroy {
 
-  public costCenter: CostCenter;
-  public filteredHarvestEstimate: Array<HarvestEstimate>;
   public isOnline: boolean;
-  private harvestEstimate: Array<HarvestEstimate>;
+  public costCenter: CostCenter;
+  public filteredHarvestEstimate: Array<HarvestEstimate> = [];
+  private harvestEstimate: Array<HarvestEstimate> = [];
   private currentUrl: string;
   private isOnline$: Subscription;
   private router$: Subscription;
   private store$: Subscription;
+  public units: Array<Unit> = [];
 
   private firstLoad = true;
 
@@ -81,6 +82,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     this.costCenter = this.storeService.getCostCenter();
     this.harvestEstimate = this.storeService.getHarvestEstimate();
     this.filteredHarvestEstimate = this.storeService.getHarvestEstimate();
+    this.units = this.storeService.getUnits();
   }
 
   /**
@@ -91,16 +93,41 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
   }
 
   /**
-   * openForm
+   * newHarvestEstimate
    */
-  public openForm = async (harvestEstimate: HarvestEstimate = null) => {
+  public newHarvestEstimate = async (harvestEstimate: HarvestEstimate = null) => {
     const modal = await this.modalController.create({
       component: HarvestEstimateFormComponent,
       componentProps: {
         costCenter: this.costCenter,
         harvestEstimate,
-        isView: harvestEstimate !== null,
-        previous: this.harvestEstimate.length > 0 ? this.harvestEstimate[0] : null
+        isView: harvestEstimate !== null
+      },
+      backdropDismiss: false,
+      keyboardClose: false,
+      cssClass: 'full-screen-modal'
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.reloadList();
+      }
+    });
+
+    return await modal.present();
+  }
+
+  /**
+   * duplicateHarvestEstimate
+   * @param harvestEstimate 
+   */
+  public duplicateHarvestEstimate = async (harvestEstimate: HarvestEstimate) => {    
+    const modal = await this.modalController.create({
+      component: HarvestEstimateFormComponent,
+      componentProps: {
+        costCenter: this.costCenter,        
+        isView: false,        
+        previous: harvestEstimate
       },
       backdropDismiss: false,
       keyboardClose: false,
@@ -145,7 +172,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    * @param item
    */
   public viewHarvest = async (harvestEstimate: HarvestEstimate) => {
-    await this.openForm(harvestEstimate);
+    await this.newHarvestEstimate(harvestEstimate);
   }
 
   /**

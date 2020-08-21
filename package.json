@@ -1,6 +1,6 @@
 {
   "name": "fx360_movil",
-  "version": "1.0.98",
+  "version": "1.0.99",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -148,8 +148,8 @@
       "cordova-plugin-bluetooth-serial": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

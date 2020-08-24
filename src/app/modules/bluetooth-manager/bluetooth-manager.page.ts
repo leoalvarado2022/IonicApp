@@ -3,6 +3,7 @@ import { Subject } from 'rxjs/internal/Subject';
 import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { BluetoothDevice } from 'src/app/services/bluetooth/bluetooth-device.interface';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-bluetooth-manager',
@@ -15,37 +16,47 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
   public isDeviceConnected: boolean;
   public isSearching: boolean;
   public lastWeight: number; 
+  public isAndroid: boolean = false;
 
-  private unsubscriber = new Subject();    
+  private unsubscriber = new Subject();
 
-  constructor(private bluetoothService: BluetoothService) {
-    
+  constructor(
+    private bluetoothService: BluetoothService,
+    private platform: Platform
+  ) {
+    this.platform.ready().then( () => {
+      this.isAndroid = this.platform.is('android');      
+
+      console.log('this.isAndroid', this.isAndroid);
+    });    
   }
 
   ngOnInit() {
-    this.bluetoothService.getBluetoothStatus().pipe(
-      takeUntil(this.unsubscriber)
-    ).subscribe( (status: boolean) => {
-      this.isBluetoothEnabled = status;
-    });
-
-    this.bluetoothService.getConnectionStatus().pipe(
-      takeUntil(this.unsubscriber)
-    ).subscribe( (status: boolean) => {
-      this.isDeviceConnected = status;
-    });
-
-    this.bluetoothService.getSearchingStatus().pipe(
-      takeUntil(this.unsubscriber)
-    ).subscribe( (status: boolean) => {
-      this.isSearching = status;
-    });
-
-    this.bluetoothService.getLastWeight().pipe(
-      takeUntil(this.unsubscriber)
-    ).subscribe( (weight: number) => {
-      this.lastWeight = weight;
-    });
+    if (this.isAndroid) {
+      this.bluetoothService.getBluetoothStatus().pipe(
+        takeUntil(this.unsubscriber)
+      ).subscribe( (status: boolean) => {
+        this.isBluetoothEnabled = status;
+      });
+  
+      this.bluetoothService.getConnectionStatus().pipe(
+        takeUntil(this.unsubscriber)
+      ).subscribe( (status: boolean) => {
+        this.isDeviceConnected = status;
+      });
+  
+      this.bluetoothService.getSearchingStatus().pipe(
+        takeUntil(this.unsubscriber)
+      ).subscribe( (status: boolean) => {
+        this.isSearching = status;
+      });
+  
+      this.bluetoothService.getLastWeight().pipe(
+        takeUntil(this.unsubscriber)
+      ).subscribe( (weight: number) => {
+        this.lastWeight = weight;
+      });
+    }
   }
 
   ngOnDestroy(){

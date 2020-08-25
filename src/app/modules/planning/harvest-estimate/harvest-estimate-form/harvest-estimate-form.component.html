@@ -21,7 +21,7 @@
     </ion-item>
     <ng-container *ngIf="harvestForm.get('quantity').dirty">
       <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('required')">Ingrese la cantidad. utilice punto en vez de coma.</ion-text>
-      <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('min')">El valor minimo es 0.1.</ion-text>
+      <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('min')">El valor minimo es 1.</ion-text>
       <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('pattern')">Maximo 3 decimales</ion-text>
     </ng-container>    
 
@@ -34,7 +34,7 @@
     </ion-item>
     <ng-container *ngIf="harvestForm.get('dailyAmount').dirty">
       <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').hasError('required')">Ingrese la cantidad. utilice punto en vez de coma.</ion-text>
-      <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').hasError('min')">El valor minimo es 0.1.</ion-text>
+      <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').hasError('min')">El valor minimo es 1</ion-text>
       <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').hasError('pattern')">Maximo 3 decimales</ion-text>
     </ng-container>    
 

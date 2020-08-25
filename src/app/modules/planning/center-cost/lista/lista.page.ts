@@ -38,6 +38,8 @@ export class ListaPage implements OnInit {
 
     const costCenters = this.storeService.getCostCenters();
 
+    console.log('costCenters', costCenters);
+
     this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
 
@@ -51,7 +53,11 @@ export class ListaPage implements OnInit {
   public searchCostCenter = (search: string) => {
     if (search) {
       this.filteredCostCenters = this.costCenters.filter(item => {
+        console.log('item.speciesName', item.speciesName);
+        console.log('item.varietyName', item.varietyName);
+
         return (
+          item.code.toLowerCase().includes(search.toLowerCase()) ||
           item.name.toLowerCase().includes(search.toLowerCase()) ||
           item.producerName.toLowerCase().includes(search.toLowerCase()) ||
           item.contractResponsible.toLowerCase().includes(search.toLowerCase()) ||

@@ -1,10 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {HarvestEstimate, Unit} from '@primetec/primetec-angular';
-
-interface Arrows extends HarvestEstimate {
-  arrow: string;
-  color: string;
-}
+import {Unit} from '@primetec/primetec-angular';
+import { HarvestEstimate } from '../harvest-estimate.interface';
 
 @Component({
   selector: 'app-harvest-estimate-item',
@@ -13,14 +9,13 @@ interface Arrows extends HarvestEstimate {
 })
 export class HarvestEstimateItemComponent implements OnInit {
 
-  @Input() item: Arrows = null;
+  @Input() item: HarvestEstimate = null;
   @Input() isOld = false;
   @Input() slideDisabled = true;
   @Input() units: Array<Unit> = [];
 
-  @Output() harvestSelected: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
-  @Output() deleteHarvest: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
-  @Output() duplicateHarvest: EventEmitter<Arrows | null> = new EventEmitter<Arrows | null>();
+  @Output() harvestSelected: EventEmitter<HarvestEstimate | null> = new EventEmitter<HarvestEstimate | null>();
+  @Output() deleteHarvest: EventEmitter<HarvestEstimate | null> = new EventEmitter<HarvestEstimate | null>();  
 
   constructor() {
 
@@ -34,23 +29,15 @@ export class HarvestEstimateItemComponent implements OnInit {
    * showList
    * @param item
    */
-  public clickHarvest = (item: Arrows = null) => {
+  public clickHarvest = (item: HarvestEstimate = null) => {
     this.harvestSelected.emit(item);
-  }
-
-  /**
-   * duplicateItem
-   * @param item 
-   */
-  public duplicateItem = (item: Arrows) => {
-    this.duplicateHarvest.emit(item);
   }
 
   /**
    * deleteHarvest
    * @param item
    */
-  public deleteItem = (item: Arrows) => {
+  public deleteItem = (item: HarvestEstimate) => {
     this.deleteHarvest.emit(item);
   }  
 

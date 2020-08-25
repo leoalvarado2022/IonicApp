@@ -11,7 +11,7 @@
 
 <ion-content>
   <form [formGroup]="harvestForm">
-
+  
     <!-- CANTIDAD -->
     <ion-item>
       <ion-label position="fixed">
@@ -23,7 +23,7 @@
       <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('required')">Ingrese la cantidad. utilice punto en vez de coma.</ion-text>
       <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('min')">El valor minimo es 1.</ion-text>
       <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('pattern')">Maximo 3 decimales</ion-text>
-    </ng-container>    
+    </ng-container>
 
     <!-- CANTIDAD DIARIA -->
     <ion-item>

@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
-import {CostCenter, HarvestEstimate, Unit} from '@primetec/primetec-angular';
+import {CostCenter, Unit} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
@@ -10,6 +10,7 @@ import {AlertService} from '../../../shared/services/alert/alert.service';
 import {Subscription} from 'rxjs';
 import {NetworkService} from '../../../shared/services/network/network.service';
 import {StoreService} from '../../../shared/services/store/store.service';
+import { HarvestEstimate } from './harvest-estimate.interface';
 
 @Component({
   selector: 'app-harvest-estimate',
@@ -80,7 +81,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     this.firstLoad = false;
 
     this.costCenter = this.storeService.getCostCenter();
-    this.harvestEstimate = this.storeService.getHarvestEstimate();
+    this.harvestEstimate = this.storeService.getHarvestEstimate();    
     this.filteredHarvestEstimate = this.storeService.getHarvestEstimate();
     this.units = this.storeService.getUnits();
   }
@@ -224,6 +225,18 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * processSelectedHarvest
+   * @param harvestEstimate 
+   */
+  public processSelectedHarvest = (harvestEstimate: HarvestEstimate) => {
+    if (harvestEstimate.active) {
+      this.duplicateHarvestEstimate(harvestEstimate);
+    } else {
+      this.viewHarvest(harvestEstimate);
+    }
   }
 
 }

@@ -11,7 +11,6 @@ import {
   CostCenterList,
   EntityList,
   Generic,
-  HarvestEstimate,
   Note,
   ProductContract,
   ProductContractDetail,
@@ -22,6 +21,7 @@ import {
 } from '@primetec/primetec-angular';
 import {environment} from 'src/environments/environment';
 import {debounceTime} from 'rxjs/operators';
+import { HarvestEstimate } from 'src/app/modules/planning/harvest-estimate/harvest-estimate.interface';
 
 @Injectable({
   providedIn: 'root'

@@ -29,7 +29,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     backdropDismiss: false
   };
 
-  public showNumber: number;
+  public showQuantity: string;
+  public showDailyAmount: string;
 
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
@@ -303,8 +304,24 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  public prueba(value: string){
-    this.showNumber = parseFloat(value);
+  /**
+   * inputQuantity
+   * @param value 
+   */
+  public inputQuantity = (value: string) => {    
+    const clean = value.replace(/\D/g,'');    
+    this.showQuantity = clean;
+    this.harvestForm.get('quantity').patchValue(clean);
+  }
+
+  /**
+   * inputDailyAmount
+   * @param value 
+   */
+  public inputDailyAmount = (value: string) => {
+    const clean = value.replace(/\D/g,'');
+    this.showDailyAmount = clean;
+    this.harvestForm.get('dailyAmount').patchValue(clean);
   }
 
 }

@@ -23,15 +23,14 @@
 
 <ion-content class="content">
   <ng-container *ngIf="filteredHarvestEstimate.length > 0; else noResults">
-    <ng-container *ngFor="let harvest of filteredHarvestEstimate ; let index =index">
+    <ng-container *ngFor="let harvest of filteredHarvestEstimate">
       <div class="card-sli">
         <div class="card-sli-back">
           <app-harvest-estimate-item
             (deleteHarvest)="deleteHarvest($event)"
-            (harvestSelected)="viewHarvest($event)"
-            (duplicateHarvest)="duplicateHarvestEstimate($event)"            
+            (harvestSelected)="processSelectedHarvest($event)"                
             [units]="units"
-            [isOld]="index > 0"
+            [isOld]="!harvest.active"
             [item]="harvest"
             [slideDisabled]="false">
           </app-harvest-estimate-item>

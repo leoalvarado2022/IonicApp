@@ -27,10 +27,7 @@
       </ion-label>
     </ion-item>
 
-    <ion-item-options side="end">
-      <ion-item-option (click)="duplicateItem(item)" color="primary" *ngIf="!isOld">
-        <ion-icon name="copy"></ion-icon>
-      </ion-item-option>
+    <ion-item-options side="end">      
       <ion-item-option (click)="deleteItem(item)" color="danger">
         <ion-icon name="trash"></ion-icon>
       </ion-item-option>

@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CostCenter, EntityList, Generic, HarvestEstimate, Unit} from '@primetec/primetec-angular';
+import {CostCenter, EntityList, Generic, Unit} from '@primetec/primetec-angular';
 import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
 import {HttpService} from '../../../../shared/services/http/http.service';
@@ -9,6 +9,7 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {debounceTime} from 'rxjs/operators';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import {Subscription} from 'rxjs';
+import { HarvestEstimate } from '../harvest-estimate.interface';
 
 @Component({
   selector: 'app-harvest-estimate-form',
@@ -27,6 +28,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     keyboardClose: false,
     backdropDismiss: false
   };
+
+  public showNumber: number;
 
   public readonly dateFormat = 'DD/MM/YYYY';
   public readonly maxDate = '2030';
@@ -88,7 +91,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
           Validators.pattern(this.decimalRegex)
         ]],
         workHolidays: [this.previous ? this.previous.workHolidays ? '1' : '0' : '0', Validators.required],
-        startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : this.costCenter.harvestDate, Validators.required],
+        startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : moment().format('YYYY-MM-DD'), Validators.required],
         endDate: [this.previous ? moment(this.cleanDate(this.previous.endDate), 'YYYY-MM-DD').format('DD/MM/YYYY') : '', Validators.required],
         processPlant: [this.previous ? this.previous.processPlant : '', Validators.required],
         destination: [this.previous ? this.previous.destination : '', Validators.required],
@@ -298,6 +301,10 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     if (this.destinations.length === 1) {
       this.harvestForm.get('destination').patchValue(this.destinations[0].id);
     }
+  }
+
+  public prueba(value: string){
+    this.showNumber = parseFloat(value);
   }
 
 }

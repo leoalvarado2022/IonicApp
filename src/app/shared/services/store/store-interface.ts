@@ -1,5 +1,6 @@
-import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, HarvestEstimate, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
+import {Caliber, CfgAccess, Company, Connection, CostCenter, CostCenterList, EntityList, Generic, Note, ProductContract, ProductContractDetail, Quadrille, QualityDetail, QualityEstimate, TabMenu, Unit} from '@primetec/primetec-angular';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
+import { HarvestEstimate } from 'src/app/modules/planning/harvest-estimate/harvest-estimate.interface';
 
 export interface StoreInterface {
   auth: Auth;

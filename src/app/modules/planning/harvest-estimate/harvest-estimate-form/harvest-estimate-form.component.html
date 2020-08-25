@@ -17,24 +17,26 @@
       <ion-label position="fixed">
         Cantidad {{ showUnitName() | uppercase }}
       </ion-label>
-      <ion-input class="input-number" [value]="harvestForm.get('quantity').value | mask: 'separator'" clearInput formControlName="quantity" placeholder="Ingresar Cantidad" type="number"></ion-input>
+      <ion-input class="input-number" clearInput formControlName="quantity" placeholder="Ingresar Cantidad" type="number"></ion-input>      
     </ion-item>
-    <ion-text color="danger" *ngIf="harvestForm.get('quantity').dirty">
-      <p *ngIf="harvestForm.get('quantity').hasError('required')">Ingrese Cantidad</p>
-      <p *ngIf="harvestForm.get('quantity').hasError('pattern')">Solo numeros</p>
-    </ion-text>
+    <ng-container *ngIf="harvestForm.get('quantity').dirty">
+      <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('required')">Ingrese la cantidad. utilice punto en vez de coma.</ion-text>
+      <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('min')">El valor minimo es 0.1.</ion-text>
+      <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('pattern')">Maximo 3 decimales</ion-text>
+    </ng-container>    
 
     <!-- CANTIDAD DIARIA -->
     <ion-item>
       <ion-label position="fixed">
         Cantidad Diaria {{ showUnitName() | uppercase }}
       </ion-label>
-      <ion-input class="input-number" [value]="harvestForm.get('dailyAmount') .value | mask: 'separator'" clearInput formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number"></ion-input>
+      <ion-input class="input-number" clearInput formControlName="dailyAmount" placeholder="Ingresar Cantidad Diaria" type="number"></ion-input>      
     </ion-item>
-    <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').dirty">
-      <p *ngIf="harvestForm.get('dailyAmount').hasError('required')">Ingrese cantidad diaria</p>
-      <p *ngIf="harvestForm.get('quantity').hasError('pattern')">Solo numeros</p>
-    </ion-text>
+    <ng-container *ngIf="harvestForm.get('dailyAmount').dirty">
+      <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').hasError('required')">Ingrese la cantidad. utilice punto en vez de coma.</ion-text>
+      <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').hasError('min')">El valor minimo es 0.1.</ion-text>
+      <ion-text color="danger" *ngIf="harvestForm.get('dailyAmount').hasError('pattern')">Maximo 3 decimales</ion-text>
+    </ng-container>    
 
     <!-- Trabaja festivos -->
     <ion-list>

@@ -39,6 +39,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public holidays: Array<any> = [];
   private userCompany: any;
   private valueChanges$: Subscription;
+  private readonly decimalRegex = /^\d*(.\d{1,3})?$/;
 
   constructor(
     private modalController: ModalController,
@@ -78,13 +79,13 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         unit: [this.costCenter.controlUnit, Validators.required],
         quantity: [this.previous ? this.previous.quantity : '', [
           Validators.required,
-          Validators.pattern(/^([0-9.])+$/),
-          Validators.min(1)
+          Validators.min(1),
+          Validators.pattern(this.decimalRegex)
         ]],
         dailyAmount: [this.previous ? this.previous.dailyAmount : '', [
           Validators.required,
-          Validators.pattern(/^([0-9.])+$/),
-          Validators.min(1)
+          Validators.min(1),
+          Validators.pattern(this.decimalRegex)
         ]],
         workHolidays: [this.previous ? this.previous.workHolidays ? '1' : '0' : '0', Validators.required],
         startDate: [this.previous ? moment(this.cleanDate(this.previous.startDate), 'YYYY-MM-DD').format('YYYY-MM-DD') : this.costCenter.harvestDate, Validators.required],

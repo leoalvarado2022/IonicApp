@@ -11,6 +11,11 @@ import {StoreService} from '../../../../shared/services/store/store.service';
 import {Subscription} from 'rxjs';
 import { HarvestEstimate } from '../harvest-estimate.interface';
 
+function validateQuantities(form: FormGroup) {
+  return form.get('quantity').value >= form.get('dailyAmount').value
+  ? null : {'greather': true};
+}
+
 @Component({
   selector: 'app-harvest-estimate-form',
   templateUrl: './harvest-estimate-form.component.html',
@@ -75,6 +80,9 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         destination: [{value: this.harvestEstimate ? this.harvestEstimate.destination : '', disabled: true}, Validators.required],
         referenceId: 0
       });
+
+      this.showQuantity = this.harvestEstimate.quantity.toString();
+      this.showDailyAmount = this.harvestEstimate.dailyAmount.toString();
     } else {      
       this.harvestForm = this.formBuilder.group({
         id: [0, Validators.required],
@@ -84,7 +92,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         quantity: [this.previous ? this.previous.quantity : '', [
           Validators.required,
           Validators.min(1),
-          Validators.pattern(this.decimalRegex)
+          Validators.pattern(this.decimalRegex)          
         ]],
         dailyAmount: [this.previous ? this.previous.dailyAmount : '', [
           Validators.required,
@@ -97,12 +105,17 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         processPlant: [this.previous ? this.previous.processPlant : '', Validators.required],
         destination: [this.previous ? this.previous.destination : '', Validators.required],
         referenceId: this.previous ? this.previous.id : 0
-      });
+      }, { validators: validateQuantities });
+
+      this.showQuantity = this.previous ? this.previous.quantity.toString() : '';
+      this.showDailyAmount = this.previous ? this.previous.dailyAmount.toString() : '';
     }
 
     this.valueChanges$ = this.harvestForm.valueChanges.pipe(
       debounceTime(1000),
     ).subscribe((data) => {
+      console.log('form', this.harvestForm)
+
       this.calculateEndDate();
     });
 
@@ -311,7 +324,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public inputQuantity = (value: string) => {    
     const clean = value.replace(/\D/g,'');    
     this.showQuantity = clean;
-    this.harvestForm.get('quantity').patchValue(clean);
+    this.harvestForm.get('quantity').patchValue(parseFloat(clean));
   }
 
   /**
@@ -321,7 +334,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   public inputDailyAmount = (value: string) => {
     const clean = value.replace(/\D/g,'');
     this.showDailyAmount = clean;
-    this.harvestForm.get('dailyAmount').patchValue(clean);
+    this.harvestForm.get('dailyAmount').patchValue(parseFloat(clean));
   }
 
 }

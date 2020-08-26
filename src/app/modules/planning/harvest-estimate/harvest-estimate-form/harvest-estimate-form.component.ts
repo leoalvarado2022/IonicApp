@@ -262,7 +262,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
    * @param momentDate
    */
   private computeEndDate = (workingDays: number = 1, daysAdded: number = 0, momentDate: any, holidays: Array<any> = []) => {
-    if (daysAdded < workingDays && daysAdded < 60) {
+    if (daysAdded < workingDays && daysAdded < 366) {
       if (momentDate.weekday() > 0 && !holidays.includes(momentDate.format(this.dateFormat))) {
         daysAdded++;
       }

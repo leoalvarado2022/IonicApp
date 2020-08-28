@@ -4,6 +4,7 @@ import { timer } from 'rxjs/internal/observable/timer';
 import { BluetoothDevice } from './bluetooth-device.interface';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { BehaviorSubject } from 'rxjs';
+import { take, takeWhile } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,11 @@ export class BluetoothService {
     private bluetoothSerial: BluetoothSerial,
     private toastService: ToastService
   ) {
-    timer(0, 1000 * 5).subscribe(() => {
-      this.bluetoothSerial.isEnabled().then(success => {        
+    timer(0, 1000 * 10).subscribe(() => {
+      this.bluetoothSerial.isEnabled().then(success => {
+
         this.isBluetoothEnabled.next(true);
+        
         this.checkConnection();
         this.listPairedDevices();
       }, error => {        
@@ -151,8 +154,7 @@ export class BluetoothService {
    */
   public getDeviceData = () => {
     let last = null;
-    let counter = 0;
-    let data: Array<any> = [];
+    let counter = 0;    
 
     this.bluetoothSerial.subscribe('\n').subscribe(data => {
       if (last === null) {
@@ -166,11 +168,22 @@ export class BluetoothService {
         last = null;
       }
 
-      if (counter === 10) {
+      if (counter === 10) {        
         this.lastWeight.next(this.processWeight(last));
         last = null;
-        counter = 0;
+        counter = 0;        
       }
+    });
+  }
+
+  /**
+   * clearStream
+   */
+  public clearStream = () => {
+    this.bluetoothSerial.clear().then(success => {
+      console.log('buffer clean');
+    }, error => {
+      console.log('buffer error');
     });
   }
 
@@ -178,7 +191,7 @@ export class BluetoothService {
    * processWeight
    * @param value 
    */
-  private processWeight = (value: string): number => {
+  public processWeight = (value: string): number => {
     const noSpaces = value.replace(/\s/g, '');
     const weightString = noSpaces.split(",")[2];
     const cleanWeight = weightString.replace('kg', '');

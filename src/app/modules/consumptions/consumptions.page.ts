@@ -280,4 +280,24 @@ export class ConsumptionsPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * formatDate
+   * @param date 
+   */
+  public formatDate = (date: string): string => {    
+    return moment.utc(this.cleanDate(date), 'YYYY-MM-DD').format("DD/MM/YYYY");
+  }
+
+  /**
+   * cleanDate
+   * @param date
+   */
+  private cleanDate = (date: string) => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
+  }
+
 }

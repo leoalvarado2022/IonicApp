@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs/internal/Subject';
 import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, every, delay } from 'rxjs/operators';
 import { BluetoothDevice } from 'src/app/services/bluetooth/bluetooth-device.interface';
 import { Platform } from '@ionic/angular';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-bluetooth-manager',
@@ -11,11 +12,11 @@ import { Platform } from '@ionic/angular';
   styleUrls: ['./bluetooth-manager.page.scss'],
 })
 export class BluetoothManagerPage implements OnInit, OnDestroy {
-  
+
   public isBluetoothEnabled: boolean;
   public isDeviceConnected: boolean;
   public isSearching: boolean;
-  public lastWeight: number; 
+  public lastWeight: number;
   public isAndroid: boolean = false;
 
   private unsubscriber = new Subject();
@@ -24,42 +25,38 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
     private bluetoothService: BluetoothService,
     private platform: Platform
   ) {
-    this.platform.ready().then( () => {
-      this.isAndroid = this.platform.is('android');      
 
-      console.log('this.isAndroid', this.isAndroid);
-    });    
   }
 
   ngOnInit() {
-    if (this.isAndroid) {
-      this.bluetoothService.getBluetoothStatus().pipe(
-        takeUntil(this.unsubscriber)
-      ).subscribe( (status: boolean) => {
-        this.isBluetoothEnabled = status;
-      });
-  
-      this.bluetoothService.getConnectionStatus().pipe(
-        takeUntil(this.unsubscriber)
-      ).subscribe( (status: boolean) => {
-        this.isDeviceConnected = status;
-      });
-  
-      this.bluetoothService.getSearchingStatus().pipe(
-        takeUntil(this.unsubscriber)
-      ).subscribe( (status: boolean) => {
-        this.isSearching = status;
-      });
-  
-      this.bluetoothService.getLastWeight().pipe(
-        takeUntil(this.unsubscriber)
-      ).subscribe( (weight: number) => {
-        this.lastWeight = weight;
-      });
-    }
+    this.platform.ready().then(() => {
+      this.isAndroid = this.platform.is('android');
+
+      if (this.isAndroid) {
+        this.bluetoothService.getDeviceData();
+
+        this.bluetoothService.getBluetoothStatus().pipe(
+          takeUntil(this.unsubscriber)
+        ).subscribe((status: boolean) => {
+          this.isBluetoothEnabled = status;
+        });
+
+        this.bluetoothService.getConnectionStatus().pipe(
+          takeUntil(this.unsubscriber)
+        ).subscribe((status: boolean) => {
+          this.isDeviceConnected = status;
+        });
+
+        this.bluetoothService.getSearchingStatus().pipe(
+          takeUntil(this.unsubscriber)
+        ).subscribe((status: boolean) => {
+          this.isSearching = status;
+        });        
+      }
+    });
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.unsubscriber.complete();
   }
 
@@ -97,7 +94,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
    * @param device 
    */
   public disconnectDevice = (device: BluetoothDevice) => {
-    this.bluetoothService.disconnectDevice();    
+    this.bluetoothService.disconnectDevice();
   }
 
   /**
@@ -105,7 +102,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
    */
   public readData = () => {
     this.bluetoothService.getDeviceData();
-  } 
+  }
 
   /**
    * enableBlueetooth

@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-
+    
   <ng-container *ngIf="isAndroid; else noCompatible">
     <ion-card>
       <ion-item lines="full" (click)="enableBlueetooth()">
@@ -56,10 +56,12 @@
               </ion-item>            
             </ng-container>
   
+            <!--
             <ion-button *ngIf="isDeviceConnected" expand="full" (click)="readData()">
               <ion-icon slot="start" name="barbell-outline"></ion-icon>
               Obtener datos
             </ion-button>
+            -->
           </ng-container>
   
           <ng-template #noPaired>

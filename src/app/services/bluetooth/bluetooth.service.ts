@@ -4,7 +4,6 @@ import { timer } from 'rxjs/internal/observable/timer';
 import { BluetoothDevice } from './bluetooth-device.interface';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { BehaviorSubject } from 'rxjs';
-import { take, takeWhile } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,14 +22,14 @@ export class BluetoothService {
     private bluetoothSerial: BluetoothSerial,
     private toastService: ToastService
   ) {
-    timer(0, 1000 * 10).subscribe(() => {
+    timer(0, 1000 * 5).subscribe(() => {
       this.bluetoothSerial.isEnabled().then(success => {
 
         this.isBluetoothEnabled.next(true);
-        
+
         this.checkConnection();
         this.listPairedDevices();
-      }, error => {        
+      }, error => {
         this.isBluetoothEnabled.next(false);
       });
     });
@@ -82,9 +81,9 @@ export class BluetoothService {
    * checkConnection
    */
   private checkConnection = () => {
-    this.bluetoothSerial.isConnected().then(data => {      
+    this.bluetoothSerial.isConnected().then(data => {
       this.isDeviceConnected.next(true);
-    }, error => {      
+    }, error => {
       this.isDeviceConnected.next(false);
     });
   }
@@ -94,10 +93,8 @@ export class BluetoothService {
    */
   private listPairedDevices = () => {
     this.bluetoothSerial.list().then(data => {
-      console.log('list success', data);
       this.pairedDevices.next(data);
     }, error => {
-      console.log('list error', error);
       this.pairedDevices.next([]);
     });
   }
@@ -107,12 +104,12 @@ export class BluetoothService {
    * @param device 
    */
   public connectDevice = (device: BluetoothDevice) => {
+    this.toastService.warningToast('Conectandose a dispositivo', 2000, 'bottom');
+
     this.bluetoothSerial.connect(device.address).subscribe(success => {
-      console.log('connect success', success);
-      this.toastService.successToast('Dispositivo Conectado');
+      this.toastService.successToast('Dispositivo Conectado', 2000, 'bottom');
     }, error => {
-      console.log('connect error', error);
-      this.toastService.errorToast('Ocurrio un error al conectar el dispositivo');
+      this.toastService.errorToast('Ocurrio un error al conectar el dispositivo', 2000, 'bottom');
     });
   }
 
@@ -121,13 +118,11 @@ export class BluetoothService {
    */
   public disconnectDevice = () => {
     this.bluetoothSerial.disconnect().then(success => {
-      console.log('disconnect success', success);
       this.listPairedDevices();
-      this.toastService.warningToast('Dispositivo Desconectado');
+      this.toastService.warningToast('Dispositivo Desconectado', 2000, 'bottom');
     }, error => {
-      console.log('disconnect error', error);
       this.listPairedDevices();
-      this.toastService.errorToast('Ocurrio un error desconectando dispositivo');
+      this.toastService.errorToast('Ocurrio un error desconectando dispositivo', 2000, 'bottom');
     });
   }
 
@@ -138,12 +133,10 @@ export class BluetoothService {
     this.isSearchingDevices.next(true);
     this.availableDevices.next([]);
 
-    this.bluetoothSerial.discoverUnpaired().then((data: Array<BluetoothDevice>) => {
-      console.log('discoverUnpaired success', data);
+    this.bluetoothSerial.discoverUnpaired().then((data: Array<BluetoothDevice>) => {      
       this.availableDevices.next(data);
       this.isSearchingDevices.next(false);
-    }, error => {
-      console.log('discoverUnpaired error', error);
+    }, error => {      
       this.availableDevices.next([]);
       this.isSearchingDevices.next(false);
     });
@@ -154,7 +147,7 @@ export class BluetoothService {
    */
   public getDeviceData = () => {
     let last = null;
-    let counter = 0;    
+    let counter = 0;
 
     this.bluetoothSerial.subscribe('\n').subscribe(data => {
       if (last === null) {
@@ -168,10 +161,10 @@ export class BluetoothService {
         last = null;
       }
 
-      if (counter === 10) {        
+      if (counter === 10) {
         this.lastWeight.next(this.processWeight(last));
         last = null;
-        counter = 0;        
+        counter = 0;
       }
     });
   }

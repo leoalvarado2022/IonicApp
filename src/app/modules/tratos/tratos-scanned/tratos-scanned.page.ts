@@ -11,6 +11,7 @@ import {Router} from '@angular/router';
 import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-tratos-scanned',
@@ -53,7 +54,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     public _ndef: Ndef,
     public nativeAudio: NativeAudio,
     private bluetoothService: BluetoothService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private storeService: StoreService
   ) {
 
   }
@@ -426,6 +428,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @param worker
    */
   pushTally(worker: any, performance: number = 0) {
+    const activeCompany = this.storeService.getActiveCompany();    
+
     let tally: TallyInterface = {};
     tally.id = 0;
     tally.fecha = moment().utc().format('YYYY-MM-DD');
@@ -439,7 +443,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     tally.id_par_bonos_vigencias = 0;
     tally.id_par_tratos_vigencias = this.centerCost.deal?.id_deal_validity;
     tally.notas = '';
-    tally.id_par_entidades_usuario_creador = this.centerCost.deal?.user?.id;
+    tally.id_par_entidades_usuario_creador = activeCompany.user;
     tally.id_dispositivo = worker.device?.id_device;
     tally.fecha_lectura_dispositivo = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
     tally.latitud = 0;

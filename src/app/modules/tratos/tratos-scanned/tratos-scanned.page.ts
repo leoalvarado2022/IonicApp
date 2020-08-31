@@ -36,9 +36,11 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public previousPerformance: Array<any> = [];
 
   public isLoading = false;
-  public isCordova = false;
+  public isCordova = false;  
+  public isDeviceConnected: boolean;  
+  public showWeight: any;  
   public lastWeight: number = null;
-  public isDeviceConnected: boolean;
+  public weightsBuffer: Array<number> = [];
 
   private unsubscriber = new Subject();
 
@@ -56,7 +58,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     private bluetoothService: BluetoothService,
     private toastService: ToastService,
     private storeService: StoreService
-  ) {
+  ) {    
 
   }
 
@@ -75,16 +77,27 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
       // ios no deja usar NFC
       if (this._platform.is('android')) {
+
+        // NFC Scanner
         this.openNFCScanner();
 
-        this.bluetoothService.getLastWeight().pipe(
+        // Connect to live weight
+        this.getLiveWeight();
+
+        // Connect to live weight
+        this.bluetoothService.getLiveWeight().pipe(
           takeUntil(this.unsubscriber)
-        ).subscribe((weight: number) => {
-          this.bluetoothService.clearStream();
-          console.log('peso recibido', weight)
-          this.lastWeight = weight > 0 ? weight : null;
+        ).subscribe((value: string) => {
+          /*
+          if (this.weightsBuffer.length % 10 === 0) {
+            this.weightsBuffer.shift();
+          }*/
+
+          //this.weightsBuffer.push(this.bluetoothService.processWeight(value));
+          this.lastWeight = this.bluetoothService.processWeight(value);
         });
 
+        // getConnectionStatus
         this.bluetoothService.getConnectionStatus().pipe(
           takeUntil(this.unsubscriber)
         ).subscribe((status: boolean) => {
@@ -192,10 +205,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           this.pullDevice(id).then();          
 
           // Comprobar si hay blueetooth Conectado
-          if (this.isDeviceConnected) {            
-            this.bluetoothService.getDeviceData();            
-          } else {
-            this.toastService.warningToast('No hay dispositivo conectado', 2000, 'bottom');
+          if (!this.isDeviceConnected) {       
+            this.toastService.warningToast('No hay dispositivo conectado', 2000, 'bottom');            
           }
         }, error => {
           console.log(error, 'error');
@@ -587,6 +598,39 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     }
 
     return 0;
+  } 
+
+  /**
+   * showFormattedWeight
+   * @param value 
+   */
+  public showFormattedWeight = (value: string): string => {  
+    if (value) {
+      return this.bluetoothService.showFormattedWeight(value);
+    }
+
+    return '';    
+  }
+
+  /**
+   * getLiveWeight
+   */
+  public getLiveWeight = () => {
+    this.showWeight = this.bluetoothService.getLiveWeight();
+  }  
+
+  /**
+   * isValidWeight
+   * @param value 
+   */
+  public isValidWeight = (value: string): boolean =>  {
+    const weight = this.bluetoothService.processWeight(value);    
+
+    if (this.weightsBuffer.length === 10) {
+      return this.weightsBuffer.every(val => val === weight);
+    }
+
+    return false;
   }
 
 }

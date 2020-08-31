@@ -33,6 +33,7 @@
       </div>
     </div>
 
+    <!--
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -52,6 +53,29 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+    -->
+
+    <ng-container *ngIf="centerCost.deal.weight">
+      <ng-container *ngIf="isDeviceConnected; else notConnected">
+        <ion-card>
+          <ion-item>
+            <ion-icon slot="start" color="success" name="barbell-outline"></ion-icon>
+            <ion-label class="ion-text-center">
+              {{ showFormattedWeight((showWeight | async)) }}
+            </ion-label>            
+          </ion-item>
+        </ion-card>
+      </ng-container>
+
+      <ng-template #notConnected>
+        <ion-card>
+          <ion-item>
+            <ion-icon slot="start"  name="barbell-outline"></ion-icon>
+            <ion-label>No existe dispositivo conectado</ion-label>
+          </ion-item>
+        </ion-card>
+      </ng-template>
+    </ng-container>
 
     <ion-card *ngIf="worker" style="width: 98%;margin-bottom: 5px;">
       <ion-card-content>

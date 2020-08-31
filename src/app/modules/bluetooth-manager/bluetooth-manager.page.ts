@@ -32,9 +32,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
     this.platform.ready().then(() => {
       this.isAndroid = this.platform.is('android');
 
-      if (this.isAndroid) {
-        this.bluetoothService.getDeviceData();
-
+      if (this.isAndroid) {        
         this.bluetoothService.getBluetoothStatus().pipe(
           takeUntil(this.unsubscriber)
         ).subscribe((status: boolean) => {
@@ -97,12 +95,6 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
     this.bluetoothService.disconnectDevice();
   }
 
-  /**
-   * readData
-   */
-  public readData = () => {
-    this.bluetoothService.getDeviceData();
-  }
 
   /**
    * enableBlueetooth

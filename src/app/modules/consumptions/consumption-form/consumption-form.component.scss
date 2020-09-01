@@ -10,8 +10,8 @@ ion-title {
   background: white;
   box-shadow: 0px 6px 10px -6px rgba(0,0,0,0.75);
   width: 96%;
-  position: absolute;
-  z-index: 99;
+  position: relative;
+  z-index: 9999;
   margin-left: 2%;
   border-radius: 5px;
 }

@@ -1,13 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {AlertController, ModalController, Platform} from '@ionic/angular';
-import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
-import {TallyInterface} from '../interfaces/tally.interface';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AlertController, ModalController, Platform } from '@ionic/angular';
+import { StorageSyncService } from '../../../services/storage/storage-sync/storage-sync.service';
+import { TallyInterface } from '../interfaces/tally.interface';
 import * as moment from 'moment';
-import {Ndef, NFC} from '@ionic-native/nfc/ngx';
-import {NativeAudio} from '@ionic-native/native-audio/ngx';
-import {Subscription, Subject} from 'rxjs';
-import {DealsService} from '../services/deals/deals.service';
-import {Router} from '@angular/router';
+import { Ndef, NFC } from '@ionic-native/nfc/ngx';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { Subscription, Subject } from 'rxjs';
+import { DealsService } from '../services/deals/deals.service';
+import { Router } from '@angular/router';
 import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
@@ -36,12 +36,12 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public previousPerformance: Array<any> = [];
 
   public isLoading = false;
-  public isCordova = false;  
-  public isDeviceConnected: boolean;  
-  public showWeight: any;  
-  public lastWeight: number = null;
+  public isCordova = false;
+  public isDeviceConnected: boolean;
+  public showWeight: any;
+  public lastWeight: number = 0;
   public weightsBuffer: Array<number> = [];
-
+  public validWeight: boolean = false;
   private unsubscriber = new Subject();
 
   constructor(
@@ -58,16 +58,16 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     private bluetoothService: BluetoothService,
     private toastService: ToastService,
     private storeService: StoreService
-  ) {    
+  ) {
 
   }
 
   ngOnInit() {
     this.isLoading = true;
 
-    this._platform.ready().then( () => {
+    this._platform.ready().then(() => {
       this.isCordova = this._platform.is('cordova');
-          
+
       if (this.isCordova) {
         Promise.all([
           this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3'),
@@ -88,13 +88,14 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         this.bluetoothService.getLiveWeight().pipe(
           takeUntil(this.unsubscriber)
         ).subscribe((value: string) => {
-          /*
-          if (this.weightsBuffer.length % 10 === 0) {
+          if (this.weightsBuffer.length % 5 === 0) {
             this.weightsBuffer.shift();
-          }*/
+          }
 
-          //this.weightsBuffer.push(this.bluetoothService.processWeight(value));
-          this.lastWeight = this.bluetoothService.processWeight(value);
+          const processWeight = this.bluetoothService.processWeight(value);
+          this.weightsBuffer.push(processWeight);
+          this.lastWeight = processWeight;
+          this.validWeight = this.isValidWeight(processWeight);
         });
 
         // getConnectionStatus
@@ -102,7 +103,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           takeUntil(this.unsubscriber)
         ).subscribe((status: boolean) => {
           this.isDeviceConnected = status;
-        });        
+        });
       } else {
         this.notSupported = true;
       }
@@ -140,7 +141,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       this._storageSyncService.getWorkers(),
       this._storageSyncService.getTallyTemp(),
       this._storageSyncService.getTallies()
-    ]).then( data => {
+    ]).then(data => {
       this.centerCost = data[0];
       this.devices = data[1];
       this.workers = this.filterWorkersByValidity(this.centerCost.currentDate, data[2]);
@@ -202,11 +203,11 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           // conseguir el id del tag
           const id = this._nfc.bytesToHexString(event.tag.id);
           // guardar y transformar data para guardar
-          this.pullDevice(id).then();          
+          this.pullDevice(id).then();
 
           // Comprobar si hay blueetooth Conectado
-          if (!this.isDeviceConnected) {       
-            this.toastService.warningToast('No hay dispositivo conectado', 2000, 'bottom');            
+          if (!this.isDeviceConnected) {
+            this.toastService.warningToast('No hay dispositivo conectado', 2000, 'bottom');
           }
         }, error => {
           console.log(error, 'error');
@@ -291,7 +292,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         this.forPerformance(worker).then();
       }
 
-      if (this.centerCost.deal.weight) {        
+      if (this.centerCost.deal.weight) {
         this.forWeight(worker);
       }
     }
@@ -326,9 +327,9 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * forWeight
    * @param worker 
    */
-  private forWeight = (worker: any) => {    
+  private forWeight = (worker: any) => {
     // Comprobar si hay blueetooth Conectado
-    if (this.isDeviceConnected) {                                     
+    if (this.isDeviceConnected) {
       const tempTallies = this.getWorkerTempTallies(worker);
       const tempPerformance = this.getTempTalliesPerformance(tempTallies);
 
@@ -336,19 +337,19 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       const syncedTallies = this.getWorkerSyncedTallies(worker);
       const syncedPerformance = this.getSyncedTalliesPerformance(syncedTallies);
 
-      if (this.lastWeight !== null) {
+      if (this.validWeight && this.lastWeight !== null) {
         // Total Performance
         const performance = tempPerformance + syncedPerformance + this.lastWeight;
-    
+
         // enviar a la lista
         this.pushWeight(worker, performance, this.lastWeight);
 
         // enviar la tarja
         this.pushTally(worker, this.lastWeight);
-      }      
-    }   
 
-    this._changeDetectorRef.detectChanges();    
+        this._changeDetectorRef.detectChanges();
+      }
+    }
   }
 
   /**
@@ -418,7 +419,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
             // Total Performance
             const performanceTotal = tempPerformance + syncedPerformance;
-            
+
             // enviar a la lista
             this.pushPerformance(worker, performanceTotal);
 
@@ -439,7 +440,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @param worker
    */
   pushTally(worker: any, performance: number = 0) {
-    const activeCompany = this.storeService.getActiveCompany();    
+    const activeCompany = this.storeService.getActiveCompany();
 
     let tally: TallyInterface = {};
     tally.id = 0;
@@ -518,9 +519,9 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @param workers
    */
   private filterWorkersByValidity = (date: string, workers: Array<any>): Array<any> => {
-    return workers.filter( worker => {
+    return workers.filter(worker => {
       const startDate = moment.utc(worker.startDate);
-      const endDate =  moment.utc(worker.endDate);
+      const endDate = moment.utc(worker.endDate);
 
       return moment(date).isBetween(startDate, endDate);
     });
@@ -539,7 +540,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       this.workersSuccess[findIndex] = Object.assign({}, this.workersSuccess[findIndex], {
         count: currentPerformance + performance
       });
-    }else {
+    } else {
       this.workersSuccess.unshift({
         name: worker.names,
         count: performance,
@@ -592,24 +593,24 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * getSyncedTalliesPerformance
    * @param syncedTallies
    */
-  private getSyncedTalliesPerformance = (syncedTallies: Array<any>): number =>  {
+  private getSyncedTalliesPerformance = (syncedTallies: Array<any>): number => {
     if (syncedTallies.length > 0) {
       return syncedTallies.map(obj => obj.performance || 0).reduce((sum, current) => sum + current);
     }
 
     return 0;
-  } 
+  }
 
   /**
    * showFormattedWeight
    * @param value 
    */
-  public showFormattedWeight = (value: string): string => {  
+  public showFormattedWeight = (value: string): string => {
     if (value) {
       return this.bluetoothService.showFormattedWeight(value);
     }
 
-    return '';    
+    return '';
   }
 
   /**
@@ -617,17 +618,14 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   public getLiveWeight = () => {
     this.showWeight = this.bluetoothService.getLiveWeight();
-  }  
+  }
 
   /**
-   * isValidWeight
-   * @param value 
+   * isValidWeight   
    */
-  public isValidWeight = (value: string): boolean =>  {
-    const weight = this.bluetoothService.processWeight(value);    
-
-    if (this.weightsBuffer.length === 10) {
-      return this.weightsBuffer.every(val => val === weight);
+  private isValidWeight = (value: number): boolean => {
+    if (this.weightsBuffer.length === 5) {
+      return this.weightsBuffer.every(val => val === value);
     }
 
     return false;

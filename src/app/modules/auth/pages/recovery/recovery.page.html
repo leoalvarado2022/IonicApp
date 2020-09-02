@@ -3,30 +3,29 @@
     <ion-buttons slot="start">
       <ion-back-button class="white" text=""></ion-back-button>
     </ion-buttons>
-  </ion-toolbar>
-  <div class="title-header">
-    <h3 class="ion-text-left">Recuperación de Contraseña</h3>
-  </div>
+    <ion-title>
+      Recuperar Contraseña
+    </ion-title>
+  </ion-toolbar>    
 </ion-header>
 
 <ion-content scrollX="false" scrollY="false">
   <div class="pd-default">
-    <form (ngSubmit)="onSubmit()" [formGroup]="recovery" action="">
-      <br>
+    <form [formGroup]="recovery">      
       <ion-item>
         <ion-label position="floating">Usuario o Correo</ion-label>
         <ion-input formControlName="username" type="text"></ion-input>
-      </ion-item>
-
-      <br/>
-      <ion-button
-        [disabled]="recovery.invalid"
-        color="danger"
-        expand="block"
-        type="submit">
-        Recuperar contraseña
-      </ion-button>
+      </ion-item>            
     </form>
-
   </div>
 </ion-content>
+
+<ion-footer>
+  <ion-button
+    [disabled]="recovery.invalid"
+    color="danger"
+    expand="block"
+    (click)="onSubmit()">
+    Recuperar contraseña
+  </ion-button>
+</ion-footer>

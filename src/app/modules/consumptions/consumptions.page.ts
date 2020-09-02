@@ -27,6 +27,7 @@ export class ConsumptionsPage implements OnInit, OnDestroy {
   private activeCompany: Company;
 
   public isLoading = false;
+  public isSyncing = false;
   private firstLoad = true;
   private stepper$: Subscription;
 
@@ -53,7 +54,10 @@ export class ConsumptionsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
       if (steps.length === 0  && !this.firstLoad) {
+        this.isSyncing = false;        
         this.loadData();
+      } else {
+        this.isSyncing = true;        
       }
     });
 
@@ -95,6 +99,7 @@ export class ConsumptionsPage implements OnInit, OnDestroy {
    * reload
    */
   public reload = (event: any) => {
+    this.minimunReload();
     event.target.complete();
   }
 
@@ -298,6 +303,11 @@ export class ConsumptionsPage implements OnInit, OnDestroy {
     }
 
     return date;
+  }
+
+
+  public getStepper(){
+    return this.stepperService.getStepper();
   }
 
 }

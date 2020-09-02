@@ -1,13 +1,13 @@
 <ion-content>
-  <br>
-  <div *ngIf="device.cordova">
-    <ion-avatar class="ion-no-margin" style="margin: 0 auto !important">
-      <img [src]="avatarPreview || 'assets/imgs/user.png'">
-    </ion-avatar>
-  </div>
 
-  <br><br><br>
   <ng-container *ngIf="device.cordova">
+    <div>
+      <ion-avatar class="ion-no-margin" style="margin: 0 auto !important">
+        <img [src]="avatarPreview || 'assets/imgs/user.png'">
+      </ion-avatar>
+    </div>
+  
+    <br><br><br>    
     <ion-item>
       <ion-button (click)="openCamera()" slot="start">
         <ion-icon name="camera" slot="icon-only"></ion-icon>
@@ -17,7 +17,7 @@
         <ion-icon name="image" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-item>
-  </ng-container>
+  </ng-container> 
 
   <div>
     <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
@@ -107,17 +107,18 @@
 
       <ng-container *ngIf="registerForm.get('access').errors">
         <span *ngIf="registerForm.get('access').hasError('required')" style="color: red">Debe seleccionar una opción.</span>
-      </ng-container>
-
-      <br><br>
-      <ion-button
-        [disabled]="registerForm.invalid"
-        color="danger"
-        expand="block"
-        type="submit">
-        Registrar
-      </ion-button>
+      </ng-container>           
     </form>
   </div>
 
 </ion-content>
+
+<ion-footer>
+  <ion-button
+    [disabled]="registerForm.invalid"
+    color="danger"
+    expand="block"
+    (click)="onSubmit()">
+    Registrar
+  </ion-button>
+</ion-footer>

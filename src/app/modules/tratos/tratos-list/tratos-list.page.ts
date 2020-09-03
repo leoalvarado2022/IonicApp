@@ -73,7 +73,7 @@ export class TratosListPage {
       let tallies: any = [];
       // si las tarjas existen
       if (data[0] && data[0].length) {
-        tallies = data[0].filter(value => moment(value.date).utc().format('YYYY-MM-DD') === moment().utc().format('YYYY-MM-DD') && value.dispositivo === 1);
+        tallies = data[0].filter((value: any) => moment(value.date).utc().format('YYYY-MM-DD') === moment().utc().format('YYYY-MM-DD') && value.dispositivo === 1);
 
         if (tallies.length) {
           // mapear tarjas pra el conteo y para clasificarlos en escaneo

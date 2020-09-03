@@ -66,8 +66,8 @@ export class GeolocationService {
    */
   private startTracker = () => {
     this.geolocation.watchPosition().pipe(
-      filter(p => p.coords !== undefined)
-    ).subscribe(position => {
+      filter( (p: any) => p.coords !== undefined)
+    ).subscribe((position: any) => {
       this.positionHistory.push({
         lat: position.coords.latitude,
         lng: position.coords.longitude

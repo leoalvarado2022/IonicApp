@@ -18,7 +18,7 @@
   },
   "private": true,
   "dependencies": {
-    "@agm/core": "^1.1.0",
+    "@agm/core": "^3.0.0-beta.0",
     "@angular/common": "~9.1.2",
     "@angular/compiler": "~9.1.2",
     "@angular/core": "~9.1.2",

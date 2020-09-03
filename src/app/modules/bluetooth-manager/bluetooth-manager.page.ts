@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs/internal/Subject';
 import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
-import { takeUntil, every, delay } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { BluetoothDevice } from 'src/app/services/bluetooth/bluetooth-device.interface';
 import { Platform } from '@ionic/angular';
-import { interval } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-bluetooth-manager',

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="cl.primetec.fx11" version="1.1.8" xmlns="http://www.w3.org/ns/widgets">
+<widget id="cl.primetec.fx11" version="1.1.9" xmlns="http://www.w3.org/ns/widgets">
     <name>FX360 Movil</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
@@ -12,7 +12,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="true" />
-    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-minSdkVersion" value="22" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="1000" />
@@ -54,40 +54,39 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
-            <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To locate where the NFC card gets read." />
+            <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To set or get the location of the cost centers in the map" />
         </plugin>
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
-            <string>To locate where the NFC Card gets read.</string>
+            <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationAlwaysUsageDescription">
-            <string>To locate where the NFC Card gets read.</string>
+            <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothPeripheralUsageDescription">
-            <string>We need to use the NFC to read Cards.</string>
+            <string>To connect with weight devices. not available in IOS</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
-            <string>need camera access to take pictures</string>
+            <string>
+                The camera is used to:
+                Take a picture of the user if the user wants to have a profile picture (not mandatory). 
+                Take photos for cost center notes history.
+                To read Chilean IDs with QR
+            </string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryUsageDescription">
-            <string>need photo library access to get pictures from there</string>
+            <string>To select pictures to upload to the cost center notes history or to select a profile picture</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSPhotoLibraryAddUsageDescription">
-            <string>need photo library access to save pictures there</string>
+            <string>To select pictures to upload to the cost center notes history or to select a profile picture</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationUsageDescription">
-            <string>We use your location for full functionality of certain app features.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSLocationAlwaysUsageDescription">
-            <string>We use your location for full functionality of certain app features.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
-            <string>We use your location for full functionality of certain app features.</string>
+            <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationAlwaysAndWhenInUseUsageDescription">
-            <string>We use your location for full functionality of certain app features.</string>
+            <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysUsageDescription">
-            <string>Bluetooth will be used to connect to devices such as digital weights</string>
+            <string>To connect with weight devices. not available in IOS</string>
         </edit-config>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />

@@ -21,7 +21,9 @@
         [ngClass]="{'company-active': company.id === selectedCompany.id, 'company-inactive': company.id !== selectedCompany.id}"
       >
         <ion-icon [color]="company.id === selectedCompany.id ? 'success': 'danger'" name="business" slot="start"></ion-icon>
-        <ion-label>{{ company.name }}</ion-label>
+        <ion-label class="ion-text-wrap">
+          {{ company.name }}
+        </ion-label>
       </ion-item>
     </ion-list>
   </ng-container>

@@ -65,7 +65,7 @@
         <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
             <string>
                 The camera is used to:
-                Take a picture of the user if the user wants to have a profile picture (not mandatory). 
+                Take a picture of the user if the user wants to have a profile picture (not mandatory).
                 Take photos for cost center notes history.
                 To read Chilean IDs with QR
             </string>
@@ -83,11 +83,11 @@
             <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothPeripheralUsageDescription">
-+            <string>To connect with weight devices. not available in IOS</string>
-+        </edit-config>
-+        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysUsageDescription">
-+            <string>To connect with weight devices. not available in IOS</string>
-+        </edit-config>
+            <string>To connect with weight devices. not available in IOS</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysUsageDescription">
+            <string>To connect with weight devices. not available in IOS</string>
+        </edit-config>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="29" src="resources/ios/icon/icon-small.png" width="29" />

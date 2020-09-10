@@ -262,7 +262,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       const worker = this.workers.find(value => value.id === device.id_link);
       worker.device = device;
       if (worker) {
-        this.worker = worker.names;
+        this.worker = worker.name;
         this.exist = true;
         this.setScanned(worker);
       } else {
@@ -367,7 +367,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       });
     } else {
       this.workersSuccess.unshift({
-        name: worker.names,
+        name: worker.name,
         count: performance,
         id: worker.id,
         lastWeight
@@ -479,7 +479,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       });
     } else {
       this.workersSuccess.unshift({
-        name: worker.names,
+        name: worker.name,
         count: performance,
         id: worker.id
       });
@@ -520,6 +520,10 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   private filterWorkersByValidity = (date: string, workers: Array<any>): Array<any> => {
     return workers.filter(worker => {
+
+      console.log('worker', worker);
+
+
       const startDate = moment.utc(worker.startDate);
       const endDate = moment.utc(worker.endDate);
 
@@ -542,7 +546,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       });
     } else {
       this.workersSuccess.unshift({
-        name: worker.names,
+        name: worker.name,
         count: performance,
         id: worker.id
       });

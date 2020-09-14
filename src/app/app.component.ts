@@ -30,8 +30,8 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       if (this.platform.is('ios')) {
-        this.statusBar.styleLightContent();
         this.splashScreen.hide();
+        this.statusBar.styleLightContent();
       } else {
         this.statusBar.overlaysWebView(false);
         this.splashScreen.hide();
@@ -39,7 +39,6 @@ export class AppComponent {
 
       // CHECK PUSH PERMISSION
       this.fcm.hasPermission().then(() => {
-
         // get token
         this.fcm.getToken().then(token => {
           // Validar que el token no esta vacio o nulo

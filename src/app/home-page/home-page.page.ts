@@ -1,11 +1,11 @@
-import { HttpService } from './../shared/services/http/http.service';
-import { Component } from '@angular/core';
-import { AuthService } from '../shared/services/auth/auth.service';
-import { StoreService } from '../shared/services/store/store.service';
-import { TimerService } from '../services/storage/timer/timer.service';
-import { Subscription } from 'rxjs';
-import { StepperService } from '../services/storage/stepper/stepper.service';
-import { Platform } from '@ionic/angular';
+import {HttpService} from './../shared/services/http/http.service';
+import {Component} from '@angular/core';
+import {AuthService} from '../shared/services/auth/auth.service';
+import {StoreService} from '../shared/services/store/store.service';
+import {TimerService} from '../services/storage/timer/timer.service';
+import {Subscription} from 'rxjs';
+import {StepperService} from '../services/storage/stepper/stepper.service';
+import {Platform} from '@ionic/angular';
 
 @Component({
   selector: 'app-home-page',
@@ -15,7 +15,13 @@ import { Platform } from '@ionic/angular';
 export class HomePagePage {
   private timer$: Subscription;
 
-  constructor(private authService: AuthService, private storeService: StoreService, private timerService: TimerService, private stepperService: StepperService, private httpService: HttpService, private platform: Platform) {}
+  constructor(private authService: AuthService,
+              private storeService: StoreService,
+              private timerService: TimerService,
+              private stepperService: StepperService,
+              private httpService: HttpService,
+              private platform: Platform) {
+  }
 
   ionViewWillEnter() {
     // Store push token
@@ -73,5 +79,5 @@ export class HomePagePage {
         );
       }
     });
-  }
+  };
 }

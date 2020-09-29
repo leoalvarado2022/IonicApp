@@ -41,5 +41,8 @@ export enum StorageKeys {
 
   // Consumptions
   ConsumptionTempId = 'consumptionTempId',
-  ConsumptionsToRecord = 'consumptionsToRecord'
+  ConsumptionsToRecord = 'consumptionsToRecord',
+
+  // deliveries notifications
+  DeliveryNotifications = 'deliveryNotifications'
 }

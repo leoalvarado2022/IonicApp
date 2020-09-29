@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Crear Consumo</strong>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="consumptionForm">
+
+    <!-- WAREHOUSE -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Bodega de Origen</ion-label>
+      <ion-searchbar [value]="warehouseName" (keyup)="searchWarehouse($event.target.value)" (ionClear)="cleanWarehouseSearch()" placeholder="Buscar"></ion-searchbar>
+    </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="consumptionForm.dirty && consumptionForm.get('warehouseOriginId').hasError('required')">
+      Seleccione una Bodega
+    </ion-text>
+
+    <ion-list class="searchbar-results-list" *ngIf="filteredWarehouses.length > 0">
+      <ion-item *ngFor="let warehouse of filteredWarehouses" (click)="selectWarehouse(warehouse)">
+        {{ warehouse.name | titlecase  }}
+      </ion-item>
+    </ion-list>
+
+    <!-- PRODUCT -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Producto</ion-label>
+      <ion-searchbar [value]="productName" (keyup)="searchProduct($event.target.value)" (ionClear)="cleanProductSearch()" placeholder="Buscar" ></ion-searchbar>
+    </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="consumptionForm.dirty && consumptionForm.get('itemId').hasError('required')">
+      Seleccione un Producto
+    </ion-text>
+
+    <ion-list class="searchbar-results-list" *ngIf="filteredProducts.length > 0">
+      <ion-item *ngFor="let product of filteredProducts" (click)="selectProduct(product)">
+        {{ product.name | titlecase  }}
+      </ion-item>
+    </ion-list>
+
+    <!-- COST CENTER -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Centro de Costo</ion-label>
+      <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
+    </ion-item>
+    <ion-text class="error-message" color="danger" *ngIf="consumptionForm.dirty && consumptionForm.get('costCenterId').hasError('required')">
+      Seleccione un Centro de Costo
+    </ion-text>
+
+    <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
+      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
+        {{ costCenter.name | titlecase  }}
+      </ion-item>
+    </ion-list>
+
+    <br>
+
+    <!-- QUANTITY -->
+    <ion-item>
+      <ion-label>Cantidad</ion-label>
+      <ion-input formControlName="quantity" class="input-number" type="number"></ion-input>
+      <ion-badge slot="end">{{ unitCode | uppercase  }}</ion-badge>
+    </ion-item>
+    <ng-container *ngIf="consumptionForm.get('quantity').dirty">
+      <ion-text class="error-message" color="danger" *ngIf="consumptionForm.get('quantity').hasError('required')">
+        La cantidad es requerida
+      </ion-text>
+      <ion-text class="error-message" color="danger" *ngIf="consumptionForm.get('quantity').hasError('min')">
+        La cantidad debe ser mayor a 0.1
+      </ion-text>
+      <ion-text class="error-message" color="danger" *ngIf="consumptionForm.get('quantity').hasError('pattern')">
+        Ingrese valores con . y maximo 3 decimales
+      </ion-text>
+    </ng-container>
+
+    <!-- Textarea in an item with a floating label -->
+    <ion-item>
+      <ion-label position="floating">Notas</ion-label>
+      <ion-textarea rows="6" formControlName="notes"></ion-textarea>
+    </ion-item>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-button color="primary" expand="block" [disabled]="consumptionForm.invalid" (click)="submitForm()">
+    Guardar
+  </ion-button>
+</ion-footer>

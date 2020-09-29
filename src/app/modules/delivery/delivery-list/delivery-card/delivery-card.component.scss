@@ -1,0 +1,100 @@
+.harvest {
+  //margin-bottom: 5px;
+}
+
+ion-card{
+  margin: 7px;
+}
+
+.icon-delivery {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.id {
+  text-align: left;
+  font-size: 10px;
+  //padding-left: 10px;
+  color: var(--ion-color-medium-shade);
+  //padding-bottom: 10px;
+  padding: 0;
+}
+
+.error{
+  border: 1px solid red !important;
+}
+
+.name {
+  text-align: right;
+  font-size: 10px;
+  //padding-left: 10px;
+  color: var(--ion-color-medium-shade);
+  //padding-bottom: 10px;
+  padding: 0;
+}
+
+.date {
+  text-align: right;
+  font-size: 10px;
+  //padding-left: 10px;
+  color: var(--ion-color-medium-shade);
+  //padding-top: 10px;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.totales {
+  vertical-align: top;
+  top: 5px;
+  position: relative;
+}
+
+.title {
+  font-size: 14px;
+  text-align: center;
+}
+
+.value {
+  font-size: 14px;
+  text-align: center;
+  font-weight: bolder;
+  color: black;
+}
+
+.icon {
+  font-size: 40px;
+}
+
+.highlight {
+  // background: var(--color-light-box);
+}
+
+.old {
+  --background: var(--color-box-light) !important;
+}
+
+ion-label {
+  margin: 0;
+  padding-bottom: 5px;
+}
+
+ion-item-sliding {
+  border-radius: 10px !important;
+}
+
+.date-compromiso {
+  font-size: 12px;
+  float: right;
+  margin-top: 12px;
+  margin-bottom: 11px;
+  color: var(--ion-color-success-shade);
+  font-style: italic;
+}
+
+.h {
+  position: absolute;
+  right: 20px;
+  font-style: italic;
+  color: var(--ion-color-primary);
+}

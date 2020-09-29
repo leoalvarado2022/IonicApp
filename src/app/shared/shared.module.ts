@@ -31,6 +31,8 @@ import { InfiniteScrollPaginatorService } from './services/inifite-scroll-pagina
 import { ToolbarButtonsComponent } from '../components/toolbar-buttons/toolbar-buttons.component';
 import { TallyFormMultipleComponent } from '../modules/tallies/forms/tally-form-multiple/tally-form-multiple.component';
 import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-form.component';
+import {DeliveryService} from '../modules/delivery/services/delivery.service';
+import {DeliveryCardComponent} from '../modules/delivery/delivery-list/delivery-card/delivery-card.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-fo
     TicketCardComponent,
     NumericOrderPipe,
     ToolbarButtonsComponent,
+    DeliveryCardComponent,
     TallyFormComponent,
     TallyFormMultipleComponent
   ],
@@ -70,6 +73,7 @@ import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-fo
     NumericOrderPipe,
     AuthService,
     TallyService,
+    DeliveryService,
     InfiniteScrollPaginatorService
   ],
   exports: [
@@ -86,6 +90,7 @@ import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-fo
     CustomDatetimePipe,
     RutPipe,
     TicketCardComponent,
+    DeliveryCardComponent,
     NumericOrderPipe,
     ToolbarButtonsComponent,
     TallyFormComponent,

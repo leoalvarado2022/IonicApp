@@ -1,0 +1,16 @@
+<ion-card (click)="viewOrder(order)" [ngClass]="{'error':order.error}">
+  <ion-card-header>
+    <ion-card-title>
+      <ion-item lines="full">
+        <ion-badge slot="start">#{{ order.id }}</ion-badge>
+        <ion-label>{{ order.origin }}</ion-label>
+        <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery">
+      </ion-item>
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <p><strong>Empresa:</strong> {{ order.entity}}</p>
+    <p><strong>Fecha de Entrega:</strong> {{ dateFormat(order.date_delivery) }}</p>
+    <p><strong>Total:</strong> {{ order.value_total }}</p>
+  </ion-card-content>
+</ion-card>

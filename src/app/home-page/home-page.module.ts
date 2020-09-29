@@ -107,7 +107,15 @@ const routes: Routes = [
       {
         path: 'asociar_bluetooth',
         loadChildren: () => import('../modules/bluetooth-manager/bluetooth-manager.module').then( m => m.BluetoothManagerPageModule)
-      },      
+      },
+      {
+        path: 'delivery',
+        loadChildren: () => import('../modules/delivery/delivery-list/delivery-list.module').then((module) => module.DeliveryListModule),
+      },
+      {
+        path: 'config_delivery',
+        loadChildren: () => import('../modules/delivery/delivery-config/delivery-config.module').then((module) => module.DeliveryConfigModule),
+      },
       { path: '**', redirectTo: '' },
     ],
   },

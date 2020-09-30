@@ -9,14 +9,30 @@ import {HttpService} from '../../../shared/services/http/http.service';
 })
 export class DeliveryService {
 
-  public orderUrl = 'order-list';
+  public orderListUrl = 'order-list';
+  public orderUrl = 'order';
 
   constructor(private storage: Storage,
               private httpClient: HttpClient,
               private httpService: HttpService) {
   }
 
+  /**
+   * @description list notifications
+   * @param data
+   */
   public getNotificationHttp = (data: any) => {
+    const url = this.httpService.buildUrl(this.orderListUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description get nofitification for by id
+   * @param data
+   */
+  public getNotificationHttpId = (data: any) => {
     const url = this.httpService.buildUrl(this.orderUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()

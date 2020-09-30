@@ -1,3 +1,25 @@
 <ion-content>
-<!--cerrados-->
+
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
+    <ion-refresher-content
+        pullingIcon="arrow-down"
+        pullingText="Pull to refresh"
+        refreshingSpinner="circles"
+        refreshingText="Sincronizando...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+
+  <ng-container *ngIf="allOrder.length > 0">
+    <ion-virtual-scroll [items]="allOrder">
+      <div *virtualItem="let order">
+        <app-delivery-card
+            [order]="order"
+            (orderSelected)="orderSelected($event)"
+        >
+        </app-delivery-card>
+      </div>
+    </ion-virtual-scroll>
+  </ng-container>
+
 </ion-content>

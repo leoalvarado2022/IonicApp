@@ -9,7 +9,8 @@ ion-title {
 .color-automatic {
   --background: var(--color-home-header-menu);
   --color: white;
-  .toolbar-container{
+
+  .toolbar-container {
     background: red !important;
   }
 }
@@ -18,10 +19,11 @@ ion-segment-button.segment-button-checked {
   color: black !important;
 }
 
-.maquinaria{
+.maquinaria {
   margin: 0 auto;
   padding: 5px;
-  ion-item{
+
+  ion-item {
     --inner-border-width: 0;
   }
 }
@@ -44,7 +46,7 @@ ion-tab-bar {
   // margin-bottom: 58px;
 }
 
-.number{
+.number {
   position: absolute;
   background: #052a61;
   border-radius: 100px;
@@ -52,4 +54,11 @@ ion-tab-bar {
   font-size: 11px;
   top: 0;
   right: 0;
+}
+
+.position-automatic {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  z-index: 999999;
 }

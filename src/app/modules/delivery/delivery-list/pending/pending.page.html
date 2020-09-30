@@ -15,6 +15,7 @@
       <div *virtualItem="let order">
         <app-delivery-card
             [order]="order"
+            (orderSelected)="orderSelected($event)"
         >
         </app-delivery-card>
       </div>

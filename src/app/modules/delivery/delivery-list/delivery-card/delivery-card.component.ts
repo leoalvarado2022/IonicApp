@@ -26,17 +26,7 @@ export class DeliveryCardComponent implements OnInit {
    * viewTicket
    * @param ticket
    */
-  public viewOrder = (ticket: any) => {
-    this.orderSelected.emit(ticket);
-  }
-
-  /**
-   * @description tiempo restante
-   * @param date
-   */
-  public dateFormat(date: string): string {
-    // @ts-ignore
-    // return moment(date, 'DD/MM/YYYY HH:mm:ss');
-    return date;
+  public viewOrder = (order: any) => {
+    this.orderSelected.emit(order);
   }
 }

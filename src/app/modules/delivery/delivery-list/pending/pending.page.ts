@@ -19,7 +19,8 @@ export class PendingPage implements OnInit, OnDestroy {
     private storeService: StoreService,
     private httpService: HttpService,
     private _deliveryService: DeliveryService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private router: Router
   ) {
   }
 
@@ -50,6 +51,14 @@ export class PendingPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+  }
+
+  /**
+   * order selected
+   * @param ticket
+   */
+  public orderSelected = (order: any) => {
+    this.router.navigate(['/home-page/delivery-detail', order.id]);
   }
 
   /**

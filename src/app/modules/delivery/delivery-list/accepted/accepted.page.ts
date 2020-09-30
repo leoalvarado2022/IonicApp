@@ -3,6 +3,7 @@ import {StoreService} from '../../../../shared/services/store/store.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {DeliveryService} from '../../services/delivery.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-accepted',
@@ -11,11 +12,15 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
 })
 export class AcceptedPage implements OnInit, OnDestroy {
 
+  public allOrder: Array<any> = [];
+
+
   constructor(
     private storeService: StoreService,
     private httpService: HttpService,
     private _deliveryService: DeliveryService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private router: Router
   ) {
   }
 
@@ -40,11 +45,30 @@ export class AcceptedPage implements OnInit, OnDestroy {
     };
 
     this._deliveryService.getNotificationHttp(data).subscribe((success: any) => {
+      this.allOrder = success.resp;
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * reSync
+   * @param event
+   */
+  public reSync = (event: any) => {
+    this.allOrder = [];
+    this.loadNotifications();
+    event.target.complete();
+  }
+
+  /**
+   * order selected
+   * @param ticket
+   */
+  public orderSelected = (order: any) => {
+    this.router.navigate(['/home-page/delivery-detail', order.id]);
   }
 
 }

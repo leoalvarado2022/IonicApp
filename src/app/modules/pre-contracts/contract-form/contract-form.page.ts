@@ -10,6 +10,7 @@ import { ContractsService } from '../services/contracts/contracts.service';
 import { HttpService } from '../../../shared/services/http/http.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { Worker } from '../worker.interface';
 
 @Component({
   selector: 'app-contract-form',
@@ -31,6 +32,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public quadrilles: Array<any> = [];
   public workers: Array<Worker> = [];
   public contractors: Array<Worker> = [];
+  public showContractor: boolean = false;
 
   private editPreContrat: any = null;
   private activeCompany: any = null;
@@ -84,7 +86,8 @@ export class ContractFormPage implements OnInit, OnDestroy {
       step1: this.formBuilder.group({
         nationality: ['', Validators.required],
         identifier: ['', Validators.required],
-        workerType: ['interno', Validators.required]
+        workerType: ['interno', Validators.required],
+        contractor: ['']
       }),
       step2: this.formBuilder.group({
         name: ['', Validators.required],
@@ -120,8 +123,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     ]).then((data) => {
       this.quadrilles = [...data[0]];
       this.workers = [...data[1]];
-      console.log('this.workers', this.workers);
-      // this.contractors = this.workers.filter(item =>)
+      this.contractors = this.workers.filter(item => item.workerType === 2);
 
       this.nationalities = [...data[3]];
       this.contractTypes = [...data[4]];
@@ -324,8 +326,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
     this.contractsService.checkWorker(clean).subscribe((success: any) => {
       const worker = success.data;
 
-      console.log('worker', worker);
-
       if (worker) {
         this.contractForm.patchValue({
           workerId: worker.id,
@@ -435,9 +435,40 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public workerTypeChange = (workerType: string) => {
     if (workerType) {
       if (workerType.toLowerCase() === 'interno') {
+        this.showContractor = false;
 
+        // Disable Contrator
+        this.contractForm.get('step1.contractor').patchValue('')
+        this.contractForm.get('step1.contractor').setValidators(null);
+
+        // Set Step 3 validators
+        this.contractForm.get('step3.contractType').setValidators(Validators.required);
+        this.contractForm.get('step3.afp').setValidators(Validators.required);
+        this.contractForm.get('step3.isapre').setValidators(Validators.required);
+        this.contractForm.get('step3.retired').setValidators(Validators.required);
+
+        // Update FORM
+        this.contractForm.updateValueAndValidity();
       } else if (workerType.toLowerCase() === 'externo') {
+        this.showContractor = true;
+        this.contractForm.get('step1.contractor').setValidators(Validators.required);
 
+        // Set step 3 values
+        this.contractForm.get('step3').patchValue({
+          contractType: 0,
+          afp: 0,
+          isapre:0,
+          retired: false
+        });
+
+        // Remove Step 3 validators
+        this.contractForm.get('step3.contractType').setValidators(null);
+        this.contractForm.get('step3.afp').setValidators(null);
+        this.contractForm.get('step3.isapre').setValidators(null);
+        this.contractForm.get('step3.retired').setValidators(null);
+
+        // Update FORM
+        this.contractForm.updateValueAndValidity();
       }
     }
   }

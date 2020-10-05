@@ -40,6 +40,17 @@ export class DeliveryService {
   };
 
   /**
+   * @description set nofitification for by id
+   * @param data
+   */
+  public setNotificationHttpStatus = (data: any) => {
+    const url = this.httpService.buildUrl(this.orderUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
    * getDeliveryNotification
    */
   public getDeliveryNotification = (): Promise<any> => {

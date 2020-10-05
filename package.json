@@ -47,7 +47,7 @@
     "@ionic/angular-toolkit": "^2.3.3",
     "@ionic/storage": "^2.3.1",
     "@primetec/primetec-angular": "0.0.22",
-    "cordova-android": "9.0.0",
+    "cordova-android": "^8.1.0",
     "cordova-ios": "5.1.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-androidx": "^1.0.2",
@@ -147,8 +147,8 @@
       "cordova-plugin-bluetooth-serial": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

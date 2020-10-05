@@ -48,6 +48,27 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     }
   }
 
+  setNotificationStatus(status: string) {
+    if(this.id){
+      this.loaderService.startLoader('Cargando Notificaciones');
+      const user = this.storeService.getActiveCompany();
+
+      const data = {
+        user: user.user,
+        id_order: this.id,
+        status: status
+      };
+
+      this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
+        this.order = success.resp;
+        this.loaderService.stopLoader();
+      }, error => {
+        this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+      });
+    }
+  }
+
   /**
    * @description validate if exists product in null
    */

@@ -15,4 +15,5 @@ export interface Worker {
   startDate: string;
   validity: number;
   workerType: number;
+  contractorId: number;
 }

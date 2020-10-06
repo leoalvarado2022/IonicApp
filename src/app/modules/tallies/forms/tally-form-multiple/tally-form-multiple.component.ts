@@ -323,7 +323,8 @@ export class TallyFormMultipleComponent implements OnInit {
       workingDay: parseFloat(data['jr']),
       hoursExtra: data['h'] || 0,
       performance: data['r'] || 0,
-      status: 'new'
+      status: 'new',
+      contractorId: worker.contractorId
     });
   }
 
@@ -350,7 +351,8 @@ export class TallyFormMultipleComponent implements OnInit {
       workingDay: parseFloat(data['jr']),
       hoursExtra: data['h'] || 0,
       performance: data['r'] || 0,
-      status: 'edit'
+      status: 'edit',
+      contractorId: worker.contractorId
     });
   }
 

@@ -267,7 +267,8 @@ export class TallyFormComponent implements OnInit {
       tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
       performance: formData.performance ? formData.performance : 0,
-      status: 'new'
+      status: 'new',
+      contractorId: this.worker.contractorId
     });
   }
 
@@ -290,7 +291,8 @@ export class TallyFormComponent implements OnInit {
       tempId,
       hoursExtra: formData.hoursExtra ? formData.hoursExtra : 0 ,
       performance: formData.performance ? formData.performance : 0,
-      status: 'edit'
+      status: 'edit',
+      contractorId: this.worker.contractorId
     });
   }
 

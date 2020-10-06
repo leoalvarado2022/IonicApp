@@ -5,4 +5,6 @@ export interface ContractListItem {
   workerLastName: string;
   workerSurname: string;
   contractTypeName: string;
+  contractorId: number;
+  contractorName: string;
 }

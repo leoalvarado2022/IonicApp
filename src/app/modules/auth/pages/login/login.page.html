@@ -1,15 +1,10 @@
 <ion-content>
   <div class="pd-default">
     <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
-      <br>
+
       <ion-item>
-
         <ion-label position="floating">Usuario o correo</ion-label>
-        <ion-input
-          formControlName="username"
-          type="text">
-        </ion-input>
-
+        <ion-input formControlName="username" type="text"></ion-input>
         <div *ngIf="loginForm.controls.username.dirty && loginForm.hasError('required', 'username')" style="color: red">
           El Usuario o correo es requerido.
         </div>
@@ -17,50 +12,30 @@
 
       <ion-item>
         <ion-label position="floating">Contraseña</ion-label>
-        <ion-input
-          formControlName="password"
-          type="password">
+        <ion-input formControlName="password" type="password">
         </ion-input>
       </ion-item>
 
-      <br/>
-      <ion-button
-        [disabled]="loginForm.invalid"
-        color="danger"
-        expand="block"
-        type="submit">
+      <ion-item lines="none">
+        <ion-checkbox [checked]="loginForm.get('remember').value" formControlName="remember" name='remember'slot="start"></ion-checkbox>
+        <ion-label>Recordarme</ion-label>
+      </ion-item>
+
+      <br />
+      <ion-button [disabled]="loginForm.invalid" color="danger" expand="block" type="submit">
         Iniciar Sesión
       </ion-button>
 
-      <ng-container *ngIf="innerWidth < 575">
-        <ion-row>
-          <ion-col>
-            <ion-item lines="none">
-              <ion-checkbox [checked]="loginForm.get('remember').value" formControlName="remember" name='remember' slot="start"></ion-checkbox>
-              <ion-label>Recordarme</ion-label>
-            </ion-item>
-          </ion-col>
+      <ion-item lines="none">
+        <ion-label
+          class="ion-text-center"
+          color="danger"
+          routerDirection="forward"
+          routerLink="/auth/password-recovery">
+            Olvide mi contraseña
+        </ion-label>
+      </ion-item>
 
-          <ion-col>
-            <ion-item lines="none">
-              <ion-label class="ion-text-center" color="danger" routerDirection="forward" routerLink="/auth/password-recovery">Olvide mi contraseña</ion-label>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ng-container>
-
-      <ng-container *ngIf="innerWidth > 575">
-        <div class="ion-text-left recordarme">
-          <ion-checkbox [checked]="loginForm.get('remember').value" color="primary" formControlName="remember" name='remember'></ion-checkbox>
-          <span>Recordarme</span>
-        </div>
-
-        <div class="ion-text-right">
-          <ion-button color="danger" fill="clear" routerDirection="forward" routerLink="/auth/password-recovery">Olvide mi
-            contraseña
-          </ion-button>
-        </div>
-      </ng-container>
     </form>
   </div>
 </ion-content>

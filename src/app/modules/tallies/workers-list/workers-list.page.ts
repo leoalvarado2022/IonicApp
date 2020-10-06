@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
@@ -10,6 +10,7 @@ import { ModalController } from '@ionic/angular';
 import { CostCenterList } from '@primetec/primetec-angular';
 import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
 import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-form-multiple.component';
+import { Worker } from '../../pre-contracts/worker.interface';
 
 @Component({
   selector: 'app-workers-list',
@@ -18,10 +19,12 @@ import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-f
 })
 export class WorkersListPage implements OnInit, OnDestroy {
 
+  public quadrille: any;
+
   // Worker
-  private workers: Array<any> = [];
-  public filteredWorkers: Array<any> = [];
-  public selectedWorkers: Array<any> = [];
+  private workers: Array<Worker> = [];
+  public filteredWorkers: Array<Worker> = [];
+  public selectedWorkers: Array<Worker> = [];
   public canUpdateMultiple = false;
   public multipleTalliesToUpdate: Array<any> = [];
   private numberOfCases: Array<any> = [];
@@ -100,6 +103,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
       this.tallySyncService.getTalliesToRecord(),
+      this.storageSyncService.getAllQuadrilles()
     ]).then( data => {
 
       // Workers
@@ -116,6 +120,8 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.labors = [...data[3]];
       this.deals = [...data[4]];
       this.bonds = [...data[5]];
+
+      this.quadrille = data[7].find(item=> item.id === +id);
 
       // END LOADING
       this.isLoading = false;
@@ -173,7 +179,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * markWorker
    * @param worker
    */
-  public markWorker = (worker: any): void => {
+  public markWorker = (worker: Worker): void => {
     this.canUpdateMultiple = false;
     this.multipleTalliesToUpdate = [];
 
@@ -195,7 +201,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * getNumberOfWorkerTallies
    * @param worker
    */
-  private getNumberOfWorkerTallies = (worker: any): Array<Tally> => {
+  private getNumberOfWorkerTallies = (worker: Worker): Array<Tally> => {
     return this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.currentDate);
   }
 
@@ -287,7 +293,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * getTotalWorkerWork
    * @param worker
    */
-  public getTotalWorkerWork = (worker: any): string => {
+  public getTotalWorkerWork = (worker: Worker): string => {
     const todayTallies = this.getNumberOfWorkerTallies(worker);
     const workTotal = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
 

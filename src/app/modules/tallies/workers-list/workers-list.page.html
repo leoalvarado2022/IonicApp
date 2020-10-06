@@ -11,13 +11,9 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-      <ion-searchbar
-        animated
-        placeholder="Buscar..."
-        showCancelButton="never"
-        (ionChange)="searchWorker($event.target.value)"
-        (ionClear)="cancelSearch()">
-      </ion-searchbar>
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+      (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -26,24 +22,35 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <!-- TRABAJADORES -->
-  <ion-item>
-    <ion-label>
-      <h2>Trabajadores</h2>
-    </ion-label>
-    <ion-badge slot="end"  color="primary">{{ filteredWorkers.length }}</ion-badge>
-  </ion-item>
+  <ion-card class="title-card">
+    <!-- NOMBRE CUADRILLA -->
+    <ion-item >
+      <ion-label>
+        <h2>{{  quadrille ? quadrille.name : 'Cuadrilla' }}</h2>
+      </ion-label>
+    </ion-item>
 
-  <!-- DAY SELECTOR -->
-  <ion-item lines="none">
-    <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
-      <ion-icon name="arrow-back" slot="start"></ion-icon>
-    </ion-button>
-    <ion-input class="ion-text-center" [ngModel]="showDate" readonly></ion-input>
-    <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
-      <ion-icon name="arrow-forward" slot="end"></ion-icon>
-    </ion-button>
-  </ion-item>
+    <!-- TRABAJADORES -->
+    <ion-item>
+      <ion-label>
+        <h2>Trabajadores</h2>
+      </ion-label>
+      <ion-badge slot="end" color="primary">{{ filteredWorkers.length }}</ion-badge>
+    </ion-item>
+  </ion-card>
+
+  <ion-card class="title-card">
+    <!-- DAY SELECTOR -->
+    <ion-item lines="none">
+      <ion-button size="small" fill="clear" slot="start" (click)="subtractDayToDate()">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+      </ion-button>
+      <ion-input class="ion-text-center" [ngModel]="showDate" readonly></ion-input>
+      <ion-button size="small" fill="clear" slot="end" (click)="addDayToDate()">
+        <ion-icon name="arrow-forward" slot="end"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-card>
 
   <ng-container *ngIf="isLoading">
     <h1 class="ion-text-center">Cargando...</h1>
@@ -51,7 +58,12 @@
 
   <ng-container *ngIf="!isLoading">
     <ion-virtual-scroll [items]="filteredWorkers">
-      <ion-card *virtualItem="let worker" class="card-item margin-extra" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+      <ion-card *virtualItem="let worker" class="card-item margin-extra external" (click)="markWorker(worker)"
+        [ngClass]="{
+          'workerSelected': selectedWorkers.includes(worker),
+          'contractor': !selectedWorkers.includes(worker) && worker.workerType === 2,
+          'external': !selectedWorkers.includes(worker) && worker.workerType === 3
+        }">
         <ion-item lines="full">
           <ion-icon slot="start" name="person" color="primary"></ion-icon>
           <ion-label class="ion-text-wrap">{{ worker.name | titlecase }}</ion-label>
@@ -60,6 +72,8 @@
 
         <ion-card-content>
           <p><strong>Identificador</strong>: {{ worker.identifier | rut }}</p>
+          <p *ngIf="worker.workerType === 2"><strong>Tipo</strong>: Contratista</p>
+          <p *ngIf="worker.workerType === 3"><strong>Tipo</strong>: Externo</p>
 
           <ion-chip class="ion-float-end" color="primary">
             <ion-label>

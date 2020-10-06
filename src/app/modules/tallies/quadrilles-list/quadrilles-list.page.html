@@ -27,15 +27,17 @@
   </ion-refresher>
 
   <!-- CUADRILLAS -->
-  <ion-item>
-    <ion-label>
-      <h2>Cuadrillas</h2>
-    </ion-label>
-    <ion-badge slot="end"  color="primary">{{ filteredQuadrilles.length }}</ion-badge>
-  </ion-item>
+  <ion-card class="title-card">
+    <ion-item lines="none">
+      <ion-label>
+        <h2>Cuadrillas</h2>
+      </ion-label>
+      <ion-badge slot="end"  color="primary">{{ filteredQuadrilles.length }}</ion-badge>
+    </ion-item>
+  </ion-card>
 
   <ion-virtual-scroll [items]="filteredQuadrilles">
-    <ion-card *virtualItem="let quadrille" class="card-item" (click)="selectQuadrille(quadrille.id)">
+    <ion-card *virtualItem="let quadrille" class="card-item item-bg" (click)="selectQuadrille(quadrille.id)">
       <ion-item lines="full">
         <ion-badge slot="start" color="primary">{{ quadrille.code | uppercase }}</ion-badge>
         <ion-label>{{ quadrille.name | titlecase }}</ion-label>

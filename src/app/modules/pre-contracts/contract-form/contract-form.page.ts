@@ -1,15 +1,16 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {StoreService} from '../../../shared/services/store/store.service';
-import {ToastService} from '../../../shared/services/toast/toast.service';
-import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
-import {ActivatedRoute, Router} from '@angular/router';
-import {BarcodeScanner} from '@ionic-native/barcode-scanner/ngx';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { StoreService } from '../../../shared/services/store/store.service';
+import { ToastService } from '../../../shared/services/toast/toast.service';
+import { cleanRut, formatRut, ValidateRut } from '@primetec/primetec-angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import * as moment from 'moment';
-import {ContractsService} from '../services/contracts/contracts.service';
-import {HttpService} from '../../../shared/services/http/http.service';
+import { ContractsService } from '../services/contracts/contracts.service';
+import { HttpService } from '../../../shared/services/http/http.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { Worker } from '../worker.interface';
 
 @Component({
   selector: 'app-contract-form',
@@ -29,7 +30,9 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public afps: Array<any> = [];
   public isapres: Array<any> = [];
   public quadrilles: Array<any> = [];
-  public workers: Array<any> = [];
+  public workers: Array<Worker> = [];
+  public contractors: Array<Worker> = [];
+  public showContractor: boolean = false;
 
   private editPreContrat: any = null;
   private activeCompany: any = null;
@@ -64,12 +67,12 @@ export class ContractFormPage implements OnInit, OnDestroy {
         text: 'Ok',
         handler: (data) => {
           this.contractForm.get('step2.dob').patchValue(moment(`${data.year.text}-${data.month.text}-${data.day.text}`).format('YYYY-MM-DD'));
-        } 
+        }
       }, {
         role: 'cancel',
         text: 'Cancelar',
-        handler: () => {          
-          
+        handler: () => {
+
         }
       }]
     }
@@ -82,7 +85,9 @@ export class ContractFormPage implements OnInit, OnDestroy {
       tempId: 0,
       step1: this.formBuilder.group({
         nationality: ['', Validators.required],
-        identifier: ['', Validators.required]
+        identifier: ['', Validators.required],
+        workerType: ['interno', Validators.required],
+        contractor: ['']
       }),
       step2: this.formBuilder.group({
         name: ['', Validators.required],
@@ -115,9 +120,10 @@ export class ContractFormPage implements OnInit, OnDestroy {
       this.storageSyncService.getCivilStatus(),
       this.storageSyncService.getAfps(),
       this.storageSyncService.getIsapres()
-    ]).then( (data) => {
+    ]).then((data) => {
       this.quadrilles = [...data[0]];
       this.workers = [...data[1]];
+      this.contractors = this.workers.filter(item => item.workerType === 2);
 
       this.nationalities = [...data[3]];
       this.contractTypes = [...data[4]];
@@ -203,7 +209,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
    */
   public openBarcodeScanner = () => {
     this.barcodeScanner.scan().then(barcodeData => {
-      const {cancelled, text} = barcodeData;
+      const { cancelled, text } = barcodeData;
       if (!cancelled) {
         let operativeText = text;
         if (operativeText.indexOf('registrocivil.cl') && operativeText.match(/RUN=(([0-9])+\-?([kK0-9])+)/)) {
@@ -255,7 +261,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
    */
   public submit = () => {
     const data = Object.assign({}, this.contractForm.value);
-    const {step1, step2, step3} = data;
+    const { step1, step2, step3 } = data;
     delete data.step1;
     delete data.step2;
     delete data.step3;
@@ -264,7 +270,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     step2.dob = moment.utc(step2.dob).format('YYYY-MM-DD');
     step3.retired = step3.retired ? 1 : 0;
 
-    const preparedData = {...data, ...step1, ...step2, ...step3};
+    const preparedData = { ...data, ...step1, ...step2, ...step3 };
     this.storeContract(preparedData);
   }
 
@@ -300,10 +306,10 @@ export class ContractFormPage implements OnInit, OnDestroy {
       const identifierType = this.nationalities.find(i => i.id === nationality);
 
       if (identifierType && identifierType.identifierType.toLowerCase() === 'rut') {
-        this.contractForm.get('step1.identifier').patchValue(formatRut(identifier), {emitEvent: false});
+        this.contractForm.get('step1.identifier').patchValue(formatRut(identifier), { emitEvent: false });
       } else {
         const clean = identifier.replace(/[,.-]+/g, '').replace(/\s/g, '');
-        this.contractForm.get('step1.identifier').patchValue(clean, {emitEvent: false});
+        this.contractForm.get('step1.identifier').patchValue(clean, { emitEvent: false });
       }
     }
   }
@@ -319,8 +325,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
 
     this.contractsService.checkWorker(clean).subscribe((success: any) => {
       const worker = success.data;
-
-      console.log('worker', worker);
 
       if (worker) {
         this.contractForm.patchValue({
@@ -422,6 +426,51 @@ export class ContractFormPage implements OnInit, OnDestroy {
    */
   public goBack = () => {
     this.router.navigate(['/home-page/tarja_contrato']);
+  }
+
+  /**
+   * workerTypeChange
+   * @param event
+   */
+  public workerTypeChange = (workerType: string) => {
+    if (workerType) {
+      if (workerType.toLowerCase() === 'interno') {
+        this.showContractor = false;
+
+        // Disable Contrator
+        this.contractForm.get('step1.contractor').patchValue('')
+        this.contractForm.get('step1.contractor').setValidators(null);
+
+        // Set Step 3 validators
+        this.contractForm.get('step3.contractType').setValidators(Validators.required);
+        this.contractForm.get('step3.afp').setValidators(Validators.required);
+        this.contractForm.get('step3.isapre').setValidators(Validators.required);
+        this.contractForm.get('step3.retired').setValidators(Validators.required);
+
+        // Update FORM
+        this.contractForm.updateValueAndValidity();
+      } else if (workerType.toLowerCase() === 'externo') {
+        this.showContractor = true;
+        this.contractForm.get('step1.contractor').setValidators(Validators.required);
+
+        // Set step 3 values
+        this.contractForm.get('step3').patchValue({
+          contractType: 0,
+          afp: 0,
+          isapre:0,
+          retired: false
+        });
+
+        // Remove Step 3 validators
+        this.contractForm.get('step3.contractType').setValidators(null);
+        this.contractForm.get('step3.afp').setValidators(null);
+        this.contractForm.get('step3.isapre').setValidators(null);
+        this.contractForm.get('step3.retired').setValidators(null);
+
+        // Update FORM
+        this.contractForm.updateValueAndValidity();
+      }
+    }
   }
 
 }

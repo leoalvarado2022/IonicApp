@@ -36,7 +36,9 @@ export class ContractsService {
       workerName: contract.workerName,
       workerLastName: contract.workerLastName,
       workerSurname: contract.workerSurname,
-      contractTypeName: contract.contractTypeName
+      contractTypeName: contract.contractTypeName,
+      contractorId: contract.contractorId,
+      contractorName: contract.contractorName
     };
   }
 

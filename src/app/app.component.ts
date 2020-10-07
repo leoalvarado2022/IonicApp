@@ -7,6 +7,10 @@ import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
 import {FCM} from '@ionic-native/fcm/ngx';
 import {ToastService} from './shared/services/toast/toast.service';
+import {BackgroundMode} from '@ionic-native/background-mode/ngx';
+import {DeliveryService} from './modules/delivery/services/delivery.service';
+import {debounceTime} from 'rxjs/operators';
+import {interval} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -22,13 +26,57 @@ export class AppComponent {
     private networkService: NetworkService,
     private storeService: StoreService,
     private fcm: FCM,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private backgroundMode: BackgroundMode,
+    private _deliveryService: DeliveryService
   ) {
     this.initializeApp();
   }
 
+  /**
+   * @description background mode
+   */
+  backgroundModeActivate() {
+    if (this._deliveryService.getAutomatic()) {
+      this.backgroundMode.enable();
+    }
+
+    // background mode
+    this.backgroundMode.on('enable').subscribe(data => {
+      console.log('on.backgroundMode.enable', data);
+      this._deliveryService.intervalRefresh();
+    });
+
+    this.backgroundMode.on('disable').subscribe(data => {
+      console.log('on.backgroundMode.disable', data);
+      this._deliveryService.stopRefreshData();
+      this._deliveryService.stopBackgroundMode();
+    });
+
+    // this.backgroundMode.on('activate').subscribe(data => {
+    //   console.log('on.backgroundMode.activate', data)
+    //   this._deliveryService.stopRefreshData();
+    //   this._deliveryService.intervalRefresh();
+    // });
+
+    this.backgroundMode.on('deactivate').subscribe(data => {
+      console.log('on.backgroundMode.deactivate', data);
+      this._deliveryService.stopRefreshData();
+      this._deliveryService.stopBackgroundMode();
+    });
+
+    this.backgroundMode.on('failure').subscribe(data => {
+      console.log('on.backgroundMode.failure', data);
+      this._deliveryService.stopRefreshData();
+      this._deliveryService.stopBackgroundMode();
+    });
+    // end background mode
+  }
+
   initializeApp() {
     this.platform.ready().then(() => {
+      this.backgroundModeActivate();
+
       if (this.platform.is('ios')) {
         this.splashScreen.hide();
         this.statusBar.styleLightContent();

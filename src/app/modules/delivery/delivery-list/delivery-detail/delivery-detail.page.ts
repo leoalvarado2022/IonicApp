@@ -5,6 +5,7 @@ import {DeliveryService} from '../../services/delivery.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {NavParams} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-accepted',
@@ -22,7 +23,8 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private _deliveryService: DeliveryService,
     private loaderService: LoaderService,
-    private _activatedRoute: ActivatedRoute
+    private _activatedRoute: ActivatedRoute,
+    private _location: Location
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
     this.loadNotifications();
@@ -48,9 +50,13 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description cambiar status de notificación
+   * @param status
+   */
   setNotificationStatus(status: string) {
     if(this.id){
-      this.loaderService.startLoader('Cargando Notificaciones');
+      // this.loaderService.startLoader('Cargando Notificaciones');
       const user = this.storeService.getActiveCompany();
 
       const data = {
@@ -60,10 +66,11 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       };
 
       this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
-        this.order = success.resp;
-        this.loaderService.stopLoader();
+        // this.order = success.resp;
+        // this.loaderService.stopLoader();
+        this._location.back();
       }, error => {
-        this.loaderService.stopLoader();
+        // this.loaderService.stopLoader();
         this.httpService.errorHandler(error);
       });
     }

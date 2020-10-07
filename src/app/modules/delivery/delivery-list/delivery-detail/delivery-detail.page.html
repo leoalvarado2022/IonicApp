@@ -21,9 +21,9 @@
 <!--          <ion-label>{{ order?.origin }}</ion-label>-->
           <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'JUSTO'">
           <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
-          <ion-button color="danger"  style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'">Rechazar</ion-button>
-          <ion-button color="primary" class="button-class" style="right: 75px !important;" *ngIf="!productSync() && order?.status === 'pending'">Aceptar</ion-button>
-          <ion-button color="warning" class="button-class" style="right: 75px !important;" *ngIf="order?.status === 'accepted'">Cerrar</ion-button>
+          <ion-button color="danger"  style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'" (click)="setNotificationStatus('rejected')">Rechazar</ion-button>
+          <ion-button color="primary" class="button-class" style="right: 75px !important;" *ngIf="!productSync() && order?.status === 'pending'" (click)="setNotificationStatus('accepted')">Aceptar</ion-button>
+          <ion-button color="warning" class="button-class" style="right: 75px !important;" *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('close')">Cerrar</ion-button>
         </ion-item>
       </ion-card-title>
     </ion-card-header>

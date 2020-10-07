@@ -18,21 +18,28 @@
   </ion-refresher>
 
   <!-- TARJAS -->
-  <h3 class="ion-text-center">
-    {{ getWorkerName() | titlecase }}
-  </h3>
+  <ion-card class="title-card">
+    <h3 class="ion-text-center">
+      {{ getWorkerName() | titlecase }}
+    </h3>
+  </ion-card>
+
   <ion-row>
-    <ion-col>
-      <p class="ion-text-center ion-text-wrap">
-        Tarjas
-        <ion-badge class="quadrille-badge" color="primary">{{ workerTallies.length }}</ion-badge>
-      </p>
+    <ion-col class="ion-no-margin ion-no-padding">
+      <ion-card class="title-card">
+        <ion-item lines="none">
+          <ion-label>Tarjas</ion-label>
+          <ion-badge class="quadrille-badge" color="primary">{{ workerTallies.length }}</ion-badge>
+        </ion-item>
+      </ion-card>
     </ion-col>
-    <ion-col>
-      <p class="ion-text-center">
-        Jornadas
-        <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork() }} Jr</ion-badge>
-      </p>
+    <ion-col class="ion-no-margin ion-no-padding">
+      <ion-card class="title-card">
+        <ion-item lines="none">
+          <ion-label>Jornadas</ion-label>
+          <ion-badge class="quadrille-badge" color="primary">{{ getTotalWorkerWork() }}</ion-badge>
+        </ion-item>
+      </ion-card>
     </ion-col>
   </ion-row>
 

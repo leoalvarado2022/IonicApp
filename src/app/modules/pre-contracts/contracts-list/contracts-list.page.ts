@@ -58,6 +58,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
     this.storageSyncService.getPreContracts().then( data => {
       const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
+
       this.contracts = [...preContractsMapped];
       this.filteredContracts = [...this.contracts];
 

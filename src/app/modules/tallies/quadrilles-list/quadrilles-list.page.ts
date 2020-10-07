@@ -5,6 +5,7 @@ import { StepperService } from 'src/app/services/storage/stepper/stepper.service
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { Router } from '@angular/router';
 import { StoreService } from 'src/app/shared/services/store/store.service';
+import { Worker } from '../../pre-contracts/worker.interface';
 
 @Component({
   selector: 'app-quadrilles-list',
@@ -18,7 +19,7 @@ export class QuadrillesListPage implements OnInit, OnDestroy {
   public filteredQuadrilles: Array<Quadrille> = [];
 
   // Workers
-  private workers: Array<any> = [];
+  private workers: Array<Worker> = [];
 
   private firstLoad = true;
   public isLoading = false;

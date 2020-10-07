@@ -26,16 +26,18 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-item>
-    <ion-label>
-      <h2>Pre-Contratos</h2>
-    </ion-label>
-    <ion-badge slot="end"  color="primary">{{ filteredContracts.length }}</ion-badge>
-  </ion-item>
+  <ion-card class="title-card">
+    <ion-item lines="none">
+      <ion-label>
+        <h2>Pre-Contratos</h2>
+      </ion-label>
+      <ion-badge slot="end"  color="primary">{{ filteredContracts.length }}</ion-badge>
+    </ion-item>
+  </ion-card>
 
   <ion-virtual-scroll [items]="filteredContracts">
     <ion-item-sliding *virtualItem="let contract" #slide>
-      <ion-item lines="none" class="slide-item">
+      <ion-item lines="none" class="slide-item item-bg">
         <ion-card>
           <ion-item lines="full">
             <ion-icon slot="start" name="document" color="primary"></ion-icon>
@@ -47,6 +49,7 @@
 
           <ion-card-content>
             <p> <strong>Tipo Contrato:</strong> {{ contract.contractTypeName | titlecase }}</p>
+            <p *ngIf="contract.contractorName"> <strong>Contratista:</strong> {{ contract.contractorName | titlecase }}</p>
           </ion-card-content>
         </ion-card>
       </ion-item>

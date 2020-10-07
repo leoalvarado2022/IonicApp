@@ -177,7 +177,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   /**
    * @description abrir el escaner
    */
-  public openNFCScanner() {
+  public openNFCScanner = () => {
     if (this.listener$) {
       this.listener$.unsubscribe();
     }
@@ -219,7 +219,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * enviar los dispositivos
    * @param id
    */
-  async pullDevice(id: any) {
+  public pullDevice = async (id: any) => {
     if (!this.centerCost) {
       this._route.navigate(['home-page']);
       return;
@@ -255,13 +255,18 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   /**
    * @description agregar informacion para el escaneo
    */
-  setInfo(id: number) {
+  public setInfo = (id: number) => {
     const device = this.devices.find(value => value.id_device === id);
+
+    console.log('device', device);
 
     if (device) {
       const worker = this.workers.find(value => value.id === device.id_link);
-      worker.device = device;
+
+      console.log('worker', worker);
+
       if (worker) {
+        worker.device = device;
         this.worker = worker.name;
         this.exist = true;
         this.setScanned(worker);
@@ -282,7 +287,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @description funcion que se encarga de separar la logica del scanned
    * @param worker
    */
-  setScanned(worker: any = null) {
+  public setScanned = (worker: any = null) => {
     if (worker !== null) {
       if (this.centerCost.deal.count) {
         this.forCount(worker);
@@ -325,7 +330,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
   /**
    * forWeight
-   * @param worker 
+   * @param worker
    */
   private forWeight = (worker: any) => {
     // Comprobar si hay blueetooth Conectado
@@ -354,8 +359,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
   /**
    * pushWeight
-   * @param worker 
-   * @param performance 
+   * @param worker
+   * @param performance
    */
   public pushWeight = (worker: any, performance: number, lastWeight: number) => {
     const findIndex = this.workersSuccess.findIndex(value => value.id === worker.id);
@@ -381,7 +386,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * cuando es por rendimiento
    * @param worker
    */
-  async forPerformance(worker: any) {
+  public forPerformance = async (worker: any) => {
     const alert = await this._alertController.create({
       header: 'Ingrese Rendimiento',
       backdropDismiss: false,
@@ -439,7 +444,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @description guardar registro de las pulcereadas
    * @param worker
    */
-  pushTally(worker: any, performance: number = 0) {
+  public pushTally = (worker: any, performance: number = 0) => {
     const activeCompany = this.storeService.getActiveCompany();
 
     let tally: TallyInterface = {};
@@ -470,7 +475,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * @param worker
    * @param performance
    */
-  pushPerformance(worker: any, performance: number) {
+  public pushPerformance = (worker: any, performance: number) => {
     const findIndex = this.workersSuccess.findIndex(value => value.id === worker.id);
 
     if (findIndex > -1) {
@@ -491,23 +496,23 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   /**
    * closeModal
    */
-  closeWork = async () => {
+  public closeWork = async () => {
     await this._modalController.dismiss();
   };
 
-  escaneoOne() {
+  public escaneoOne = () => {
     const id = 'ddfc95e4';
     console.log('escaneoOne', id);
     this.pullDevice(id);
   }
 
-  escaneoTwo() {
+  public escaneoTwo = () => {
     const id = 'ddfc50e4';
     console.log('escaneoTwo', id);
     this.pullDevice(id);
   }
 
-  escaneoThree() {
+  public escaneoThree = () => {
     const id = 'ddf450e4';
     console.log('escaneoThree', id);
     this.pullDevice(id);
@@ -520,9 +525,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   private filterWorkersByValidity = (date: string, workers: Array<any>): Array<any> => {
     return workers.filter(worker => {
-
-      console.log('worker', worker);
-
 
       const startDate = moment.utc(worker.startDate);
       const endDate = moment.utc(worker.endDate);
@@ -607,7 +609,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
   /**
    * showFormattedWeight
-   * @param value 
+   * @param value
    */
   public showFormattedWeight = (value: string): string => {
     if (value) {
@@ -625,7 +627,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   }
 
   /**
-   * isValidWeight   
+   * isValidWeight
    */
   private isValidWeight = (value: number): boolean => {
     if (this.weightsBuffer.length === 5) {

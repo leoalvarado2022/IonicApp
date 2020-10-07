@@ -17,12 +17,14 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-item>
-    <ion-label>
-      <h2>Tus Tratos</h2>
-    </ion-label>
-    <ion-badge slot="end"  color="primary">{{ deals.length }}</ion-badge>
-  </ion-item>
+  <ion-card class="title-card">
+    <ion-item lines="none">
+      <ion-label>
+        <h2>Tus Tratos</h2>
+      </ion-label>
+      <ion-badge slot="end"  color="primary">{{ deals.length }}</ion-badge>
+    </ion-item>
+  </ion-card>
 
   <ion-item-sliding #slidingItem *ngFor="let deal of deals">
     <ion-item (click)="goToRegister(deal)" class="slide-item">

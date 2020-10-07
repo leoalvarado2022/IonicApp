@@ -11,36 +11,40 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="color-automatic">
-    <p style="padding-left: 10px;">
+    <p style="padding-left: 10px;display: inline-block;">
       AUTOMATICO
     </p>
-    <ion-segment value="off" style="margin-right: 0;">
-      <ion-segment-button value="on">
-        ON
-      </ion-segment-button>
-      <ion-segment-button value="off">
-        OFF
-      </ion-segment-button>
-    </ion-segment>
+    <ion-toggle color="secondary" class="position-automatic" (ionChange)="changeAutomatic($event)" [checked]="checkedAutomatic"></ion-toggle>
+  </ion-toolbar>
+  <ion-toolbar class="color-automatic">
+    <ion-tabs>
+      <!-- Tab bar -->
+      <ion-tab-bar slot="top">
+        <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'">
+          <ion-label>Pendintes</ion-label>
+        </ion-tab-button>
+        <ion-tab-button (click)="changeStatus('accepted')" [selected]="selected === 'accepted'">
+          <ion-label>Aceptados</ion-label>
+        </ion-tab-button>
+        <ion-tab-button (click)="changeStatus('rejected')" [selected]="selected === 'rejected'">
+          <ion-label>Rechazados</ion-label>
+        </ion-tab-button>
+        <ion-tab-button (click)="changeStatus('close')" [selected]="selected === 'close'">
+          <ion-label>Cerrados</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
   </ion-toolbar>
 </ion-header>
 
-<ion-content scrollX="false" scrollY="false">
-  <ion-tabs>
-    <!-- Tab bar -->
-    <ion-tab-bar slot="top">
-      <ion-tab-button tab="pending">
-        <ion-label>Pendintes</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="accepted">
-        <ion-label>Aceptados</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="rejected">
-        <ion-label>Rechazados</ion-label>
-      </ion-tab-button>
-      <ion-tab-button tab="close">
-        <ion-label>Cerrados</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
+<ion-content>
+  <ng-container *ngIf="allOrder.length">
+    <div *ngFor="let order of allOrder">
+      <app-delivery-card
+          [order]="order"
+          (orderSelected)="orderSelected($event)"
+      >
+      </app-delivery-card>
+    </div>
+  </ng-container>
 </ion-content>

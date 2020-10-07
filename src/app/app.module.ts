@@ -20,6 +20,7 @@ import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import {registerLocaleData} from '@angular/common';
 import {CoreServicesModule} from './services/core-services.module';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
@@ -40,7 +41,7 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
       swipeBackEnabled: false,
     }),
     NgxMaskModule.forRoot(ngxMaskOptions),
-    CoreServicesModule
+    CoreServicesModule,
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
@@ -54,7 +55,8 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     NFC,
     Ndef,
     NativeAudio,
-    BluetoothSerial
+    BluetoothSerial,
+    BackgroundMode
   ],
   bootstrap: [AppComponent]
 })

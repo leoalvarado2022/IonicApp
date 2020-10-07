@@ -7,29 +7,7 @@ import {CommonModule} from '@angular/common';
 const routes: Routes = [
   {
     path: '',
-    component: DeliveryListPage,
-    children: [
-      {
-        path: 'pending',
-        loadChildren: () => import('./pending/pending.module').then(module => module.PendingModule),
-      },
-      {
-        path: 'accepted',
-        loadChildren: () => import('./accepted/accepted.module').then(module => module.AcceptedModule),
-      },
-      {
-        path: 'rejected',
-        loadChildren: () => import('./rejected/rejected.module').then(module => module.RejectedModule),
-      },
-      {
-        path: 'close',
-        loadChildren: () => import('./close/close.module').then(module => module.CloseModule),
-      },
-      {
-        path: '**',
-        redirectTo: 'pending'
-      }
-    ]
+    component: DeliveryListPage
   }
 ];
 

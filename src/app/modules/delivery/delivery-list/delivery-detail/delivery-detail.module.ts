@@ -1,12 +1,14 @@
 import {NgModule} from '@angular/core';
-import {RejectedPage} from './rejected.page';
+import {DeliveryDetailPage} from './delivery-detail.page';
 import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../../../../shared/shared.module';
+import {CommonModule} from '@angular/common';
+import {NavParams} from '@ionic/angular';
 
 const routes: Routes = [
   {
     path: '',
-    component: RejectedPage,
+    component: DeliveryDetailPage,
   }
 ];
 
@@ -14,12 +16,13 @@ const routes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
+    CommonModule,
     RouterModule.forChild(routes)
   ],
   declarations: [
-    RejectedPage
+    DeliveryDetailPage
   ]
 })
-export class RejectedModule {
+export class DeliveryDetailModule {
 
 }

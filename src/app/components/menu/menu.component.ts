@@ -3,6 +3,7 @@ import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {Company, Connection} from '@primetec/primetec-angular';
 import {StoreService} from '../../shared/services/store/store.service';
+import {DeliveryService} from '../../modules/delivery/services/delivery.service';
 
 @Component({
   selector: 'app-menu',
@@ -19,7 +20,8 @@ export class MenuComponent implements OnInit {
   constructor(
     private menu: MenuController,
     private router: Router,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private _deliveryService: DeliveryService
   ) {
 
   }
@@ -49,6 +51,7 @@ export class MenuComponent implements OnInit {
    */
   public close = () => {
     this.closeMenu();
+    this._deliveryService.setAutomatic(false);
     this.storeService.logout();
     this.router.navigate(['auth/login']);
   }

@@ -33,7 +33,6 @@
       </div>
     </div>
 
-    <!--
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -53,7 +52,6 @@
         </ion-col>
       </ion-row>
     </ion-grid>
-    -->
 
     <ng-container *ngIf="centerCost.deal.weight">
       <ng-container *ngIf="isDeviceConnected; else notConnected">
@@ -89,15 +87,36 @@
             </ion-col>
             <ion-col size="8" style="text-align: center;">
               <ng-container *ngIf="centerCost.deal.weight; else notWeight">
-                <span class="title-weight" *ngIf="exist">{{ workersSuccess[0] ? workersSuccess[0].lastWeight : 0 | number:'1.0-3' }}</span>
-                <div *ngIf="!exist" style="padding-top: 14%;">{{worker}}</div>
-                <div class="title-row" *ngIf="worker.indexOf('No existe') === -1">{{worker}}</div>
+                <span *ngIf="exist" class="title-weight">
+                  {{ workersSuccess[0] ? workersSuccess[0].lastWeight : 0 | number:'1.0-3' }}
+                </span>
+                <div *ngIf="!exist" style="padding-top: 14%;">
+                  {{worker}}
+                </div>
+                <div *ngIf="worker.indexOf('No existe') === -1" class="title-row" >
+                  {{worker}}
+                </div>
               </ng-container>
 
               <ng-template #notWeight>
-                <span class="title-performance" *ngIf="exist">{{ workersSuccess[0] ? workersSuccess[0].count : 0 | number:'1.0-3' }}</span>
-                <div *ngIf="!exist" style="padding-top: 14%;">{{worker}}</div>
-                <div class="title-row" *ngIf="worker.indexOf('No existe') === -1">{{worker}}</div>
+                <ng-container *ngIf="exist">
+                  <span  class="title-performance">
+                    {{ workersSuccess[0] ? workersSuccess[0].count : 0 | number:'1.0-3' }}
+                  </span>
+                  <div *ngIf="!exist" style="padding-top: 14%;">
+                    {{ worker }}
+                  </div>
+                  <div class="title-row" *ngIf="worker.indexOf('No existe') === -1">
+                    {{ worker }}
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="!exist">
+                  <div class="title-row">
+                    {{ worker }}
+                  </div>
+                </ng-container>
+
               </ng-template>
             </ion-col>
           </ion-row>

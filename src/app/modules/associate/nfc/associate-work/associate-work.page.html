@@ -12,20 +12,23 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-searchbar placeholder="Buscar..." (ionChange)="searchWork($event.target.value)" (ionClear)="cancelWork()" animated class="production" showCancelButton="never"></ion-searchbar>
+<ion-searchbar placeholder="Buscar..." (ionChange)="searchWork($event.target.value)" (ionClear)="cancelWork()" animated
+  class="production" showCancelButton="never"></ion-searchbar>
 
 <ion-content>
 
   <ion-grid>
     <ion-row *ngIf="filtered.length">
-      <ion-card  *ngFor="let worker of filtered" (click)="onPress(worker)">
+      <ion-card *ngFor="let worker of filtered" (click)="onPress(worker)">
         <ion-card-content>
           <ion-row class="ion-align-items-center">
             <ion-col size="2">
               <img src="assets/imgs/cuadrillas-icon-item.png">
             </ion-col>
             <ion-col size="10">
-              <div class="title-row" style="font-size: 18px;">{{worker.names}}</div>
+              <div class="title-row" style="font-size: 18px;">
+                {{ worker.name }}
+              </div>
             </ion-col>
           </ion-row>
         </ion-card-content>

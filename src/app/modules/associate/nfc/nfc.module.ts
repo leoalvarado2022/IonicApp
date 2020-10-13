@@ -1,10 +1,10 @@
-import {NgModule} from '@angular/core';
+import { NgModule } from '@angular/core';
 
-import {NfcPageRoutingModule} from './nfc-routing.module';
+import { NfcPageRoutingModule } from './nfc-routing.module';
 
-import {NfcPage} from './nfc.page';
-import {SharedModule} from '../../../shared/shared.module';
-import {AssociateWorkPage} from './associate-work/associate-work.page';
+import { NfcPage } from './nfc.page';
+import { SharedModule } from '../../../shared/shared.module';
+import { AssociateWorkPage } from './associate-work/associate-work.page';
 
 @NgModule({
   imports: [
@@ -14,4 +14,6 @@ import {AssociateWorkPage} from './associate-work/associate-work.page';
   declarations: [NfcPage, AssociateWorkPage],
   entryComponents: [AssociateWorkPage]
 })
-export class NfcPageModule {}
+export class NfcPageModule {
+
+}

@@ -58,28 +58,44 @@
 
   <ng-container *ngIf="!isLoading">
     <ion-virtual-scroll [items]="filteredWorkers">
-      <ion-card *virtualItem="let worker" class="card-item margin-extra external" (click)="markWorker(worker)"
+      <ion-card *virtualItem="let worker" class="card-item margin-extra" (click)="markWorker(worker)"
         [ngClass]="{
-          'workerSelected': selectedWorkers.includes(worker),
-          'contractor': !selectedWorkers.includes(worker) && worker.workerType === 2,
-          'external': !selectedWorkers.includes(worker) && worker.workerType === 3
+          'workerSelected': selectedWorkers.includes(worker)
         }">
         <ion-item lines="full">
           <ion-icon slot="start" name="person" color="primary"></ion-icon>
-          <ion-label class="ion-text-wrap">{{ worker.name | titlecase }}</ion-label>
+          <ion-label class="ion-text-wrap">
+            <h3>{{ worker.name | titlecase }}</h3>
+            <p>{{ worker.identifier | rut }}</p>
+          </ion-label>
           <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
         </ion-item>
 
-        <ion-card-content>
-          <p><strong>Identificador</strong>: {{ worker.identifier | rut }}</p>
-          <p *ngIf="worker.workerType === 2"><strong>Tipo</strong>: Contratista</p>
-          <p *ngIf="worker.workerType === 3"><strong>Tipo</strong>: Externo</p>
+        <ion-card-content >
+          <ion-row class="ion-no-padding ion-no-margin">
+            <ion-col size="6" class="ion-no-padding ion-no-margin">
+              <ion-chip class="contractor" *ngIf="worker.workerType === 2">
+                <ion-label>
+                  Contratista
+                </ion-label>
+              </ion-chip>
 
-          <ion-chip class="ion-float-end" color="primary">
-            <ion-label>
-              {{ getTotalWorkerWork(worker) | number }} JR
-            </ion-label>
-          </ion-chip>
+              <ion-chip class="external"  *ngIf="worker.workerType === 3">
+                <ion-label>
+                  Externo
+                </ion-label>
+              </ion-chip>
+            </ion-col>
+
+            <ion-col size="6" class="ion-no-padding ion-no-margin ion-text-end">
+              <ion-chip color="primary">
+                <ion-label>
+                  {{ getTotalWorkerWork(worker) | number }} JR
+                </ion-label>
+              </ion-chip>
+            </ion-col>
+          </ion-row>
+
         </ion-card-content>
       </ion-card>
     </ion-virtual-scroll>

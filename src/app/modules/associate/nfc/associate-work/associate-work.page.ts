@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ModalController, NavParams} from '@ionic/angular';
-import {StoreService} from '../../../../shared/services/store/store.service';
+import { Component, OnInit } from '@angular/core';
+import { ModalController, NavParams } from '@ionic/angular';
+import { StoreService } from '../../../../shared/services/store/store.service';
 import * as moment from 'moment';
-import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
-import {DeviceSyncService} from '../../../../services/storage/device-sync/device-sync.service';
+import { StorageSyncService } from '../../../../services/storage/storage-sync/storage-sync.service';
+import { DeviceSyncService } from '../../../../services/storage/device-sync/device-sync.service';
 
 @Component({
   selector: 'app-associate-work',
@@ -16,11 +16,13 @@ export class AssociateWorkPage implements OnInit {
   filtered = [];
   tag = [];
 
-  constructor(public modalController: ModalController,
-              private storeService: StoreService,
-              public _storageSyncService: StorageSyncService,
-              private _deviceSyncService: DeviceSyncService,
-              private navParams: NavParams) {
+  constructor(
+    public modalController: ModalController,
+    private storeService: StoreService,
+    public _storageSyncService: StorageSyncService,
+    private _deviceSyncService: DeviceSyncService,
+    private navParams: NavParams
+  ) {
     this.tag = this.navParams.get('tag');
   }
 

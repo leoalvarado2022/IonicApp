@@ -457,7 +457,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
         this.contractForm.get('step3').patchValue({
           contractType: 0,
           afp: 0,
-          isapre:0,
+          isapre: 0,
           retired: false
         });
 
@@ -471,6 +471,25 @@ export class ContractFormPage implements OnInit, OnDestroy {
         this.contractForm.updateValueAndValidity();
       }
     }
+  }
+
+  /**
+   * checkConditions
+   */
+  public checkConditions(): boolean {
+    const { workerType, contractor } = this.contractForm.get('step1').value;
+
+
+    if (workerType.toLowerCase() === 'interno') {
+      return false;
+    }
+
+    if (workerType.toLowerCase() === 'externo' && contractor === '') {
+      return true;
+    }
+
+
+    return false;
   }
 
 }

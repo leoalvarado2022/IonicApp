@@ -1,15 +1,13 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {NativeAudio} from '@ionic-native/native-audio/ngx';
-import {AlertController, ModalController, Platform} from '@ionic/angular';
-import {Ndef, NFC} from '@ionic-native/nfc/ngx';
-import {Device} from './device';
-import {StoreService} from '../../../shared/services/store/store.service';
-import {AssociateWorkPage} from './associate-work/associate-work.page';
-import {ToastService} from '../../../shared/services/toast/toast.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
+import { AlertController, ModalController, Platform } from '@ionic/angular';
+import { Ndef, NFC } from '@ionic-native/nfc/ngx';
+import { Device } from './device';
+import { AssociateWorkPage } from './associate-work/associate-work.page';
 import * as moment from 'moment';
-import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
-import {DeviceSyncService} from '../../../services/storage/device-sync/device-sync.service';
+import { StorageSyncService } from '../../../services/storage/storage-sync/storage-sync.service';
+import { DeviceSyncService } from '../../../services/storage/device-sync/device-sync.service';
 
 @Component({
   selector: 'app-nfc',
@@ -30,15 +28,16 @@ export class NfcPage implements OnInit, OnDestroy {
   sync = false;
 
   constructor(public nativeAudio: NativeAudio,
-              private platform: Platform,
-              public nfc: NFC,
-              public ndef: Ndef,
-              public _changeDetectorRef: ChangeDetectorRef,
-              public modalController: ModalController,
-              private _storageSyncService: StorageSyncService,
-              private _deviceSyncService: DeviceSyncService,
-              private alertCtrl: AlertController,
-              private toastService: ToastService) {
+    private platform: Platform,
+    public nfc: NFC,
+    public ndef: Ndef,
+    public _changeDetectorRef: ChangeDetectorRef,
+    public modalController: ModalController,
+    private _storageSyncService: StorageSyncService,
+    private _deviceSyncService: DeviceSyncService,
+    private alertCtrl: AlertController
+  ) {
+
   }
 
   /**
@@ -206,7 +205,7 @@ export class NfcPage implements OnInit, OnDestroy {
   async associateWork() {
     const modal = await this.modalController.create({
       component: AssociateWorkPage,
-      componentProps: {tag: this.selected}
+      componentProps: { tag: this.selected }
     });
 
     modal.onDidDismiss().then((data: any) => {

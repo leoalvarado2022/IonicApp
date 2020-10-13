@@ -33,22 +33,26 @@
   </ng-container>
 
   <ng-container *ngIf="!isLoading">
-    <ion-item *ngIf="quadrille">
-      <ion-label>
-        <h2>{{ quadrille.name | titlecase }}</h2>
-      </ion-label>
-      <ion-badge slot="end"  color="primary">{{ printableWorkers.length }}</ion-badge>
-    </ion-item>
+    <ion-card *ngIf="quadrille" class="title-card">
+      <ion-item lines="none">
+        <ion-label>
+          <h2>{{ quadrille.name | titlecase }}</h2>
+        </ion-label>
+        <ion-badge slot="end"  color="primary">{{ printableWorkers.length }}</ion-badge>
+      </ion-item>
+    </ion-card>
 
     <ion-card *ngFor="let worker of printableWorkers" class="card-item" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
       <ion-item lines="full">
         <ion-icon slot="start" name="person" color="primary"></ion-icon>
-        <ion-label>{{ worker.name | titlecase }}</ion-label>
+        <ion-label class="ion-text-wrap">
+          <h3>{{ worker.name | titlecase }}</h3>
+          <p>{{ worker.identifier | rut }}</p>
+        </ion-label>
         <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
       </ion-item>
 
       <ion-card-content>
-        <p> <strong>Identificador</strong>: {{ worker.identifier | rut }}</p>
         <p style="padding-bottom: 15px">
           <ng-container *ngIf="worker.quadrilleToApprove > 0">
             <ion-badge class="ion-float-end" *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id" color="warning">

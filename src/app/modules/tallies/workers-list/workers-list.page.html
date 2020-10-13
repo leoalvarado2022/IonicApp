@@ -66,7 +66,7 @@
           <ion-icon slot="start" name="person" color="primary"></ion-icon>
           <ion-label class="ion-text-wrap">
             <h3>{{ worker.name | titlecase }}</h3>
-            <p>{{ worker.identifier | rut }}<p>
+            <p>{{ worker.identifier | rut }}</p>
           </ion-label>
           <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
         </ion-item>

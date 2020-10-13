@@ -13,6 +13,10 @@ ion-title {
   }
 }
 
+.card-item:last-child {
+  margin-bottom: 10px;
+}
+
 .workerSelected {
   --background: var(--ion-color-medium);
   --color: var(--ion-color-light);
@@ -39,7 +43,7 @@ ion-title {
 }
 
 .margin-extra {
-  margin-bottom: 2px;
+  margin-bottom: 5px;
 }
 
 .title-card {

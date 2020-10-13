@@ -37,7 +37,38 @@
     <!-- STEP 1 -->
     <ng-container *ngIf="currentStep === 1" formGroupName="step1">
 
-      <ion-card>
+      <ion-card class="title-card">
+        <ion-item>
+          <ion-label>Tipo de Trabajador</ion-label>
+        </ion-item>
+
+        <ion-segment formControlName="workerType" color="secondary" (ionChange)="workerTypeChange($event.detail.value)">
+          <ion-segment-button value="interno">
+            <ion-label>Interno</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="externo">
+            <ion-label>Externo</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-card>
+
+      <ion-card class="title-card">
+        <ng-container *ngIf="showContractor">
+          <ion-item>
+            <ion-label position="floating">Contratista</ion-label>
+            <ion-select formControlName="contractor" placeholder="Contratista" cancelText="Cancelar"
+              [interfaceOptions]="actionHeader" interface="action-sheet">
+              <ion-select-option *ngFor="let contractor of contractors" [value]="contractor.id">
+                {{ contractor.name | titlecase }}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item *ngIf="contractForm.get('step1.contractor').hasError('required')" lines="none">
+            <ion-icon slot="start" name="information-circle-outline" color="danger"></ion-icon>
+            <ion-label color="danger">Seleccione Contratista</ion-label>
+          </ion-item>
+        </ng-container>
+
         <ion-item>
           <ion-label position="floating">Nacionalidad</ion-label>
           <ion-select formControlName="nationality" placeholder="Nacionalidad" cancelText="Cancelar"
@@ -57,34 +88,9 @@
           <ion-icon slot="start" name="information-circle-outline" color="danger"></ion-icon>
           <ion-label color="danger">Debe ingresar un RUT valido.</ion-label>
         </ion-item>
-
-        <ion-segment formControlName="workerType" color="secondary" (ionChange)="workerTypeChange($event.detail.value)">
-          <ion-segment-button value="interno">
-            <ion-label>Interno</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="externo">
-            <ion-label>Externo</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-
-        <ng-container *ngIf="showContractor">
-          <ion-item>
-            <ion-label position="floating">Contratista</ion-label>
-            <ion-select formControlName="contractor" placeholder="Contratista" cancelText="Cancelar"
-              [interfaceOptions]="actionHeader" interface="action-sheet">
-              <ion-select-option *ngFor="let contractor of contractors" [value]="contractor.id">
-                {{ contractor.name | titlecase }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item *ngIf="contractForm.get('step1.contractor').hasError('required')" lines="none">
-            <ion-icon slot="start" name="information-circle-outline" color="danger"></ion-icon>
-            <ion-label color="danger">Seleccione Contratista</ion-label>
-          </ion-item>
-        </ng-container>
       </ion-card>
 
-      <ion-card>
+      <ion-card class="title-card">
         <ion-row>
           <ion-col size="5">
             <ion-item lines="none">
@@ -110,7 +116,7 @@
         </ion-row>
       </ion-card>
 
-      <ion-button expand="block" (click)="openBarcodeScanner()">
+      <ion-button expand="block" (click)="openBarcodeScanner()" [disabled]="checkConditions()">
         Escanear Carnet
         <ion-icon slot="end" name="camera"></ion-icon>
       </ion-button>
@@ -120,7 +126,7 @@
     <!-- STEP 2 -->
     <ng-container *ngIf="currentStep === 2" formGroupName="step2">
 
-      <ion-card>
+      <ion-card class="title-card">
         <ng-container *ngIf="isSearching">
           <ion-item lines="none" color="warning">
             <ion-label>Buscando...</ion-label>
@@ -186,8 +192,7 @@
 
     <!-- STEP 3 -->
     <ng-container *ngIf="currentStep === 3" formGroupName="step3">
-      <ion-card>
-
+      <ion-card class="title-card">
         <ng-container *ngIf="!showContractor">
           <ion-item>
             <ion-label position="floating">Tipo de Contrato</ion-label>

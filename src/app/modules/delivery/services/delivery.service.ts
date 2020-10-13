@@ -132,10 +132,11 @@ export class DeliveryService {
       user: user.user,
       status: 'pending'
     };
+
     this.service = this.getNotificationHttp(data).subscribe((success: any) => {
       if(success.resp.length) {
         for (let order of success.resp) {
-          this.updateStatusOrder(order.id, user);
+          this.updateStatusOrder(order.id, user, order);
           debounceTime(2000);
         }
       }
@@ -150,11 +151,11 @@ export class DeliveryService {
    * @param id
    * @param user
    */
-  public updateStatusOrder(id: number, user:any) {
+  public updateStatusOrder(id: number, user:any, order: any) {
     const data = {
       user: user.user,
       id_order: id,
-      status: 'accepted'
+      status: order.error ? 'rejected' : 'accepted'
     };
     this.setNotificationHttpStatus(data).subscribe((success: any) => {}, error => {
       this.stopRefreshData();

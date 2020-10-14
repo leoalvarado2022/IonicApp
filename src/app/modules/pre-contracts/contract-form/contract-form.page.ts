@@ -159,7 +159,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
             name: find.workerName,
             lastName: find.workerLastName,
             sureName: find.workerSurname,
-            dob: moment(moment.utc(find.dob)).format('YYYY-MM-DD'),
+            dob: moment(this.cleanDate(find.dob)).format('YYYY-MM-DD'),
             civilStatus: find.workerCivilStatus,
             gender: find.gender,
           });
@@ -337,7 +337,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
             name: worker.names,
             lastName: worker.lastName,
             sureName: worker.surName,
-            dob: worker.dob ? moment.utc(worker.dob).format('DD/MM/YYYY') : '',
+            dob: worker.dob ? moment(this.cleanDate(worker.dob)).format('YYYY-MM-DD') : '',
             gender: worker.gender,
             civilStatus: worker.civilStatus
           },
@@ -479,7 +479,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public checkConditions(): boolean {
     const { workerType, contractor } = this.contractForm.get('step1').value;
 
-
     if (workerType.toLowerCase() === 'interno') {
       return false;
     }
@@ -488,8 +487,19 @@ export class ContractFormPage implements OnInit, OnDestroy {
       return true;
     }
 
-
     return false;
+  }
+
+  /**
+   * cleanDate
+   * @param date
+   */
+  private cleanDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   }
 
 }

@@ -47,11 +47,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
     backdropDismiss: false
   };
 
-  /**
- - En cuadrillas tengo la cuadrilla dr, genere un pre contrato asociado a contratista por ende es externo pero en ese formulario no me muestra que es externo, si voy a la tarja esta si muestra el icono de externo.
- - Genere un pre contrato para un trabajador interno "Luis Andres Perez Cortes", y de curioso presione tipo externo, luego lo volvi a tipo interno pero no me deja pasar.
-   */
-
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,

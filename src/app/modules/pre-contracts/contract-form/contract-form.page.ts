@@ -47,6 +47,11 @@ export class ContractFormPage implements OnInit, OnDestroy {
     backdropDismiss: false
   };
 
+  /**
+ - En cuadrillas tengo la cuadrilla dr, genere un pre contrato asociado a contratista por ende es externo pero en ese formulario no me muestra que es externo, si voy a la tarja esta si muestra el icono de externo.
+ - Genere un pre contrato para un trabajador interno "Luis Andres Perez Cortes", y de curioso presione tipo externo, luego lo volvi a tipo interno pero no me deja pasar.
+   */
+
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
@@ -438,20 +443,32 @@ export class ContractFormPage implements OnInit, OnDestroy {
         this.showContractor = false;
 
         // Disable Contrator
-        this.contractForm.get('step1.contractor').patchValue('')
-        this.contractForm.get('step1.contractor').setValidators(null);
+        this.contractForm.get('step1.contractor').patchValue('');
+        this.contractForm.get('step1.contractor').setErrors(null);
+        this.contractForm.get('step1.contractor').clearValidators();
+        this.contractForm.get('step1.contractor').updateValueAndValidity();
+
+        // Set step 3 values
+        this.contractForm.get('step3').patchValue({
+          contractType: '',
+          afp: '',
+          isapre: '',
+          retired: false
+        });
 
         // Set Step 3 validators
-        this.contractForm.get('step3.contractType').setValidators(Validators.required);
-        this.contractForm.get('step3.afp').setValidators(Validators.required);
-        this.contractForm.get('step3.isapre').setValidators(Validators.required);
-        this.contractForm.get('step3.retired').setValidators(Validators.required);
+        this.contractForm.get('step3.contractType').setValidators([Validators.required]);
+        this.contractForm.get('step3.afp').setValidators([Validators.required]);
+        this.contractForm.get('step3.isapre').setValidators([Validators.required]);
+        this.contractForm.get('step3.retired').setValidators([Validators.required]);
+        this.contractForm.get('step3').updateValueAndValidity();
 
-        // Update FORM
-        this.contractForm.updateValueAndValidity();
       } else if (workerType.toLowerCase() === 'externo') {
+
         this.showContractor = true;
-        this.contractForm.get('step1.contractor').setValidators(Validators.required);
+        this.contractForm.get('step1.contractor').patchValue('');
+        this.contractForm.get('step1.contractor').setValidators([Validators.required]);
+        this.contractForm.get('step1.contractor').updateValueAndValidity();
 
         // Set step 3 values
         this.contractForm.get('step3').patchValue({
@@ -462,13 +479,12 @@ export class ContractFormPage implements OnInit, OnDestroy {
         });
 
         // Remove Step 3 validators
-        this.contractForm.get('step3.contractType').setValidators(null);
-        this.contractForm.get('step3.afp').setValidators(null);
-        this.contractForm.get('step3.isapre').setValidators(null);
-        this.contractForm.get('step3.retired').setValidators(null);
+        this.contractForm.get('step3.contractType').clearValidators();
+        this.contractForm.get('step3.afp').clearValidators();
+        this.contractForm.get('step3.isapre').clearValidators();
+        this.contractForm.get('step3.retired').clearValidators();
 
-        // Update FORM
-        this.contractForm.updateValueAndValidity();
+        this.contractForm.get('step3').updateValueAndValidity();
       }
     }
   }

@@ -53,20 +53,37 @@
       </ion-item>
 
       <ion-card-content>
-        <p style="padding-bottom: 15px">
-          <ng-container *ngIf="worker.quadrilleToApprove > 0">
-            <ion-badge class="ion-float-end" *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id" color="warning">
-              Traspasando
-            </ion-badge>
-            <ion-badge class="ion-float-end" *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille !== quadrille.id" color="warning">
-              Por Aprobar
-            </ion-badge>
-          </ng-container>
+        <ion-row class="ion-no-padding ion-no-margin">
+          <ion-col size="6" class="ion-no-padding ion-no-margin ion-text-start">
+            <ion-chip class="contractor" *ngIf="worker.workerType === 2">
+              <ion-label>
+                Contratista
+              </ion-label>
+            </ion-chip>
 
-          <ng-container *ngIf="worker.quadrilleToApprove === 0">
-            <ion-badge class="ion-float-end" color="danger">{{ worker.quadrilleStatus | uppercase }}</ion-badge>
-          </ng-container>
-        </p>
+            <ion-chip class="external"  *ngIf="worker.workerType === 3">
+              <ion-label>
+                Externo
+              </ion-label>
+            </ion-chip>
+          </ion-col>
+
+          <ion-col size="6" class="ion-no-padding ion-no-margin ion-text-end">
+            <ng-container *ngIf="worker.quadrilleToApprove > 0">
+              <ion-chip *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id" color="warning">
+                Traspasando
+              </ion-chip>
+
+              <ion-chip *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille !== quadrille.id" color="warning">
+                Por Aprobar
+              </ion-chip>
+            </ng-container>
+
+            <ion-chip *ngIf="worker.quadrilleToApprove === 0 &&  worker.quadrilleStatus !== ''" color="danger">
+              {{ worker.quadrilleStatus | uppercase }}
+            </ion-chip>
+          </ion-col>
+        </ion-row>
       </ion-card-content>
     </ion-card>
 

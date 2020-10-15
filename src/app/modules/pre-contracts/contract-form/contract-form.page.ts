@@ -159,7 +159,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
             name: find.workerName,
             lastName: find.workerLastName,
             sureName: find.workerSurname,
-            dob: moment(moment.utc(find.dob)).format('YYYY-MM-DD'),
+            dob: moment(this.cleanDate(find.dob)).format('YYYY-MM-DD'),
             civilStatus: find.workerCivilStatus,
             gender: find.gender,
           });
@@ -337,7 +337,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
             name: worker.names,
             lastName: worker.lastName,
             sureName: worker.surName,
-            dob: worker.dob ? moment.utc(worker.dob).format('DD/MM/YYYY') : '',
+            dob: worker.dob ? moment(this.cleanDate(worker.dob)).format('YYYY-MM-DD') : '',
             gender: worker.gender,
             civilStatus: worker.civilStatus
           },
@@ -438,20 +438,32 @@ export class ContractFormPage implements OnInit, OnDestroy {
         this.showContractor = false;
 
         // Disable Contrator
-        this.contractForm.get('step1.contractor').patchValue('')
-        this.contractForm.get('step1.contractor').setValidators(null);
+        this.contractForm.get('step1.contractor').patchValue('');
+        this.contractForm.get('step1.contractor').setErrors(null);
+        this.contractForm.get('step1.contractor').clearValidators();
+        this.contractForm.get('step1.contractor').updateValueAndValidity();
+
+        // Set step 3 values
+        this.contractForm.get('step3').patchValue({
+          contractType: '',
+          afp: '',
+          isapre: '',
+          retired: false
+        });
 
         // Set Step 3 validators
-        this.contractForm.get('step3.contractType').setValidators(Validators.required);
-        this.contractForm.get('step3.afp').setValidators(Validators.required);
-        this.contractForm.get('step3.isapre').setValidators(Validators.required);
-        this.contractForm.get('step3.retired').setValidators(Validators.required);
+        this.contractForm.get('step3.contractType').setValidators([Validators.required]);
+        this.contractForm.get('step3.afp').setValidators([Validators.required]);
+        this.contractForm.get('step3.isapre').setValidators([Validators.required]);
+        this.contractForm.get('step3.retired').setValidators([Validators.required]);
+        this.contractForm.get('step3').updateValueAndValidity();
 
-        // Update FORM
-        this.contractForm.updateValueAndValidity();
       } else if (workerType.toLowerCase() === 'externo') {
+
         this.showContractor = true;
-        this.contractForm.get('step1.contractor').setValidators(Validators.required);
+        this.contractForm.get('step1.contractor').patchValue('');
+        this.contractForm.get('step1.contractor').setValidators([Validators.required]);
+        this.contractForm.get('step1.contractor').updateValueAndValidity();
 
         // Set step 3 values
         this.contractForm.get('step3').patchValue({
@@ -462,13 +474,12 @@ export class ContractFormPage implements OnInit, OnDestroy {
         });
 
         // Remove Step 3 validators
-        this.contractForm.get('step3.contractType').setValidators(null);
-        this.contractForm.get('step3.afp').setValidators(null);
-        this.contractForm.get('step3.isapre').setValidators(null);
-        this.contractForm.get('step3.retired').setValidators(null);
+        this.contractForm.get('step3.contractType').clearValidators();
+        this.contractForm.get('step3.afp').clearValidators();
+        this.contractForm.get('step3.isapre').clearValidators();
+        this.contractForm.get('step3.retired').clearValidators();
 
-        // Update FORM
-        this.contractForm.updateValueAndValidity();
+        this.contractForm.get('step3').updateValueAndValidity();
       }
     }
   }
@@ -479,7 +490,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public checkConditions(): boolean {
     const { workerType, contractor } = this.contractForm.get('step1').value;
 
-
     if (workerType.toLowerCase() === 'interno') {
       return false;
     }
@@ -488,8 +498,19 @@ export class ContractFormPage implements OnInit, OnDestroy {
       return true;
     }
 
-
     return false;
+  }
+
+  /**
+   * cleanDate
+   * @param date
+   */
+  private cleanDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   }
 
 }

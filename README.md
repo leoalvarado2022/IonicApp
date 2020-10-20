@@ -17,7 +17,7 @@
 # Upload
 
 ## Access
-* Go to `https://play.google.com/`
+* Go to `https://developer.android.com/distribute/console`
 * User `desarrollo@primetec.cl`
 * Pass `Pr1m3T3c`
 * Select FX360 Movil

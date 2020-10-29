@@ -11,6 +11,11 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="color-automatic">
+    <div style="position: absolute;">
+      <ion-button (click)="connectionSync()">
+        <ion-icon [ngClass]="{'icon-spinner': _posService.connection}" slot="icon-only" name="sync"></ion-icon>
+      </ion-button>
+    </div>
     <p style="padding-left: 10px;display: inline-block;position: relative;right: 65px;">
       AUTOMATICO
     </p>
@@ -20,16 +25,16 @@
     <ion-tabs>
       <!-- Tab bar -->
       <ion-tab-bar slot="top">
-        <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'">
+        <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'" [ngClass]="{'backgroundSelected' : selected === 'pending'}">
           <ion-label>Pendintes</ion-label>
         </ion-tab-button>
-        <ion-tab-button (click)="changeStatus('accepted')" [selected]="selected === 'accepted'">
+        <ion-tab-button (click)="changeStatus('accepted')" [selected]="selected === 'accepted'" [ngClass]="{'backgroundSelected' : selected === 'accepted'}">
           <ion-label>Aceptados</ion-label>
         </ion-tab-button>
-        <ion-tab-button (click)="changeStatus('rejected')" [selected]="selected === 'rejected'">
+        <ion-tab-button (click)="changeStatus('rejected')" [selected]="selected === 'rejected'" [ngClass]="{'backgroundSelected' : selected === 'rejected'}">
           <ion-label>Rechazados</ion-label>
         </ion-tab-button>
-        <ion-tab-button (click)="changeStatus('close')" [selected]="selected === 'close'">
+        <ion-tab-button (click)="changeStatus('close')" [selected]="selected === 'close'" [ngClass]="{'backgroundSelected' : selected === 'close'}">
           <ion-label>Cerrados</ion-label>
         </ion-tab-button>
       </ion-tab-bar>

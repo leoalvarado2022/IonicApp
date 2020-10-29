@@ -53,12 +53,6 @@ export class AppComponent {
       this._deliveryService.stopBackgroundMode();
     });
 
-    // this.backgroundMode.on('activate').subscribe(data => {
-    //   console.log('on.backgroundMode.activate', data)
-    //   this._deliveryService.stopRefreshData();
-    //   this._deliveryService.intervalRefresh();
-    // });
-
     this.backgroundMode.on('deactivate').subscribe(data => {
       console.log('on.backgroundMode.deactivate', data);
       this._deliveryService.stopRefreshData();

@@ -290,3 +290,8 @@ ion-menu-button {
     color: white;
   }
 }
+
+.icon-spinner {
+  animation: spin-animation 0.5s infinite;
+  display: inline-block;
+}

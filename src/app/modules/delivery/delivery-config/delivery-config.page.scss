@@ -33,3 +33,7 @@ ion-tab-bar {
   top: 0;
   right: 0;
 }
+
+ion-content {
+  --background: var(--color-background-tabs);
+}

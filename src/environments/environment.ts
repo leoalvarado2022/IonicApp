@@ -13,7 +13,9 @@ export const environment = {
   appVersion: version.number,
   tz: 'America/Santiago',
   iosDeviceNames,
-  syncTimerMinutes: 10
+  syncTimerMinutes: 10,
+  searchDeliveryListMSec: 10000,
+  searchDeliveryListAcceptedMSec: 8000
 };
 
 /*

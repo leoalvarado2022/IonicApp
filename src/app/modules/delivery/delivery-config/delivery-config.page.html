@@ -13,5 +13,40 @@
 </ion-header>
 
 <ion-content>
+  <h1 class="ion-text-center">
+    Activar Empresa
+  </h1>
+
+  <ion-card>
+    <ion-card-content>
+      <h4 class="ion-text-center">
+        Selecciona una empresa:
+      </h4>
+      <form [formGroup]="configForm">
+        <ion-item *ngIf="configDelivery && configDelivery.length">
+          <!--          <ion-label>Empresa</ion-label>-->
+          <ion-select placeholder="Selecciona..." formControlName="configId" name="configId"
+                      style="width: 100%;max-width:100%;" (ionChange)="changeLocal($event)">
+            <ion-select-option [value]="config.id"
+                               *ngFor="let config  of configDelivery">{{config.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <br>
+        <ion-button expand="block" [disabled]="configForm.invalid" (click)="submitForm()">Activar</ion-button>
+      </form>
+      <br>
+      <div style="padding: 10px;border-top: 1px solid rgb(0, 0, 0, 0.1);" *ngIf="configActiveDelivery">
+        <ion-button expand="block" *ngIf="!_posService.connection" [disabled]="!configDelivery"
+                    (click)="connectionSync()" color="success"
+        >Probar CONEXION
+        </ion-button>
+        <ion-button expand="block" *ngIf="_posService.connection" [disabled]="_posService.connection" color="success"
+        >
+          <ion-icon class="icon-spinner" slot="icon-only" name="sync"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
 
 </ion-content>

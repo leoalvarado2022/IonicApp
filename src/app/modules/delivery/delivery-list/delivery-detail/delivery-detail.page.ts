@@ -6,6 +6,7 @@ import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {NavParams} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
+import {PosService} from '../../services/pos.service';
 
 @Component({
   selector: 'app-accepted',
@@ -17,21 +18,27 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   public order: any;
   public id: any;
 
-
   constructor(
     private storeService: StoreService,
     private httpService: HttpService,
     private _deliveryService: DeliveryService,
     private loaderService: LoaderService,
     private _activatedRoute: ActivatedRoute,
-    private _location: Location
+    private _location: Location,
+    private _posService: PosService
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
     this.loadNotifications();
   }
 
-  private loadNotifications() {
-    if(this.id){
+  ngOnDestroy(): void {
+  }
+
+  ngOnInit() {
+  }
+
+  loadNotifications() {
+    if (this.id) {
       this.loaderService.startLoader('Cargando Notificaciones');
       const user = this.storeService.getActiveCompany();
 
@@ -56,7 +63,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    */
   setNotificationStatus(status: string) {
     if(this.id){
-      // this.loaderService.startLoader('Cargando Notificaciones');
+
       const user = this.storeService.getActiveCompany();
 
       const data = {
@@ -66,11 +73,11 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       };
 
       this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
-        // this.order = success.resp;
-        // this.loaderService.stopLoader();
+        if (status === 'accepted') {
+          this._posService.openTable(this.order);
+        }
         this._location.back();
       }, error => {
-        // this.loaderService.stopLoader();
         this.httpService.errorHandler(error);
       });
     }
@@ -80,7 +87,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @description validate if exists product in null
    */
   productSync() {
-    if(this.order && this.order.products && this.order.products.length) {
+    if (this.order && this.order.products && this.order.products.length) {
       const validateProduct = this.order.products.filter(value => value.id_item_product === null);
 
       return validateProduct.length > 0;
@@ -92,8 +99,8 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @description get product type item
    */
   orderProducts() {
-    if(this.order && this.order.products && this.order.products.length) {
-      return  this.order.products.filter(value => value.id_order_ref === null && value.type === "I");
+    if (this.order && this.order.products && this.order.products.length) {
+      return this.order.products.filter(value => value.id_order_ref === null && value.type === 'ITEM');
     }
 
     return [];
@@ -104,18 +111,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @param id
    */
   modifierProduct(id: number) {
-    if(this.order && this.order.products && this.order.products.length) {
-      return  this.order.products.filter(value => value.id_order_ref !== null && value.type === "M" && value.id_order_ref === id);
+    if (this.order && this.order.products && this.order.products.length) {
+      return this.order.products.filter(value => value.id_order_ref !== null && value.type === 'MODIFICADOR' && value.id_order_ref === id);
     }
-
     return [];
-  }
-
-
-  ngOnDestroy(): void {
-  }
-
-  ngOnInit() {
   }
 
 }

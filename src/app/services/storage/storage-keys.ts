@@ -1,6 +1,7 @@
 export enum StorageKeys {
   Quadrilles = 'quadrilles',
   Workers = 'workers',
+  ConfigDelivery = 'ConfigDelivery',
   Tallies = 'tallies',
   CostCentersCustom = 'costCentersCustom',
   Labors = 'labors',
@@ -44,5 +45,22 @@ export enum StorageKeys {
   ConsumptionsToRecord = 'consumptionsToRecord',
 
   // deliveries notifications
-  DeliveryNotifications = 'deliveryNotifications'
+  DeliveryNotifications = 'deliveryNotifications',
+
+  //pos
+  Agreements = 'agreementsPOS',
+  CashRegister = 'cashRegisterPOS',
+  Causes = 'causesPOS',
+  Configuration = 'configurationPOS',
+  Discounts = 'discountsPOS',
+  ItemImages = 'itemImagesPOS',
+  Menus = 'menusPOS',
+  Options = 'optionsPOS',
+  PaymentTypes = 'paymentTypesPOS',
+  Printers = 'printersPOS',
+  Sectors ='sectorsPOS',
+  Tables ='tablesPOS',
+  Turns ='turnsPOS',
+  Users ='usersPOS',
+
 }

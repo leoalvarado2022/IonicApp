@@ -58,6 +58,7 @@ export interface Sync {
   warehouses: Array<Warehouse>;
   consumptions: Array<Consumption>;
   products: Array<Product>;
+  deliveryConfig?: Array<any>;
 }
 
 export interface ContractInterface {

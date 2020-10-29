@@ -33,6 +33,7 @@ import { TallyFormMultipleComponent } from '../modules/tallies/forms/tally-form-
 import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-form.component';
 import {DeliveryService} from '../modules/delivery/services/delivery.service';
 import {DeliveryCardComponent} from '../modules/delivery/delivery-list/delivery-card/delivery-card.component';
+import {PosService} from '../modules/delivery/services/pos.service';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import {DeliveryCardComponent} from '../modules/delivery/delivery-list/delivery-
     AuthService,
     TallyService,
     DeliveryService,
+    PosService,
     InfiniteScrollPaginatorService
   ],
   exports: [

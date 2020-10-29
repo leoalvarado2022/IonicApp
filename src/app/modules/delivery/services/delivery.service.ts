@@ -7,6 +7,9 @@ import {BehaviorSubject, interval, Observable, Subject, Subscription} from 'rxjs
 import {StoreService} from '../../../shared/services/store/store.service';
 import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {debounceTime} from 'rxjs/operators';
+import {environment} from '../../../../environments/environment';
+import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
+import {PosService} from './pos.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,12 +21,14 @@ export class DeliveryService {
   public orderUrl = 'order';
   private service: Subscription;
   private refreshData: Subscription;
+  private timeAccepted = environment.searchDeliveryListAcceptedMSec;
 
   constructor(private storage: Storage,
               private httpClient: HttpClient,
               private httpService: HttpService,
               private storeService: StoreService,
-              private backgroundMode: BackgroundMode) {
+              private backgroundMode: BackgroundMode,
+              private storageSyncService: StorageSyncService) {
   }
 
   /**
@@ -113,7 +118,7 @@ export class DeliveryService {
   public intervalRefresh() {
     const isLogged = this.storeService.getLoginStatus();
     if (isLogged && this.getAutomatic()) {
-      this.refreshData = interval(8000).subscribe(async (x: any) => {
+      this.refreshData = interval(this.timeAccepted).subscribe(async (x: any) => {
         this.updateOrderPendingToAccepted();
       });
     } else {
@@ -137,6 +142,7 @@ export class DeliveryService {
       if(success.resp.length) {
         for (let order of success.resp) {
           this.updateStatusOrder(order.id, user, order);
+          // this._posService.insertDataFx10POS(order);
           debounceTime(2000);
         }
       }

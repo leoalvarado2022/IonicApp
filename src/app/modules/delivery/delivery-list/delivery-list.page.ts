@@ -6,6 +6,10 @@ import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {Router} from '@angular/router';
 import {interval, Observable, Subscription} from 'rxjs';
 import {BackgroundMode} from '@ionic-native/background-mode/ngx';
+import {environment} from '../../../../environments/environment';
+import {PosService} from '../services/pos.service';
+
+environment;
 
 @Component({
   selector: 'app-delivery-list',
@@ -19,6 +23,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   private refreshData: Subscription;
   public allOrder: Array<any> = [];
   public checkedAutomatic = false;
+  public searchDeliveryListMSec = environment.searchDeliveryListMSec;
 
   constructor(
     private storeService: StoreService,
@@ -26,12 +31,13 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     private _deliveryService: DeliveryService,
     private loaderService: LoaderService,
     private router: Router,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    public _posService: PosService
   ) {
   }
 
   ionViewDidEnter() {
-    if(this._deliveryService.getAutomatic()) {
+    if (this._deliveryService.getAutomatic()) {
       this.checkedAutomatic = this._deliveryService.getAutomatic();
     }
     this.loadNotifications(this.selected);
@@ -45,7 +51,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   refreshOrder(on: boolean) {
     if (on) {
       // console.log(on, 'subscription');
-      this.refreshData = interval(5000).subscribe(async (x: any) => {
+      this.refreshData = interval(this.searchDeliveryListMSec).subscribe(async (x: any) => {
         // console.log('subscription');
         this.loadNotifications(this.selected);
       });
@@ -62,7 +68,6 @@ export class DeliveryListPage implements OnInit, OnDestroy {
    * @param status
    */
   private loadNotifications(status: string) {
-    // this.loaderService.startLoader('Cargando Notificaciones');
     const user = this.storeService.getActiveCompany();
     const data = {
       user: user.user,
@@ -70,9 +75,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     };
     this.service = this._deliveryService.getNotificationHttp(data).subscribe((success: any) => {
       this.allOrder = success.resp;
-      // this.loaderService.stopLoader();
     }, error => {
-      // this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
   }
@@ -90,14 +93,24 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     this.router.navigate(['/home-page/delivery-detail', order.id]);
   };
 
+  /**
+   * @description activar el automatico
+   * @param event
+   */
   public changeAutomatic(event: any) {
     this._deliveryService.setAutomatic(event.detail.checked);
-    if(event.detail.checked) {
+    if (event.detail.checked) {
       this.backgroundMode.enable();
     } else {
       this.backgroundMode.disable();
     }
+  }
 
+  /**
+   * @description syncroniza el pos
+   */
+  connectionSync() {
+    this._posService.loginToSync();
   }
 
 }

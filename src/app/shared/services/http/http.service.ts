@@ -62,6 +62,43 @@ export class HttpService {
   }
 
   /**
+   * errorHandlerPos
+   * @param error
+   */
+  public errorHandlerPos = (error: any): string => {
+    if (error instanceof HttpErrorResponse) {
+
+      const {name, message} = error.error;
+
+      switch (error.status) {
+        case 0:
+          this.toastService.errorToast('No hay conexion con el servidor de FX10 POS.');
+          break;
+        case 400:
+        case 404:
+          this.toastService.errorToast(message);
+          break;
+        case 401:
+          this.toastService.errorToast('Su sesion ha caducado en FX10 POS.');
+          break;
+        case 403:
+          this.toastService.errorToast('No tiene conexiones disponibles en FX10 POS.');
+          this.router.navigate(['/home-page']);
+          break;
+        case 500:
+          this.toastService.errorToast('API Error FX10 POS.');
+          break;
+        default:
+          this.toastService.errorToast(message);
+          break;
+      }
+    } else {
+      console.log('No Http error', error);
+      return 'No Http error';
+    }
+  }
+
+  /**
    * errorHandler
    * @param error
    */

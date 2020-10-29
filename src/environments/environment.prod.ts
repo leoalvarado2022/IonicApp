@@ -8,5 +8,7 @@ export const environment = {
   appVersion: version.number,
   tz: 'America/Santiago',
   iosDeviceNames,
-  syncTimerMinutes: 5
+  syncTimerMinutes: 5,
+  searchDeliveryListMSec: 5000,
+  searchDeliveryListAcceptedMSec: 8000
 };

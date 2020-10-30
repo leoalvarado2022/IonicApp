@@ -1,15 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {confirmPassword} from '../../../../validators/confirm-password.validator';
-import {UserService} from '../../../../shared/services/user/user.service';
-import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {ToastService} from '../../../../shared/services/toast/toast.service';
-import {AuthService} from '../../../../shared/services/auth/auth.service';
-import {Router} from '@angular/router';
-import {cleanRut, formatRut, ValidateRut} from '@primetec/primetec-angular';
-import {HttpService} from '../../../../shared/services/http/http.service';
-import {Device} from '@ionic-native/device/ngx';
-import {CameraService} from '../../../../shared/services/camera/camera.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { confirmPassword } from '../../../../validators/confirm-password.validator';
+import { UserService } from '../../../../shared/services/user/user.service';
+import { LoaderService } from '../../../../shared/services/loader/loader.service';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { Router } from '@angular/router';
+import { cleanRut, formatRut, ValidateRut } from '@primetec/primetec-angular';
+import { HttpService } from '../../../../shared/services/http/http.service';
+import { Device } from '@ionic-native/device/ngx';
+import { CameraService } from '../../../../shared/services/camera/camera.service';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +26,6 @@ export class RegisterPage implements OnInit {
     private loaderService: LoaderService,
     private toastService: ToastService,
     private router: Router,
-    private authService: AuthService,
     private httpService: HttpService,
     public device: Device,
     private cameraService: CameraService
@@ -44,11 +42,7 @@ export class RegisterPage implements OnInit {
         Validators.required,
         ValidateRut
       ]],
-      phone: ['+569', [
-        Validators.required,
-        // Validators.pattern('^(([+569])([0-9]{11}))$')
-      ]
-      ],
+      phone: ['+569'],
       password: ['', Validators.required],
       confirm: ['', Validators.required],
       email: ['', [
@@ -57,7 +51,7 @@ export class RegisterPage implements OnInit {
       ]],
       avatar: [''],
       access: ['1', Validators.required],
-    }, {validator: confirmPassword});
+    }, { validator: confirmPassword });
   }
 
   /**
@@ -115,8 +109,8 @@ export class RegisterPage implements OnInit {
    */
   private async create(data): Promise<any> {
     await this.loaderService.startLoader();
-    return new Promise((resolve, reject) => {
-      this.userService.createUser(data).subscribe(success => {
+    return new Promise((resolve) => {
+      this.userService.createUser(data).subscribe(() => {
         this.toastService.successToast('Se creo el usuario correctamente, inicia sesión');
         this.loaderService.stopLoader();
         this.registerForm.reset();

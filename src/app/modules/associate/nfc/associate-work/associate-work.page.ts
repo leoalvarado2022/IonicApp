@@ -93,7 +93,7 @@ export class AssociateWorkPage implements OnInit {
     body = this.tag;
     body.id = 0;
     body.id_link = worker.id;
-    body.link = worker.names;
+    body.link = worker.name;
     body.tempId = tempId;
     body.tempId = tempId;
     body.date = moment().format('YYYY-MM-DD HH:mm:ss');

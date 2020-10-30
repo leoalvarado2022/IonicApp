@@ -1,6 +1,6 @@
 {
   "name": "fx360_movil",
-  "version": "1.1.19",
+  "version": "1.1.20",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -11,10 +11,15 @@
     "android": "ionic cordova run android --livereload",
     "build-ios": "ionic cordova build ios --prod",
     "build-android": "ionic cordova build android --prod",
+    "prepare-android": "ionic cordova prepare android",
+    "res-android": "cordova-res android",
     "test": "ng test",
     "lint": "ng lint --fix",
     "e2e": "ng e2e",
-    "analyze": "source-map-explorer www/*"
+    "analyze": "source-map-explorer www/*",
+    "release-android": "ionic cordova build android --prod --release",
+    "sign-android": "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore fx-pos-key.keystore ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk fx_pos",
+    "zipalign-android": "zipalign -v 4 ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk fx360.apk"
   },
   "private": true,
   "dependencies": {
@@ -48,7 +53,6 @@
     "@ionic/angular-toolkit": "^2.3.3",
     "@ionic/storage": "^2.3.1",
     "@primetec/primetec-angular": "0.0.22",
-    "cordova-android": "8.1.0",
     "cordova-ios": "5.1.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-androidx": "^1.0.2",

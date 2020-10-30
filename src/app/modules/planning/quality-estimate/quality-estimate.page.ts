@@ -1,15 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
-import {CostCenter, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
-import {ModalController} from '@ionic/angular';
-import {QualityEstimateFormComponent} from './quality-estimate-form/quality-estimate-form.component';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {AlertService} from '../../../shared/services/alert/alert.service';
-import {Subscription} from 'rxjs';
-import {NetworkService} from '../../../shared/services/network/network.service';
-import {StoreService} from '../../../shared/services/store/store.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { ContractDetailService } from '../services/contract-detail/contract-detail.service';
+import { CostCenter, QualityDetail, QualityEstimate } from '@primetec/primetec-angular';
+import { ModalController } from '@ionic/angular';
+import { QualityEstimateFormComponent } from './quality-estimate-form/quality-estimate-form.component';
+import { HttpService } from '../../../shared/services/http/http.service';
+import { LoaderService } from '../../../shared/services/loader/loader.service';
+import { AlertService } from '../../../shared/services/alert/alert.service';
+import { Subscription } from 'rxjs';
+import { NetworkService } from '../../../shared/services/network/network.service';
+import { StoreService } from '../../../shared/services/store/store.service';
+import { CaliberService } from '../services/caliber/caliber.service';
 
 @Component({
   selector: 'app-quality-estimate',
@@ -27,6 +28,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
   private isOnline$: Subscription;
   private router$: Subscription;
   private store$: Subscription;
+  private calibers: Array<any> = [];
 
   private firstLoad = true;
 
@@ -38,7 +40,8 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     private httpService: HttpService,
     private loaderService: LoaderService,
     private networkService: NetworkService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private caliberService: CaliberService
   ) {
 
   }
@@ -81,6 +84,14 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     this.qualityEstimate = this.storeService.getQualityEstimate();
     this.filteredQualityEstimate = this.storeService.getQualityEstimate();
     this.qualityEstimateDetail = this.storeService.getQualityEstimateDetail();
+
+    const { username } = this.storeService.getUser();
+    const { species } = this.costCenter;
+    this.caliberService.getCaliberEquivalences(username, species).subscribe(success => {
+      this.calibers = success["data"];
+    }, error => {
+      
+    });
   }
 
   /**
@@ -101,7 +112,8 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
         qualityEstimate,
         qualityEstimateDetail: qualityEstimate ? this.qualityEstimateDetail.filter(item => item.qualityEstimate === qualityEstimate.id) : [],
         isView: qualityEstimate !== null,
-        previous: this.qualityEstimate.length > 0 ? this.qualityEstimate[0] : null
+        previous: this.qualityEstimate.length > 0 ? this.qualityEstimate[0] : null,
+        calibers: this.calibers
       },
       backdropDismiss: false,
       keyboardClose: false,
@@ -158,7 +170,7 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     const response = await this.alertService.confirmAlert('Desea borrar esta estimacion de calidad?');
 
     if (response) {
-      const newQuality = Object.assign({}, qualityEstimate, {id: -qualityEstimate.id});
+      const newQuality = Object.assign({}, qualityEstimate, { id: -qualityEstimate.id });
       delete this.costCenter.active;
       const data = {
         costCenter: this.costCenter,

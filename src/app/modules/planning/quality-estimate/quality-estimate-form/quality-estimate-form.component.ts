@@ -19,6 +19,7 @@ export class QualityEstimateFormComponent implements OnInit {
   @Input() qualityEstimateDetail: Array<QualityDetail>;
   @Input() isView: boolean;
   @Input() previous: QualityEstimate;
+  @Input() calibers: Array<any>;
 
   public readonly customActionSheetOptions: any = {
     header: 'Seleccione',
@@ -29,9 +30,7 @@ export class QualityEstimateFormComponent implements OnInit {
   public qualityForm: FormGroup;
   public isSaving = false;
   public qualities: Array<Generic>;
-  private userCompany: any;
-  private calibers: Array<Caliber>;
-  private filteredCalibers: Array<Caliber>;
+  private userCompany: any;    
 
   constructor(
     private modalController: ModalController,
@@ -81,10 +80,6 @@ export class QualityEstimateFormComponent implements OnInit {
     }
 
     this.loadCalibers();
-
-    this.qualityForm.valueChanges.subscribe(() => {
-      console.log('this.qualityForm.errors', this.qualityForm.get('quality'));
-    });
   }
 
   /**
@@ -177,13 +172,10 @@ export class QualityEstimateFormComponent implements OnInit {
    * loadCalibers
    */
   private loadCalibers = () => {
-    this.calibers = this.storeService.getCalibers();
     this.qualities = this.storeService.getQualities();
-    this.filteredCalibers = this.calibers.filter((item: any) => item.species === this.costCenter.species);
-
     const items = this.qualityForm.get('calibers') as FormArray;
 
-    for (const item of this.filteredCalibers) {
+    for (const item of this.calibers) {
       let find = null;
       if (this.qualityEstimateDetail) {
         find = this.qualityEstimateDetail.find(detail => detail.caliber === item.id);

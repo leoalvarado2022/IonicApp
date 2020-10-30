@@ -1,7 +1,7 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {ContractDetailPage} from './contract-detail.page';
-import {SharedModule} from '../../../shared/shared.module';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ContractDetailPage } from './contract-detail.page';
+import { SharedModule } from '../../../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -13,10 +13,9 @@ const routes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ],
-  declarations: [ContractDetailPage]
-
+  declarations: [ContractDetailPage]  
 })
 export class ContractDetailPageModule {
 

@@ -62,7 +62,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @param status
    */
   setNotificationStatus(status: string) {
-    if(this.id){
+    if (this.id) {
 
       const user = this.storeService.getActiveCompany();
 

@@ -32,7 +32,6 @@ export class PosService {
               private httpClient: HttpClient,
               private httpService: HttpService,
               private storeService: StoreService,
-              private deliveryService: DeliveryService,
               private storageSyncService: StorageSyncService,
               private _toastService: ToastService,
               private backgroundMode: BackgroundMode) {
@@ -460,32 +459,6 @@ export class PosService {
       this.connection = false;
     });
   };
-
-
-  /**
-   * @description agregar en fx10 automaticamente
-   * @param order
-   */
-  public insertDataFx10POS(order: any) {
-    const configActiveDelivery = this.storageSyncService.getActiveConfigDelivery();
-
-    if (configActiveDelivery) {
-      const user = this.storeService.getActiveCompany();
-
-      const data = {
-        user: user.user,
-        id: order.id
-      };
-
-      this.deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
-        const order = success.resp;
-        this.openTable(order);
-      }, error => {
-        this.httpService.errorHandler(error);
-      });
-    }
-
-  }
 
   /////////////////////////////////////////////////////////
   ////////////////////////////////

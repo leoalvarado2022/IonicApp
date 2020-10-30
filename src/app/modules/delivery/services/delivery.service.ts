@@ -10,6 +10,7 @@ import {debounceTime} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {PosService} from './pos.service';
+import {MasterService} from './master.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,7 @@ export class DeliveryService {
               private httpService: HttpService,
               private storeService: StoreService,
               private backgroundMode: BackgroundMode,
+              private _masterService: MasterService,
               private storageSyncService: StorageSyncService) {
   }
 
@@ -142,7 +144,9 @@ export class DeliveryService {
       if(success.resp.length) {
         for (let order of success.resp) {
           this.updateStatusOrder(order.id, user, order);
-          // this._posService.insertDataFx10POS(order);
+          if(!order.error) {
+            this._masterService.insertDataFx10POS(order);
+          }
           debounceTime(2000);
         }
       }

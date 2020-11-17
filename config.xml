@@ -3,8 +3,9 @@
     <name>FX360 Movil</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="https://localhost:8100" />
     <access origin="*" />
+    <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -161,4 +162,5 @@
         <icon src="resources/windows/icon/StoreLogo.png" target="StoreLogo" />
         <splash src="resources/windows/splash/Splash.png" target="SplashScreen" />
     </platform>
+    <allow-navigation href="https://localhost:8100" sessionid="98d311d8" />
 </widget>

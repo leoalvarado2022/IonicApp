@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { StoreService } from 'src/app/shared/services/store/store.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
+import { LoaderService } from 'src/app/shared/services/loader/loader.service';
 import { ApplicationListInterface } from '../application-list.interface';
 import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
 
@@ -11,19 +12,18 @@ import { ApplicationRegistryService } from '../services/application-registry/app
 })
 export class ApplicationsListPage implements OnInit {
 
-  private orderHeader: any;
-  private orderMachinery: Array<any> = [];
-  private orderCostCenter: Array<any> = [];
-  private orderChemical: Array<any> = [];
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
 
-  public filteredOrders: Array<ApplicationListInterface> = [];
+  public filteredApplications: Array<ApplicationListInterface> = [];
+  public selectedApplication: ApplicationListInterface = null;
 
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
-    private storeService: StoreService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private loaderService: LoaderService,
+    private router: Router,
+    private orderSyncService: OrderSyncService
   ) {
 
   }
@@ -36,6 +36,8 @@ export class ApplicationsListPage implements OnInit {
    * loadData
    */
   private loadData = () => {
+    this.loaderService.startLoader();
+
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.applicationRegistryService.getApplicationList(+id).subscribe(success => {
       const {
@@ -46,19 +48,44 @@ export class ApplicationsListPage implements OnInit {
         orderHeader,
         orderMachinery
       } = success["data"];
-
-      this.orderHeader = orderHeader;
-      this.orderChemical = orderChemical;
-      this.orderCostCenter = orderCostCenter;
-      this.orderMachinery = orderMachinery;
-      this.orderBalanceApplied = orderBalanceApplied;
-      this.orderBalanceToApply = orderBalanceToApply;
-
-      this.filteredOrders = [...this.orderBalanceToApply, ...this.orderBalanceApplied];
+      
+      Promise.all([
+        this.orderSyncService.setOrderHeader(orderHeader),
+        this.orderSyncService.setOrderCostCenter(orderCostCenter),
+        this.orderSyncService.setOrderMachinery(orderMachinery),
+        this.orderSyncService.setOrderChemical(orderChemical),
+        this.orderSyncService.setOrderBalanceToApply(orderBalanceToApply),
+        this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied)
+      ]).then(() => {
+        this.orderBalanceApplied = orderBalanceApplied;
+        this.orderBalanceToApply = orderBalanceToApply;
+        this.filteredApplications = [...this.orderBalanceToApply, ...this.orderBalanceApplied];
+        this.loaderService.stopLoader();
+      })
     }, error => {
-
+      this.loaderService.stopLoader();
     });
   }
 
-}
+  /**
+   * selectApplication
+   * @param application 
+   */
+  public selectApplication = (application: ApplicationListInterface) => {
+    if (application.applicationBalance) {
+      if (this.selectedApplication === application) {
+        this.selectedApplication = null;
+      } else {
+        this.selectedApplication = application;
+      }
+    }
+  }
 
+  /**
+   * startApplication
+   */
+  public startApplication = () => {
+    this.router.navigate(["/home-page/registro_aplicacion/application-start", this.selectedApplication.applicationOrderId]);
+  }
+
+}

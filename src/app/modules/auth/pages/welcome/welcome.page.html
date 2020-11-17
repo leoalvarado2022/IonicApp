@@ -2,20 +2,26 @@
   <ion-toolbar>
     <ng-container *ngIf="showCordovaFeatures">
       <ion-buttons slot="start">
-        <ion-button color="default" (click)="showDeviceData()" class="button-text-color" fill="clear">{{ getVersion() }}</ion-button>
+        <ion-button color="default" (click)="deviceService.showDeviceData()" class="button-text-color" fill="clear">
+          {{ appService.getAppVersion() }}
+        </ion-button>
       </ion-buttons>
     </ng-container>
     <ion-title>&nbsp;</ion-title>
     <ion-buttons slot="end">
-      <ng-container *ngIf="device.uuid">
-        <ion-button color="default" (click)="showFullUUID()" class="button-text-color" fill="clear">NC: {{ getUUIDLast8() }}</ion-button>
+      <ng-container *ngIf="deviceService.getUUIDLast8()">
+        <ion-button color="default" (click)="deviceService.showFullUUID()" class="button-text-color" fill="clear">
+          NC: {{ deviceService.getUUIDLast8() }}
+        </ion-button>
       </ng-container>
     </ion-buttons>
   </ion-toolbar>
 
   <div class="title-header">
     <img (click)="confirmClean()" alt="Primetec" src="assets/imgs/logo.png">
-    <h3 class="ion-text-left" style="margin-bottom: 0;">Bienvenido a FX360</h3>
+    <h3 class="ion-text-left" style="margin-bottom: 0;">
+      Bienvenido a {{ appService.getAppName() }}
+    </h3>
   </div>
 </ion-header>
 

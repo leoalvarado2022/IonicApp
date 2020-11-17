@@ -1,9 +1,9 @@
-import {iosDeviceNames} from './ios-device-names';
+import { iosDeviceNames } from './ios-device-names';
 import { version } from './version';
 
 export const environment = {
   production: true,
-  app_name: 'FX10',
+  app_name: 'FX360',
   api_url: 'https://apiqa.fx360.cl',
   appVersion: version.number,
   tz: 'America/Santiago',

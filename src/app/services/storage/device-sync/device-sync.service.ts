@@ -1,7 +1,6 @@
-import {Injectable} from '@angular/core';
-import {Storage} from '@ionic/storage';
-import {StorageKeys} from '../storage-keys';
-import {StoreActions} from '../../../shared/services/store/actions';
+import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { StorageKeys } from '../storage-keys';
 
 @Injectable({
   providedIn: 'root'

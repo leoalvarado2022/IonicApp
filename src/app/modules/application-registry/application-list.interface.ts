@@ -5,6 +5,7 @@ export interface ApplicationListInterface {
   costCenterCode: string;
   costCenterName: string;
   costCenterMachineryId: number;
+  costCenterMachineryName: string;
   applicationBalance: number;
   applicationRegistry: number;
   endDate: string;
@@ -14,4 +15,5 @@ export interface ApplicationListInterface {
   litersQuantity: number;
   temperature: number;
   wind: number;
+  tempId: number;
 }

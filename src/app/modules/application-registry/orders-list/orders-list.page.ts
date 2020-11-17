@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { LoaderService } from 'src/app/shared/services/loader/loader.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { OrderListInterface } from '../order-list.interface';
 import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
@@ -18,7 +19,8 @@ export class OrdersListPage implements OnInit {
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
     private storeService: StoreService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) {
 
   }
@@ -31,14 +33,18 @@ export class OrdersListPage implements OnInit {
    * loadData
    */
   private loadData = (): void => {
+    this.loaderService.startLoader();
+
     const activeCompany = this.storeService.getActiveCompany();
     const user = this.storeService.getUser();
 
     this.applicationRegistryService.getOrderList(activeCompany.id, user.id).subscribe(success => {
       this.ordersList = success["data"];
       this.ordersListFiltered = success["data"];
-    }, error => {
 
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
     });
   }
 

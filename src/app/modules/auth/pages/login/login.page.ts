@@ -98,7 +98,7 @@ export class LoginPage implements OnInit, OnDestroy {
       this.storeService.removeRememberData();
     }
 
-    const params = Object.assign({}, user, this.getLoginParams());
+    const params = { user, login: this.getLoginParams() };
     this.login(params).then(login => {
       if (login && login.code === 1) {
         this.addPin(login);
@@ -196,8 +196,8 @@ export class LoginPage implements OnInit, OnDestroy {
     device: 'movil',
     plattform: this.platform.is('ios') ? 'ios' : 'android',
     ip: '',
-    latitude: '',
-    longitude: '',
+    latitude: 0,
+    longitude: 0,
     version: this.appService.getAppVersion()
   })
 }

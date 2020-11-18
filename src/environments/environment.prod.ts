@@ -10,5 +10,6 @@ export const environment = {
   iosDeviceNames,
   syncTimerMinutes: 5,
   searchDeliveryListMSec: 5000,
-  searchDeliveryListAcceptedMSec: 8000
+  searchDeliveryListAcceptedMSec: 8000,
+  googleMapsApiKey: "AIzaSyA9T2KTzXZkhW4HVaiA6U-TsXo0jL6asRs"
 };

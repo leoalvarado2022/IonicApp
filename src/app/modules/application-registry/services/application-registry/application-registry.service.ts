@@ -7,6 +7,7 @@ export class ApplicationRegistryService {
 
   private readonly getOrdersListUrl = 'application-registry/orders';
   private readonly getApplicationsList = 'application-registry/applications';
+  private readonly storeApplicationEndpoint = 'application-registry/store';
 
   constructor(
     private httpClient: HttpClient,
@@ -34,6 +35,20 @@ export class ApplicationRegistryService {
   public getApplicationList = (orderId: number, filter: string = '') => {
     const url = this.httpService.buildUrl(this.getApplicationsList);
     const body = this.httpService.buildBody({ orderId, filter });
+    return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
+  }
+
+  /**
+   * storeApplication
+   * @param user 
+   * @param header 
+   * @param application 
+   * @param applicationLocations 
+   * @param applicationChemicals 
+   */
+  public storeApplication = (user: number, header: any, application: any, applicationLocations: any, applicationChemicals: any) => {
+    const url = this.httpService.buildUrl(this.storeApplicationEndpoint);
+    const body = this.httpService.buildBody({ user, header, application, applicationLocations, applicationChemicals });
     return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
   }
 

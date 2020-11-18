@@ -6,11 +6,14 @@ import { ApplicationsListPage } from './applications-list/applications-list.page
 import { OrdersListPage } from './orders-list/orders-list.page';
 import { ApplicationStartPage } from './application-start/application-start.page';
 import { ApplicationEndPage } from './application-end/application-end.page';
+import { AgmCoreModule } from '@agm/core';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   imports: [
     SharedModule,
-    ApplicationRegistryPageRoutingModule
+    ApplicationRegistryPageRoutingModule,
+    AgmCoreModule
   ],
   declarations: [
     OrdersListPage,

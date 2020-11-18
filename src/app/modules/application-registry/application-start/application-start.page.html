@@ -51,9 +51,20 @@
     </ion-card-header>
 
     <ion-card-content>
-      <div class="ion-text-center">
+      <!--
+        <div class="ion-text-center">
         <ion-icon name="compass-outline" style="font-size: 128px"></ion-icon>
       </div>
+      -->      
+      <agm-map [latitude]="currentLat" [longitude]="currentLng" [zoom]="zoom" class="map-size">
+          <agm-polyline strokeColor="#FF3333">
+            <ng-container *ngFor="let position of positions">
+              <agm-polyline-point [latitude]="position.latitude" [longitude]="position.longitude">
+              </agm-polyline-point>
+            </ng-container>              
+          </agm-polyline>                    
+      </agm-map>      
+
       <ion-item>
         <ion-label>Posiciones</ion-label>
         <ion-badge slot="end"> {{ positions.length }}</ion-badge>

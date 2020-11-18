@@ -5,6 +5,8 @@ import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync
 import { ApplicationListInterface } from '../application-list.interface';
 import { ApplicationLocationInterface } from '../application-location.interface';
 import * as moment from 'moment';
+import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
 
 @Component({
   selector: 'app-application-end',
@@ -30,6 +32,8 @@ export class ApplicationEndPage implements OnInit {
     private route: ActivatedRoute,
     private orderSyncService: OrderSyncService,
     private formBuilder: FormBuilder,
+    private applicationRegistryService: ApplicationRegistryService,
+    private storeService: StoreService
   ) {
 
   }
@@ -40,39 +44,39 @@ export class ApplicationEndPage implements OnInit {
     this.endForm = this.formBuilder.group({
       hectares: ['', [
         Validators.required,
-        Validators.min(1)        
+        Validators.min(1)
       ]],
       temperature: ['', [
         Validators.required,
-        Validators.min(1)        
+        Validators.min(1)
       ]],
       humidity: ['', [
         Validators.required,
-        Validators.min(1)        
+        Validators.min(1)
       ]],
       wind: ['', [
         Validators.required,
-        Validators.min(1)        
+        Validators.min(1)
       ]],
       litersQuantity: ['', [
         Validators.required,
-        Validators.min(1)        
+        Validators.min(1)
       ]],
       chemicals: this.formBuilder.array([])
-    });    
+    });
 
     Promise.all([
       this.orderSyncService.getOrderBalanceToApplyById(this.id),
       this.orderSyncService.getOrderHeader(),
       this.orderSyncService.getOrderChemical(),
       this.orderSyncService.getApplicationLocationsById(this.id)
-    ]).then( (data: any) => {
-      this.currentApplication = data[0];      
+    ]).then((data: any) => {
+      this.currentApplication = data[0];
       this.orderHeader = data[1];
       this.orderChemicals = data[2];
       this.orderLocations = data[3];
       this.tempId = this.orderLocations[0]["tempId"];
-      this.orderChemicals.forEach(item => this.addChemical(item));      
+      this.orderChemicals.forEach(item => this.addChemical(item));
     });
   }
 
@@ -105,7 +109,7 @@ export class ApplicationEndPage implements OnInit {
   private addChemical = (chemical: any): void => {
     const chemicals = this.endForm.get('chemicals') as FormArray;
     chemicals.push(this.createChemical(chemical));
-  }  
+  }
 
   /**
    * validFirstStep
@@ -117,7 +121,7 @@ export class ApplicationEndPage implements OnInit {
       this.endForm.get('wind').invalid ||
       this.endForm.get('litersQuantity').invalid;
   }
-  
+
   /**
    * submit
    */
@@ -128,19 +132,17 @@ export class ApplicationEndPage implements OnInit {
       costCenterId: this.currentApplication.costCenterId,
       tempId: this.tempId,
       startDate: moment(this.orderLocations[0]["timestamp"]).format('YYYY-MM-DD HH:MM:SS'),
-      endDate: moment(this.orderLocations[ this.orderLocations.length - 1]["timestamp"]).format('YYYY-MM-DD HH:MM:SS')
+      endDate: moment(this.orderLocations[this.orderLocations.length - 1]["timestamp"]).format('YYYY-MM-DD HH:MM:SS')
     });
 
-    const data = {
-      header: this.orderHeader,
-      application: formData,
-      orderLocations: this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item["timestamp"]).format('YYYY-MM-DD HH:MM:SS') })),
-      chemicals: formData["chemicals"]
-    }   
+    const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item["timestamp"]).format('YYYY-MM-DD HH:MM:SS') }));
 
-    console.log('data', data);
-  
-    
+    const user = this.storeService.getUser();
+    this.applicationRegistryService.storeApplication(user.id, this.orderHeader, formData, orderLocations, formData["chemicals"]).subscribe(success => {
+      console.log('success', success);
+    }, error => {
+      console.log('error', error);
+    });
   }
 
 }

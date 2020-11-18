@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {environment} from '../../environments/environment';
+import { Component, OnInit } from '@angular/core';
+import { AppService } from '../services/app/app.service';
 
 @Component({
   selector: 'app-home',
@@ -8,19 +8,12 @@ import {environment} from '../../environments/environment';
 })
 export class HomePage implements OnInit {
 
-  constructor() {
+  constructor(public appService: AppService) {
 
   }
 
   ngOnInit(): void {
 
-  }
-
-  /**
-   * getVersion
-   */
-  public getVersion = (): string => {
-    return environment.appVersion;
   }
 
 }

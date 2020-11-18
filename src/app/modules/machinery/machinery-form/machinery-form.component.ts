@@ -69,19 +69,19 @@ export class MachineryFormComponent implements OnInit {
   ngOnInit() {
     if (this.editMachinery) {
       this.machineryForm = this.formBuilder.group({
-        costCenterId: [ this.isCopy ? '' : this.editMachinery.costCenterId, Validators.required],
-        laborId: [ this.editMachinery.laborId, Validators.required],
+        costCenterId: [this.isCopy ? '' : this.editMachinery.costCenterId, Validators.required],
+        laborId: [this.editMachinery.laborId, Validators.required],
         workerId: [this.editMachinery.workerId, Validators.required],
         machineryCostCenterId: [this.editMachinery.machineryCostCenterId, Validators.required],
         implementCostCenterId: [this.editMachinery.implementCostCenterId, Validators.required],
         machineryUnitId: [this.editMachinery.machineryUnitId, Validators.required],
         laborUnitId: [this.editMachinery.laborUnitId, Validators.required],
-        quantity: [ this.isCopy ? '' : this.editMachinery.quantity, [
+        quantity: [this.isCopy ? '' : this.editMachinery.quantity, [
           Validators.required,
           Validators.min(0.1),
           Validators.pattern(this.decimalRegex)
         ]],
-        performance: [ this.isCopy ? '' : this.editMachinery.performance, [
+        performance: [this.isCopy ? '' : this.editMachinery.performance, [
           Validators.pattern(this.decimalRegex)
         ]]
       });
@@ -117,7 +117,7 @@ export class MachineryFormComponent implements OnInit {
 
       if (!this.isCopy) {
         // Centros de costo
-        const findCostCenter = this.allCostCenters.find(item => item.id === this.editMachinery.costCenterId)
+        const findCostCenter = this.allCostCenters.find(item => item.id === this.editMachinery.costCenterId);
         this.costCenterCode = findCostCenter.code;
         this.costCenterName = findCostCenter.name;
       }
@@ -160,7 +160,7 @@ export class MachineryFormComponent implements OnInit {
    * getTempId
    */
   private getTempId = () => {
-    this.machineryService.getTempId().then( (tempId: number) => {
+    this.machineryService.getTempId().then((tempId: number) => {
       this.tempId = tempId;
     });
   }
@@ -205,7 +205,13 @@ export class MachineryFormComponent implements OnInit {
    */
   public searchCostCenter = (search: string): void => {
     if (search) {
-      this.filteredCostCenters = this.allCostCenters.filter(item => item.code.toLowerCase().includes(search.toLowerCase()) || item.name.toLowerCase().includes(search.toLowerCase()));
+      this.filteredCostCenters = this.allCostCenters.filter(item => {
+        console.log('item', item);
+        return item.machineryType !== "maquinaria" && (
+          item.code.toLowerCase().includes(search.toLowerCase()) ||
+          item.name.toLowerCase().includes(search.toLowerCase())
+        );
+      });
     } else {
       this.filteredCostCenters = [];
     }
@@ -315,12 +321,12 @@ export class MachineryFormComponent implements OnInit {
    * showImplements
    * @param machineryType
    */
-  private showImplements =  (machineryType: string) => {
+  private showImplements = (machineryType: string) => {
     // machinery.machineryType === automata 'Ocultar implemento'
-    if ( machineryType.toLowerCase() === 'automata') {
+    if (machineryType.toLowerCase() === 'automata') {
       this.showImplement = false;
       this.machineryForm.get('implementCostCenterId').patchValue(0);
-    } else if ( machineryType.toLowerCase() === 'maquinaria') {
+    } else if (machineryType.toLowerCase() === 'maquinaria') {
       // machinery.machineryType === maquinaria 'Mostrart implemento'
       this.showImplement = true;
     }
@@ -371,7 +377,7 @@ export class MachineryFormComponent implements OnInit {
    */
   private buildEditMachinery = (): Machinery => {
     return Object.assign({}, this.machineryForm.value, {
-      id:  this.editMachinery.id,
+      id: this.editMachinery.id,
       tempId: this.editMachinery.tempId ? this.editMachinery.tempId : this.tempId,
       companyId: this.editMachinery.companyId,
       reference: '',
@@ -392,8 +398,8 @@ export class MachineryFormComponent implements OnInit {
   /**
    * buildCopyMachinery
    */
-  private buildCopyMachinery =  (): Machinery => {
-    return  Object.assign({}, this.machineryForm.value, {
+  private buildCopyMachinery = (): Machinery => {
+    return Object.assign({}, this.machineryForm.value, {
       id: 0,
       tempId: this.tempId,
       companyId: this.editMachinery.companyId,
@@ -474,7 +480,6 @@ export class MachineryFormComponent implements OnInit {
 
     if (find) {
       this.machineryForm.get('laborUnitId').patchValue(unitId);
-
       this.laborUnitCode = find.code;
       this.laborUnitName = find.name;
     }

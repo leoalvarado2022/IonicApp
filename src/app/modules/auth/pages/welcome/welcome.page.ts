@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {StorageService} from '../../../../shared/services/storage/storage.service';
-import {ToastService} from '../../../../shared/services/toast/toast.service';
-import {AlertController, Platform} from '@ionic/angular';
-import {environment} from '../../../../../environments/environment';
-import {Device} from '@ionic-native/device/ngx';
-import {StoreService} from '../../../../shared/services/store/store.service';
-import {iosDeviceNames} from '../../../../../environments/ios-device-names';
+import { Component, OnInit } from '@angular/core';
+import { StorageService } from '../../../../shared/services/storage/storage.service';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { AlertController, Platform } from '@ionic/angular';
+import { environment } from '../../../../../environments/environment';
+import { StoreService } from '../../../../shared/services/store/store.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
+import { DeviceService } from 'src/app/services/device/device.service';
+import { AppService } from 'src/app/services/app/app.service';
 
 @Component({
   selector: 'app-welcome',
@@ -16,20 +16,19 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 export class WelcomePage implements OnInit {
 
   public showCordovaFeatures = false;
-  private isIos = false;
 
   constructor(
     private storage: StorageService,
     private storeService: StoreService,
     private alertController: AlertController,
     private toastService: ToastService,
-    public device: Device,
     private platform: Platform,
-    private storageSyncService: StorageSyncService
+    private storageSyncService: StorageSyncService,
+    public deviceService: DeviceService,
+    public appService: AppService,
   ) {
     this.platform.ready().then(() => {
       this.showCordovaFeatures = this.platform.is('cordova');
-      this.isIos = this.platform.is('ios');
     });
 
   }
@@ -56,16 +55,16 @@ export class WelcomePage implements OnInit {
           text: 'Cancelar',
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (blah) => {
+          handler: () => {
             console.log('Confirm Cancel: blah');
           }
         }, {
           text: 'Si',
-          handler: () => {                        
-            this.storageSyncService.clearStorage().then( () => {
+          handler: () => {
+            this.storageSyncService.clearStorage().then(() => {
               this.storeService.clearStore();
-              this.cleanCache();              
-            });                        
+              this.cleanCache();
+            });
           }
         }
       ]
@@ -92,54 +91,8 @@ export class WelcomePage implements OnInit {
       await this.storage.clearAllRow();
     }
 
-    this.storeService.setUserLocaStorage(user);    
+    this.storeService.setUserLocaStorage(user);
     this.toastService.successToast('Datos eliminados');
   }
 
-  /**
-   * getUUIDLast8
-   */
-  public getUUIDLast8 = () => {
-    if (this.device.uuid) {
-      return this.device.uuid.substring(this.device.uuid.length - 8);
-    }
-
-    return '';
-  }
-
-  /**
-   * showFullUUID
-   */
-  public showFullUUID = async () => {
-    if (this.device.uuid) {
-      const alert = await this.alertController.create({
-        header: 'NC',
-        message: this.device.uuid,
-        buttons: ['OK']
-      });
-
-      await alert.present();
-    }
-  }
-
-  /**
-   * showDeviceData
-   */
-  public showDeviceData = async () => {
-    const model = this.isIos ? iosDeviceNames[this.device.model] : this.device.model;
-
-    const alert = await this.alertController.create({
-      header: 'Device',
-      message: `
-        <p>Manufacturer: ${this.device.manufacturer}</p>
-        <p>Model: ${model}</p>
-        <p>Platform: ${this.device.platform}</p>
-        <p>Version: ${this.device.version}</p>
-        <p>Cordova: ${this.device.cordova}</p>
-      `,
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
 }

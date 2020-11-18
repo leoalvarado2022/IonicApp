@@ -1,9 +1,9 @@
 <ion-content class="background-color-home" scrollX="false" scrollY="false">
   <div>
     <div class="logo-home">
-      <img alt="Primetec" src="assets/imgs/logo.png">
-      <p>FX360</p>
-      <div class="version">{{ getVersion() }}</div>
+      <img alt="Primetec" src="assets/icon/favicon.png">
+      <p>{{ appService.getAppName() }}</p>
+      <div class="version">{{ appService.getAppVersion() }}</div>
     </div>
     <div class="ion-text-center buttons-home">
       <ion-button [routerLink]="['/auth/login']" class="button-primary-home">Iniciar Sesión</ion-button>

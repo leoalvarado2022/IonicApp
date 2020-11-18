@@ -1,12 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {AuthService} from '../../../../shared/services/auth/auth.service';
-import {NavigationEnd, Router} from '@angular/router';
-import {ToastService} from '../../../../shared/services/toast/toast.service';
-import {HttpService} from '../../../../shared/services/http/http.service';
-import {StoreService} from 'src/app/shared/services/store/store.service';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoaderService } from '../../../../shared/services/loader/loader.service';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { HttpService } from '../../../../shared/services/http/http.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
+import { Subscription } from 'rxjs';
+import { Platform } from '@ionic/angular';
+import { AppService } from 'src/app/services/app/app.service';
+import { DeviceService } from 'src/app/services/device/device.service';
 
 @Component({
   selector: 'app-login',
@@ -30,37 +33,30 @@ export class LoginPage implements OnInit, OnDestroy {
     private toastService: ToastService,
     private httpService: HttpService,
     private storeService: StoreService,
+    private appService: AppService,
+    private deviceService: DeviceService,
+    private platform: Platform
   ) {
 
   }
 
   ngOnInit() {
-    this.router$ = this.router.events.subscribe((e) => {
-      if (e instanceof NavigationEnd) {
-        this.checkRemember();
-      }
-    });
-
-    this.store$ = this.storeService.stateChanged.subscribe(() => {
-      this.checkRemember();
-    });
-
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required],
-      remember: [false]
+      remember: false
     });
 
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
 
-    const user  = this.storeService.getUserLocaStorage();
+    const user = this.storeService.getUserLocaStorage();
 
     if (user !== null) {
       this.loginForm.patchValue({
         username: user.username,
         password: user.password,
-        remember: [true]
+        remember: true
       });
 
       this.loginForm.updateValueAndValidity();
@@ -72,24 +68,38 @@ export class LoginPage implements OnInit, OnDestroy {
     this.store$.unsubscribe();
   }
 
+  ionViewDidEnter() {
+    this.router$ = this.router.events.subscribe((e) => {
+      if (e instanceof NavigationEnd) {
+        this.checkRemember();
+      }
+    });
+
+    this.store$ = this.storeService.stateChanged.subscribe(() => {
+      this.checkRemember();
+    });
+  }
+
   /**
    * onSubmit
    */
-  public onSubmit = () => {
-    const data = Object.assign({}, this.loginForm.value);
-    data.username = data.username.toLowerCase();
-    
-    if (data.remember) {
+  public onSubmit = () => {    
+    const user = Object.assign({}, this.loginForm.value);
+    user.username = user.username.toLowerCase();
+    user.app = this.appService.getAppName();
+
+    if (user.remember) {
       this.storeService.setRemember(true);
-      this.storeService.setRememberData(data);
-      this.storeService.setUserLocaStorage(data);
+      this.storeService.setRememberData(user);
+      this.storeService.setUserLocaStorage(user);
     } else {
       this.storeService.setRemember(false);
       this.storeService.removeUserLocaStorage();
       this.storeService.removeRememberData();
     }
 
-    this.login(data).then( login => {      
+    const params = Object.assign({}, user, this.getLoginParams());
+    this.login(params).then(login => {
       if (login && login.code === 1) {
         this.addPin(login);
       } else {
@@ -97,14 +107,14 @@ export class LoginPage implements OnInit, OnDestroy {
           this.storeService.setUser(login.user);
           this.storeService.setUserConnections(login.connections);
           this.storeService.setToken(login.token);
-          this.storeService.setLoginStatus(true);        
-          
+          this.storeService.setLoginStatus(true);
+
           // MAKE LOGIN
-          this.loginForm.reset();          
+          this.loginForm.reset();
           this.router.navigate(['/home-page']);
         }
       }
-    });
+    });    
   }
 
   /**
@@ -143,7 +153,7 @@ export class LoginPage implements OnInit, OnDestroy {
         this.loginForm.patchValue({
           username: rememberData.username,
           password: rememberData.password,
-          remember: [true]
+          remember: true
         });
 
         this.loginForm.updateValueAndValidity();
@@ -169,7 +179,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
         if (name === 'ConnectionsNotFound') {
           const token = error.error.data.token;
-          resolve({code: 1, token, user: data, message: error.error.message});
+          resolve({ code: 1, token, user: data, message: error.error.message });
         } else {
           this.httpService.errorHandler(error);
           resolve(null);
@@ -177,4 +187,17 @@ export class LoginPage implements OnInit, OnDestroy {
       });
     });
   }
+
+  /**
+   * getLoginParams
+   */
+  private getLoginParams = (): object => ({
+    nc: this.deviceService.getUUIDLast8(),
+    device: 'movil',
+    plattform: this.platform.is('ios') ? 'ios' : 'android',
+    ip: '',
+    latitude: '',
+    longitude: '',
+    version: this.appService.getAppVersion()
+  })
 }

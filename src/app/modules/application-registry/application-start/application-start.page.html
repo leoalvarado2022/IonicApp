@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Aplicacion Iniciada</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngIf="currentApplication" class="card-item">
+    <ion-item lines="full">
+      <ion-badge slot="start">{{ currentApplication.costCenterCode | uppercase }}</ion-badge>
+      <ion-label>{{ currentApplication.costCenterName | titlecase }}</ion-label>
+    </ion-item>
+
+    <ion-card-content>
+      <p *ngIf="currentApplication.costCenterMachineryName"><strong>Maquina:</strong>
+        {{ currentApplication.costCenterMachineryName | titlecase }}</p>
+
+      <div class="ion-text-right">
+        <ion-chip *ngIf="currentApplication.applicationBalance">
+          <ion-icon name="calculator-outline" color="success"></ion-icon>
+          <ion-label>{{ currentApplication.applicationBalance }} </ion-label>
+        </ion-chip>
+
+        <ng-container *ngIf="currentApplication.hectaresQuantity && currentApplication.litersQuantity">
+          <ion-chip>
+            <ion-icon name="calculator-outline" color="primary"></ion-icon>
+            <ion-label>{{ currentApplication.hectaresQuantity }} </ion-label>
+          </ion-chip>
+
+          <ion-chip>
+            <ion-icon name="calculator-outline" color="success"></ion-icon>
+            <ion-label>{{ currentApplication.litersQuantity }} </ion-label>
+          </ion-chip>
+        </ng-container>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="card-item">
+    <ion-card-header class="ion-text-center">
+      <ion-card-title>Obteniendo ubicaciones</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <!--
+        <div class="ion-text-center">
+        <ion-icon name="compass-outline" style="font-size: 128px"></ion-icon>
+      </div>
+      -->      
+      <agm-map [latitude]="currentLat" [longitude]="currentLng" [zoom]="zoom" class="map-size">
+          <agm-polyline strokeColor="#FF3333">
+            <ng-container *ngFor="let position of positions">
+              <agm-polyline-point [latitude]="position.latitude" [longitude]="position.longitude">
+              </agm-polyline-point>
+            </ng-container>              
+          </agm-polyline>                    
+      </agm-map>      
+
+      <ion-item>
+        <ion-label>Posiciones</ion-label>
+        <ion-badge slot="end"> {{ positions.length }}</ion-badge>
+      </ion-item>      
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="danger" (click)="endApplication()">
+    Finalizar Aplicacion
+  </ion-button>
+</ion-footer>

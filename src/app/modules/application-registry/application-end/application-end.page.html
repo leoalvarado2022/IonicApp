@@ -1,0 +1,145 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Finalizar Aplicación</strong>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-tabs>
+    <ion-tab-bar slot="top">
+      <ion-tab-button [ngClass]="{ 'tab-selected': currentStep === step1 }" (click)="currentStep = step1">
+        <ion-label>Paso 1</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button [ngClass]="{ 'tab-selected': currentStep === step2 }" (click)="currentStep = step2">
+        <ion-label>Paso 2</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+
+  <div style="margin-top: 50px">
+    <form [formGroup]="endForm">
+
+      <!-- STEP 1 --->
+      <ng-container *ngIf="currentStep === step1">
+        <ion-card class="card-item">
+
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('hectares').dirty">
+              <p *ngIf="endForm.get('hectares').hasError('required')">Debe ingresar las hectareas</p>
+              <p *ngIf="endForm.get('hectares').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Hectáreas</ion-label>
+            <ion-input type="number" formControlName="hectares"></ion-input>            
+          </ion-item>          
+
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('temperature').dirty">
+              <p *ngIf="endForm.get('temperature').hasError('required')">Debe ingresar la temperatura</p>
+              <p *ngIf="endForm.get('temperature').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Temperatura</ion-label>
+            <ion-input type="number" formControlName="temperature"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('humidity').dirty">
+              <p *ngIf="endForm.get('humidity').hasError('required')">Debe ingresar la humedad</p>
+              <p *ngIf="endForm.get('humidity').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Humedad</ion-label>
+            <ion-input type="number" formControlName="humidity"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('wind').dirty">
+              <p *ngIf="endForm.get('wind').hasError('required')">Debe ingresar el viento</p>
+              <p *ngIf="endForm.get('wind').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Viento</ion-label>
+            <ion-input type="number" formControlName="wind"></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('litersQuantity').dirty">
+              <p *ngIf="endForm.get('litersQuantity').hasError('required')">Debe ingresar la cantidad de litros</p>
+              <p *ngIf="endForm.get('litersQuantity').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Cantidad Litros</ion-label>
+            <ion-input type="number" formControlName="litersQuantity"></ion-input>
+          </ion-item>
+
+        </ion-card>
+      </ng-container>
+
+      <!-- STEP 2 --->
+      <ng-container *ngIf="currentStep === step2" formArrayName="chemicals">
+        <ion-card class="card-item" *ngFor="let chemical of endForm.get('chemicals')['controls']; let i = index" [formArrayName]="i.toString()">
+          <ion-card-header>
+            <ion-card-title>{{ chemical.get('itemName').value | titlecase }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item>
+              <ion-text color="danger" *ngIf="chemical.get('dosis100l').dirty">
+                <p *ngIf="chemical.get('dosis100l').hasError('required')">Debe ingresar la dosis 100L</p>
+                <p *ngIf="chemical.get('dosis100l').hasError('min')">El valor minimo es 1</p>
+              </ion-text>
+
+              <ion-label position="floating">Dosis 100L</ion-label>
+              <ion-input type="number" formControlName="dosis100l"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-text color="danger" *ngIf="chemical.get('hectaresDosis').dirty">
+                <p *ngIf="chemical.get('hectaresDosis').hasError('required')">Debe ingresar la dosis de hectareas</p>
+                <p *ngIf="chemical.get('hectaresDosis').hasError('min')">El valor minimo es 1</p>
+              </ion-text>
+
+              <ion-label position="floating">Dosis Hectareas</ion-label>
+              <ion-input type="number" formControlName="hectaresDosis"></ion-input>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ng-container>
+
+    </form>
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ng-container *ngIf="currentStep === step1">
+      <ion-col size="6" push="6">
+        <ion-button expand="block" color="warning" [disabled]="validFirstStep()" (click)="currentStep = step2">
+          Siguiente
+        </ion-button>
+      </ion-col>      
+    </ng-container>
+
+    <ng-container *ngIf="currentStep === step2">
+      <ion-col>
+        <ion-button expand="block" color="danger" (click)="currentStep = step1">
+          Volver
+        </ion-button>
+      </ion-col>
+
+      <ion-col>
+        <ion-button expand="block" color="primary" [disabled]="endForm.invalid" (click)="submit()">
+          Guardar
+        </ion-button>        
+      </ion-col>      
+    </ng-container>
+  </ion-row>      
+</ion-footer>

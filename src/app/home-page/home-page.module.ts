@@ -120,6 +120,10 @@ const routes: Routes = [
         path: 'config_delivery',
         loadChildren: () => import('../modules/delivery/delivery-config/delivery-config.module').then((module) => module.DeliveryConfigModule),
       },
+      {
+        path: 'registro_aplicacion',
+        loadChildren: () => import('../modules/application-registry/application-registry.module').then(m => m.ApplicationRegistryPageModule)
+      },
       { path: '**', redirectTo: '' },
     ],
   },

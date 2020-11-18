@@ -1,0 +1,27 @@
+.applied {
+  ion-item {
+    --background: var(--ion-color-warning);
+  }
+
+  --background: var(--ion-color-warning);
+
+  ion-chip {
+    --background: var(--ion-color-light);
+  }
+}
+
+
+.applicationSelected {
+  --background: var(--ion-color-medium);
+  --color: var(--ion-color-light);
+
+  ion-item {
+    --background: var(--ion-color-medium);
+    --color: var(--ion-color-light);
+  }
+
+  ion-chip {
+    background-color: var(--ion-color-light) !important;
+    color:  var(--ion-color-dark) !important;
+  }
+}

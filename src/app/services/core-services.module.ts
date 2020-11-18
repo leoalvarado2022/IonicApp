@@ -13,9 +13,12 @@ import { TallySyncService } from './storage/tally-sync/tally-sync.service';
 import { TimerService } from './storage/timer/timer.service';
 import { StepperService } from './storage/stepper/stepper.service';
 import { HttpClientModule } from '@angular/common/http';
-import {DeviceSyncService} from './storage/device-sync/device-sync.service';
+import { DeviceSyncService } from './storage/device-sync/device-sync.service';
 import { MachineryService } from '../modules/machinery/services/machinery.service';
 import { BluetoothService } from '../services/bluetooth/bluetooth.service';
+import { OrderSyncService } from './storage/order-sync/order-sync.service';
+import { AppService } from './app/app.service';
+import { DeviceService } from './device/device.service';
 
 @NgModule({
   imports: [
@@ -34,6 +37,8 @@ import { BluetoothService } from '../services/bluetooth/bluetooth.service';
     HttpService,
     AlertService,
     BluetoothService,
+    AppService,
+    DeviceService,
 
     // Storage Services Block
     StorageSyncService,
@@ -41,7 +46,8 @@ import { BluetoothService } from '../services/bluetooth/bluetooth.service';
     TimerService,
     StepperService,
     DeviceSyncService,
-    MachineryService
+    MachineryService,
+    OrderSyncService
   ]
 })
 export class CoreServicesModule {

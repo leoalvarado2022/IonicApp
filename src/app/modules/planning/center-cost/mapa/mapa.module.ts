@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {MapaPage} from './mapa.page';
-import {SharedModule} from '../../../../shared/shared.module';
-import {AgmCoreModule} from '@agm/core';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { MapaPage } from './mapa.page';
+import { SharedModule } from '../../../../shared/shared.module';
+import { AgmCoreModule } from '@agm/core';
 
 const routes: Routes = [
   {
@@ -15,9 +15,7 @@ const routes: Routes = [
   imports: [
     SharedModule,
     RouterModule.forChild(routes),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyDnEYJBFPfz6B7qcJTl9awmfdXG0Wwbgps'
-    })
+    AgmCoreModule
   ],
   declarations: [MapaPage]
 })

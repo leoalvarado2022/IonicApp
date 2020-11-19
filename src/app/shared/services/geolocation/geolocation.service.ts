@@ -78,4 +78,11 @@ export class GeolocationService {
       console.log({error});
     });
   }
+  
+  /**
+   * watchPosition
+   */
+  public watchPosition = () => {
+    return this.geolocation.watchPosition({ enableHighAccuracy: true });
+  }
 }

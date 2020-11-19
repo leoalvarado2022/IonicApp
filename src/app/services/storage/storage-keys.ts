@@ -48,6 +48,16 @@ export enum StorageKeys {
   // deliveries notifications
   DeliveryNotifications = 'deliveryNotifications',
 
+  // Applications
+  ApplicationTempId = 'applicationTempId',
+  ApplicationLocation = 'applicationLocation',
+  OrderHeader = 'orderHeader',
+  OrderCostCenter = 'orderCostCenter',
+  OrderMachinery = 'orderMachinery',
+  OrderChemical = 'orderChemical',
+  OrderBalanceToApply = "orderBalanceToApply",
+  OrderBalanceApplied = "orderBalanceApplied",
+
   //pos
   Agreements = 'agreementsPOS',
   CashRegister = 'cashRegisterPOS',

@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Aplicaciones</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="toolbar-search">
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-virtual-scroll [items]="filteredApplications">
+    <ion-item-sliding #slide *virtualItem="let application">
+      <ion-item class="slide-item" lines="none" (click)="selectApplication(application)">
+        <ion-card
+          [ngClass]="{ 'applied': !application.applicationBalance && selectedApplication !== application, 'applicationSelected': selectedApplication === application}">
+          <ion-item lines="full">
+            <ion-badge slot="start">{{ application.costCenterCode | uppercase }}</ion-badge>
+            <ion-label>{{ application.costCenterName | titlecase }}</ion-label>
+          </ion-item>
+
+          <ion-card-content>
+            <p *ngIf="application.costCenterMachineryName"><strong>Maquina:</strong>
+              {{ application.costCenterMachineryName | titlecase }}</p>
+
+            <div class="ion-text-right">
+              <ion-chip *ngIf="application.applicationBalance">
+                <ion-icon name="calculator-outline" color="success"></ion-icon>
+                <ion-label>{{ application.applicationBalance }} </ion-label>
+              </ion-chip>
+
+              <ng-container *ngIf="application.hectaresQuantity && application.litersQuantity">
+                <ion-chip>
+                  <ion-icon name="calculator-outline" color="primary"></ion-icon>
+                  <ion-label>{{ application.hectaresQuantity }} </ion-label>
+                </ion-chip>
+
+                <ion-chip>
+                  <ion-icon name="calculator-outline" color="success"></ion-icon>
+                  <ion-label>{{ application.litersQuantity }} </ion-label>
+                </ion-chip>
+              </ng-container>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="warning">
+          <ion-icon slot="icon-only" name="pencil"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-virtual-scroll>
+
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" [disabled]="!selectedApplication" (click)="startApplication()">
+    Iniciar
+  </ion-button>
+</ion-footer>

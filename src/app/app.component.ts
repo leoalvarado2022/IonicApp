@@ -9,8 +9,6 @@ import {FCM} from '@ionic-native/fcm/ngx';
 import {ToastService} from './shared/services/toast/toast.service';
 import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {DeliveryService} from './modules/delivery/services/delivery.service';
-import {debounceTime} from 'rxjs/operators';
-import {interval} from 'rxjs';
 
 @Component({
   selector: 'app-root',

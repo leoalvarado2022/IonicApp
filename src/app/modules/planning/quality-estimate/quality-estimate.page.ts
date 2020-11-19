@@ -95,13 +95,6 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
   }
 
   /**
-   * checkButton
-   */
-  public checkButton = () => {
-    return this.currentUrl === '/home-page/quality-estimate';
-  }
-
-  /**
    * openForm
    */
   public openForm = async (qualityEstimate: QualityEstimate = null) => {
@@ -139,7 +132,8 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
         return (
           item.userName.toLowerCase().includes(search.toLowerCase()) ||
           item.qualityName.toLowerCase().includes(search.toLowerCase()) ||
-          item.exportPercentage === parseInt(search, 10)
+          item.exportPercentage === parseInt(search, 10) ||
+          this.cleanDate(item.registrationDate).toLowerCase().includes(search.toLowerCase())
         );
       });
     } else {
@@ -216,4 +210,17 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
       this.httpService.errorHandler(error);
     });
   }
+
+  /**
+   * cleanDate
+   * @param date 
+   */  
+  private cleanDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
+  }
+
 }

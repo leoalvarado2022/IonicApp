@@ -1,15 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {ModalController} from '@ionic/angular';
-import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
-import {CostCenter, Unit} from '@primetec/primetec-angular';
-import {ContractDetailService} from '../services/contract-detail/contract-detail.service';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {AlertService} from '../../../shared/services/alert/alert.service';
-import {Subscription} from 'rxjs';
-import {NetworkService} from '../../../shared/services/network/network.service';
-import {StoreService} from '../../../shared/services/store/store.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { HarvestEstimateFormComponent } from './harvest-estimate-form/harvest-estimate-form.component';
+import { CostCenter, Unit } from '@primetec/primetec-angular';
+import { ContractDetailService } from '../services/contract-detail/contract-detail.service';
+import { HttpService } from '../../../shared/services/http/http.service';
+import { LoaderService } from '../../../shared/services/loader/loader.service';
+import { AlertService } from '../../../shared/services/alert/alert.service';
+import { Subscription } from 'rxjs';
+import { NetworkService } from '../../../shared/services/network/network.service';
+import { StoreService } from '../../../shared/services/store/store.service';
 import { HarvestEstimate } from './harvest-estimate.interface';
 
 @Component({
@@ -81,17 +81,10 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     this.firstLoad = false;
 
     this.costCenter = this.storeService.getCostCenter();
-    this.harvestEstimate = this.storeService.getHarvestEstimate();    
+    this.harvestEstimate = this.storeService.getHarvestEstimate();
     this.filteredHarvestEstimate = this.storeService.getHarvestEstimate();
     this.units = this.storeService.getUnits();
-  }
-
-  /**
-   * checkButton
-   */
-  public checkButton = () => {
-    return this.currentUrl === '/home-page/harvest-estimate';
-  }
+  }  
 
   /**
    * newHarvestEstimate
@@ -122,12 +115,12 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
    * duplicateHarvestEstimate
    * @param harvestEstimate 
    */
-  public duplicateHarvestEstimate = async (harvestEstimate: HarvestEstimate) => {    
+  public duplicateHarvestEstimate = async (harvestEstimate: HarvestEstimate) => {
     const modal = await this.modalController.create({
       component: HarvestEstimateFormComponent,
       componentProps: {
-        costCenter: this.costCenter,        
-        isView: false,        
+        costCenter: this.costCenter,
+        isView: false,
         previous: harvestEstimate
       },
       backdropDismiss: false,
@@ -153,7 +146,10 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
       this.filteredHarvestEstimate = this.harvestEstimate.filter(item => {
         return (
           item.userName.toLowerCase().includes(search.toLowerCase()) ||
-          item.quantity === parseInt(search, 10)
+          item.quantity === parseInt(search, 10) ||
+          this.showUnitCode(item.unit).toLowerCase().includes(search.toLowerCase()) ||
+          this.cleanDate(item.startDate).toLowerCase().includes(search.toLowerCase()) ||
+          this.cleanDate(item.registrationDate).toLowerCase().includes(search.toLowerCase())
         );
       });
     } else {
@@ -237,6 +233,27 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     } else {
       this.viewHarvest(harvestEstimate);
     }
+  }
+
+  /**
+   * showUnitCode
+   * @param unitId 
+   */
+  private showUnitCode = (unitId: number): string => {
+    const find = this.units.find(item => item.id === unitId);
+    return find ? find.code : '';
+  }
+
+  /**
+   * cleanDate
+   * @param date 
+   */  
+  private cleanDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   }
 
 }

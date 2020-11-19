@@ -19,22 +19,31 @@
     <p style="padding-left: 10px;display: inline-block;position: relative;right: 65px;">
       AUTOMATICO
     </p>
-    <ion-toggle color="secondary" class="position-automatic" (ionChange)="changeAutomatic($event)" [checked]="checkedAutomatic"></ion-toggle>
+    <ion-toggle color="secondary" class="position-automatic" (ionChange)="changeAutomatic($event)"
+                [checked]="checkedAutomatic" disabled></ion-toggle>
   </ion-toolbar>
   <ion-toolbar class="color-automatic">
     <ion-tabs>
       <!-- Tab bar -->
       <ion-tab-bar slot="top">
-        <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'" [ngClass]="{'backgroundSelected' : selected === 'pending'}">
+        <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'"
+                        [ngClass]="{'backgroundSelected' : selected === 'pending'}">
           <ion-label>Pendintes</ion-label>
         </ion-tab-button>
-        <ion-tab-button (click)="changeStatus('accepted')" [selected]="selected === 'accepted'" [ngClass]="{'backgroundSelected' : selected === 'accepted'}">
+        <ion-tab-button (click)="changeStatus('accepted')" [selected]="selected === 'accepted'"
+                        [ngClass]="{'backgroundSelected' : selected === 'accepted'}">
           <ion-label>Aceptados</ion-label>
         </ion-tab-button>
-        <ion-tab-button (click)="changeStatus('rejected')" [selected]="selected === 'rejected'" [ngClass]="{'backgroundSelected' : selected === 'rejected'}">
+        <ion-tab-button (click)="changeStatus('delivering')" [selected]="selected === 'delivering'"
+                        [ngClass]="{'backgroundSelected' : selected === 'delivering'}">
+          <ion-label>Entregados</ion-label>
+        </ion-tab-button>
+        <ion-tab-button (click)="changeStatus('rejected')" [selected]="selected === 'rejected'"
+                        [ngClass]="{'backgroundSelected' : selected === 'rejected'}">
           <ion-label>Rechazados</ion-label>
         </ion-tab-button>
-        <ion-tab-button (click)="changeStatus('close')" [selected]="selected === 'close'" [ngClass]="{'backgroundSelected' : selected === 'close'}">
+        <ion-tab-button (click)="changeStatus('done')" [selected]="selected === 'done'"
+                        [ngClass]="{'backgroundSelected' : selected === 'done'}">
           <ion-label>Cerrados</ion-label>
         </ion-tab-button>
       </ion-tab-bar>

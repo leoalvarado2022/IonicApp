@@ -13,6 +13,7 @@ ion-title {
   .toolbar-container {
     background: red !important;
   }
+
   text-align: right;
 }
 
@@ -64,4 +65,8 @@ ion-tab-bar {
 
 .backgroundSelected {
   background: #1961c9;
+}
+
+ion-label {
+  font-size: 12px !important;
 }

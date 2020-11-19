@@ -59,6 +59,7 @@ export interface Sync {
   consumptions: Array<Consumption>;
   products: Array<Product>;
   deliveryConfig?: Array<any>;
+  integration?: Array<any>;
 }
 
 export interface ContractInterface {

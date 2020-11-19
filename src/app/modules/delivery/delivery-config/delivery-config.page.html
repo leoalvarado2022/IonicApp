@@ -45,6 +45,12 @@
           <ion-icon class="icon-spinner" slot="icon-only" name="sync"></ion-icon>
         </ion-button>
       </div>
+      <div>
+        <ion-button expand="block" *ngIf="!_posService.connection" [disabled]="!configDelivery"
+                    (click)="deleteConnection()" color="danger"
+        >DESACTIVAR
+        </ion-button>
+      </div>
     </ion-card-content>
   </ion-card>
 

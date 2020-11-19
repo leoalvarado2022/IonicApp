@@ -7,6 +7,9 @@ import {NavParams} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
 import {PosService} from '../../services/pos.service';
+import {SyncService} from '../../../../shared/services/sync/sync.service';
+import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
+import {ToastService} from '../../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-accepted',
@@ -25,7 +28,9 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private _activatedRoute: ActivatedRoute,
     private _location: Location,
-    private _posService: PosService
+    private _posService: PosService,
+    private _toastService: ToastService,
+    private _storageSyncService: StorageSyncService,
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
     this.loadNotifications();
@@ -72,16 +77,76 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         status: status
       };
 
-      this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
-        if (status === 'accepted') {
-          this._posService.openTable(this.order);
-        }
-        this._location.back();
-      }, error => {
-        this.httpService.errorHandler(error);
-      });
+      this.setHttpNotificationStatus(status, data);
+
+      // si el origin es una app externa
+      if (this.order.origin === 'JUSTO') {
+        // this.updateStatusAppOrigin(status, data).then();
+      }
+
+      // si la app es interna
+      if (this.order.origin === 'FX360') {
+        // this.setHttpNotificationStatus(status, data);
+      }
+
     }
   }
+
+  async updateStatusAppOrigin(status: string, dataNotification: any) {
+
+    // obtener la integraciones
+    const integration = await this._storageSyncService.getIntegrationDelivery();
+
+    // si hay entra
+    if (integration.length) {
+
+      // en el caso se busca con el origen
+      const integ = integration.find(value => value.origin === this.order.origin);
+
+      // si existe
+      if (integ) {
+        const data = {
+          origin: this.order.origin,
+          orderId: this.order.id_origin,
+          data: {}
+        };
+
+        const token = integ.api_key;
+
+        // cambia estado en la app externa
+        this._deliveryService.setHttpChangeDeliveryStatus(data, status, token).subscribe((success: any) => {
+          if (success.resp && success.resp.data && success.resp.data.status && success.resp.data.status === 'ok') {
+            this.setHttpNotificationStatus(status, dataNotification);
+          } else {
+            // si hay un error con justo
+            if (success.resp && success.resp.error) {
+              this._toastService.warningToast(success.resp.data.error);
+            }
+
+          }
+        });
+      }
+
+    }
+  }
+
+  /**
+   * @description cambiar de estado en la nube y agregar los datos en el pos
+   * @param status
+   * @param data
+   */
+  setHttpNotificationStatus(status: string, data: any) {
+    this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
+      if (status === 'accepted') {
+        // agregar datos en el pos
+        // this._posService.openTable(this.order);
+      }
+      this._location.back();
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
+  }
+
 
   /**
    * @description validate if exists product in null

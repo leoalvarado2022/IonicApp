@@ -42,6 +42,7 @@ export class StorageSyncService {
       consumptions,
       products,
       deliveryConfig,
+      integration
     } = data;
 
     return Promise.all([
@@ -65,7 +66,8 @@ export class StorageSyncService {
       this.setWarehouses(warehouses),
       this.setConsumptions(consumptions),
       this.setProducts(products),
-      this.setConfigDelivery(deliveryConfig)
+      this.setConfigDelivery(deliveryConfig),
+      this.setIntegrationDelivery(integration)
     ]);
   };
 
@@ -175,6 +177,13 @@ export class StorageSyncService {
   };
 
   /**
+   * removeActiveConfigDelivery
+   */
+  public removeActiveConfigDelivery = () => {
+    localStorage.removeItem('activeConfigDelivery');
+  };
+
+  /**
    * getActiveConfigDelivery
    */
   public getActiveConfigDelivery = () => {
@@ -201,6 +210,23 @@ export class StorageSyncService {
   public getConfigDelivery = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.ConfigDelivery).then((config: Array<any>) => {
       return config ? config : [];
+    });
+  };
+
+
+  /**
+   * setIntegrationDelivery
+   */
+  public setIntegrationDelivery = (delivery: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.IntegrationDelivery, delivery);
+  };
+
+  /**
+   * getIntegrationDelivery
+   */
+  public getIntegrationDelivery = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.IntegrationDelivery).then((delivery: Array<Tally>) => {
+      return delivery ? delivery : [];
     });
   };
 

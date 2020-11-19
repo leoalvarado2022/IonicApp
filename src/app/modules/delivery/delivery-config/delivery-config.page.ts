@@ -71,11 +71,26 @@ export class DeliveryConfigPage implements OnInit, OnDestroy {
     const config = this.configDelivery.find(value => value.id === data.configId);
 
     this.storageSyncService.setActiveConfigDelivery(config);
+    localStorage.setItem('modoPOS', '1');
     this.configActiveDelivery = config;
   }
 
+  /**
+   * @description sync datos del pos
+   */
   connectionSync() {
     this._posService.loginToSync();
+  }
+
+  /**
+   * @description borrar cualquier dato del pos
+   */
+  deleteConnection() {
+    this.storageSyncService.removeActiveConfigDelivery();
+    this.configForm.patchValue({
+      configId: ''
+    });
+    localStorage.removeItem('modoPOS');
   }
 
 }

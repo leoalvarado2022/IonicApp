@@ -9,6 +9,7 @@ import {StoreService} from '../store/store.service';
 export class HttpService {
 
   private readonly apiUrl: string = `${environment.api_url}/api/`;
+  private readonly apiDeliveryUrl: string = `${environment.api_url_delivery}/api/`;
 
   constructor(
     private router: Router,
@@ -25,7 +26,27 @@ export class HttpService {
    */
   public buildUrl = (url: string, id: string = null): string => {
     return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
-  }
+  };
+
+  /**
+   * buildUrl para api delivery
+   * @param url
+   * @param id
+   */
+  public buildUrlApiDelivery = (url: string, id: string = null): string => {
+    return id == null ? this.apiDeliveryUrl + url : this.apiDeliveryUrl + `${url}/${id}`;
+  };
+
+  /**
+   * getHeaders para api dinamicas
+   * @return HttpHeaders
+   */
+  public getHeadersApiDynamic = (token): HttpHeaders => {
+    return new HttpHeaders({
+      Authorization: token !== null ? 'Bearer ' + token : '',
+      'Content-Type': 'application/json'
+    });
+  };
 
   /**
    * getHeaders
@@ -38,7 +59,7 @@ export class HttpService {
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  }
+  };
 
 
   /**
@@ -59,7 +80,7 @@ export class HttpService {
         connectionId: connection ? connection.token : null
       };
     }
-  }
+  };
 
   /**
    * errorHandlerPos
@@ -96,7 +117,7 @@ export class HttpService {
       console.log('No Http error', error);
       return 'No Http error';
     }
-  }
+  };
 
   /**
    * errorHandler
@@ -141,5 +162,5 @@ export class HttpService {
       console.log('No Http error', error);
       return 'No Http error';
     }
-  }
+  };
 }

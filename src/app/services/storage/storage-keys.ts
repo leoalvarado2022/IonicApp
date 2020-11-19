@@ -2,6 +2,7 @@ export enum StorageKeys {
   Quadrilles = 'quadrilles',
   Workers = 'workers',
   ConfigDelivery = 'ConfigDelivery',
+  IntegrationDelivery = 'IntegrationDelivery',
   Tallies = 'tallies',
   CostCentersCustom = 'costCentersCustom',
   Labors = 'labors',

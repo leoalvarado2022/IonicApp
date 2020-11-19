@@ -32,7 +32,6 @@ export class PosService {
               private httpClient: HttpClient,
               private httpService: HttpService,
               private storeService: StoreService,
-              private deliveryService: DeliveryService,
               private storageSyncService: StorageSyncService,
               private _toastService: ToastService,
               private backgroundMode: BackgroundMode) {
@@ -145,7 +144,9 @@ export class PosService {
   public loginToSync = () => {
     const user = this.storageSyncService.getActiveConfigDelivery();
 
-    if (user) {
+    const modoPos = localStorage.getItem('modoPOS');
+
+    if (user && modoPos && modoPos === '1') {
 
       const body = {
         username: user.user,
@@ -203,55 +204,59 @@ export class PosService {
    * @param order
    */
   public openTable = async (order: any) => {
-    // guardar la orden en memoria
-    this.order = order;
+    const modoPos = localStorage.getItem('modoPOS');
+    if (modoPos && modoPos === '1') {
+      // guardar la orden en memoria
+      this.order = order;
 
-    //obtener los productos de la orden
-    const checkMenu = this.mapOptionsMenus(this.order);
+      //obtener los productos de la orden
+      const checkMenu = this.mapOptionsMenus(this.order);
 
-    this.getMenuCustom(checkMenu).subscribe(data => {
-      // se asigna la primera vez para setear la data
-      this.checkMenuData = data;
+      this.getMenuCustom(checkMenu).subscribe(data => {
+        // se asigna la primera vez para setear la data
+        this.checkMenuData = data;
 
-      // banderas para tratar la data
-      let dataCompareCheckMenu = [];
-      let error = false;
+        // banderas para tratar la data
+        let dataCompareCheckMenu = [];
+        let error = false;
 
-      // compruebo que las productos de las ordenes existan
-      if (this.order && this.order.products && this.order.products.length) {
-        // recorro los productos
-        for (let product of this.order.products) {
-          // busco los productos
-          const productRow = this.checkMenuData.find(value => value.code === product.code_product && value.type === product.type);
-          // si existe el producto
-          if (productRow) {
-            // agregamos el precio de la orden
-            productRow.price = product.total;
-            // lo agrego
-            dataCompareCheckMenu.push(productRow);
-            // de lo contrario no esta syncronizado
-          } else {
-            error = true;
+        // compruebo que las productos de las ordenes existan
+        if (this.order && this.order.products && this.order.products.length) {
+          // recorro los productos
+          for (let product of this.order.products) {
+            // busco los productos
+            const productRow = this.checkMenuData.find(value => value.code === product.code_product && value.type === product.type);
+            // si existe el producto
+            if (productRow) {
+              // agregamos el precio de la orden
+              productRow.price = product.total;
+              productRow.text = product.text;
+              // lo agrego
+              dataCompareCheckMenu.push(productRow);
+              // de lo contrario no esta syncronizado
+            } else {
+              error = true;
+            }
           }
+        } else {
+          error = true;
         }
-      } else {
-        error = true;
-      }
 
-      // si no existe el producto dentro del menu
-      if (error) {
-        this._toastService.errorToast('El producto no esta syncronizado...');
-      } else {
-        // se reasigna con la data seteada y filtrada
-        this.checkMenuData = dataCompareCheckMenu;
-        // si existe el producto abre la mesa
-        this.openTableToCommand().then();
-      }
+        // si no existe el producto dentro del menu
+        if (error) {
+          this._toastService.errorToast('El producto no esta syncronizado o no estas conectado a la red...');
+        } else {
+          // se reasigna con la data seteada y filtrada
+          this.checkMenuData = dataCompareCheckMenu;
+          // si existe el producto abre la mesa
+          this.openTableToCommand().then();
+        }
 
-    }, error => {
-      this.httpService.errorHandlerPos(error);
-      this.connection = false;
-    });
+      }, error => {
+        this.httpService.errorHandlerPos(error);
+        this.connection = false;
+      });
+    }
   };
 
   /**
@@ -340,9 +345,6 @@ export class PosService {
           // buscar los modificadores o textos
           const children = this.checkMenuData.filter(value => value.id_reference === data.id && value.type !== 'ITEM');
 
-          // crear la comanda cabecera
-          data.children = children;
-
           let dataObject: any = {
             option: {
               id: data.id,
@@ -351,12 +353,11 @@ export class PosService {
             },
             quantity: 1,
             total: data.price,
+            children: []
           };
 
-          // si tiene modificadores
+          // si tiene modificadores  - crear la comanda cabecera
           if (children && children.length) {
-            dataObject.children = [];
-
             for (let child of children) {
               const dataChild = {
                 quantity: 1,
@@ -373,6 +374,33 @@ export class PosService {
               dataObject.children.push(dataChild);
             }
           }
+
+          // si el item tiene texto
+          if (data.text && data.text.length > 4) {
+            const dataChild = {
+              quantity: 0,
+              text: data.text,
+              total: 0,
+            };
+            dataObject.children.push(dataChild);
+          }
+
+          // si lo modificadores tienen textos
+          const childrenText = this.checkMenuData.filter(value => value.id_reference === data.id && value.type !== 'ITEM' && value.text && value.text.length > 4);
+
+          // si filtrar los registros que tiene data
+          if (childrenText && childrenText.length) {
+            // recorrer para crear el tipo text modificador
+            for (let childText of childrenText) {
+              const dataChild = {
+                quantity: 0,
+                text: childText.text,
+                total: 0,
+              };
+              dataObject.children.push(dataChild);
+            }
+          }
+
           command.push(dataObject);
         }
       }
@@ -460,32 +488,6 @@ export class PosService {
       this.connection = false;
     });
   };
-
-
-  /**
-   * @description agregar en fx10 automaticamente
-   * @param order
-   */
-  public insertDataFx10POS(order: any) {
-    const configActiveDelivery = this.storageSyncService.getActiveConfigDelivery();
-
-    if (configActiveDelivery) {
-      const user = this.storeService.getActiveCompany();
-
-      const data = {
-        user: user.user,
-        id: order.id
-      };
-
-      this.deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
-        const order = success.resp;
-        this.openTable(order);
-      }, error => {
-        this.httpService.errorHandler(error);
-      });
-    }
-
-  }
 
   /////////////////////////////////////////////////////////
   ////////////////////////////////

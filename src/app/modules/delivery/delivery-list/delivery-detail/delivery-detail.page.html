@@ -17,13 +17,26 @@
     <ion-card-header>
       <ion-card-title>
         <ion-item lines="full">
-<!--          <ion-badge slot="start" [ngClass]="{'error': productSync()}"></ion-badge>-->
-<!--          <ion-label>{{ order?.origin }}</ion-label>-->
+          <!--          <ion-badge slot="start" [ngClass]="{'error': productSync()}"></ion-badge>-->
+          <!--          <ion-label>{{ order?.origin }}</ion-label>-->
           <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'JUSTO'">
           <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
-          <ion-button color="danger"  style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'" (click)="setNotificationStatus('rejected')">Rechazar</ion-button>
-          <ion-button color="primary" class="button-class" style="right: 75px !important;" *ngIf="!productSync() && order?.status === 'pending'" (click)="setNotificationStatus('accepted')">Aceptar</ion-button>
-          <ion-button color="warning" class="button-class" style="right: 75px !important;" *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('close')">Cerrar</ion-button>
+          <ion-button color="danger" style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'"
+                      (click)="setNotificationStatus('rejected')">Rechazar
+          </ion-button>
+          <ion-button color="primary" class="button-class" style="right: 75px !important;"
+                      *ngIf="!productSync() && order?.status === 'pending'" (click)="setNotificationStatus('accepted')">
+            Aceptar
+          </ion-button>
+          <ion-button color="warning" class="button-class" style="right: 75px !important;"
+                      *ngIf="order?.status === 'delivering'" (click)="setNotificationStatus('close')">Cerrar
+          </ion-button>
+          <ion-button color="warning" class="button-class" style="right: 75px !important;"
+                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('done')">Cerrar
+          </ion-button>
+          <ion-button color="primary" class="button-class"
+                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('delivering')">Entregar
+          </ion-button>
         </ion-item>
       </ion-card-title>
     </ion-card-header>
@@ -61,7 +74,7 @@
           <p><strong>Total:</strong> {{ product?.total | currency:'CLP'}}</p>
 
           <p><strong>Modificadores:</strong></p>
-            <!-- modificadores-->
+          <!-- modificadores-->
           <div style="padding-left: 25px;" *ngFor="let modifier of modifierProduct(product.id)">
             <p *ngIf="modifier?.name_product"><strong>Nombre del producto:</strong> {{ modifier?.name_product}}</p>
             <p *ngIf="modifier?.name_product"><strong>Comentario:</strong> <span

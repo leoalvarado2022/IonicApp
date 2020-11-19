@@ -68,6 +68,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
    * @param status
    */
   private loadNotifications(status: string) {
+
     const user = this.storeService.getActiveCompany();
     const data = {
       user: user.user,

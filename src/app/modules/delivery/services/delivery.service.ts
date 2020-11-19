@@ -10,6 +10,7 @@ import {debounceTime} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {PosService} from './pos.service';
+import {MasterService} from './master.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class DeliveryService {
 
   public orderListUrl = 'order-list';
   public orderUpdateUrl = 'order-update';
+  public changeOrderStatus = 'change-order';
   public orderUrl = 'order';
   private service: Subscription;
   private refreshData: Subscription;
@@ -28,6 +30,7 @@ export class DeliveryService {
               private httpService: HttpService,
               private storeService: StoreService,
               private backgroundMode: BackgroundMode,
+              private _masterService: MasterService,
               private storageSyncService: StorageSyncService) {
   }
 
@@ -76,6 +79,17 @@ export class DeliveryService {
     const url = this.httpService.buildUrl(this.orderUpdateUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description cambiar estatus de la api delivery
+   * @param data
+   */
+  public setHttpChangeDeliveryStatus = (data: any, status: string, token: string) => {
+    const url = this.httpService.buildUrlApiDelivery(this.changeOrderStatus, status);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeadersApiDynamic(token)
     });
   };
 
@@ -139,10 +153,12 @@ export class DeliveryService {
     };
 
     this.service = this.getNotificationHttp(data).subscribe((success: any) => {
-      if(success.resp.length) {
+      if (success.resp.length) {
         for (let order of success.resp) {
           this.updateStatusOrder(order.id, user, order);
-          // this._posService.insertDataFx10POS(order);
+          if (!order.error) {
+            this._masterService.insertDataFx10POS(order);
+          }
           debounceTime(2000);
         }
       }
@@ -157,13 +173,14 @@ export class DeliveryService {
    * @param id
    * @param user
    */
-  public updateStatusOrder(id: number, user:any, order: any) {
+  public updateStatusOrder(id: number, user: any, order: any) {
     const data = {
       user: user.user,
       id_order: id,
       status: order.error ? 'rejected' : 'accepted'
     };
-    this.setNotificationHttpStatus(data).subscribe((success: any) => {}, error => {
+    this.setNotificationHttpStatus(data).subscribe((success: any) => {
+    }, error => {
       this.stopRefreshData();
       this.backgroundMode.disable();
     });

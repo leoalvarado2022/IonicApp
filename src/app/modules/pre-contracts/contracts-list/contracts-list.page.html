@@ -11,12 +11,8 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar
-      animated
-      placeholder="Buscar..."
-      showCancelButton="never"
-      (ionChange)="searchContract($event.target.value)"
-      (ionClear)="cancelSearch()">
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+      (ionChange)="searchContract($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
@@ -31,7 +27,7 @@
       <ion-label>
         <h2>Pre-Contratos</h2>
       </ion-label>
-      <ion-badge slot="end"  color="primary">{{ filteredContracts.length }}</ion-badge>
+      <ion-badge slot="end" color="primary">{{ filteredContracts.length }}</ion-badge>
     </ion-item>
   </ion-card>
 
@@ -49,7 +45,8 @@
 
           <ion-card-content>
             <p> <strong>Tipo Contrato:</strong> {{ contract.contractTypeName | titlecase }}</p>
-            <p *ngIf="contract.contractorName"> <strong>Contratista:</strong> {{ contract.contractorName | titlecase }}</p>
+            <p *ngIf="contract.contractorName"> <strong>Contratista:</strong> {{ contract.contractorName | titlecase }}
+            </p>
           </ion-card-content>
         </ion-card>
       </ion-item>
@@ -64,12 +61,10 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-virtual-scroll>
-
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button size="small" (click)="contractForm()" [disabled]="isLoading">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
-
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="contractForm()" [disabled]="isLoading">
+    Crear
+  </ion-button>
+</ion-footer>

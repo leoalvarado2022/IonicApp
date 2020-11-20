@@ -38,12 +38,13 @@
         <span class="errorMsg">Ingrese la nota</span>
       </ng-container>
     </ion-item>
-
-    <ng-container *ngIf="!note">
-      <ion-button (click)="submit()" [disabled]="noteForm.invalid || isSaving " color="primary" expand="block">
-        Guardar
-      </ion-button>
-    </ng-container>
-
   </form>
 </ion-content>
+
+<ion-footer>
+  <ng-container *ngIf="!note">
+    <ion-button (click)="submit()" [disabled]="noteForm.invalid || isSaving " color="primary" expand="block">
+      Guardar
+    </ion-button>
+  </ng-container>
+</ion-footer>

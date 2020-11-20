@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
 import {ToastService} from '../toast/toast.service';
-import {LoaderService} from '../loader/loader.service';
 
 @Injectable()
 export class CameraService {
@@ -11,7 +10,6 @@ export class CameraService {
   constructor(
     private camera: Camera,
     private toastService: ToastService,
-    private loaderService: LoaderService,
   ) {
     this.commonOptions = {
       quality: 100,
@@ -54,9 +52,9 @@ export class CameraService {
    */
   private getImage = (options): Promise<any> => {
     return new Promise(resolve => {
-      this.camera.getPicture(options).then((image) => {
+      this.camera.getPicture(options).then(image => {
         resolve(image);
-      }, error => {
+      }, error => {        
         this.toastService.warningToast(error);
         resolve(null);
       });

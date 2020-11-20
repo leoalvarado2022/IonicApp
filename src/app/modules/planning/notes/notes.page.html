@@ -11,12 +11,8 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar
-      animated
-      placeholder="Buscar..."
-      showCancelButton="never"
-      (ionChange)="searchNote($event.target.value)"
-      (ionClear)="cancelSearch()">
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+      (ionChange)="searchNote($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
@@ -25,21 +21,15 @@
   <ng-container *ngFor="let item of filteredNotes">
     <div class="card-sli">
       <div class="card-sli-back">
-        <app-note-item
-          (deleteNote)="deleteNoteConfirm($event)"
-          (noteClicked)="viewNote(item)"
-          [item]="item"
-          [slideDisabled]="false"
-        ></app-note-item>
+        <app-note-item (deleteNote)="deleteNoteConfirm($event)" (noteClicked)="viewNote(item)" [item]="item"
+          [slideDisabled]="false"></app-note-item>
       </div>
     </div>
   </ng-container>
-
-  <ng-container *ngIf="checkButton()">
-    <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-      <ion-fab-button size="small" (click)="openForm()" [disabled]="!costCenter || !isOnline" color="danger">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-  </ng-container>
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="openForm()" [disabled]="!costCenter || !isOnline" color="danger">
+    Crear
+  </ion-button>
+</ion-footer>

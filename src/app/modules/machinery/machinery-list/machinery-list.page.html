@@ -14,12 +14,8 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar
-      animated
-      placeholder="Buscar..."
-      showCancelButton="never"
-      (ionChange)="searchMachinery($event.target.value)"
-      (ionClear)="cancelSearch()">
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+      (ionChange)="searchMachinery($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
@@ -94,11 +90,10 @@
   <ng-template #loading>
     <p class="ion-text-center">Cargando</p>
   </ng-template>
-
-  <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-    <ion-fab-button (click)="createMachinery()" size="small" [disabled]="isLoading">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="createMachinery()" [disabled]="isLoading">
+    Crear
+  </ion-button>
+</ion-footer>

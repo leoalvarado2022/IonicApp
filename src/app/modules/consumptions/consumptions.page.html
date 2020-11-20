@@ -11,18 +11,15 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar
-      animated
-      placeholder="Buscar..."
-      showCancelButton="never"
-      (ionChange)="searchConsumption($event.target.value)"
-      (ionClear)="cancelSearch()">
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+      (ionChange)="searchConsumption($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>  
-  <ion-refresher (ionRefresh)="reload($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200" [disabled]="isSyncing">
+<ion-content>
+  <ion-refresher (ionRefresh)="reload($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200"
+    [disabled]="isSyncing">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
@@ -50,11 +47,11 @@
               <ion-icon *ngIf="consumption.tempId" name="server" slot="end" color="danger"></ion-icon>
             </ion-item>
 
-            <ion-card-content>                            
+            <ion-card-content>
               <p> <strong>Centro de Costo:</strong> {{ consumption.costCenterName | titlecase }}</p>
               <p> <strong>Fecha:</strong> {{ formatDate(consumption.date) }}</p>
               <p> <strong>Producto:</strong> {{ consumption.itemName | titlecase }}</p>
-              
+
               <p *ngIf="consumption.unitName"> <strong>Unidad:</strong> {{ consumption.unitName | titlecase }}</p>
 
               <div class="ion-float-end">
@@ -85,11 +82,10 @@
   <ng-template #loading>
     <p class="ion-text-center">Cargando</p>
   </ng-template>
-
-  <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-    <ion-fab-button size="small" [disabled]="isLoading" (click)="createConsumption()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" [disabled]="isLoading" (click)="createConsumption()">
+    Crear
+  </ion-button>
+</ion-footer>

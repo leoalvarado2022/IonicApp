@@ -42,7 +42,8 @@ export class StorageSyncService {
       consumptions,
       products,
       deliveryConfig,
-      integration
+      integration,
+      integrationImages
     } = data;
 
     return Promise.all([
@@ -67,7 +68,8 @@ export class StorageSyncService {
       this.setConsumptions(consumptions),
       this.setProducts(products),
       this.setConfigDelivery(deliveryConfig),
-      this.setIntegrationDelivery(integration)
+      this.setIntegrationDelivery(integration),
+      this.setIntegrationImages(integrationImages)
     ]);
   };
 
@@ -227,6 +229,22 @@ export class StorageSyncService {
   public getIntegrationDelivery = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.IntegrationDelivery).then((delivery: Array<Tally>) => {
       return delivery ? delivery : [];
+    });
+  };
+
+  /**
+   * setIntegrationImages
+   */
+  public setIntegrationImages = (images: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.IntegrationImages, images);
+  };
+
+  /**
+   * getIntegrationImages
+   */
+  public getIntegrationImages = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.IntegrationImages).then((images: Array<Tally>) => {
+      return images ? images : [];
     });
   };
 

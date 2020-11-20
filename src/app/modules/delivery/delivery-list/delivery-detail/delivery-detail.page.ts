@@ -20,6 +20,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
   public order: any;
   public id: any;
+  public images: any;
 
   constructor(
     private storeService: StoreService,
@@ -43,6 +44,11 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   }
 
   loadNotifications() {
+    this._storageSyncService.getIntegrationImages().then((data) => {
+      this.images = data;
+    });
+
+
     if (this.id) {
       this.loaderService.startLoader('Cargando Notificaciones');
       const user = this.storeService.getActiveCompany();
@@ -180,6 +186,25 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       return this.order.products.filter(value => value.id_order_ref !== null && value.type === 'MODIFICADOR' && value.id_order_ref === id);
     }
     return [];
+  }
+
+  /**
+   * @description obtener las imagenes
+   * @param id_integration
+   */
+  imageIntegration(id_integration) {
+    const img = localStorage.getItem(id_integration);
+    if (img) {
+      return img;
+    } else {
+      const imgData = this.images.find(value => value.id_integration === +id_integration);
+      const img = imgData.integration_image;
+      localStorage.setItem(id_integration, img);
+
+      return img;
+    }
+
+    return '';
   }
 
 }

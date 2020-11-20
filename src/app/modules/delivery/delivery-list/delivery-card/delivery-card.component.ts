@@ -9,6 +9,7 @@ import * as moment from 'moment';
 export class DeliveryCardComponent implements OnInit {
 
   @Input() order: any = null;
+  @Input() images: any = null;
   private now = moment();
 
   @Output() orderSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -19,7 +20,7 @@ export class DeliveryCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    // console.log(this.order, 'this.order');
+    // console.log(this.images, 'this.images');
   }
 
   /**
@@ -28,5 +29,24 @@ export class DeliveryCardComponent implements OnInit {
    */
   public viewOrder = (order: any) => {
     this.orderSelected.emit(order);
+  };
+
+  /**
+   * @description obtener las imagenes
+   * @param id_integration
+   */
+  imageIntegration(id_integration) {
+    const img = localStorage.getItem(id_integration);
+    if (img) {
+      return img;
+    } else {
+      const imgData = this.images.find(value => value.id_integration === +id_integration);
+      const img = imgData.integration_image;
+      localStorage.setItem(id_integration, img);
+
+      return img;
+    }
+
+    return '';
   }
 }

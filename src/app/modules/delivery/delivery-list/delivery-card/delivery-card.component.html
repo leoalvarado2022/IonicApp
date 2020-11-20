@@ -4,14 +4,16 @@
       <ion-item lines="full">
         <ion-badge slot="start" [ngClass]="{'error':order?.error}">#{{ order?.id }}</ion-badge>
         <ion-label>{{ order?.origin }}</ion-label>
+        <img [src]="imageIntegration(order.id_integration)" alt="E" *ngIf="order.id_integration"
+             style="margin-right: 10px;width: 50px;">
         <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'JUSTO'">
         <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
       </ion-item>
     </ion-card-title>
   </ion-card-header>
   <ion-card-content>
-    <p><strong>Empresa:</strong> {{ order?.entity}}</p>
+    <p><strong>Local:</strong> {{ order?.name_integration}}</p>
     <p><strong>Fecha de Entrega:</strong> {{ order?.date_delivery }}</p>
-    <p><strong>Total:</strong> {{ order?.value_total | currency:'CLP' }}</p>
+    <p><strong>Total:</strong> {{ order?.value_total | currency:' ' }}</p>
   </ion-card-content>
 </ion-card>

@@ -72,7 +72,7 @@ export class ApplicationEndPage implements OnInit {
       this.orderSyncService.getApplicationLocationsById(this.id)
     ]).then((data: any) => {
       this.currentApplication = data[0];
-      this.orderHeader = data[1];
+      this.orderHeader = Object.assign({}, data[1], { date: this.cleanDate(data[1]["date"]) });
       this.orderChemicals = data[2];
       this.orderLocations = data[3];
       this.tempId = this.orderLocations[0]["tempId"];
@@ -131,8 +131,8 @@ export class ApplicationEndPage implements OnInit {
       applicationOrderId: this.currentApplication.applicationOrderId,
       costCenterId: this.currentApplication.costCenterId,
       tempId: this.tempId,
-      startDate: moment(this.orderLocations[0]["timestamp"]).format('YYYY-MM-DD HH:MM:SS'),
-      endDate: moment(this.orderLocations[this.orderLocations.length - 1]["timestamp"]).format('YYYY-MM-DD HH:MM:SS')
+      startDate: moment(this.orderLocations[0]["timestamp"]).format('YYYY-MM-DD'),
+      endDate: moment(this.orderLocations[this.orderLocations.length - 1]["timestamp"]).format('YYYY-MM-DD')
     });
 
     const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item["timestamp"]).format('YYYY-MM-DD HH:MM:SS') }));
@@ -143,6 +143,18 @@ export class ApplicationEndPage implements OnInit {
     }, error => {
       console.log('error', error);
     });
+  }
+
+  /**
+   * cleanDate
+   * @param date 
+   */
+  private cleanDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   }
 
 }

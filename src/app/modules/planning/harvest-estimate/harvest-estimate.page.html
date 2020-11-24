@@ -47,13 +47,10 @@
       </ion-label>
     </ion-item>    
   </ng-template>
-
-  <ng-container *ngIf="checkButton()">
-    <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-      <ion-fab-button size="small" (click)="newHarvestEstimate()" [disabled]="!costCenter || !isOnline" color="warning">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
-  </ng-container>
-
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="newHarvestEstimate()" [disabled]="!costCenter || !isOnline" color="warning"> 
+    Crear
+  </ion-button>
+</ion-footer>

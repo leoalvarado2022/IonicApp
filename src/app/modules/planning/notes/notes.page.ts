@@ -79,14 +79,7 @@ export class NotesPage implements OnInit, OnDestroy {
     this.costCenter = this.storeService.getCostCenter();
     this.notes = this.storeService.getNotes();
     this.filteredNotes = this.storeService.getNotes();
-  }
-
-  /**
-   * checkButton
-   */
-  public checkButton = () => {
-    return this.currentUrl === '/home-page/notes';
-  }
+  }  
 
   /**
    * searchNote

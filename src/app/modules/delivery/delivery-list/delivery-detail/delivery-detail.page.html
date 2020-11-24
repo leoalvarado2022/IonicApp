@@ -21,6 +21,8 @@
           <!--          <ion-label>{{ order?.origin }}</ion-label>-->
           <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'JUSTO'">
           <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
+          <img [src]="imageIntegration(order.id_integration)" alt="E" *ngIf="order?.id_integration"
+               class="integration-img">
           <ion-button color="danger" style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'"
                       (click)="setNotificationStatus('rejected')">Rechazar
           </ion-button>
@@ -41,48 +43,46 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p><strong>Empresa:</strong> {{ order?.entity}}</p>
-      <p><strong>Identificador de Origen:</strong> {{ order?.key_origin}}</p>
-      <p><strong>Fecha de Registro:</strong> {{ order?.date_register }}</p>
-      <p><strong>Fecha de Entrega:</strong> {{ order?.date_delivery }}</p>
-      <p><strong>Fecha de Aceptación:</strong> {{ order?.date_accept }}</p>
-      <p><strong>Fecha de Rechazo:</strong> {{ order?.date_reject }}</p>
-      <p><strong>Fecha de Entrega Repartidor:</strong> {{ order?.date_delivery_man }}</p>
-      <p><strong>Fecha de Entrega a Cliente:</strong> {{ order?.date_delivery_customer }}</p>
-      <p><strong>Nombre del Comprador:</strong> {{ order?.name_customer }}</p>
-      <p><strong>Teléfono del Comprador:</strong> {{ order?.phone_customer }}</p>
-      <p><strong>Correo del Comprador:</strong> {{ order?.email_customer }}</p>
-      <p><strong>Dirección del Comprador:</strong> {{ order?.address_customer }}</p>
-      <p><strong>Motivo de Rechazo:</strong> {{ order?.reason_reject }}</p>
-      <p><strong>Latitud:</strong> {{ order?.lat }}</p>
-      <p><strong>Longitud:</strong> {{ order?.lng }}</p>
-      <p><strong>Valor de la Orden:</strong> {{ order?.value_order | currency:'CLP'}}</p>
-      <p><strong>Valor de envio:</strong> {{ order?.value_shipping | currency:'CLP'}}</p>
-      <p><strong>Valor de propina:</strong> {{ order?.value_tip | currency:'CLP'}}</p>
-      <p><strong>Valor pagado:</strong> {{ order?.value_pay | currency:'CLP'}}</p>
-      <p><strong>Total:</strong> {{ order?.value_total | currency:'CLP' }}</p>
+      <p *ngIf="order?.name_integration"><strong>Local:</strong> {{ order?.name_integration}}</p>
+      <p *ngIf="order?.date_register"><strong>Fecha de Registro:</strong> {{ order?.date_register }}</p>
+      <p *ngIf="order?.date_delivery"><strong>Fecha de Entrega:</strong> {{ order?.date_delivery }}</p>
+      <!--      <p><strong>Fecha de Aceptación:</strong> {{ order?.date_accept }}</p>-->
+      <!--      <p><strong>Fecha de Rechazo:</strong> {{ order?.date_reject }}</p>-->
+      <!--      <p><strong>Fecha de Entrega Repartidor:</strong> {{ order?.date_delivery_man }}</p>-->
+      <!--      <p><strong>Fecha de Entrega a Cliente:</strong> {{ order?.date_delivery_customer }}</p>-->
+      <p *ngIf="order?.name_customer"><strong>Nombre del Comprador:</strong> {{ order?.name_customer }}</p>
+      <p *ngIf="order?.phone_customer"><strong>Teléfono del Comprador:</strong> {{ order?.phone_customer }}</p>
+      <p *ngIf="order?.email_customer"><strong>Correo del Comprador:</strong> {{ order?.email_customer }}</p>
+      <p *ngIf="order?.address_customer"><strong>Dirección del Comprador:</strong> {{ order?.address_customer }}</p>
+      <p *ngIf="order?.reason_reject"><strong>Motivo de Rechazo:</strong> {{ order?.reason_reject }}</p>
+      <p *ngIf="order?.lat"><strong>Latitud:</strong> {{ order?.lat }}</p>
+      <p *ngIf="order?.lng"><strong>Longitud:</strong> {{ order?.lng }}</p>
+      <p *ngIf="order?.value_total"><strong>Valor de la Orden:</strong> {{ order?.value_total | currency:' '}}</p>
+      <!--      <p><strong>Valor de envio:</strong> {{ order?.value_shipping | currency:' '}}</p>-->
+      <p *ngIf="order?.value_tip"><strong>Valor de propina:</strong> {{ order?.value_tip | currency:' '}}</p>
+      <p *ngIf="order?.value_order"><strong>Total:</strong> {{ order?.value_order | currency:' ' }}</p>
       <br>
       <ng-container *ngIf="order?.products.length">
         <div style="border-top: 1px solid rgba(0,0,0,0.33);" *ngFor="let product of orderProducts()">
           <hr>
           <p *ngIf="product?.name_product"><strong>Nombre del producto:</strong> {{ product?.name_product}}</p>
-          <p *ngIf="product?.name_product"><strong>Comentario:</strong> <span
+          <p *ngIf="product?.name_product && product?.text"><strong>Comentario:</strong> <span
               style="font-style: italic;">{{ product?.text}}</span></p>
           <p *ngIf="!product.name_product"><strong style="color: rgba(255,0,0,0.63);">Comentario:</strong> <span
               style="font-style: italic;">{{ product?.text}}</span></p>
           <p><strong>Cantidad:</strong> {{ product?.quantity}}</p>
-          <p><strong>Total:</strong> {{ product?.total | currency:'CLP'}}</p>
+          <p><strong>Total:</strong> {{ product?.total | currency:' '}}</p>
 
-          <p><strong>Modificadores:</strong></p>
+          <p *ngIf="modifierProduct(product.id).length"><strong>Modificadores:</strong></p>
           <!-- modificadores-->
           <div style="padding-left: 25px;" *ngFor="let modifier of modifierProduct(product.id)">
             <p *ngIf="modifier?.name_product"><strong>Nombre del producto:</strong> {{ modifier?.name_product}}</p>
-            <p *ngIf="modifier?.name_product"><strong>Comentario:</strong> <span
+            <p *ngIf="modifier?.name_product && modifier?.text && modifier?.text.length > 2"><strong>Comentario:</strong> <span
                 style="font-style: italic;">{{ modifier?.text}}</span></p>
             <p *ngIf="!modifier.name_product"><strong style="color: rgba(255,0,0,0.63);">Comentario:</strong> <span
                 style="font-style: italic;">{{ modifier?.text}}</span></p>
             <p><strong>Cantidad:</strong> {{ modifier?.quantity}}</p>
-            <p><strong>Total:</strong> {{ modifier?.total | currency:'CLP'}}</p>
+            <p><strong>Total:</strong> {{ modifier?.total | currency:' '}}</p>
           </div>
         </div>
       </ng-container>

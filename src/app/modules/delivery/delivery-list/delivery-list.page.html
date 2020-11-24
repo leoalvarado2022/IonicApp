@@ -28,7 +28,7 @@
       <ion-tab-bar slot="top">
         <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'"
                         [ngClass]="{'backgroundSelected' : selected === 'pending'}">
-          <ion-label>Pendintes</ion-label>
+          <ion-label>Pendientes</ion-label>
         </ion-tab-button>
         <ion-tab-button (click)="changeStatus('accepted')" [selected]="selected === 'accepted'"
                         [ngClass]="{'backgroundSelected' : selected === 'accepted'}">
@@ -56,6 +56,7 @@
     <div *ngFor="let order of allOrder">
       <app-delivery-card
           [order]="order"
+          [images]="integrationImages"
           (orderSelected)="orderSelected($event)"
       >
       </app-delivery-card>

@@ -1,11 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {StoreService} from '../../../shared/services/store/store.service';
-import {TicketsService} from '../services/tickets/tickets.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {Subscription} from 'rxjs';
-import {NetworkService} from '../../../shared/services/network/network.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { StoreService } from '../../../shared/services/store/store.service';
+import { TicketsService } from '../services/tickets/tickets.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoaderService } from '../../../shared/services/loader/loader.service';
+import { HttpService } from '../../../shared/services/http/http.service';
+import { Subscription } from 'rxjs';
+import { NetworkService } from '../../../shared/services/network/network.service';
 import * as moment from 'moment';
 
 @Component({

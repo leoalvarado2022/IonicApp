@@ -14,7 +14,8 @@
   </ion-toolbar>
 </ion-header>
 
-<div (click)="openSelected = !openSelected" [class.selected]="openSelected" class="header-content background-color--header">
+<div (click)="openSelected = !openSelected" [class.selected]="openSelected"
+  class="header-content background-color--header">
   <ng-container *ngIf="ticket">
     <!--    <ion-row class="text-white">-->
     <!--      <p class="h">{{remainingTime(ticket.clientCommitment)}}</p>-->
@@ -57,10 +58,10 @@
       </div>
     </ion-virtual-scroll>
   </ng-container>
-
-  <ion-fab horizontal="end" slot="fixed" vertical="bottom">
-    <ion-fab-button size="small" (click)="openForm()" [disabled]="!isOnline" color="primary">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
 </ion-content>
+
+<ion-footer>
+  <ion-button (click)="openForm()" [disabled]="!isOnline" color="primary" expand="block">
+    Crear
+  </ion-button>
+</ion-footer>

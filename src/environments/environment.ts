@@ -11,7 +11,7 @@ export const environment = {
   tz: 'America/Santiago',
   iosDeviceNames,
   syncTimerMinutes: 10,
-  searchDeliveryListMSec: 10000,
-  searchDeliveryListAcceptedMSec: 8000,
+  searchDeliveryListMSec: 20000,
+  searchDeliveryListAcceptedMSec: 18000,
   googleMapsApiKey: 'AIzaSyA9T2KTzXZkhW4HVaiA6U-TsXo0jL6asRs'
 };

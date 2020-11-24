@@ -10,6 +10,7 @@ ion-card {
   width: 40px;
   height: 40px;
   border-radius: 10px;
+  margin: 11px 11px 11px 0;
 }
 
 .id {
@@ -115,4 +116,16 @@ ion-card-content {
   //--padding-end: 5px;
   right: 0;
   position: absolute;
+}
+
+.integration-img {
+  margin-left: 10px;
+  width: 85px;
+  position: absolute;
+  right: 0;
+  background: white;
+  padding: 10px;
+  top: 0;
+  border-radius: 5px;
+  //box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px;
 }

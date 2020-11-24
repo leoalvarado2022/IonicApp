@@ -12,11 +12,11 @@
 <ion-content>
   <ion-tabs>
     <ion-tab-bar slot="top">
-      <ion-tab-button [ngClass]="{ 'tab-selected': currentStep === step1 }" (click)="currentStep = step1">
+      <ion-tab-button [ngClass]="{ 'tab-selected': currentStep === step1 }">
         <ion-label>Paso 1</ion-label>
       </ion-tab-button>
 
-      <ion-tab-button [ngClass]="{ 'tab-selected': currentStep === step2 }" (click)="currentStep = step2">
+      <ion-tab-button [ngClass]="{ 'tab-selected': currentStep === step2 }">
         <ion-label>Paso 2</ion-label>
       </ion-tab-button>
     </ion-tab-bar>

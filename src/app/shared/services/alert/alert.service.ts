@@ -42,4 +42,26 @@ export class AlertService {
       });
     });
   }
+
+    /**
+   * infoMessage
+   * @param message
+   */
+  public infoMessage = (title: string , message: string) => {
+    return new Promise(resolve => {
+      this.alertController.create({
+        header: title,
+        message,
+        buttons: [
+          {
+            text: 'OK',
+            handler: () => resolve(true)
+          }
+        ]
+      }).then(alert => {
+        alert.present();
+      });
+    });
+  }
+  
 }

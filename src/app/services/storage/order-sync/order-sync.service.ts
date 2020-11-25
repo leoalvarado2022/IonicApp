@@ -124,6 +124,20 @@ export class OrderSyncService {
   }
 
   /**
+   * clearApplicationCache
+   */
+  public clearApplicationCache = () => {
+    return Promise.all([
+      this.storage.set(StorageKeys.OrderHeader, null),
+      this.storage.set(StorageKeys.OrderCostCenter, []),
+      this.storage.set(StorageKeys.OrderMachinery, []),
+      this.storage.set(StorageKeys.OrderChemical, []),
+      this.storage.set(StorageKeys.OrderBalanceToApply, []),
+      this.storage.set(StorageKeys.OrderBalanceApplied, []),
+    ]);
+  }
+
+  /**
    * ===========================
    * ===========================
    * ===========================
@@ -186,6 +200,16 @@ export class OrderSyncService {
   public getApplicationLocationsById = (id: number): Promise<Array<ApplicationLocationInterface>> => {
     return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
       return applicationLocations.filter(item => item.id === id);
+    });
+  }
+
+  /**
+   * clearApplicationLocationsById
+   * @param id 
+   */
+  public clearApplicationLocationsById = (id: number): Promise<Array<ApplicationLocationInterface>> => {
+    return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
+      return applicationLocations.filter(item => item.id !== id);
     });
   }
 

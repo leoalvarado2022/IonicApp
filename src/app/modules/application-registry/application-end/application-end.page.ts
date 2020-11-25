@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { ApplicationListInterface } from '../application-list.interface';
 import { ApplicationLocationInterface } from '../application-location.interface';
 import * as moment from 'moment';
 import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-application-end',
@@ -33,7 +34,9 @@ export class ApplicationEndPage implements OnInit {
     private orderSyncService: OrderSyncService,
     private formBuilder: FormBuilder,
     private applicationRegistryService: ApplicationRegistryService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private toastService: ToastService,
+    private router: Router
   ) {
 
   }
@@ -42,6 +45,7 @@ export class ApplicationEndPage implements OnInit {
     this.id = +this.route.snapshot.paramMap.get("id");
 
     this.endForm = this.formBuilder.group({
+      id: 0,
       hectares: ['', [
         Validators.required,
         Validators.min(1)
@@ -72,7 +76,7 @@ export class ApplicationEndPage implements OnInit {
       this.orderSyncService.getApplicationLocationsById(this.id)
     ]).then((data: any) => {
       this.currentApplication = data[0];
-      this.orderHeader = data[1];
+      this.orderHeader = Object.assign({}, data[1], { date: this.cleanDate(data[1]["date"]) });
       this.orderChemicals = data[2];
       this.orderLocations = data[3];
       this.tempId = this.orderLocations[0]["tempId"];
@@ -127,22 +131,38 @@ export class ApplicationEndPage implements OnInit {
    */
   public submit = () => {
     const formData = Object.assign({}, this.endForm.value, {
-      id: this.currentApplication.id,
       applicationOrderId: this.currentApplication.applicationOrderId,
       costCenterId: this.currentApplication.costCenterId,
       tempId: this.tempId,
-      startDate: moment(this.orderLocations[0]["timestamp"]).format('YYYY-MM-DD HH:MM:SS'),
-      endDate: moment(this.orderLocations[this.orderLocations.length - 1]["timestamp"]).format('YYYY-MM-DD HH:MM:SS')
+      startDate: moment(this.orderLocations[0]["timestamp"]).format('YYYY-MM-DD'),
+      endDate: moment(this.orderLocations[this.orderLocations.length - 1]["timestamp"]).format('YYYY-MM-DD')
     });
 
-    const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item["timestamp"]).format('YYYY-MM-DD HH:MM:SS') }));
+    const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item["timestamp"]).format('YYYY-MM-DD HH:mm:ss') }));
 
     const user = this.storeService.getUser();
     this.applicationRegistryService.storeApplication(user.id, this.orderHeader, formData, orderLocations, formData["chemicals"]).subscribe(success => {
-      console.log('success', success);
+      Promise.all([
+        this.orderSyncService.clearApplicationLocationsById(this.id),
+        this.orderSyncService.clearApplicationCache()
+      ]).then(() => {
+        this.router.navigate(['/home-page/registro_aplicacion/applications', this.id]);
+      });
     }, error => {
-      console.log('error', error);
+      this.toastService.errorToast('ocurrio un error al grabar la aplicacion');
     });
+  }
+
+  /**
+   * cleanDate
+   * @param date 
+   */
+  private cleanDate = (date: string): string => {
+    if (date.includes('T')) {
+      return date.split('T')[0];
+    }
+
+    return date;
   }
 
 }

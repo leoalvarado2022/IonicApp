@@ -268,8 +268,8 @@ export class MachineryFormComponent implements OnInit {
     this.laborCode = labor.code;
     this.laborName = labor.name;
     this.filteredLabors = [];
-
-    this.selectLaborUnit(labor.id);
+    
+    this.selectLaborUnit(labor.unit_id);
   }
 
   /**

@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
+import { WeatherService } from 'src/app/services/weather/weather.service';
 
 @Component({
   selector: 'app-application-end',
@@ -20,14 +21,15 @@ export class ApplicationEndPage implements OnInit {
   public readonly step1 = 1;
   public readonly step2 = 2;
 
+  public endForm: FormGroup;
+  public currentApplication: ApplicationListInterface;
+  public orderChemicals: Array<any>;
+
   private id: number;
   private tempId: number;
   private orderHeader: any;
   private orderLocations: Array<ApplicationLocationInterface>;
-  public currentApplication: ApplicationListInterface;
-  public orderChemicals: Array<any>;
-
-  public endForm: FormGroup;
+  private weather: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,7 +38,8 @@ export class ApplicationEndPage implements OnInit {
     private applicationRegistryService: ApplicationRegistryService,
     private storeService: StoreService,
     private toastService: ToastService,
-    private router: Router
+    private router: Router,
+    private weatherService: WeatherService
   ) {
 
   }
@@ -73,7 +76,8 @@ export class ApplicationEndPage implements OnInit {
       this.orderSyncService.getOrderBalanceToApplyById(this.id),
       this.orderSyncService.getOrderHeader(),
       this.orderSyncService.getOrderChemical(),
-      this.orderSyncService.getApplicationLocationsById(this.id)
+      this.orderSyncService.getApplicationLocationsById(this.id),
+      this.weatherService.getWeather()
     ]).then((data: any) => {
       this.currentApplication = data[0];
       this.orderHeader = Object.assign({}, data[1], { date: this.cleanDate(data[1]["date"]) });
@@ -81,6 +85,16 @@ export class ApplicationEndPage implements OnInit {
       this.orderLocations = data[3];
       this.tempId = this.orderLocations[0]["tempId"];
       this.orderChemicals.forEach(item => this.addChemical(item));
+      this.weather = data[4];
+
+      if (data[4]) {
+        this.endForm.patchValue({
+          temperature: Math.ceil(this.weather["main"]["temp"]),
+          humidity: Math.ceil(this.weather["main"]["humidity"]),
+          wind: Math.ceil(this.weather["wind"]["speed"])
+        });
+        this.endForm.updateValueAndValidity();
+      }
     });
   }
 

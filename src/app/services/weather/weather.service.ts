@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/shared/services/http/http.service';
+import { Storage } from '@ionic/storage';
+import { StorageKeys } from '../storage/storage-keys';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,7 @@ export class WeatherService {
   constructor(
     private httpClient: HttpClient,
     private httpService: HttpService,
+    private storage: Storage
   ) {
 
   }
@@ -35,6 +38,21 @@ export class WeatherService {
     const url = this.httpService.buildUrl(this.getLatLngWeatherUrl);
     const body = this.httpService.buildBody({ lat, lng });
     return this.httpClient.post(url, body);
+  }
+
+  /**
+   * setWeather
+   * @param weather weather object
+   */
+  public setWeather = (weather: any): Promise<any> => {
+    return this.storage.set(StorageKeys.Weather, weather);
+  }
+
+  /**
+   * getWeather
+   */
+  public getWeather = (): Promise<any> => {
+    return this.storage.get(StorageKeys.Weather);
   }
 
 }

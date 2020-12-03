@@ -70,10 +70,12 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
       this.loadingMessage = "Obteniendo Clima";
 
       this.weatherService.getLatLngWeather(geoposition.latitude, geoposition.longitude).subscribe(weather => {
-        this.weather = weather["data"];
-        this.loading = false;
-
-        this.watchPosition();
+        const data = weather["data"];
+        this.weatherService.setWeather(data).then(() => {
+          this.weather = data;
+          this.watchPosition();
+          this.loading = false;
+        });
       }, error => {
         this.toastService.errorToast('No se pudo cargar el clima');
         this.loading = false;
@@ -129,6 +131,14 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
    */
   public endApplication = () => {
     this.router.navigate(["/home-page/registro_aplicacion/application-end", this.id]);
+  }
+
+  /**
+   * roundUp
+   * @param value to round up float values
+   */
+  public roundUp = (value: number): number => {
+    return Math.ceil(value);
   }
 
 }

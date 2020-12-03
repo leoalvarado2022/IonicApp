@@ -6,8 +6,9 @@ import { HttpService } from 'src/app/shared/services/http/http.service';
 export class ApplicationRegistryService {
 
   private readonly getOrdersListUrl = 'application-registry/orders';
-  private readonly getApplicationsList = 'application-registry/applications';
-  private readonly storeApplicationEndpoint = 'application-registry/store';
+  private readonly getApplicationsListUrl = 'application-registry/applications';
+  private readonly storeApplicationUrl = 'application-registry/store';
+  private readonly getApplicationUrl = 'application-registry/get';
 
   constructor(
     private httpClient: HttpClient,
@@ -33,22 +34,32 @@ export class ApplicationRegistryService {
    * @param filter 
    */
   public getApplicationList = (orderId: number, filter: string = '') => {
-    const url = this.httpService.buildUrl(this.getApplicationsList);
+    const url = this.httpService.buildUrl(this.getApplicationsListUrl);
     const body = this.httpService.buildBody({ orderId, filter });
     return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
   }
 
   /**
    * storeApplication
-   * @param user 
-   * @param header 
-   * @param application 
-   * @param applicationLocations 
-   * @param applicationChemicals 
+   * @param user user id
+   * @param header order header
+   * @param application application data
+   * @param applicationLocations gps locations
+   * @param applicationChemicals chemicals used
    */
   public storeApplication = (user: number, header: any, application: any, applicationLocations: any, applicationChemicals: any) => {
-    const url = this.httpService.buildUrl(this.storeApplicationEndpoint);
+    const url = this.httpService.buildUrl(this.storeApplicationUrl);
     const body = this.httpService.buildBody({ user, header, application, applicationLocations, applicationChemicals });
+    return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
+  }
+
+  /**
+   * getApplication
+   * @param id 
+   */
+  public getApplication = (id: string) => {
+    const url = this.httpService.buildUrl(this.getApplicationUrl, id);
+    const body = this.httpService.buildBody();
     return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
   }
 

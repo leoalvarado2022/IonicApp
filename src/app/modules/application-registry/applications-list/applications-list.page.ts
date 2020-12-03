@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IonItemSliding } from '@ionic/angular';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { LoaderService } from 'src/app/shared/services/loader/loader.service';
 import { ApplicationListInterface } from '../application-list.interface';
@@ -14,7 +15,6 @@ export class ApplicationsListPage implements OnInit {
 
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
-
   public filteredApplications: Array<ApplicationListInterface> = [];
   public selectedApplication: ApplicationListInterface = null;
 
@@ -35,7 +35,7 @@ export class ApplicationsListPage implements OnInit {
   /**
    * loadData
    */
-  private loadData = () => {
+  private loadData = (): void => {
     this.loaderService.startLoader();
 
     const id = this.activatedRoute.snapshot.paramMap.get('id');
@@ -48,7 +48,7 @@ export class ApplicationsListPage implements OnInit {
         orderHeader,
         orderMachinery
       } = success["data"];
-      
+
       Promise.all([
         this.orderSyncService.setOrderHeader(orderHeader),
         this.orderSyncService.setOrderCostCenter(orderCostCenter),
@@ -71,7 +71,7 @@ export class ApplicationsListPage implements OnInit {
    * selectApplication
    * @param application 
    */
-  public selectApplication = (application: ApplicationListInterface) => {
+  public selectApplication = (application: ApplicationListInterface): void => {
     if (application.applicationBalance) {
       if (this.selectedApplication === application) {
         this.selectedApplication = null;
@@ -84,8 +84,17 @@ export class ApplicationsListPage implements OnInit {
   /**
    * startApplication
    */
-  public startApplication = () => {
-    this.router.navigate(["/home-page/registro_aplicacion/application-start", this.selectedApplication.applicationOrderId]);
+  public startApplication = (): void => {
+    this.router.navigate(["/home-page/registro_aplicacion/application-start", this.selectedApplication.id]);
+  }
+
+  /**
+   * editApplication
+   * @param application application selected to edit
+   */
+  public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {
+    this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });
+    slide.close();
   }
 
 }

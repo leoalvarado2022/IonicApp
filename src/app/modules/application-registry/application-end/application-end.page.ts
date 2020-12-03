@@ -39,13 +39,15 @@ export class ApplicationEndPage implements OnInit {
     private storeService: StoreService,
     private toastService: ToastService,
     private router: Router,
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    private activatedRoute: ActivatedRoute
   ) {
 
   }
 
   ngOnInit() {
     this.id = +this.route.snapshot.paramMap.get("id");
+    const edit = this.activatedRoute.snapshot.queryParamMap.get("edit");
 
     this.endForm = this.formBuilder.group({
       id: 0,
@@ -83,9 +85,12 @@ export class ApplicationEndPage implements OnInit {
       this.orderHeader = Object.assign({}, data[1], { date: this.cleanDate(data[1]["date"]) });
       this.orderChemicals = data[2];
       this.orderLocations = data[3];
-      this.tempId = this.orderLocations[0]["tempId"];
-      this.orderChemicals.forEach(item => this.addChemical(item));
       this.weather = data[4];
+
+      if (!edit) {
+        this.tempId = this.orderLocations[0]["tempId"];
+        this.orderChemicals.forEach(item => this.addChemical(item));
+      }
 
       if (data[4]) {
         this.endForm.patchValue({
@@ -96,6 +101,10 @@ export class ApplicationEndPage implements OnInit {
         this.endForm.updateValueAndValidity();
       }
     });
+
+    if (edit) {
+      this.loadApplication(this.id.toString());
+    }
   }
 
   /**
@@ -107,11 +116,11 @@ export class ApplicationEndPage implements OnInit {
       id: 0,
       applicationId: chemical.applicationId,
       applicationOrderId: chemical.applicationOrderId,
-      dosis100l: ['', [
+      dosis100l: [chemical ? chemical.dosis100l : '', [
         Validators.required,
         Validators.min(1)
       ]],
-      hectaresDosis: ['', [
+      hectaresDosis: [chemical ? chemical.hectaresDosis : '', [
         Validators.required,
         Validators.min(1)
       ]],
@@ -178,5 +187,38 @@ export class ApplicationEndPage implements OnInit {
 
     return date;
   }
+
+  /**
+   * loadApplication
+   * @param id application id
+   */
+  private loadApplication = (id: string): void => {
+    this.applicationRegistryService.getApplication(id).subscribe(success => {
+      const data = success["data"];
+
+      this.currentApplication = data["orderBalanceApplied"];
+      this.currentApplication["applicationOrderId"] = data["orderBalanceApplied"]["applicationRegistry"];
+
+      this.endForm.patchValue({
+        id: data["orderHeader"]["id"],
+        hectares: data["orderBalanceApplied"][0]["hectaresQuantity"],
+        temperature: data["orderBalanceApplied"][0]["temperature"],
+        humidity: data["orderBalanceApplied"][0]["humidity"],
+        wind: data["orderBalanceApplied"][0]["wind"],
+        litersQuantity: data["orderBalanceApplied"][0]["litersQuantity"]
+      });
+
+      if (data["orderChemical"]) {
+        data["orderChemical"].forEach(item => {
+          this.addChemical(item);
+        });
+      }
+
+      this.endForm.updateValueAndValidity();
+    }, error => {
+      this.toastService.errorToast('No se pudo cargar la aplicacion');
+    })
+  }
+
 
 }

@@ -22,7 +22,7 @@
   </ion-refresher>
 
   <ion-virtual-scroll [items]="filteredApplications">
-    <ion-item-sliding #slide *virtualItem="let application">
+    <ion-item-sliding #slide *virtualItem="let application" [disabled]="application.applicationBalance">
       <ion-item class="slide-item" lines="none" (click)="selectApplication(application)">
         <ion-card
           [ngClass]="{ 'applied': !application.applicationBalance && selectedApplication !== application, 'applicationSelected': selectedApplication === application}">
@@ -58,7 +58,7 @@
       </ion-item>
 
       <ion-item-options side="end">
-        <ion-item-option color="warning">
+        <ion-item-option color="warning" (click)="editApplication(application, slide)">
           <ion-icon slot="icon-only" name="pencil"></ion-icon>
         </ion-item-option>
         <ion-item-option color="danger">

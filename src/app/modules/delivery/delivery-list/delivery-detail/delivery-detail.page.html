@@ -24,20 +24,20 @@
           <img [src]="imageIntegration(order.id_integration)" alt="E" *ngIf="order?.id_integration"
                class="integration-img">
           <ion-button color="danger" style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'"
-                      (click)="setNotificationStatus('rejected')">Rechazar
+                      (click)="setNotificationStatus('rejected', order?.id_integration)">Rechazar
           </ion-button>
           <ion-button color="primary" class="button-class" style="right: 75px !important;"
-                      *ngIf="!productSync() && order?.status === 'pending'" (click)="setNotificationStatus('accepted')">
+                      *ngIf="!productSync() && order?.status === 'pending'" (click)="setNotificationStatus('accepted', order?.id_integration)">
             Aceptar
           </ion-button>
           <ion-button color="warning" class="button-class" style="right: 75px !important;"
-                      *ngIf="order?.status === 'delivering'" (click)="setNotificationStatus('close')">Cerrar
+                      *ngIf="order?.status === 'delivering'" (click)="setNotificationStatus('close', order?.id_integration)">Cerrar
           </ion-button>
           <ion-button color="warning" class="button-class" style="right: 75px !important;"
-                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('done')">Cerrar
+                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('done', order?.id_integration)">Cerrar
           </ion-button>
           <ion-button color="primary" class="button-class"
-                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('delivering')">Entregar
+                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('delivering', order?.id_integration)">Entregar
           </ion-button>
         </ion-item>
       </ion-card-title>

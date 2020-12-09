@@ -24,26 +24,32 @@
           <img [src]="imageIntegration(order.id_integration)" alt="E" *ngIf="order?.id_integration"
                class="integration-img">
           <ion-button color="danger" style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'"
-                      (click)="setNotificationStatus('rejected')">Rechazar
+                      (click)="setNotificationStatus('rejected', order?.id_integration)">Rechazar
           </ion-button>
           <ion-button color="primary" class="button-class" style="right: 75px !important;"
-                      *ngIf="!productSync() && order?.status === 'pending'" (click)="setNotificationStatus('accepted')">
+                      *ngIf="!productSync() && order?.status === 'pending'"
+                      (click)="setNotificationStatus('accepted', order?.id_integration)">
             Aceptar
           </ion-button>
           <ion-button color="warning" class="button-class" style="right: 75px !important;"
-                      *ngIf="order?.status === 'delivering'" (click)="setNotificationStatus('close')">Cerrar
+                      *ngIf="order?.status === 'delivering'"
+                      (click)="setNotificationStatus('close', order?.id_integration)">Cerrar
           </ion-button>
           <ion-button color="warning" class="button-class" style="right: 75px !important;"
-                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('done')">Cerrar
+                      *ngIf="order?.status === 'accepted'"
+                      (click)="setNotificationStatus('done', order?.id_integration)">Cerrar
           </ion-button>
           <ion-button color="primary" class="button-class"
-                      *ngIf="order?.status === 'accepted'" (click)="setNotificationStatus('delivering')">Entregar
+                      *ngIf="order?.status === 'accepted'"
+                      (click)="setNotificationStatus('delivering', order?.id_integration)">Entregar
           </ion-button>
         </ion-item>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <p *ngIf="order?.name_integration"><strong>Local:</strong> {{ order?.name_integration}}</p>
+      <p *ngIf="order?.code"><strong>Código:</strong> {{ order?.code}}</p>
+      <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>
       <p *ngIf="order?.date_register"><strong>Fecha de Registro:</strong> {{ order?.date_register }}</p>
       <p *ngIf="order?.date_delivery"><strong>Fecha de Entrega:</strong> {{ order?.date_delivery }}</p>
       <!--      <p><strong>Fecha de Aceptación:</strong> {{ order?.date_accept }}</p>-->
@@ -52,7 +58,7 @@
       <!--      <p><strong>Fecha de Entrega a Cliente:</strong> {{ order?.date_delivery_customer }}</p>-->
       <p *ngIf="order?.name_customer"><strong>Nombre del Comprador:</strong> {{ order?.name_customer }}</p>
       <p *ngIf="order?.phone_customer"><strong>Teléfono del Comprador:</strong> {{ order?.phone_customer }}</p>
-      <p *ngIf="order?.email_customer"><strong>Correo del Comprador:</strong> {{ order?.email_customer }}</p>
+      <!--      <p *ngIf="order?.email_customer"><strong>Correo del Comprador:</strong> {{ order?.email_customer }}</p>-->
       <p *ngIf="order?.address_customer"><strong>Dirección del Comprador:</strong> {{ order?.address_customer }}</p>
       <p *ngIf="order?.reason_reject"><strong>Motivo de Rechazo:</strong> {{ order?.reason_reject }}</p>
       <p *ngIf="order?.lat"><strong>Latitud:</strong> {{ order?.lat }}</p>
@@ -77,7 +83,8 @@
           <!-- modificadores-->
           <div style="padding-left: 25px;" *ngFor="let modifier of modifierProduct(product.id)">
             <p *ngIf="modifier?.name_product"><strong>Nombre del producto:</strong> {{ modifier?.name_product}}</p>
-            <p *ngIf="modifier?.name_product && modifier?.text && modifier?.text.length > 2"><strong>Comentario:</strong> <span
+            <p *ngIf="modifier?.name_product && modifier?.text && modifier?.text.length > 2">
+              <strong>Comentario:</strong> <span
                 style="font-style: italic;">{{ modifier?.text}}</span></p>
             <p *ngIf="!modifier.name_product"><strong style="color: rgba(255,0,0,0.63);">Comentario:</strong> <span
                 style="font-style: italic;">{{ modifier?.text}}</span></p>

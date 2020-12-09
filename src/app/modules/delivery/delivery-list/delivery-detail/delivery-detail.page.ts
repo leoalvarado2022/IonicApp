@@ -21,6 +21,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   public order: any;
   public id: any;
   public images: any;
+  public id_integration: any;
 
   constructor(
     private storeService: StoreService,
@@ -72,8 +73,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @description cambiar status de notificación
    * @param status
    */
-  setNotificationStatus(status: string) {
+  setNotificationStatus(status: string, id_integration: any) {
     if (this.id) {
+
+      this.id_integration = id_integration;
 
       const user = this.storeService.getActiveCompany();
 
@@ -114,7 +117,8 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         const data = {
           origin: this.order.origin,
           orderId: this.order.id_origin,
-          data: {}
+          data: {},
+          id_integration: this.id_integration
         };
 
         const token = integ.api_key;
@@ -145,7 +149,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
         // agregar datos en el pos
-        // this._posService.openTable(this.order);
+        this._posService.openTable(this.order);
       }
       this._location.back();
     }, error => {

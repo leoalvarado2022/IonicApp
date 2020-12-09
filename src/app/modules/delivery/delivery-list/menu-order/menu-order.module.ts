@@ -1,28 +1,28 @@
 import {NgModule} from '@angular/core';
-import {DeliveryListPage} from './delivery-list.page';
-import {SharedModule} from '../../../shared/shared.module';
+import {MenuOrderPage} from './menu-order.page';
 import {RouterModule, Routes} from '@angular/router';
+import {SharedModule} from '../../../../shared/shared.module';
 import {CommonModule} from '@angular/common';
-import {MenuOrderPage} from './menu-order/menu-order.page';
+import {NavParams} from '@ionic/angular';
 
 const routes: Routes = [
   {
     path: '',
-    component: DeliveryListPage
+    component: MenuOrderPage,
   }
 ];
 
 
 @NgModule({
   imports: [
-    CommonModule,
     SharedModule,
+    CommonModule,
     RouterModule.forChild(routes)
   ],
   declarations: [
-    DeliveryListPage
+    MenuOrderPage
   ]
 })
-export class DeliveryListModule {
+export class MenuOrderModule {
 
 }

@@ -13,6 +13,8 @@
   </ion-card-header>
   <ion-card-content>
     <p><strong>Local:</strong> {{ order?.name_integration}}</p>
+    <p *ngIf="order?.code"><strong>Código:</strong> {{ order?.code}}</p>
+    <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>
     <p><strong>Fecha de Entrega:</strong> {{ order?.date_delivery }}</p>
     <p><strong>Total:</strong> {{ order?.value_total | currency:' ' }}</p>
   </ion-card-content>

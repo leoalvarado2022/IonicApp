@@ -120,4 +120,11 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     this._posService.loginToSync();
   }
 
+  /**
+   * @description abrir menu de ordenes
+   */
+  openOrder() {
+    this.router.navigate(['/home-page/menu-order']);
+  }
+
 }

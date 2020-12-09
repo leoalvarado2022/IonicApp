@@ -16,7 +16,7 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 export class PosService {
 
   public authenticationUrl = '/api/login';
-  public menuCustomUrl = '/api/get-menu-custom';
+  public menuCustomUrl = '/api/get-menu-order-custom';
   public syncUrl = '/api/pos/sync';
   public cashRegisterUrl = '/api/caja-activa';
   public openTableUrl = '/api/table/open';
@@ -204,6 +204,7 @@ export class PosService {
    * @param order
    */
   public openTable = async (order: any) => {
+    // si esta activado el modo pos
     const modoPos = localStorage.getItem('modoPOS');
     if (modoPos && modoPos === '1') {
       // guardar la orden en memoria
@@ -242,7 +243,7 @@ export class PosService {
           error = true;
         }
 
-        // si no existe el producto dentro del menu
+        // si no existe el producto dentro del menu-order
         if (error) {
           this._toastService.errorToast('El producto no esta syncronizado o no estas conectado a la red...');
         } else {

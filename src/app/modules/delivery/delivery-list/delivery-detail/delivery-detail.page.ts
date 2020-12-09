@@ -149,7 +149,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
         // agregar datos en el pos
-        // this._posService.openTable(this.order);
+        this._posService.openTable(this.order);
       }
       this._location.back();
     }, error => {

@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>MENU</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <div class="scrollmenu">
+        <span class="group select">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+        <span class="group">Home</span>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content style="padding: 0;">
+      <div>
+        <div>
+          <img src="assets/imgs/no-image.png" class="img-card">
+        </div>
+        <div class="description">
+          <p style="font-size: 16px;"><strong>Cocacola</strong></p>
+          <p><span>1,400</span></p>
+          <div class="button-footer">
+            <div class="button-add" (click)="addItems()">+</div>
+            <div class="number-add">0</div>
+            <div class="button-add" (click)="removeItems()">-</div>
+          </div>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<ion-footer class="show-order" (click)="showOrder()">
+  <div>
+    <span style="float: left;">Ver Orden</span>
+    <span style="float: right;">0</span>
+  </div>
+</ion-footer>

@@ -48,6 +48,8 @@
     </ion-card-header>
     <ion-card-content>
       <p *ngIf="order?.name_integration"><strong>Local:</strong> {{ order?.name_integration}}</p>
+      <p *ngIf="order?.code"><strong>Código:</strong> {{ order?.code}}</p>
+      <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>
       <p *ngIf="order?.date_register"><strong>Fecha de Registro:</strong> {{ order?.date_register }}</p>
       <p *ngIf="order?.date_delivery"><strong>Entregar a:</strong> <span
           [ngStyle]="{'color': order?.date_register > order?.date_delivery ? 'red' : '' }">{{ order?.date_delivery }}</span>

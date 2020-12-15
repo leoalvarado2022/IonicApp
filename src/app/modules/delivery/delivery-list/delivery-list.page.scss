@@ -70,3 +70,11 @@ ion-tab-bar {
 ion-label {
   font-size: 12px !important;
 }
+
+ion-card {
+  box-shadow: none;
+}
+
+ion-content {
+  --background: var(--color-background-tabs);
+}

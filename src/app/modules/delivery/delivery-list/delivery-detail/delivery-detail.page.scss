@@ -129,3 +129,11 @@ ion-card-content {
   border-radius: 5px;
   //box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 16px;
 }
+
+ion-card{
+  box-shadow: none;
+}
+
+ion-content {
+  --background: var(--color-background-tabs);
+}

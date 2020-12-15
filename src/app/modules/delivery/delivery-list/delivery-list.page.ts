@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {DeliveryService} from '../services/delivery.service';
@@ -8,13 +8,13 @@ import {interval, Subscription} from 'rxjs';
 import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {environment} from '../../../../environments/environment';
 import {PosService} from '../services/pos.service';
-import {SyncService} from '../../../shared/services/sync/sync.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 
 @Component({
   selector: 'app-delivery-list',
   templateUrl: './delivery-list.page.html',
   styleUrls: ['./delivery-list.page.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DeliveryListPage implements OnInit, OnDestroy {
 
@@ -40,7 +40,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
 
   ionViewDidEnter() {
     if (this._deliveryService.getAutomatic()) {
-      this.checkedAutomatic = this._deliveryService.getAutomatic();
+      // this.checkedAutomatic = this._deliveryService.getAutomatic();
     }
     this._storageSyncService.getIntegrationImages().then((data) => {
       this.integrationImages = data;
@@ -49,12 +49,17 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     this.refreshOrder(true);
   }
 
+  ionViewDidLeave() {
+    this.refreshOrder(false);
+  }
+
   ngOnDestroy(): void {
     this.refreshOrder(false);
   }
 
   refreshOrder(on: boolean) {
     if (on) {
+      // this.refreshData.unsubscribe();
       // console.log(on, 'subscription');
       this.refreshData = interval(this.searchDeliveryListMSec).subscribe(async (x: any) => {
         // console.log('subscription');
@@ -89,6 +94,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
 
   changeStatus(status: string) {
     this.selected = status;
+    this.allOrder = [];
     this.loadNotifications(status);
   }
 

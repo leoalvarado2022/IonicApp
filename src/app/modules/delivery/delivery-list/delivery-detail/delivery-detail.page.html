@@ -21,7 +21,7 @@
           <!--          <ion-label>{{ order?.origin }}</ion-label>-->
           <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'JUSTO'">
           <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
-          <img [src]="imageIntegration(order.id_integration)" alt="E" *ngIf="order?.id_integration"
+          <img [src]="imageIntegration(order.id_integration)" alt="" *ngIf="order?.id_integration"
                class="integration-img">
           <ion-button color="danger" style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'"
                       (click)="setNotificationStatus('rejected', order?.id_integration)">Rechazar
@@ -48,10 +48,10 @@
     </ion-card-header>
     <ion-card-content>
       <p *ngIf="order?.name_integration"><strong>Local:</strong> {{ order?.name_integration}}</p>
-      <p *ngIf="order?.code"><strong>Código:</strong> {{ order?.code}}</p>
-      <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>
       <p *ngIf="order?.date_register"><strong>Fecha de Registro:</strong> {{ order?.date_register }}</p>
-      <p *ngIf="order?.date_delivery"><strong>Fecha de Entrega:</strong> {{ order?.date_delivery }}</p>
+      <p *ngIf="order?.date_delivery"><strong>Entregar a:</strong> <span
+          [ngStyle]="{'color': order?.date_register > order?.date_delivery ? 'red' : '' }">{{ order?.date_delivery }}</span>
+      </p>
       <!--      <p><strong>Fecha de Aceptación:</strong> {{ order?.date_accept }}</p>-->
       <!--      <p><strong>Fecha de Rechazo:</strong> {{ order?.date_reject }}</p>-->
       <!--      <p><strong>Fecha de Entrega Repartidor:</strong> {{ order?.date_delivery_man }}</p>-->
@@ -63,13 +63,74 @@
       <p *ngIf="order?.reason_reject"><strong>Motivo de Rechazo:</strong> {{ order?.reason_reject }}</p>
       <p *ngIf="order?.lat"><strong>Latitud:</strong> {{ order?.lat }}</p>
       <p *ngIf="order?.lng"><strong>Longitud:</strong> {{ order?.lng }}</p>
-      <p *ngIf="order?.value_total"><strong>Valor de la Orden:</strong> {{ order?.value_total | currency:' '}}</p>
-      <!--      <p><strong>Valor de envio:</strong> {{ order?.value_shipping | currency:' '}}</p>-->
-      <p *ngIf="order?.value_tip"><strong>Valor de propina:</strong> {{ order?.value_tip | currency:' '}}</p>
-      <p *ngIf="order?.value_order"><strong>Total:</strong> {{ order?.value_order | currency:' ' }}</p>
-      <br>
+      <p><strong>Valor total de productos:</strong> {{ order?.value_items | currency:' ':'symbol':'1.0-2'}}</p>
+      <p *ngIf="order?.value_order"><strong>Valor de la
+        Orden:</strong> {{ order?.value_order | currency:' ':'symbol':'1.0-2'}}</p>
+      <p *ngIf="order?.value_discount"><strong>Valor del
+        descuento:</strong> {{ order?.value_discount | currency:' ':'symbol':'1.0-2'}}</p>
+      <!--      <p><strong>Valor de envio:</strong> {{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</p>-->
+      <p *ngIf="order?.value_tip"><strong>Valor de
+        propina:</strong> {{ order?.value_tip | currency:' ':'symbol':'1.0-2'}}</p>
+      <p *ngIf="order?.value_total" style="margin-top: 5px;">
+        <strong>TOTAL:</strong> {{ order?.value_total | currency:' ':'symbol':'1.0-2' }}</p>
       <ng-container *ngIf="order?.products.length">
-        <div style="border-top: 1px solid rgba(0,0,0,0.33);" *ngFor="let product of orderProducts()">
+        <div style="margin-top: 10px;margin-bottom: 10px;"
+             *ngFor="let product of orderProducts()">
+          <div style="margin-top: 10px;">
+            <p *ngIf="!product.name_product" style="color: rgba(255,0,0,0.63);"><span
+                style="font-style: italic;">{{ product?.text}}</span></p>
+            <div style="padding-left: 25px;" *ngFor="let modifier of modifierProduct(product.id)">
+              <p *ngIf="!modifier.name_product" style="color: rgba(255,0,0,0.63);"> <span
+                  style="font-style: italic;">{{ modifier?.text}}</span></p>
+            </div>
+          </div>
+        </div>
+        <ion-grid class="ion-no-padding"
+                  style="margin-bottom: 20px;padding-top: 10px;">
+          <ion-row>
+            <ion-col size="2">
+              <strong>CANT.</strong>
+            </ion-col>
+            <ion-col size="7">
+              <strong>PRODUCTO</strong>
+            </ion-col>
+            <ion-col size="3" class="ion-text-right">
+              <strong>PRECIO</strong>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngFor="let product of orderProducts()">
+            <ion-col size="2">
+              <p class="ion-text-center">{{ product?.quantity}}</p>
+              <ng-container *ngIf="modifierProduct(product.id).length">
+                <p *ngFor="let modifier of modifierProduct(product.id)" class="ion-text-center">
+                  {{modifier?.quantity}}
+                </p>
+              </ng-container>
+            </ion-col>
+            <ion-col size="7">
+              <p>
+                <span *ngIf="!product.name_product"
+                      style="color: rgba(255,0,0,0.63);font-style: italic;">{{product?.name_item}}</span>
+                <span *ngIf="product.name_product">{{product?.name_item}}</span>
+              </p>
+              <ng-container *ngIf="modifierProduct(product.id).length">
+                <p style="padding-left: 30px;"
+                   *ngFor="let modifier of modifierProduct(product.id)">
+                  <span *ngIf="!modifier.name_product"
+                        style="color: rgba(255,0,0,0.63);font-style: italic;">{{modifier?.name_item}}</span>
+                  <span *ngIf="modifier.name_product">{{modifier?.name_item}}</span>
+                </p>
+              </ng-container>
+            </ion-col>
+            <ion-col size="3" class="ion-text-right">
+              <p> {{product?.total | currency:' ':'symbol':'1.0-2'}}</p>
+              <ng-container *ngIf="modifierProduct(product.id).length">
+                <p *ngFor="let modifier of modifierProduct(product.id)"> {{ modifier?.total | currency:' ':'symbol':'1.0-2'}}</p>
+              </ng-container>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <!--<div style="border-top: 1px solid rgba(0,0,0,0.33);" *ngFor="let product of orderProducts()">
           <hr>
           <p *ngIf="product?.name_product"><strong>Nombre del producto:</strong> {{ product?.name_product}}</p>
           <p *ngIf="product?.name_product && product?.text"><strong>Comentario:</strong> <span
@@ -77,10 +138,10 @@
           <p *ngIf="!product.name_product"><strong style="color: rgba(255,0,0,0.63);">Comentario:</strong> <span
               style="font-style: italic;">{{ product?.text}}</span></p>
           <p><strong>Cantidad:</strong> {{ product?.quantity}}</p>
-          <p><strong>Total:</strong> {{ product?.total | currency:' '}}</p>
+          <p><strong>Total:</strong> {{ product?.total | currency:' ':'symbol':'1.0-2'}}</p>
 
           <p *ngIf="modifierProduct(product.id).length"><strong>Modificadores:</strong></p>
-          <!-- modificadores-->
+          &lt;!&ndash; modificadores&ndash;&gt;
           <div style="padding-left: 25px;" *ngFor="let modifier of modifierProduct(product.id)">
             <p *ngIf="modifier?.name_product"><strong>Nombre del producto:</strong> {{ modifier?.name_product}}</p>
             <p *ngIf="modifier?.name_product && modifier?.text && modifier?.text.length > 2">
@@ -89,9 +150,9 @@
             <p *ngIf="!modifier.name_product"><strong style="color: rgba(255,0,0,0.63);">Comentario:</strong> <span
                 style="font-style: italic;">{{ modifier?.text}}</span></p>
             <p><strong>Cantidad:</strong> {{ modifier?.quantity}}</p>
-            <p><strong>Total:</strong> {{ modifier?.total | currency:' '}}</p>
+            <p><strong>Total:</strong> {{ modifier?.total | currency:' ':'symbol':'1.0-2'}}</p>
           </div>
-        </div>
+        </div>-->
       </ng-container>
     </ion-card-content>
   </ion-card>

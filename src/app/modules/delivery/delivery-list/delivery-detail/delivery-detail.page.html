@@ -70,7 +70,7 @@
         Orden:</strong> {{ order?.value_order | currency:' ':'symbol':'1.0-2'}}</p>
       <p *ngIf="order?.value_discount"><strong>Valor del
         descuento:</strong> {{ order?.value_discount | currency:' ':'symbol':'1.0-2'}}</p>
-      <!--      <p><strong>Valor de envio:</strong> {{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</p>-->
+      <p><strong>Valor de envio:</strong> {{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</p>
       <p *ngIf="order?.value_tip"><strong>Valor de
         propina:</strong> {{ order?.value_tip | currency:' ':'symbol':'1.0-2'}}</p>
       <p *ngIf="order?.value_total" style="margin-top: 5px;">

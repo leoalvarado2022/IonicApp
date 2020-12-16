@@ -16,7 +16,7 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
 export class PosService {
 
   public authenticationUrl = '/api/login';
-  public menuCustomUrl = '/api/get-menu-order-custom';
+  public menuCustomUrl = '/api/get-menu-custom';
   public syncUrl = '/api/pos/sync';
   public cashRegisterUrl = '/api/caja-activa';
   public openTableUrl = '/api/table/open';

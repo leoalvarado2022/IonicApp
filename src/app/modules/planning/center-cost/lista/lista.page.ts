@@ -36,7 +36,7 @@ export class ListaPage implements OnInit {
   private loadCostCenters = () => {
     this.isLoading = true;
 
-    const costCenters = this.storeService.getCostCenters();    
+    const costCenters = this.storeService.getCostCenters();
 
     this.costCenters = [...costCenters];
     this.filteredCostCenters = [...costCenters];
@@ -50,7 +50,7 @@ export class ListaPage implements OnInit {
    */
   public searchCostCenter = (search: string) => {
     if (search) {
-      this.filteredCostCenters = this.costCenters.filter(item => {      
+      this.filteredCostCenters = this.costCenters.filter(item => {
         return (
           item.code.toLowerCase().includes(search.toLowerCase()) ||
           item.name.toLowerCase().includes(search.toLowerCase()) ||

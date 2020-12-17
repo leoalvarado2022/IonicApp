@@ -22,7 +22,7 @@ export class OrderSyncService {
 
   /**
    * setOrderHeader
-   * @param orderHeader 
+   * @param orderHeader
    */
   public setOrderHeader = (orderHeader: any): Promise<any> => {
     return this.storage.set(StorageKeys.OrderHeader, orderHeader);
@@ -39,7 +39,7 @@ export class OrderSyncService {
 
   /**
    * setOrderCostCenter
-   * @param orderCostCenter 
+   * @param orderCostCenter
    */
   public setOrderCostCenter = (orderCostCenter: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.OrderCostCenter, orderCostCenter);
@@ -47,7 +47,7 @@ export class OrderSyncService {
 
   /**
    *setOrderMachinery
-   * @param orderMachinery 
+   * @param orderMachinery
    */
   public setOrderMachinery = (orderMachinery: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.OrderMachinery, orderMachinery);
@@ -64,7 +64,7 @@ export class OrderSyncService {
 
   /**
    * setOrderChemical
-   * @param orderChemical 
+   * @param orderChemical
    */
   public setOrderChemical = (orderChemical: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.OrderChemical, orderChemical);
@@ -81,7 +81,7 @@ export class OrderSyncService {
 
   /**
    * setOrderBalanceToApply
-   * @param orderBalanceToApply 
+   * @param orderBalanceToApply
    */
   public setOrderBalanceToApply = (orderBalanceToApply: Array<ApplicationListInterface>): Promise<Array<ApplicationListInterface>> => {
     return this.storage.set(StorageKeys.OrderBalanceToApply, orderBalanceToApply);
@@ -98,7 +98,7 @@ export class OrderSyncService {
 
   /**
    * getOrderBalanceToApplyById
-   * @param id 
+   * @param id
    */
   public getOrderBalanceToApplyById = (id: number): Promise<ApplicationListInterface> => {
     return this.storage.get(StorageKeys.OrderBalanceToApply).then((orderBalanceToApply: Array<ApplicationListInterface>) => {
@@ -108,7 +108,7 @@ export class OrderSyncService {
 
   /**
    * setOrderBalanceApplied
-   * @param orderBalanceApplied 
+   * @param orderBalanceApplied
    */
   public setOrderBalanceApplied = (orderBalanceApplied: Array<ApplicationListInterface>): Promise<Array<ApplicationListInterface>> => {
     return this.storage.set(StorageKeys.OrderBalanceApplied, orderBalanceApplied);
@@ -154,7 +154,7 @@ export class OrderSyncService {
     return this.storage.get(StorageKeys.ApplicationTempId).then((applicationTempId: number) => {
       return applicationTempId ? applicationTempId : 0;
     });
-  };
+  }
 
   /**
    * getNextApplicationTempId
@@ -163,7 +163,7 @@ export class OrderSyncService {
     return this.getApplicationTempId().then((applicationTempId: number) => {
       return this.storage.set(StorageKeys.ApplicationTempId, applicationTempId + 1);
     });
-  };
+  }
 
   /**
    * getApplicationLocations
@@ -176,7 +176,7 @@ export class OrderSyncService {
 
   /**
    * setApplicationLocations
-   * @param applicationLocations 
+   * @param applicationLocations
    */
   public setApplicationLocations = (applicationLocations: Array<ApplicationLocationInterface>): Promise<Array<ApplicationLocationInterface>> => {
     return this.storage.set(StorageKeys.ApplicationLocation, applicationLocations);
@@ -184,7 +184,7 @@ export class OrderSyncService {
 
   /**
    * addApplicationLocations
-   * @param applicationLocation 
+   * @param applicationLocation
    */
   public addApplicationLocations = (applicationLocation: ApplicationLocationInterface): Promise<Array<ApplicationLocationInterface>> => {
     return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
@@ -195,7 +195,7 @@ export class OrderSyncService {
 
   /**
    * getApplicationLocationsById
-   * @param id 
+   * @param id
    */
   public getApplicationLocationsById = (id: number): Promise<Array<ApplicationLocationInterface>> => {
     return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
@@ -205,7 +205,7 @@ export class OrderSyncService {
 
   /**
    * clearApplicationLocationsById
-   * @param id 
+   * @param id
    */
   public clearApplicationLocationsById = (id: number): Promise<Array<ApplicationLocationInterface>> => {
     return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {

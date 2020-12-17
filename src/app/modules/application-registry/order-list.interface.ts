@@ -6,4 +6,4 @@ export interface OrderListInterface {
   operatorId: number | null;
   reference: string;
   responsibleName: string;
-}  
+}

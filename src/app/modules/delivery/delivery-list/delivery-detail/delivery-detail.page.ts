@@ -83,7 +83,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       const data = {
         user: user.user,
         id_order: this.id,
-        status: status
+        status
       };
 
       this.setHttpNotificationStatus(status, data);
@@ -201,7 +201,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     if (img) {
       return img;
     } else {
-     if(this.images.length) {
+     if (this.images.length) {
        const imgData = this.images.find(value => value.id_integration === +id_integration);
        const img = imgData.integration_image;
        localStorage.setItem(id_integration, img);

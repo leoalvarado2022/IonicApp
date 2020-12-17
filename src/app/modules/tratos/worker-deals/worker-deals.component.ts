@@ -24,6 +24,6 @@ export class WorkerDealsComponent implements OnInit {
     await this.modalController.dismiss({
       data
     });
-  };
+  }
 
 }

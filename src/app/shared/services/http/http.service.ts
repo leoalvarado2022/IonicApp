@@ -26,7 +26,7 @@ export class HttpService {
    */
   public buildUrl = (url: string, id: string = null): string => {
     return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
-  };
+  }
 
   /**
    * buildUrl para api delivery
@@ -35,7 +35,7 @@ export class HttpService {
    */
   public buildUrlApiDelivery = (url: string, id: string = null): string => {
     return id == null ? this.apiDeliveryUrl + url : this.apiDeliveryUrl + `${url}/${id}`;
-  };
+  }
 
   /**
    * getHeaders para api dinamicas
@@ -46,7 +46,7 @@ export class HttpService {
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  };
+  }
 
   /**
    * getHeaders
@@ -59,7 +59,7 @@ export class HttpService {
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  };
+  }
 
 
   /**
@@ -80,7 +80,7 @@ export class HttpService {
         connectionId: connection ? connection.token : null
       };
     }
-  };
+  }
 
   /**
    * errorHandlerPos
@@ -117,7 +117,7 @@ export class HttpService {
       console.log('No Http error', error);
       return 'No Http error';
     }
-  };
+  }
 
   /**
    * errorHandler
@@ -162,5 +162,5 @@ export class HttpService {
       console.log('No Http error', error);
       return 'No Http error';
     }
-  };
+  }
 }

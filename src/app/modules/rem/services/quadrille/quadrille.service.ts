@@ -13,14 +13,14 @@ export class QuadrilleService {
   constructor(
     private httpService: HttpService,
     private httpClient: HttpClient,
-    private storage: Storage    
+    private storage: Storage
   ) {
 
   }
 
   /**
    * transferWorkers
-   * @param data 
+   * @param data
    */
   public transferWorkers = (data: Array<any>) => {
     const url = this.httpService.buildUrl(this.joinQuadrille);
@@ -29,7 +29,7 @@ export class QuadrilleService {
 
   /**
    * getQuadrilleWorkers
-   * @param quadrilleId 
+   * @param quadrilleId
    */
   public getQuadrilleWorkers = (quadrilleId: number) => {
     return this.storage.get(StorageKeys.Workers).then( (workers: Array<any>) => {
@@ -37,7 +37,7 @@ export class QuadrilleService {
         return workers.filter(worker => worker.quadrille === quadrilleId || worker.quadrilleToApprove === quadrilleId);
       }
 
-      return [];      
+      return [];
     });
   }
 
@@ -52,60 +52,60 @@ export class QuadrilleService {
 
   /**
    * getQuadrilleTransfers
-   * @param quadrilleId 
+   * @param quadrilleId
    */
   public getQuadrilleTransfers = (quadrilleId: number): Promise<Array<any>> => {
-    return this.getTransfers().then((transfers: Array<any>) => {      
-      return transfers.filter(x => x.quadrille === quadrilleId || 
-        (x.quadrilleToApprove === quadrilleId && 
+    return this.getTransfers().then((transfers: Array<any>) => {
+      return transfers.filter(x => x.quadrille === quadrilleId ||
+        (x.quadrilleToApprove === quadrilleId &&
         ( x.quadrilleStatus.toLowerCase() === TransferActions.Aprobado || x.quadrilleStatus.toLowerCase() === TransferActions.Rechazado)));
     });
   }
 
   /**
    * clearQuadrilleTransfers
-   * @param quadrilleId 
+   * @param quadrilleId
    */
-  public clearQuadrilleTransfers = (quadrilleId: number): Promise<Array<any>> => {    
+  public clearQuadrilleTransfers = (quadrilleId: number): Promise<Array<any>> => {
     return this.getTransfers().then( (transfers: Array<any>) => {
-      const toRemove = [];      
+      const toRemove = [];
 
-      transfers.forEach(item => {        
-        if (item.quadrille === quadrilleId || item.quadrilleToApprove === quadrilleId) {          
+      transfers.forEach(item => {
+        if (item.quadrille === quadrilleId || item.quadrilleToApprove === quadrilleId) {
           const index = transfers.indexOf(item);
           toRemove.push(index);
         }
       });
-      
-      transfers = transfers.filter( (item, index) => !toRemove.includes(index));      
+
+      transfers = transfers.filter( (item, index) => !toRemove.includes(index));
       return this.storage.set(StorageKeys.WorkersTransfers,  transfers);
-    });    
+    });
   }
 
   /**
    * addTransfers
-   * @param newTransfers 
+   * @param newTransfers
    */
   public addTransfers = (newTransfers: Array<any>) => {
     return this.getTransfers().then((currentTransfers: Array<any>) => {
 
       // Map ids
       const mapIds = currentTransfers.map(worker => worker.id);
-      
+
       // Filter
       const filterDuplicates = newTransfers.filter(n => !mapIds.includes(n.id));
 
       // Merge
-      const mergeArray = [...filterDuplicates, ...currentTransfers];      
+      const mergeArray = [...filterDuplicates, ...currentTransfers];
 
-      // Return 
+      // Return
       return this.storage.set(StorageKeys.WorkersTransfers,  mergeArray);
     });
   }
 
   /**
    * cancelTransfers
-   * @param cancelTransfers 
+   * @param cancelTransfers
    */
   public cancelTransfers = (cancelTransfers: Array<any>) => {
     return this.getTransfers().then((currentTransfers: Array<any>) => {
@@ -113,11 +113,11 @@ export class QuadrilleService {
       cancelTransfers = cancelTransfers.filter(cancelItem => {
         const findIndex = currentTransfers.findIndex( currentItem => currentItem.id === cancelItem.id);
 
-        if(findIndex > -1) {
+        if (findIndex > -1) {
           currentTransfers.splice(findIndex, 1);
 
-          if(cancelItem.quadrilleStatus.toLowerCase() === TransferActions.ApruebaRechazo){
-            return false;          
+          if (cancelItem.quadrilleStatus.toLowerCase() === TransferActions.ApruebaRechazo){
+            return false;
           }
         }
 
@@ -125,16 +125,16 @@ export class QuadrilleService {
       });
 
       // Merge
-      const mergeArray = [...cancelTransfers, ...currentTransfers];      
+      const mergeArray = [...cancelTransfers, ...currentTransfers];
 
-      // Return 
+      // Return
       return this.storage.set(StorageKeys.WorkersTransfers,  mergeArray);
     });
   }
 
   /**
    * acceptTransfers
-   * @param acceptTransfers 
+   * @param acceptTransfers
    */
   public acceptTransfers = (acceptTransfers: Array<any>) => {
     return this.getTransfers().then((currentTransfers: Array<any>) => {
@@ -142,11 +142,11 @@ export class QuadrilleService {
       acceptTransfers = acceptTransfers.filter(acceptItem => {
         const findIndex = currentTransfers.findIndex( currentItem => currentItem.id === acceptItem.id);
 
-        if(findIndex > -1) {
+        if (findIndex > -1) {
           currentTransfers.splice(findIndex, 1);
 
-          if(acceptItem.quadrilleStatus.toLowerCase() === TransferActions.ApruebaRechazo){
-            return false;          
+          if (acceptItem.quadrilleStatus.toLowerCase() === TransferActions.ApruebaRechazo){
+            return false;
           }
         }
 
@@ -154,16 +154,16 @@ export class QuadrilleService {
       });
 
       // Merge
-      const mergeArray = [...acceptTransfers, ...currentTransfers];      
+      const mergeArray = [...acceptTransfers, ...currentTransfers];
 
-      // Return 
+      // Return
       return this.storage.set(StorageKeys.WorkersTransfers,  mergeArray);
     });
   }
 
   /**
    * rejectTransfers
-   * @param rejectTransfers 
+   * @param rejectTransfers
    */
   public rejectTransfers = (rejectTransfers: Array<any>) => {
     return this.getTransfers().then((currentTransfers: Array<any>) => {
@@ -171,11 +171,11 @@ export class QuadrilleService {
       rejectTransfers = rejectTransfers.filter(rejectItem => {
         const findIndex = currentTransfers.findIndex( currentItem => currentItem.id === rejectItem.id);
 
-        if(findIndex > -1) {
+        if (findIndex > -1) {
           currentTransfers.splice(findIndex, 1);
 
-          if(rejectItem.quadrilleStatus.toLowerCase() === TransferActions.Rechazado){
-            return false;          
+          if (rejectItem.quadrilleStatus.toLowerCase() === TransferActions.Rechazado){
+            return false;
           }
         }
 
@@ -183,9 +183,9 @@ export class QuadrilleService {
       });
 
       // Merge
-      const mergeArray = [...rejectTransfers, ...currentTransfers];      
+      const mergeArray = [...rejectTransfers, ...currentTransfers];
 
-      // Return 
+      // Return
       return this.storage.set(StorageKeys.WorkersTransfers,  mergeArray);
     });
   }

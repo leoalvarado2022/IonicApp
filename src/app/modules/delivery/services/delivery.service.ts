@@ -58,7 +58,7 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  };
+  }
 
   /**
    * @description get nofitification for by id
@@ -69,7 +69,7 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  };
+  }
 
   /**
    * @description set nofitification for by id
@@ -80,7 +80,7 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  };
+  }
 
   /**
    * @description cambiar estatus de la api delivery
@@ -91,7 +91,7 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeadersApiDynamic(token)
     });
-  };
+  }
 
   /**
    * getDeliveryNotification
@@ -100,7 +100,7 @@ export class DeliveryService {
     return this.storage.get(StorageKeys.DeliveryNotifications).then((notifications: any) => {
       return notifications ? notifications : [];
     });
-  };
+  }
 
 
   /**
@@ -108,7 +108,7 @@ export class DeliveryService {
    */
   public setDeliveryNotification = (data): Promise<any> => {
     return this.storage.set(StorageKeys.DeliveryNotifications, data).then();
-  };
+  }
 
 
   /**
@@ -154,7 +154,7 @@ export class DeliveryService {
 
     this.service = this.getNotificationHttp(data).subscribe((success: any) => {
       if (success.resp.length) {
-        for (let order of success.resp) {
+        for (const order of success.resp) {
           this.updateStatusOrder(order.id, user, order);
           if (!order.error) {
             this._masterService.insertDataFx10POS(order);

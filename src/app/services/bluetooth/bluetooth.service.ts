@@ -13,7 +13,7 @@ export class BluetoothService {
   private isBluetoothEnabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isDeviceConnected: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private isSearchingDevices: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private lastWeight: BehaviorSubject<number> = new BehaviorSubject<number>(null);    
+  private lastWeight: BehaviorSubject<number> = new BehaviorSubject<number>(null);
 
   private pairedDevices: BehaviorSubject<Array<BluetoothDevice>> = new BehaviorSubject<Array<BluetoothDevice>>([]);
   private availableDevices: BehaviorSubject<Array<BluetoothDevice>> = new BehaviorSubject<Array<BluetoothDevice>>([]);
@@ -21,7 +21,7 @@ export class BluetoothService {
   constructor(
     private bluetoothSerial: BluetoothSerial,
     private toastService: ToastService
-  ) {    
+  ) {
 
     timer(0, 1000 * 5).subscribe(() => {
       this.bluetoothSerial.isEnabled().then(() => {
@@ -32,8 +32,8 @@ export class BluetoothService {
         this.listPairedDevices();
       }, () => {
         this.isBluetoothEnabled.next(false);
-      });      
-    });    
+      });
+    });
   }
 
   /**
@@ -102,7 +102,7 @@ export class BluetoothService {
 
   /**
    * connectDevice
-   * @param device 
+   * @param device
    */
   public connectDevice = (device: BluetoothDevice) => {
     this.toastService.warningToast('Conectandose a dispositivo', 2000, 'bottom');
@@ -134,10 +134,10 @@ export class BluetoothService {
     this.isSearchingDevices.next(true);
     this.availableDevices.next([]);
 
-    this.bluetoothSerial.discoverUnpaired().then((data: Array<BluetoothDevice>) => {      
+    this.bluetoothSerial.discoverUnpaired().then((data: Array<BluetoothDevice>) => {
       this.availableDevices.next(data);
       this.isSearchingDevices.next(false);
-    }, () => {      
+    }, () => {
       this.availableDevices.next([]);
       this.isSearchingDevices.next(false);
     });
@@ -145,23 +145,23 @@ export class BluetoothService {
 
   /**
    * processWeight
-   * @param value 
+   * @param value
    */
   public processWeight = (value: string): number => {
     if (value) {
       const noSpaces = value.replace(/\s/g, '');
-      const weightString = noSpaces.split(",")[2];
+      const weightString = noSpaces.split(',')[2];
       const cleanWeight = weightString.replace('kg', '');
 
       return parseFloat(cleanWeight);
     }
 
-    return 0;    
+    return 0;
   }
 
   /**
    * showFormattedWeight
-   * @param value 
+   * @param value
    */
   public showFormattedWeight = (value: string): string => {
     return value.split(',')[2];
@@ -181,10 +181,10 @@ export class BluetoothService {
   /**
    * getLiveWeight
    */
-  public getLiveWeight = () => {            
-    return timer(0, 500).pipe(            
-      flatMap( () => this.bluetoothSerial.subscribe('\n').pipe(take(1)))      
+  public getLiveWeight = () => {
+    return timer(0, 500).pipe(
+      flatMap( () => this.bluetoothSerial.subscribe('\n').pipe(take(1)))
     );
-  }  
-  
+  }
+
 }

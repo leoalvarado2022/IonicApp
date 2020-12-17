@@ -17,13 +17,13 @@ declare var google: any;
   styleUrls: ['./application-start.page.scss'],
 })
 export class ApplicationStartPage implements OnInit, OnDestroy {
-  
+
   public currentLat = -33.4372; // Santiago Default
   public currentLng = -70.6506; // Santiago Default
   public zoom = 10;
 
   public currentApplication: ApplicationListInterface;
-  public positions: Array<ApplicationLocationInterface> = [];  
+  public positions: Array<ApplicationLocationInterface> = [];
   private id: number;
   private tempId: number;
   private unsubscriber = new Subject();
@@ -38,7 +38,7 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.id = +this.route.snapshot.paramMap.get("id");
+    this.id = +this.route.snapshot.paramMap.get('id');
 
     Promise.all([
       this.orderSyncService.getOrderBalanceToApplyById(this.id),
@@ -49,14 +49,14 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
       this.positions = data[1];
 
       this.tempId = data[2];
-    });    
+    });
   }
 
   ngOnDestroy() {
     this.unsubscriber.complete();
   }
 
-  ionViewDidEnter() {    
+  ionViewDidEnter() {
     this.geolocationService.watchPosition().pipe(
       takeUntil(this.unsubscriber),
       filter((position: Geoposition) => position.coords !== undefined && (position.coords.latitude !== this.currentLat && position.coords.longitude !== this.currentLng)),
@@ -76,19 +76,19 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
       })
     ).subscribe((geoposition: ApplicationLocationInterface) => {
       this.orderSyncService.addApplicationLocations(geoposition).then((data: Array<ApplicationLocationInterface>) => {
-        this.positions = [...data];        
+        this.positions = [...data];
 
         this.currentLat = geoposition.latitude;
-        this.currentLng = geoposition.longitude;        
+        this.currentLng = geoposition.longitude;
       });
-    })
+    });
   }
 
   /**
    * endApplication
    */
   public endApplication = () => {
-    this.router.navigate(["/home-page/registro_aplicacion/application-end", this.id]);
+    this.router.navigate(['/home-page/registro_aplicacion/application-end', this.id]);
   }
 
 }

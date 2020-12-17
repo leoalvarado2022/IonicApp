@@ -26,7 +26,7 @@ export class RemQuadrillePage implements OnInit {
 
   ngOnInit() {
     this.loadQuadrilles();
-  }  
+  }
 
   /**
    * loadQuadrilles
@@ -34,7 +34,7 @@ export class RemQuadrillePage implements OnInit {
   private loadQuadrilles = () => {
     this.isLoading = true;
     const activeCompany = this.storeService.getActiveCompany();
-    const access = this.storeService.getAccess();    
+    const access = this.storeService.getAccess();
 
     Promise.all([
       this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find(x => x.functionality === 4)),

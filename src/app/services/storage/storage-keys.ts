@@ -56,10 +56,10 @@ export enum StorageKeys {
   OrderCostCenter = 'orderCostCenter',
   OrderMachinery = 'orderMachinery',
   OrderChemical = 'orderChemical',
-  OrderBalanceToApply = "orderBalanceToApply",
-  OrderBalanceApplied = "orderBalanceApplied",
+  OrderBalanceToApply = 'orderBalanceToApply',
+  OrderBalanceApplied = 'orderBalanceApplied',
 
-  //pos
+  // pos
   Agreements = 'agreementsPOS',
   CashRegister = 'cashRegisterPOS',
   Causes = 'causesPOS',
@@ -70,9 +70,9 @@ export enum StorageKeys {
   Options = 'optionsPOS',
   PaymentTypes = 'paymentTypesPOS',
   Printers = 'printersPOS',
-  Sectors ='sectorsPOS',
-  Tables ='tablesPOS',
-  Turns ='turnsPOS',
-  Users ='usersPOS',
+  Sectors = 'sectorsPOS',
+  Tables = 'tablesPOS',
+  Turns = 'turnsPOS',
+  Users = 'usersPOS',
 
 }

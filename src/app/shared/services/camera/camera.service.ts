@@ -54,7 +54,7 @@ export class CameraService {
     return new Promise(resolve => {
       this.camera.getPicture(options).then(image => {
         resolve(image);
-      }, error => {        
+      }, error => {
         this.toastService.warningToast(error);
         resolve(null);
       });

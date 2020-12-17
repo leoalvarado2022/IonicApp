@@ -18,7 +18,7 @@ import {StorageSyncService} from '../../../services/storage/storage-sync/storage
 })
 export class DeliveryListPage implements OnInit, OnDestroy {
 
-  public selected: string = 'pending';
+  public selected = 'pending';
   private service: Subscription;
   private refreshData: Subscription;
   public allOrder: Array<any> = [];
@@ -83,7 +83,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     const user = this.storeService.getActiveCompany();
     const data = {
       user: user.user,
-      status: status
+      status
     };
     this.service = this._deliveryService.getNotificationHttp(data).subscribe((success: any) => {
       this.allOrder = success.resp;
@@ -104,7 +104,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
    */
   public orderSelected = (order: any) => {
     this.router.navigate(['/home-page/delivery-detail', order.id]);
-  };
+  }
 
   /**
    * @description activar el automatico

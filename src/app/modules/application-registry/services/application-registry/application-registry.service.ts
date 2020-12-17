@@ -18,8 +18,8 @@ export class ApplicationRegistryService {
 
   /**
    * getList
-   * @param companyId 
-   * @param user 
+   * @param companyId
+   * @param user
    */
   public getOrderList = (companyId: number, user: number) => {
     const url = this.httpService.buildUrl(this.getOrdersListUrl);
@@ -29,8 +29,8 @@ export class ApplicationRegistryService {
 
   /**
    * getApplicationList
-   * @param orderId 
-   * @param filter 
+   * @param orderId
+   * @param filter
    */
   public getApplicationList = (orderId: number, filter: string = '') => {
     const url = this.httpService.buildUrl(this.getApplicationsList);
@@ -40,11 +40,11 @@ export class ApplicationRegistryService {
 
   /**
    * storeApplication
-   * @param user 
-   * @param header 
-   * @param application 
-   * @param applicationLocations 
-   * @param applicationChemicals 
+   * @param user
+   * @param header
+   * @param application
+   * @param applicationLocations
+   * @param applicationChemicals
    */
   public storeApplication = (user: number, header: any, application: any, applicationLocations: any, applicationChemicals: any) => {
     const url = this.httpService.buildUrl(this.storeApplicationEndpoint);

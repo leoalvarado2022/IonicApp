@@ -84,7 +84,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
     this.harvestEstimate = this.storeService.getHarvestEstimate();
     this.filteredHarvestEstimate = this.storeService.getHarvestEstimate();
     this.units = this.storeService.getUnits();
-  }  
+  }
 
   /**
    * newHarvestEstimate
@@ -113,7 +113,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
   /**
    * duplicateHarvestEstimate
-   * @param harvestEstimate 
+   * @param harvestEstimate
    */
   public duplicateHarvestEstimate = async (harvestEstimate: HarvestEstimate) => {
     const modal = await this.modalController.create({
@@ -225,7 +225,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
   /**
    * processSelectedHarvest
-   * @param harvestEstimate 
+   * @param harvestEstimate
    */
   public processSelectedHarvest = (harvestEstimate: HarvestEstimate) => {
     if (harvestEstimate.active) {
@@ -237,7 +237,7 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
   /**
    * showUnitCode
-   * @param unitId 
+   * @param unitId
    */
   private showUnitCode = (unitId: number): string => {
     const find = this.units.find(item => item.id === unitId);
@@ -246,8 +246,8 @@ export class HarvestEstimatePage implements OnInit, OnDestroy {
 
   /**
    * cleanDate
-   * @param date 
-   */  
+   * @param date
+   */
   private cleanDate = (date: string): string => {
     if (date.includes('T')) {
       return date.split('T')[0];

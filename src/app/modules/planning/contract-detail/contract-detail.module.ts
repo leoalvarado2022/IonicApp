@@ -15,7 +15,7 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [ContractDetailPage]  
+  declarations: [ContractDetailPage]
 })
 export class ContractDetailPageModule {
 

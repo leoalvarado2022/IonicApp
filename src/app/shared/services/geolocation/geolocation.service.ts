@@ -78,7 +78,7 @@ export class GeolocationService {
       console.log({error});
     });
   }
-  
+
   /**
    * watchPosition
    */

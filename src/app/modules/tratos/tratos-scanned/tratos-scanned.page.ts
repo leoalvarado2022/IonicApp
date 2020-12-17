@@ -26,11 +26,11 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public worker = '';
   private devices: any;
   private workers: any;
-  public exist: boolean = true;
+  public exist = true;
   public notSupported = false;
   private listener$: Subscription;
 
-  //temp
+  // temp
   public tallyTemp = [];
   private syncedTallies: Array<any> = [];
   public previousPerformance: Array<any> = [];
@@ -39,9 +39,9 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public isCordova = false;
   public isDeviceConnected: boolean;
   public showWeight: any;
-  public lastWeight: number = 0;
+  public lastWeight = 0;
   public weightsBuffer: Array<number> = [];
-  public validWeight: boolean = false;
+  public validWeight = false;
   private unsubscriber = new Subject();
 
   constructor(
@@ -408,7 +408,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           text: 'Ok',
           handler: (value) => {
             // calcular el rendimiento
-            let performance = +value["Rendimiento"];
+            const performance = +value['Rendimiento'];
 
             if (performance === 0) {
               return;
@@ -447,7 +447,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public pushTally = (worker: any, performance: number = 0) => {
     const activeCompany = this.storeService.getActiveCompany();
 
-    let tally: TallyInterface = {};
+    const tally: TallyInterface = {};
     tally.id = 0;
     tally.fecha = moment().utc().format('YYYY-MM-DD');
     tally.id_par_entidades_trabajador = worker.id;
@@ -498,7 +498,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   public closeWork = async () => {
     await this._modalController.dismiss();
-  };
+  }
 
   public escaneoOne = () => {
     const id = 'ddfc95e4';
@@ -564,7 +564,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       return item.id_par_entidades_trabajador === worker.id &&
         item.id_par_centros_costos === this.centerCost.center_cost_id &&
         item.id_par_tratos_vigencias === this.centerCost.deal?.id_deal_validity &&
-        item.fecha === this.centerCost.currentDate
+        item.fecha === this.centerCost.currentDate;
     });
   }
 
@@ -574,12 +574,12 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   private getWorkerSyncedTallies = (worker: any) => {
     return this.syncedTallies.filter(item => {
-      const splitDate = item.date.split("T")[0];
+      const splitDate = item.date.split('T')[0];
 
       return item.workerId === worker.id &&
         item.costCenterId === this.centerCost.center_cost_id &&
         item.dealValidity === this.centerCost.deal?.id_deal_validity &&
-        splitDate === this.centerCost.currentDate
+        splitDate === this.centerCost.currentDate;
     });
   }
 

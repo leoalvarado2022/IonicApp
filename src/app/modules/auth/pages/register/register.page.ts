@@ -86,7 +86,7 @@ export class RegisterPage implements OnInit {
    */
   public openCamera = async () => {
     const image = await this.cameraService.openCamera();
-    
+
     if (image) {
       this.getImage(image);
     }

@@ -108,7 +108,7 @@ export class TratosListPage {
   workersCount(deal) {
     const tallies = this.tallyTemp.filter(value => value.id_par_tratos_vigencias === deal.id_deal_validity);
     const worker = this._DealService.groupBy(tallies, (item) => item.id_par_entidades_trabajador);
-    let count = [];
+    const count = [];
     worker.forEach((valor, clave, map) => {
       if (valor.length) {
         count.push(valor[0]);
@@ -139,11 +139,11 @@ export class TratosListPage {
    */
   public reload = (event) => {
     event.target.complete();
-  };
+  }
 
   goToRegister = (item: any) => {
     this._router.navigate(['home-page/tarja_tratos/add-center-cost', item.id]);
-  };
+  }
 
   /**
    * activar trato
@@ -161,7 +161,7 @@ export class TratosListPage {
     });
 
     return await modal.present();
-  };
+  }
 
   /**
    * @description

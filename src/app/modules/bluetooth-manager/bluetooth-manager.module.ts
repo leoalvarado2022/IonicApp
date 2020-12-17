@@ -12,5 +12,5 @@ import { SharedModule } from 'src/app/shared/shared.module';
   declarations: [BluetoothManagerPage]
 })
 export class BluetoothManagerPageModule {
-  
+
 }

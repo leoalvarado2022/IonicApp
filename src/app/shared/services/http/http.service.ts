@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../../../environments/environment';
-import {HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {ToastService} from '../toast/toast.service';
-import {StoreService} from '../store/store.service';
+import { Injectable } from '@angular/core';
+import { environment } from '../../../../environments/environment';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ToastService } from '../toast/toast.service';
+import { StoreService } from '../store/store.service';
 
 @Injectable()
 export class HttpService {
@@ -72,7 +72,7 @@ export class HttpService {
     if (data) {
       return Object.assign({}, data, {
         app: environment.app_name,
-        connectionId: connection ? connection.token : null
+        connectionId: data.connectionId ? data.connectionId : connection ? connection.token : null
       });
     } else {
       return {
@@ -89,7 +89,7 @@ export class HttpService {
   public errorHandlerPos = (error: any): string => {
     if (error instanceof HttpErrorResponse) {
 
-      const {name, message} = error.error;
+      const { name, message } = error.error;
 
       switch (error.status) {
         case 0:
@@ -133,7 +133,7 @@ export class HttpService {
       console.log('statusText', error.statusText);
       */
 
-      const {name, message} = error.error;
+      const { name, message } = error.error;
 
       switch (error.status) {
         case 0:

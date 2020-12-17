@@ -14,8 +14,10 @@
   <ion-card-content>
     <p><strong>Local:</strong> {{ order?.name_integration}}</p>
     <p *ngIf="order?.code"><strong>Código:</strong> {{ order?.code}}</p>
-    <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>
-    <p><strong>Entregar a:</strong> {{ order?.date_delivery }}</p>
+    <p *ngIf="order?.date_createdAt"><strong>Registro:</strong> {{ order?.date_createdAt}}</p>
+    <!--    <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>-->
+    <p><strong>Estimación de despacho:</strong> {{ order?.date_delivery }}</p>
+    <p><strong>Estimación de entrega:</strong> {{ order?.date_timeText }}</p>
     <p><strong>Total:</strong> {{ order?.value_total | currency:' ':'symbol':'1.0-2' }}</p>
   </ion-card-content>
 </ion-card>

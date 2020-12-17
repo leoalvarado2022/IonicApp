@@ -83,7 +83,7 @@ export class LoginPage implements OnInit, OnDestroy {
   /**
    * onSubmit
    */
-  public onSubmit = () => {    
+  public onSubmit = () => {
     const user = Object.assign({}, this.loginForm.value);
     user.username = user.username.toLowerCase();
     user.app = this.appService.getAppName();
@@ -114,7 +114,7 @@ export class LoginPage implements OnInit, OnDestroy {
           this.router.navigate(['/home-page']);
         }
       }
-    });    
+    });
   }
 
   /**

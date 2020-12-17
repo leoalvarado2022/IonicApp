@@ -39,8 +39,8 @@ export class OrdersListPage implements OnInit {
     const user = this.storeService.getUser();
 
     this.applicationRegistryService.getOrderList(activeCompany.id, user.id).subscribe(success => {
-      this.ordersList = success["data"];
-      this.ordersListFiltered = success["data"];
+      this.ordersList = success['data'];
+      this.ordersListFiltered = success['data'];
 
       this.loaderService.stopLoader();
     }, error => {
@@ -49,20 +49,20 @@ export class OrdersListPage implements OnInit {
   }
 
   /**
-   * 
-   * @param value 
+   *
+   * @param value
    */
   public fillWithZeros = (value: string): string => {
-    const pad = "000";
+    const pad = '000';
     return (pad + value).slice(-pad.length);
   }
 
   /**
    * formatDate
-   * @param date 
+   * @param date
    */
   public formatDate = (date: string): string => {
-    return moment.utc(this.cleanDate(date), 'YYYY-MM-DD').format("DD/MM/YYYY");
+    return moment.utc(this.cleanDate(date), 'YYYY-MM-DD').format('DD/MM/YYYY');
   }
 
   /**
@@ -79,7 +79,7 @@ export class OrdersListPage implements OnInit {
 
   /**
    * reload
-   * @param event 
+   * @param event
    */
   public reload = (event: any) => {
     this.ordersList = [];
@@ -89,7 +89,7 @@ export class OrdersListPage implements OnInit {
 
   /**
    * searchOrder
-   * @param search 
+   * @param search
    */
   public searchOrder = (search: string): void => {
     if (search) {
@@ -118,7 +118,7 @@ export class OrdersListPage implements OnInit {
 
   /**
    * goToApplications
-   * @param orderId 
+   * @param orderId
    */
   public goToApplications = (orderId: number) => {
     this.router.navigate(['/home-page/registro_aplicacion/applications', orderId]);

@@ -17,7 +17,7 @@ export class DeviceSyncService {
     return this.storage.get(StorageKeys.DevicesToRecord).then((devicesToRecord: Array<any>) => {
       return devicesToRecord ? devicesToRecord : [];
     });
-  };
+  }
 
   /**
    * addDevicesToRecord
@@ -35,7 +35,7 @@ export class DeviceSyncService {
       }
 
     });
-  };
+  }
 
   /**
    * getDevicesToRecord
@@ -44,7 +44,7 @@ export class DeviceSyncService {
     return this.storage.get(StorageKeys.DeviceTempId).then((DeviceTempId: Array<any>) => {
       return DeviceTempId ? DeviceTempId : 0;
     });
-  };
+  }
 
   /**
    * increaseDeviceTempId
@@ -53,7 +53,7 @@ export class DeviceSyncService {
     return this.getDeviceTempId().then(number => {
       return this.storage.set(StorageKeys.DeviceTempId, number + 1);
     });
-  };
+  }
 
 
   /**
@@ -63,7 +63,7 @@ export class DeviceSyncService {
     return this.storage.get(StorageKeys.DevicesWithErrors).then((devicesWithErrors: Array<any>) => {
       return devicesWithErrors ? devicesWithErrors : [];
     });
-  };
+  }
 
   /**
    * addDevicesWithErrors
@@ -75,7 +75,7 @@ export class DeviceSyncService {
       this.increaseDeviceTempId().then();
       return this.storage.set(StorageKeys.DevicesWithErrors, error);
     });
-  };
+  }
 
   /**
    * removeDevicesWithErrors
@@ -87,7 +87,7 @@ export class DeviceSyncService {
       this.storage.set(StorageKeys.DevicesWithErrors, toRemoved).then();
       return toRemoved.length;
     });
-  };
+  }
 
 
   /**
@@ -101,6 +101,6 @@ export class DeviceSyncService {
       return toRemoved.length;
     });
 
-  };
+  }
 
 }

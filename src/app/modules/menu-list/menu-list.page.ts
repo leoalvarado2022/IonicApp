@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TabMenu } from '@primetec/primetec-angular';
 import { SyncService } from '../../shared/services/sync/sync.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { NetworkService } from 'src/app/shared/services/network/network.service';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { HttpClient } from '@angular/common/http';
-import { ToastService } from './../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-menu-list',
@@ -30,13 +29,11 @@ export class MenuListPage implements OnInit, OnDestroy {
   constructor(
     public syncService: SyncService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private storageSyncService: StorageSyncService,
     private networkService: NetworkService,
     public stepperService: StepperService,
     private storeService: StoreService,
-    private httpClient: HttpClient,
-    private toastService: ToastService
+    private httpClient: HttpClient
   ) {
 
   }
@@ -69,8 +66,14 @@ export class MenuListPage implements OnInit, OnDestroy {
     const access = this.storeService.getAccess();
 
     if (activeCompany) {
-      Promise.all([this.storageSyncService.getMenus(), this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find((x) => x.functionality === 4)), this.storageSyncService.getWorkers()]).then((data) => {
-        this.processMenu(data[0]);
+      Promise.all([
+        this.storageSyncService.getMenus(),
+        this.storageSyncService.getQuadrillesByCurrentUser(activeCompany.user, !!access.find((x) => x.functionality === 4)),
+        this.storageSyncService.getWorkers()
+      ]).then((data) => {
+        const filterMenuByAccess = data[0].filter(item => item.access && item.access.includes('V'));
+        this.processMenu(filterMenuByAccess);
+
         const quadrilles = data[1].map((q) => q.id);
         this.workers = data[2].filter((x) => quadrilles.includes(x.quadrille)) || [];
       });
@@ -135,7 +138,7 @@ export class MenuListPage implements OnInit, OnDestroy {
   private checkIcon = (path: string): Promise<string> => {
     return new Promise((resolve) => {
       this.httpClient.get(path).subscribe(
-        (success) => {
+        () => {
           console.log('success');
           resolve(path);
         },
@@ -148,10 +151,6 @@ export class MenuListPage implements OnInit, OnDestroy {
         }
       );
     });
-  }
-
-  public test() {
-    this.router.navigate([`/home-page/test`]);
   }
 
 }

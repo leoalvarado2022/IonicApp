@@ -17,7 +17,7 @@
   <ng-container *ngIf="(stepperService.getStepper() | async)?.length > 0 ; else render">
     <ion-list lines="none">
       <ion-item *ngFor="let step of stepperService.getStepper() | async; let i = index">
-        <ion-icon [color]="step['index'] < i ? 'success': 'warning'"  slot="start" name="checkmark-circle"></ion-icon>
+        <ion-icon [color]="step['index'] < i ? 'success': 'warning'" slot="start" name="checkmark-circle"></ion-icon>
         <ion-label>{{ step['name'] }}</ion-label>
       </ion-item>
     </ion-list>
@@ -35,12 +35,11 @@
               <ion-badge *ngIf="showBadge(menu) > 0" class="menu-bagde">{{ showBadge(menu) }}</ion-badge>
             </p>
             <p class="ion-text-center">
-              <strong>{{ menu.caption | titlecase }}  </strong>
+              <strong>{{ menu.caption | titlecase }} </strong>
             </p>
           </ion-card-content>
         </ion-card>
-      </ion-col>      
+      </ion-col>
     </ion-row>
   </ng-template>
-
 </ion-content>

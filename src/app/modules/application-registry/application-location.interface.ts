@@ -1,5 +1,5 @@
 export interface ApplicationLocationInterface {
-  id: number,
+  id: number;
   timestamp: number;
   latitude: number;
   longitude: number;

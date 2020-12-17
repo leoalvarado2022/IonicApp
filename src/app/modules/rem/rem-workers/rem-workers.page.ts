@@ -19,18 +19,18 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   private quadrilles: Array<Quadrille> = [];
   private allQuadrilles: Array<Quadrille> = [];
-  public quadrille: Quadrille;  
+  public quadrille: Quadrille;
 
   private workers: Array<any> = [];
   private filteredWorkers: Array<any> = [];
   public selectedWorkers: Array<any> = [];
   public printableWorkers: Array<any> = [];
 
-  private onMemoryTransfers: Array<any> = [];  
+  private onMemoryTransfers: Array<any> = [];
 
   private firstLoad = true;
   public isLoading = false;
-  private buttons: Array<any> = [];    
+  private buttons: Array<any> = [];
 
   private stepper$: Subscription;
 
@@ -48,10 +48,10 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       if (steps.length === 0 && !this.firstLoad ) {
         this.loadWorkers();
       }
-    });    
+    });
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.loadWorkers();
   }
 
@@ -86,7 +86,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.onMemoryTransfers = data[3];
       this.workers = this.orderByTransfersFirst(data[1]);
       this.filteredWorkers = this.removeDuplicatedWorkers(data[3], this.workers);
-      
+
       this.printableWorkers = this.mergeArrays();
 
       this.buildButtons();
@@ -100,7 +100,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * @param search
    */
   public searchWorker = (search: string): void => {
-    if (search) {            
+    if (search) {
       this.printableWorkers = this.mergeArrays().filter(item => {
         return (
           item.id.toString().includes(search.toLowerCase()) ||
@@ -177,30 +177,30 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   /**
    * addTransfer
-   * @param quadrille 
-   * @param status 
+   * @param quadrille
+   * @param status
    */
   private addTransfer = (quadrille: number, status: string) => {
-  
+
     // Map data to store
-    const mapData = this.mapDataToMemory(quadrille, status);        
+    const mapData = this.mapDataToMemory(quadrille, status);
 
     // Store data
     this.isLoading = true;
-    const id = this.route.snapshot.paramMap.get('id');    
+    const id = this.route.snapshot.paramMap.get('id');
     this.quadrilleService.addTransfers(mapData).then( response => {
-      this.selectedWorkers = [];      
+      this.selectedWorkers = [];
 
       this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
-        
+
         // Remove workers both in filtered and memory arrays
         this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
 
         // Make printable array
         this.printableWorkers = this.mergeArrays();
-      
+
         this.isLoading = false;
       });
     });
@@ -209,27 +209,27 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   /**
    * cancelTransfer
    */
-  public cancelTransfer = () => {    
+  public cancelTransfer = () => {
     // Map data to store
-        
+
     const mapData = this.mapDataToMemory(this.quadrille.id, TransferActions.ApruebaRechazo);
 
     // Store data
     this.isLoading = true;
-    const id = this.route.snapshot.paramMap.get('id');    
+    const id = this.route.snapshot.paramMap.get('id');
     this.quadrilleService.cancelTransfers(mapData).then( response => {
-      this.selectedWorkers = [];      
+      this.selectedWorkers = [];
 
       this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
-        
+
         // Remove workers both in filtered and memory arrays
         this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
 
         // Make printable array
         this.printableWorkers = this.mergeArrays();
-      
+
         this.isLoading = false;
       });
     });
@@ -244,20 +244,20 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
     // Store data
     this.isLoading = true;
-    const id = this.route.snapshot.paramMap.get('id');    
+    const id = this.route.snapshot.paramMap.get('id');
     this.quadrilleService.acceptTransfers(mapData).then(response => {
-      this.selectedWorkers = [];            
+      this.selectedWorkers = [];
 
       this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
-        
+
         // Remove workers both in filtered and memory arrays
         this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
 
         // Make printable array
         this.printableWorkers = this.mergeArrays();
-      
+
         this.isLoading = false;
       });
     });
@@ -266,26 +266,26 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   /**
    * rejectWorkers
    */
-  public rejectWorkers = () => {    
+  public rejectWorkers = () => {
     // Map data to store
     const mapData = this.mapDataToMemory(this.quadrille.id, TransferActions.Rechazado);
 
     // Store data
     this.isLoading = true;
-    const id = this.route.snapshot.paramMap.get('id');    
+    const id = this.route.snapshot.paramMap.get('id');
     this.quadrilleService.rejectTransfers(mapData).then( response => {
-      this.selectedWorkers = [];            
+      this.selectedWorkers = [];
 
-      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {        
+      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
-        
+
         // Remove workers both in filtered and memory arrays
         this.filteredWorkers = this.removeDuplicatedWorkers(this.onMemoryTransfers, this.workers);
 
         // Make printable array
         this.printableWorkers = this.mergeArrays();
-      
+
         this.isLoading = false;
       });
     });
@@ -306,14 +306,14 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   private sendTransfers = () => {
     this.isLoading = true;
     this.quadrilleService.transferWorkers(this.onMemoryTransfers).subscribe(() => {
-      this.selectedWorkers = [];      
+      this.selectedWorkers = [];
 
       const id = this.route.snapshot.paramMap.get('id');
       this.quadrilleService.clearQuadrilleTransfers(+id).then( () => {
         this.onMemoryTransfers = [];
         this.printableWorkers = this.mergeArrays();
-        this.stepperService.onlySyncREM();        
-      });            
+        this.stepperService.onlySyncREM();
+      });
     }, error => {
       this.isLoading = false;
       this.httpService.errorHandler(error);
@@ -351,8 +351,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   /**
    * removeDuplicatedWorkers
-   * @param onMemoryTransfers 
-   * @param filteredWorkers 
+   * @param onMemoryTransfers
+   * @param filteredWorkers
    */
   private removeDuplicatedWorkers = (onMemoryTransfers: Array<any>, filteredWorkers: Array<any>): Array<any> => {
     const mapped = onMemoryTransfers.map(x => x.id);
@@ -361,8 +361,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
 
   /**
    * mapDataToMemory
-   * @param quadrilleId 
-   * @param action 
+   * @param quadrilleId
+   * @param action
    */
   private mapDataToMemory = (quadrilleId: number, action: string): Array<any> => {
     return this.selectedWorkers.map( worker => {
@@ -382,7 +382,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   }
 
   /**
-   * 
+   *
    */
   public goBack = () => {
     // this.sendTransfers();

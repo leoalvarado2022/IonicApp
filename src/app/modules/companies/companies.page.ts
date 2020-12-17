@@ -50,7 +50,7 @@ export class CompaniesPage implements OnInit {
    */
   private loadCompanies = () => {
     this.loaderService.startLoader('Cargando empresas...');
-    const companies = this.storeService.getCompanies();    
+    const companies = this.storeService.getCompanies();
     const company = this.storeService.getActiveCompany();
     this.companies = [...companies];
     this.selectedCompany = company;

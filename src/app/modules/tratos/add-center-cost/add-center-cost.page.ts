@@ -60,7 +60,7 @@ export class AddCenterCostPage implements OnInit {
 
       this.centerForm.patchValue({
         deal: this.deal,
-        unit_control_count: this.deal?.count ? '': 0
+        unit_control_count: this.deal?.count ? '' : 0
       });
 
       this._storeSync.getCostCentersCustomByDeal(this.deal).then( data => {
@@ -79,7 +79,7 @@ export class AddCenterCostPage implements OnInit {
       this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.centerForm.get('currentDate').patchValue(this.currentDate);
     }
-  };
+  }
 
   /**
    * addDayToDate
@@ -90,7 +90,7 @@ export class AddCenterCostPage implements OnInit {
       this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.centerForm.get('currentDate').patchValue(this.currentDate);
     }
-  };
+  }
 
   /**
    * @description logica para enviar a escaneo

@@ -1,6 +1,6 @@
 {
-  "name": "fx360_movil",
-  "version": "1.1.25",
+  "name": "fx360",
+  "version": "1.1.29",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -54,8 +54,6 @@
     "@ionic/storage": "^2.3.1",
     "@primetec/primetec-angular": "0.0.22",
     "compare-func": "^2.0.0",
-    "cordova-android": "9.0.0",
-    "cordova-ios": "5.1.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-androidx": "^1.0.2",
     "cordova-plugin-androidx-adapter": "^1.1.1",
@@ -156,7 +154,6 @@
       }
     },
     "platforms": [
-      "ios",
       "android"
     ]
   }

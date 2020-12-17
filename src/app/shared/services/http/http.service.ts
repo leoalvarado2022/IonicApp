@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../../../environments/environment';
-import {HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {ToastService} from '../toast/toast.service';
-import {StoreService} from '../store/store.service';
+import { Injectable } from '@angular/core';
+import { environment } from '../../../../environments/environment';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ToastService } from '../toast/toast.service';
+import { StoreService } from '../store/store.service';
 
 @Injectable()
 export class HttpService {
@@ -26,7 +26,7 @@ export class HttpService {
    */
   public buildUrl = (url: string, id: string = null): string => {
     return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
-  };
+  }
 
   /**
    * buildUrl para api delivery
@@ -35,7 +35,7 @@ export class HttpService {
    */
   public buildUrlApiDelivery = (url: string, id: string = null): string => {
     return id == null ? this.apiDeliveryUrl + url : this.apiDeliveryUrl + `${url}/${id}`;
-  };
+  }
 
   /**
    * getHeaders para api dinamicas
@@ -46,7 +46,7 @@ export class HttpService {
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  };
+  }
 
   /**
    * getHeaders
@@ -59,7 +59,7 @@ export class HttpService {
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  };
+  }
 
 
   /**
@@ -72,7 +72,7 @@ export class HttpService {
     if (data) {
       return Object.assign({}, data, {
         app: environment.app_name,
-        connectionId: connection ? connection.token : null
+        connectionId: data.connectionId ? data.connectionId : connection ? connection.token : null
       });
     } else {
       return {
@@ -80,7 +80,7 @@ export class HttpService {
         connectionId: connection ? connection.token : null
       };
     }
-  };
+  }
 
   /**
    * errorHandlerPos
@@ -89,7 +89,7 @@ export class HttpService {
   public errorHandlerPos = (error: any): string => {
     if (error instanceof HttpErrorResponse) {
 
-      const {name, message} = error.error;
+      const { name, message } = error.error;
 
       switch (error.status) {
         case 0:
@@ -117,7 +117,7 @@ export class HttpService {
       console.log('No Http error', error);
       return 'No Http error';
     }
-  };
+  }
 
   /**
    * errorHandler
@@ -133,7 +133,7 @@ export class HttpService {
       console.log('statusText', error.statusText);
       */
 
-      const {name, message} = error.error;
+      const { name, message } = error.error;
 
       switch (error.status) {
         case 0:
@@ -162,5 +162,5 @@ export class HttpService {
       console.log('No Http error', error);
       return 'No Http error';
     }
-  };
+  }
 }

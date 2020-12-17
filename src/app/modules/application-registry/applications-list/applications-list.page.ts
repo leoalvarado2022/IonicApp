@@ -47,8 +47,8 @@ export class ApplicationsListPage implements OnInit {
         orderCostCenter,
         orderHeader,
         orderMachinery
-      } = success["data"];
-      
+      } = success['data'];
+
       Promise.all([
         this.orderSyncService.setOrderHeader(orderHeader),
         this.orderSyncService.setOrderCostCenter(orderCostCenter),
@@ -61,7 +61,7 @@ export class ApplicationsListPage implements OnInit {
         this.orderBalanceToApply = orderBalanceToApply;
         this.filteredApplications = [...this.orderBalanceToApply, ...this.orderBalanceApplied];
         this.loaderService.stopLoader();
-      })
+      });
     }, error => {
       this.loaderService.stopLoader();
     });
@@ -69,7 +69,7 @@ export class ApplicationsListPage implements OnInit {
 
   /**
    * selectApplication
-   * @param application 
+   * @param application
    */
   public selectApplication = (application: ApplicationListInterface) => {
     if (application.applicationBalance) {
@@ -85,7 +85,7 @@ export class ApplicationsListPage implements OnInit {
    * startApplication
    */
   public startApplication = () => {
-    this.router.navigate(["/home-page/registro_aplicacion/application-start", this.selectedApplication.applicationOrderId]);
+    this.router.navigate(['/home-page/registro_aplicacion/application-start', this.selectedApplication.applicationOrderId]);
   }
 
 }

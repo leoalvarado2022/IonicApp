@@ -15,7 +15,7 @@ export class HarvestEstimateItemComponent implements OnInit {
   @Input() units: Array<Unit> = [];
 
   @Output() harvestSelected: EventEmitter<HarvestEstimate | null> = new EventEmitter<HarvestEstimate | null>();
-  @Output() deleteHarvest: EventEmitter<HarvestEstimate | null> = new EventEmitter<HarvestEstimate | null>();  
+  @Output() deleteHarvest: EventEmitter<HarvestEstimate | null> = new EventEmitter<HarvestEstimate | null>();
 
   constructor() {
 
@@ -39,12 +39,12 @@ export class HarvestEstimateItemComponent implements OnInit {
    */
   public deleteItem = (item: HarvestEstimate) => {
     this.deleteHarvest.emit(item);
-  }  
+  }
 
   /**
    * showUnitCode
    */
-  public showUnitCode = () => {    
+  public showUnitCode = () => {
     const find = this.units.find(item => item.id === this.item.unit);
     return find ? find.code : 'N/A';
   }

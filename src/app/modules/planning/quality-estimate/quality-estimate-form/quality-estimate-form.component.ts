@@ -30,7 +30,7 @@ export class QualityEstimateFormComponent implements OnInit {
   public qualityForm: FormGroup;
   public isSaving = false;
   public qualities: Array<Generic>;
-  private userCompany: any;    
+  private userCompany: any;
 
   constructor(
     private modalController: ModalController,

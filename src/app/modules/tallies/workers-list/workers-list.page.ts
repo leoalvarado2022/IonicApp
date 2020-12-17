@@ -78,7 +78,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
     this.stepper$.unsubscribe();
   }
 
-  ionViewDidEnter () {
+  ionViewDidEnter() {
     if (!this.firstLoad) {
       this.minimunDataReload();
     }
@@ -121,7 +121,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.deals = [...data[4]];
       this.bonds = [...data[5]];
 
-      this.quadrille = data[7].find(item=> item.id === +id);
+      this.quadrille = data[7].find(item => item.id === +id);
 
       // END LOADING
       this.isLoading = false;

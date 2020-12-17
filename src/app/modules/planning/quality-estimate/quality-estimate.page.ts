@@ -88,9 +88,9 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     const { username } = this.storeService.getUser();
     const { species } = this.costCenter;
     this.caliberService.getCaliberEquivalences(username, species).subscribe(success => {
-      this.calibers = success["data"];
+      this.calibers = success['data'];
     }, error => {
-      
+
     });
   }
 
@@ -213,8 +213,8 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
 
   /**
    * cleanDate
-   * @param date 
-   */  
+   * @param date
+   */
   private cleanDate = (date: string): string => {
     if (date.includes('T')) {
       return date.split('T')[0];

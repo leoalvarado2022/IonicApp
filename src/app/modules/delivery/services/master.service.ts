@@ -29,7 +29,7 @@ export class MasterService {
     return this._httpClient.post(url, this._httpService.buildBody(data), {
       headers: this._httpService.getHeaders()
     });
-  };
+  }
 
   /**
    * @description agregar en fx10 automaticamente

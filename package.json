@@ -1,6 +1,6 @@
 {
   "name": "fx360",
-  "version": "1.1.29",
+  "version": "1.1.30",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -54,6 +54,7 @@
     "@ionic/storage": "^2.3.1",
     "@primetec/primetec-angular": "0.0.22",
     "compare-func": "^2.0.0",
+    "cordova-ios": "6.1.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-androidx": "^1.0.2",
     "cordova-plugin-androidx-adapter": "^1.1.1",
@@ -154,7 +155,8 @@
       }
     },
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

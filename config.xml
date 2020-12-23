@@ -63,6 +63,9 @@
         <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
             <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To set or get the location of the cost centers in the map" />
         </plugin>
+        <config-file parent="NSBluetoothAlwaysUsageDescription" target="*-Info.plist">
+            <string>Improve location accuracy when finding nearby services</string>
+        </config-file>
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
             <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
@@ -90,10 +93,7 @@
             <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothPeripheralUsageDescription">
-            <string>To connect with weight devices. not available in IOS</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysUsageDescription">
-            <string>To connect with weight devices. not available in IOS</string>
+            <string>Improve location accuracy when finding nearby services</string>
         </edit-config>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />

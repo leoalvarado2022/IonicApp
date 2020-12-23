@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="cl.primetec.fx11" version="1.1.30" xmlns="http://www.w3.org/ns/widgets">
+<widget id="cl.primetec.fx11" version="1.1.31" xmlns="http://www.w3.org/ns/widgets">
     <name>FX360</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
@@ -63,9 +63,6 @@
         <plugin name="cordova-plugin-geolocation" spec="^4.0.1">
             <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="To set or get the location of the cost centers in the map" />
         </plugin>
-        <config-file parent="NSBluetoothAlwaysUsageDescription" target="*-Info.plist">
-            <string>Improve location accuracy when finding nearby services</string>
-        </config-file>
         <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
             <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
@@ -93,7 +90,10 @@
             <string>To set or get the location of the cost centers in the map</string>
         </edit-config>
         <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothPeripheralUsageDescription">
-            <string>Improve location accuracy when finding nearby services</string>
+            <string>To connect with weight devices. not available in IOS</string>
+        </edit-config>
+        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysUsageDescription">
+            <string>To connect with weight devices. not available in IOS</string>
         </edit-config>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />

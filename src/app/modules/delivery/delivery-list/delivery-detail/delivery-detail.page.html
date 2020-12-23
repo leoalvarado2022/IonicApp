@@ -77,9 +77,9 @@
             </div>
           </div>
         </div>
-        <ion-grid class="ion-no-padding"
+        <ion-grid class="ion-no-padding space"
                   style="margin-bottom: 20px;padding-top: 10px;">
-          <ion-row>
+          <ion-row style="border-bottom: 1px dashed rgba(0, 0, 0, 0.1);border-top: 1px dashed rgba(0, 0, 0, 0.1);">
             <ion-col size="2">
               <strong>CANT.</strong>
             </ion-col>
@@ -97,7 +97,7 @@
               </ion-col>
               <ion-col size="7">
                 <p>
-                <span *ngIf="!product.name_product"
+                <span *ngIf="!product.name_product && product.type === 'ITEM'"
                       style="color: rgba(255,0,0,0.63);font-style: italic;">{{product?.name_item}}</span>
                   <span *ngIf="product.name_product">{{product?.name_item}}</span>
                 </p>
@@ -113,9 +113,11 @@
                 </ion-col>
                 <ion-col size="7">
                   <p style="padding-left: 30px;">
-                    <span *ngIf="!modifier.name_product"
+                    <span *ngIf="!modifier.name_product && modifier.type === 'ITEM'"
                           style="color: rgba(255,0,0,0.63);font-style: italic;">{{modifier?.name_item}}</span>
-                    <span *ngIf="modifier.name_product">{{modifier?.name_item}}</span>
+                    <span *ngIf="modifier.name_product && modifier.type === 'ITEM'">{{modifier?.name_item}}</span>
+                    <span *ngIf="modifier.type === 'TEXTO'"><span *ngIf="modifer?.header_item">{{modifer?.header_item}}
+                      -</span> {{modifier?.name_item}}</span>
                   </p>
                 </ion-col>
                 <ion-col size="3" class="ion-text-right">
@@ -127,13 +129,24 @@
         </ion-grid>
 
       </ng-container>
-      <p><strong>TOTAL PRODUCTOS</strong> <span style="float: right;border-top: 1px solid rgba(0,0,0,0.16);">{{ order?.value_items | currency:' ':'symbol':'1.0-2'}}</span></p>
-      <p><strong>TOTAL ENVÍO</strong> <span style="float: right;">{{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</span></p>
-      <p *ngIf="order?.value_tip"><strong>TOTAL PROPINA</strong> <span style="float: right;">{{ order?.value_tip | currency:' ':'symbol':'1.0-2'}}</span></p>
-      <p *ngIf="order?.value_order"><strong>TOTAL ORDEN</strong> <span style="float: right;">{{ order?.value_order | currency:' ':'symbol':'1.0-2'}}</span></p>
-      <p *ngIf="order?.value_discount"><strong>TOTAL DESCUENTO</strong> <span style="float: right;">{{ order?.value_discount | currency:' ':'symbol':'1.0-2'}}</span></p>
+      <div class="space">
+        <p><strong>TOTAL PRODUCTOS</strong> <span
+            style="float: right;">{{ order?.value_items | currency:' ':'symbol':'1.0-2'}}</span>
+        </p>
+        <p *ngIf="order?.value_shipping"><strong>ENVÍO</strong> <span
+            style="float: right;">{{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</span></p>
+      </div>
+      <div class="space">
+        <p *ngIf="order?.value_order"><strong>TOTAL ORDEN</strong> <span
+            style="float: right;">{{ order?.value_order | currency:' ':'symbol':'1.0-2'}}</span></p>
+        <p *ngIf="order?.value_discount"><strong>DESCUENTO</strong> <span
+            style="float: right;">- {{ order?.value_discount | currency:' ':'symbol':'1.0-2'}}</span></p>
+      </div>
       <p *ngIf="order?.value_total" style="margin-top: 5px;">
-        <strong>TOTAL</strong> <span style="float: right;">{{ order?.value_total | currency:' ':'symbol':'1.0-2' }}</span></p>
+        <strong>TOTAL</strong> <span
+          style="float: right;">{{ order?.value_total | currency:' ':'symbol':'1.0-2' }}</span></p>
+      <p *ngIf="order?.value_tip"><strong>PROPINA</strong> <span
+          style="float: right;">{{ order?.value_tip | currency:' ':'symbol':'1.0-2'}}</span></p>
     </ion-card-content>
   </ion-card>
 

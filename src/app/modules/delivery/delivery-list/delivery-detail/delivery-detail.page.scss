@@ -137,3 +137,9 @@ ion-card{
 ion-content {
   --background: var(--color-background-tabs);
 }
+
+.space {
+  border-bottom: 1px dashed rgb(0 0 0 / 10%);
+  padding-bottom: 6px;
+  margin-bottom: 10px !important;
+}

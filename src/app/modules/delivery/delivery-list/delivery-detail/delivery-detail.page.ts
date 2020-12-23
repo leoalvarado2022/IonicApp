@@ -187,7 +187,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    */
   modifierProduct(id: number) {
     if (this.order && this.order.products && this.order.products.length) {
-      return this.order.products.filter(value => value.id_order_ref !== null && value.type === 'MODIFICADOR' && value.id_order_ref === id);
+      return this.order.products.filter(value => value.id_order_ref !== null && value.id_order_ref === id);
     }
     return [];
   }

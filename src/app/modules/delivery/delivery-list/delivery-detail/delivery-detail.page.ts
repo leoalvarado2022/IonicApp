@@ -175,7 +175,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    */
   orderProducts() {
     if (this.order && this.order.products && this.order.products.length) {
-      return this.order.products.filter(value => value.id_order_ref === null && value.type === 'ITEM');
+      return this.order.products.filter(value => value.id_order_ref === null);
     }
 
     return [];

@@ -6,12 +6,12 @@
 
 # Compile & Sign Android App
 
-| # | Step               | Command                         | key        |
-|---|--------------------|---------------------------------| -----------|
-| 1 | Prepare android    | `ionic cordova prepare android` |            |
-| 2 | Build release apk  | `npm run release-android`       |            |
-| 3 | Sign app           | `npm run sign-android`          | `Pr1m3T3c` |
-| 4 | Zip apk            | `npm run zipalign-android`      |            |
+| # | Step               | Command                    | Key        |
+|---|--------------------|----------------------------| -----------|
+| 1 | Prepare android    | `prepare-android`          |            |
+| 2 | Build release apk  | `npm run release-android`  |            |
+| 3 | Sign app           | `npm run sign-android`     | `Pr1m3T3c` |
+| 4 | Zip apk            | `npm run zipalign-android` |            |
 
 
 # Upload

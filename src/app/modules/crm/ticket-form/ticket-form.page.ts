@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {StoreService} from '../../../shared/services/store/store.service';
-import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {TicketsService} from '../services/tickets/tickets.service';
-import {HttpService} from '../../../shared/services/http/http.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { StoreService } from '../../../shared/services/store/store.service';
+import { LoaderService } from '../../../shared/services/loader/loader.service';
+import { TicketsService } from '../services/tickets/tickets.service';
+import { HttpService } from '../../../shared/services/http/http.service';
 import { CameraService } from '../../../shared/services/camera/camera.service';
-import {Router} from '@angular/router';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 @Component({
@@ -25,9 +25,9 @@ export class TicketFormPage implements OnInit {
   public users: Array<any> = [];
   public priorities: Array<any> = [];
   public difficulties: Array<any> = [
-    {level: 1, name: '1'},
-    {level: 2, name: '2'},
-    {level: 3, name: '3'}
+    { level: 1, name: '1' },
+    { level: 2, name: '2' },
+    { level: 3, name: '3' }
   ];
 
   public attachments: Array<any> = [];
@@ -59,6 +59,9 @@ export class TicketFormPage implements OnInit {
     const activeCompany = this.storeService.getActiveCompany();
     const details = this.storeService.getTicketDetails();
     const lastDetail = details.find(item => item.id === this.activeTicket.tickets_det);
+    this.activeTicket.createdAt = moment(this.activeTicket.createdAt, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+    this.activeTicket.description = this.cleanString(this.activeTicket.description);
+    this.activeTicket.reference = this.cleanString(this.activeTicket.reference);
 
     this.ticketForm = this.formBuilder.group({
       id: [0, Validators.required],
@@ -68,8 +71,8 @@ export class TicketFormPage implements OnInit {
       created_id: [activeCompany.user, Validators.required],
       assigned_id: [activeCompany.user, Validators.required],
       observations: ['', Validators.required],
-      commitmentAt: [lastDetail ? lastDetail.commitmentAt : ''],
-      commitmentInternAt: [lastDetail ? lastDetail.commitmentInternAt : ''],
+      commitmentAt: [lastDetail ? moment(lastDetail.commitmentAt, "DD/MM/YYYY").format("YYYY-MM-DD") : '1900-01-01'],
+      commitmentInternAt: [lastDetail ? moment(lastDetail.commitmentInternAt, "DD/MM/YYYY").format("YYYY-MM-DD") : '1900-01-01'],
       difficulty: [lastDetail ? lastDetail.difficulty : '', Validators.required],
       priority: [lastDetail ? lastDetail.priority.toLowerCase() : '', Validators.required],
       assign_client: [0, Validators.required],
@@ -88,7 +91,7 @@ export class TicketFormPage implements OnInit {
   /**
    * openGallery
    */
-  public openGallery  = async () => {
+  public openGallery = async () => {
     const base64 = await this.cameraService.openGallery();
     this.addAttachment(base64);
   }
@@ -113,11 +116,11 @@ export class TicketFormPage implements OnInit {
   public submitDetail = () => {
     const formData = Object.assign({}, this.ticketForm.value);
     const userSelected = this.users.find(i => i.id === formData.assigned_id);
+
     formData.assign_client = userSelected.clientContact;
-    formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt).format('YYYY-MM-DD') : '';
-    formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt).format('YYYY-MM-DD') : '';
-    this.activeTicket.maxResolution = moment(this.activeTicket.maxResolution).format('YYYY-MM-DD HH:mm:ss');
-    this.activeTicket.createdAt = moment(this.activeTicket.createdAt).format('YYYY-MM-DD HH:mm:ss');
+    formData.observations = this.cleanString(formData.observations);
+    formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt).format('YYYY-MM-DD') : moment("1900-01-01");
+    formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt).format('YYYY-MM-DD') : moment("1900-01-01");
 
     const data = {
       ticket: this.activeTicket,
@@ -154,6 +157,14 @@ export class TicketFormPage implements OnInit {
     if (findIndex > -1) {
       this.attachments = this.attachments.filter((value, index, array) => findIndex !== index);
     }
+  }
+
+  /**
+   * cleanString
+   * @param string 
+   */
+  private cleanString = (string: string): string => {
+    return string.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&#60;').replace(/>/g, '&#62;');
   }
 
 }

@@ -96,10 +96,13 @@
                 <p class="ion-text-center">{{ product?.quantity}}</p>
               </ion-col>
               <ion-col size="7">
-                <p>
-                <span *ngIf="!product.name_product && product.type === 'ITEM'"
+                <p *ngIf="product.type === 'ITEM'">
+                <span *ngIf="!product.name_product"
                       style="color: rgba(255,0,0,0.63);font-style: italic;">{{product?.name_item}}</span>
                   <span *ngIf="product.name_product">{{product?.name_item}}</span>
+                </p>
+                <p *ngIf="product.type === 'TEXTO'">
+                  <span>{{product?.name_item}}</span>
                 </p>
               </ion-col>
               <ion-col size="3" class="ion-text-right">

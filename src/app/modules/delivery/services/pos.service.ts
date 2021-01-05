@@ -226,7 +226,8 @@ export class PosService {
           // recorro los productos
           for (const product of this.order.products) {
             // busco los productos
-            const productRow = this.checkMenuData.find(value => value.code === product.code_product && value.type === product.type);
+            // const productRow = this.checkMenuData.find(value => value.code === product.code_product && value.type === product.type);
+            const productRow = this.checkMenuData.find(value => value.code === product.code_product && value.type === 'ITEM');
             // si existe el producto
             if (productRow) {
               // agregamos el precio de la orden
@@ -271,6 +272,8 @@ export class PosService {
     const integrationTable = tables.find(value => value.code === this.order.origin);
     // obtener el usuario de pos
     const userPos = await this.getUser();
+
+    // console.log(integrationTable, tables, this.order);
 
     // combrar la caja si existe abre una mesa
     this.cashRegisterActive().pipe(

@@ -7,6 +7,7 @@ import { HttpService } from '../../../shared/services/http/http.service';
 import { CameraService } from '../../../shared/services/camera/camera.service';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
   selector: 'app-ticket-form',
@@ -45,7 +46,8 @@ export class TicketFormPage implements OnInit {
     private ticketsService: TicketsService,
     private httpService: HttpService,
     private router: Router,
-    private cameraService: CameraService
+    private cameraService: CameraService,
+    private actionSheetController: ActionSheetController
   ) {
 
   }
@@ -165,6 +167,6 @@ export class TicketFormPage implements OnInit {
    */
   private cleanString = (string: string): string => {
     return string.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&#60;').replace(/>/g, '&#62;');
-  }
+  }  
 
 }

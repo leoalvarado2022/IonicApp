@@ -175,7 +175,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
           this.addTransfer(item.id, TransferActions.PorAprobar);
         }
       })
-      );
+    );
   }
 
   /**

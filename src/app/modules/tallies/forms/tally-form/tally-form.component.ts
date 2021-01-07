@@ -222,14 +222,16 @@ export class TallyFormComponent implements OnInit {
     });
 
     const actionSheet = await this.actionSheetController.create({
+      cssClass: 'custom-action-sheet',
       header: 'Jornadas',
       backdropDismiss: false,
-      keyboardClose: false,
+      keyboardClose: false,      
       buttons: [
         ...buildButtons,
         {
           text: 'Cancelar',
-          role: 'cancel'
+          role: 'cancel',
+          cssClass: 'custom-action-sheet-cancel-button',
         }]
     });
 

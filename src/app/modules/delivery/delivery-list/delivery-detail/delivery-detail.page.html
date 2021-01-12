@@ -26,6 +26,9 @@
           <ion-button color="danger" style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'"
                       (click)="setNotificationStatus('rejected', order?.id_integration)">Rechazar
           </ion-button>
+          <ion-button color="warning" style="right: 75px !important;" class="button-class" *ngIf="order?.status === 'pending' && reprocess(order?.id_integration, order.products)"
+                      (click)="httpReprocess(order.products, order.id)">Reprocesar
+          </ion-button>
           <ion-button color="primary" class="button-class" style="right: 75px !important;"
                       *ngIf="!productSync() && order?.status === 'pending'"
                       (click)="setNotificationStatus('accepted', order?.id_integration)">

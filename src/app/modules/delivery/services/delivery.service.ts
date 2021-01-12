@@ -21,6 +21,7 @@ export class DeliveryService {
   public orderUpdateUrl = 'order-update';
   public changeOrderStatus = 'change-order';
   public orderUrl = 'order';
+  public orderReprocessUrl = 'reprocess';
   private service: Subscription;
   private refreshData: Subscription;
   private timeAccepted = environment.searchDeliveryListAcceptedMSec;
@@ -58,7 +59,7 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  }
+  };
 
   /**
    * @description get nofitification for by id
@@ -69,7 +70,7 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  }
+  };
 
   /**
    * @description set nofitification for by id
@@ -80,7 +81,18 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
-  }
+  };
+
+  /**
+   * @description reprocesar una cuenta
+   * @param data
+   */
+  public setOrderReprocess = (data: any) => {
+    const url = this.httpService.buildUrl(this.orderReprocessUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
 
   /**
    * @description cambiar estatus de la api delivery
@@ -91,7 +103,7 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeadersApiDynamic(token)
     });
-  }
+  };
 
   /**
    * getDeliveryNotification
@@ -100,7 +112,7 @@ export class DeliveryService {
     return this.storage.get(StorageKeys.DeliveryNotifications).then((notifications: any) => {
       return notifications ? notifications : [];
     });
-  }
+  };
 
 
   /**
@@ -108,7 +120,7 @@ export class DeliveryService {
    */
   public setDeliveryNotification = (data): Promise<any> => {
     return this.storage.set(StorageKeys.DeliveryNotifications, data).then();
-  }
+  };
 
 
   /**

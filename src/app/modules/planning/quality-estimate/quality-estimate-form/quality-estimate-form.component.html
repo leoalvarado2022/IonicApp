@@ -12,13 +12,10 @@
 <ion-content>
   <form [formGroup]="qualityForm">
     <ng-container formGroupName="quality">
-      <ion-item>
+
+      <ion-item (click)="qualityActionSheet()">
         <ion-label position="fixed">Calidad</ion-label>
-        <ion-select [interfaceOptions]="customActionSheetOptions" [selectedText]="getSelectedQuality()" cancelText="Cancelar" formControlName="quality" interface="action-sheet">
-          <ion-select-option *ngFor="let q of qualities" [value]="q.id">
-            {{ q.name }}
-          </ion-select-option>
-        </ion-select>
+        <ion-input [value]="getSelectedQuality()"></ion-input>
       </ion-item>
 
       <ng-container *ngIf="qualityForm.get(['quality', 'quality']).hasError('required')">
@@ -45,7 +42,8 @@
           Datos Calibres
         </ion-list-header>
 
-        <ng-container *ngFor="let item of qualityForm.get('calibers')['controls']; let index = index" [formGroupName]="index.toString()">
+        <ng-container *ngFor="let item of qualityForm.get('calibers')['controls']; let index = index"
+          [formGroupName]="index.toString()">
           <ion-item>
             <ion-label position="fixed">{{ getCaliberName(item) }}</ion-label>
             <ion-input clearInput formControlName="percentage" placeholder="Ingrese el %" type="number"></ion-input>
@@ -60,7 +58,8 @@
 
         <ion-item>
           <ion-label position="fixed">Total</ion-label>
-          <ion-input [disabled]="isView" [ngClass]="{ 'total-padding': !isView }" [value]="getTotal()" clearInput readonly="true" type="number"></ion-input>
+          <ion-input [disabled]="isView" [ngClass]="{ 'total-padding': !isView }" [value]="getTotal()" clearInput
+            readonly="true" type="number"></ion-input>
         </ion-item>
 
         <ng-container *ngIf="!isView && qualityForm.hasError('wrongPercentage')">

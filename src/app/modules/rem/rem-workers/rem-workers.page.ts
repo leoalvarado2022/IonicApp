@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ActionSheetController} from '@ionic/angular';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ActionSheetController } from '@ionic/angular';
+import { HttpService } from '../../../shared/services/http/http.service';
+import { Subscription } from 'rxjs';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
@@ -45,7 +45,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
-      if (steps.length === 0 && !this.firstLoad ) {
+      if (steps.length === 0 && !this.firstLoad) {
         this.loadWorkers();
       }
     });
@@ -120,10 +120,10 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.printableWorkers = [...this.mergeArrays()];
   }
 
-    /**
-   * markWorker
-   * @param worker
-   */
+  /**
+ * markWorker
+ * @param worker
+ */
   public markWorker = (worker: any) => {
     if (this.selectedWorkers.includes(worker)) {
       const index = this.selectedWorkers.indexOf(worker);
@@ -144,6 +144,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    */
   public selectQuadrille = async () => {
     const actionSheet = await this.actionSheetController.create({
+      cssClass: 'custom-action-sheet',
+      backdropDismiss: false,
       header: 'Cuadrillas',
       buttons: [
         ...this.buttons,
@@ -151,6 +153,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
           text: 'Cancelar',
           icon: 'close',
           role: 'cancel',
+          cssClass: 'custom-action-sheet-cancel-button',
           handler: () => {
             this.selectedWorkers = [];
           }
@@ -167,12 +170,12 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   private buildButtons = () => {
     this.buttons = this.allQuadrilles.filter(item => item.id !== this.quadrille.id)
       .map(item => ({
-          text: item.name,
-          handler: () => {
-            this.addTransfer(item.id, TransferActions.PorAprobar);
-          }
-        })
-      );
+        text: item.name,
+        handler: () => {
+          this.addTransfer(item.id, TransferActions.PorAprobar);
+        }
+      })
+    );
   }
 
   /**
@@ -188,10 +191,10 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');
-    this.quadrilleService.addTransfers(mapData).then( response => {
+    this.quadrilleService.addTransfers(mapData).then(response => {
       this.selectedWorkers = [];
 
-      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+      this.quadrilleService.getQuadrilleTransfers(+id).then((transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
 
@@ -217,10 +220,10 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');
-    this.quadrilleService.cancelTransfers(mapData).then( response => {
+    this.quadrilleService.cancelTransfers(mapData).then(response => {
       this.selectedWorkers = [];
 
-      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+      this.quadrilleService.getQuadrilleTransfers(+id).then((transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
 
@@ -235,9 +238,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     });
   }
 
-   /**
-   * acceptWorkers
-   */
+  /**
+  * acceptWorkers
+  */
   public acceptWorkers = () => {
     // Map data to store
     const mapData = this.mapDataToMemory(this.selectedWorkers[0].quadrilleToApprove, TransferActions.Aprobado);
@@ -248,7 +251,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     this.quadrilleService.acceptTransfers(mapData).then(response => {
       this.selectedWorkers = [];
 
-      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+      this.quadrilleService.getQuadrilleTransfers(+id).then((transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
 
@@ -273,10 +276,10 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     // Store data
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');
-    this.quadrilleService.rejectTransfers(mapData).then( response => {
+    this.quadrilleService.rejectTransfers(mapData).then(response => {
       this.selectedWorkers = [];
 
-      this.quadrilleService.getQuadrilleTransfers(+id).then(  (transfers: Array<any>) => {
+      this.quadrilleService.getQuadrilleTransfers(+id).then((transfers: Array<any>) => {
         // Transfers
         this.onMemoryTransfers = transfers;
 
@@ -309,7 +312,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
       this.selectedWorkers = [];
 
       const id = this.route.snapshot.paramMap.get('id');
-      this.quadrilleService.clearQuadrilleTransfers(+id).then( () => {
+      this.quadrilleService.clearQuadrilleTransfers(+id).then(() => {
         this.onMemoryTransfers = [];
         this.printableWorkers = this.mergeArrays();
         this.stepperService.onlySyncREM();
@@ -328,8 +331,8 @@ export class RemWorkersPage implements OnInit, OnDestroy {
     const noTransfers = [];
 
     if (orderByName.length > 0) {
-      orderByName.filter( item => {
-        if (item['quadrilleStatus'] !== '' ) {
+      orderByName.filter(item => {
+        if (item['quadrilleStatus'] !== '') {
           withTransfers.push(item);
         } else {
           noTransfers.push(item);
@@ -365,7 +368,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * @param action
    */
   private mapDataToMemory = (quadrilleId: number, action: string): Array<any> => {
-    return this.selectedWorkers.map( worker => {
+    return this.selectedWorkers.map(worker => {
       return Object.assign({}, worker, {
         quadrilleStatus: action,
         quadrilleToApprove: quadrilleId,

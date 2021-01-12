@@ -17,13 +17,13 @@
     <!-- Tab bar -->
     <ion-tab-bar slot="top">
       <ion-tab-button tab="me">
-        <ion-label>Mis Tickets</ion-label>
+        <ion-label>Mios</ion-label>
         <ion-badge color="dark" *ngIf="activeNumberTicket('me') && numberTicket > 0">
           {{ numberTicket }}
         </ion-badge>
       </ion-tab-button>
       <ion-tab-button tab="all">
-        <ion-label>Mi Equipo</ion-label>
+        <ion-label>Equipo</ion-label>
         <ion-badge color="dark" *ngIf="activeNumberTicket('all') && numberTicket > 0">
           {{ numberTicket }}
         </ion-badge>

@@ -1,5 +1,5 @@
-import {iosDeviceNames} from './ios-device-names';
-import {version} from './version';
+import { iosDeviceNames } from './ios-device-names';
+import { version } from './version';
 
 export const environment = {
   production: false,

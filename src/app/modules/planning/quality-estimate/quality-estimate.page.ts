@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { NetworkService } from '../../../shared/services/network/network.service';
 import { StoreService } from '../../../shared/services/store/store.service';
 import { CaliberService } from '../services/caliber/caliber.service';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-quality-estimate',
@@ -41,7 +42,8 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private networkService: NetworkService,
     private storeService: StoreService,
-    private caliberService: CaliberService
+    private caliberService: CaliberService,
+    private toastService: ToastService
   ) {
 
   }
@@ -85,12 +87,12 @@ export class QualityEstimatePage implements OnInit, OnDestroy {
     this.filteredQualityEstimate = this.storeService.getQualityEstimate();
     this.qualityEstimateDetail = this.storeService.getQualityEstimateDetail();
 
-    const { username } = this.storeService.getUser();
+    const { user } = this.storeService.getActiveCompany();
     const { species } = this.costCenter;
-    this.caliberService.getCaliberEquivalences(username, species).subscribe(success => {
+    this.caliberService.getCaliberEquivalences(user, species).subscribe(success => {
       this.calibers = success['data'];
     }, error => {
-
+      this.toastService.errorToast('No se pudo cargar las equivalencias.');
     });
   }
 

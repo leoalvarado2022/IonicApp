@@ -104,7 +104,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
    */
   public orderSelected = (order: any) => {
     this.router.navigate(['/home-page/delivery-detail', order.id]);
-  }
+  };
 
   /**
    * @description activar el automatico

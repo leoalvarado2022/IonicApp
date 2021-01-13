@@ -88,7 +88,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
       // this._posService.openTable(this.order);
 
-      // this.setHttpNotificationStatus(status, data);
+      this.setHttpNotificationStatus(status, data);
 
       // si el origin es una app externa
       if (this.order.origin === 'JUSTO') {
@@ -151,7 +151,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
         // agregar datos en el pos
-        this._posService.openTable(this.order);
+        // this._posService.openTable(this.order);
       }
       this._location.back();
     }, error => {
@@ -165,7 +165,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    */
   productSync() {
     if (this.order && this.order.products && this.order.products.length) {
-      const validateProduct = this.order.products.filter(value => value.id_item_product === null);
+      const validateProduct = this.order.products.filter(value => value.id_item_product === null && value.type !== 'TEXTO');
 
       return validateProduct.length > 0;
     }

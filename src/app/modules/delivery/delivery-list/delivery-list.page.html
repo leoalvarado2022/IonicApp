@@ -28,23 +28,33 @@
       <ion-tab-bar slot="top">
         <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'"
                         [ngClass]="{'backgroundSelected' : selected === 'pending'}">
-          <ion-label>Pendientes</ion-label>
+          <ion-label *ngIf="selected === 'pending'">Pendientes</ion-label>
+          <ion-icon *ngIf="selected !== 'pending'" name="alarm-outline"></ion-icon>
+          <ion-icon *ngIf="selected === 'pending'" name="alarm-outline"></ion-icon>
         </ion-tab-button>
         <ion-tab-button (click)="changeStatus('accepted')" [selected]="selected === 'accepted'"
                         [ngClass]="{'backgroundSelected' : selected === 'accepted'}">
-          <ion-label>Aceptados</ion-label>
+          <ion-label *ngIf="selected === 'accepted'">Aceptados</ion-label>
+          <ion-icon *ngIf="selected !== 'accepted'" name="checkmark-circle-outline"></ion-icon>
+          <ion-icon *ngIf="selected === 'accepted'" name="checkmark-circle-outline"></ion-icon>
         </ion-tab-button>
         <ion-tab-button (click)="changeStatus('delivering')" [selected]="selected === 'delivering'"
                         [ngClass]="{'backgroundSelected' : selected === 'delivering'}">
-          <ion-label>Entregados</ion-label>
+          <ion-label *ngIf="selected === 'delivering'">Entregados</ion-label>
+          <ion-icon *ngIf="selected !== 'delivering'" name="file-tray-stacked-outline"></ion-icon>
+          <ion-icon *ngIf="selected === 'delivering'" name="file-tray-stacked-outline"></ion-icon>
         </ion-tab-button>
         <ion-tab-button (click)="changeStatus('rejected')" [selected]="selected === 'rejected'"
                         [ngClass]="{'backgroundSelected' : selected === 'rejected'}">
-          <ion-label>Rechazados</ion-label>
+          <ion-label *ngIf="selected === 'rejected'">Rechazados</ion-label>
+          <ion-icon *ngIf="selected !== 'rejected'" name="close-circle-outline"></ion-icon>
+          <ion-icon *ngIf="selected === 'rejected'" name="close-circle-outline"></ion-icon>
         </ion-tab-button>
         <ion-tab-button (click)="changeStatus('done')" [selected]="selected === 'done'"
                         [ngClass]="{'backgroundSelected' : selected === 'done'}">
-          <ion-label>Cerrados</ion-label>
+          <ion-label *ngIf="selected === 'done'">Cerrados</ion-label>
+          <ion-icon *ngIf="selected !== 'done'" name="lock-closed-outline"></ion-icon>
+          <ion-icon *ngIf="selected === 'done'" name="lock-closed-outline"></ion-icon>
         </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
@@ -59,13 +69,15 @@
     </ion-fab-button>
   </ion-fab>
   <ng-container *ngIf="allOrder.length">
-    <div *ngFor="let order of allOrder">
-      <app-delivery-card
-          [order]="order"
-          [images]="integrationImages"
-          (orderSelected)="orderSelected($event)"
-      >
-      </app-delivery-card>
-    </div>
+    <ion-virtual-scroll [items]="allOrder" approxItemHeight="185px">
+      <div *virtualItem="let order"  style="height: 185px;">
+        <app-delivery-card
+            [order]="order"
+            [images]="integrationImages"
+            (orderSelected)="orderSelected($event)"
+        >
+        </app-delivery-card>
+      </div>
+    </ion-virtual-scroll>
   </ng-container>
 </ion-content>

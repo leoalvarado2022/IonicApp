@@ -13,13 +13,15 @@ export class CaliberService {
   ) {
 
   }
-
+  
   /**
    * getCaliberEquivalences
+   * @param user user id
+   * @param specieId species id
    */
-  public getCaliberEquivalences = (username: string, specieId: number) => {
+  public getCaliberEquivalences = (user: number, specieId: number) => {
     const url = this.httpService.buildUrl(this.caliberEquivalences);
-    const body = this.httpService.buildBody({ username, specieId});
+    const body = this.httpService.buildBody({ user, specieId});
     return this.httpClient.post(url, body, {headers: this.httpService.getHeaders()});
   }
 

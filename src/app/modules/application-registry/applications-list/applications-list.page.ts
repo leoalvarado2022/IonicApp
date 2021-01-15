@@ -16,9 +16,9 @@ export class ApplicationsListPage implements OnInit {
   public currentTab: 1 | 2 = 1;
   public readonly toApplyTab = 1;
   public readonly appliedTab = 2;
-  
+
   public filteredToApplyApplications: Array<ApplicationListInterface> = [];
-  public filteredAppliedApplications: Array<ApplicationListInterface> = [];  
+  public filteredAppliedApplications: Array<ApplicationListInterface> = [];
   public selectedApplication: ApplicationListInterface = null;
 
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
@@ -64,7 +64,7 @@ export class ApplicationsListPage implements OnInit {
         this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied)
       ]).then(() => {
         this.orderBalanceToApply = orderBalanceToApply;
-        this.orderBalanceApplied = orderBalanceApplied;        
+        this.orderBalanceApplied = orderBalanceApplied;
 
         this.filteredToApplyApplications = orderBalanceToApply;
         this.filteredAppliedApplications = orderBalanceApplied;
@@ -104,6 +104,47 @@ export class ApplicationsListPage implements OnInit {
   public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {
     this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });
     slide.close();
+  }
+
+  /**
+   * searchApplication
+   * @param search text to search
+   */
+  public searchApplication = (search: string): void => {
+    if (search) {
+      if (this.currentTab === this.toApplyTab) {
+        this.filteredToApplyApplications = this.orderBalanceToApply.filter(item => {
+          return (
+            item.costCenterCode.toLowerCase().includes(search.toLowerCase()) ||
+            item.costCenterName.toLowerCase().includes(search.toLowerCase()) ||
+            item.costCenterMachineryName.toLowerCase().includes(search.toLowerCase()) ||
+            item.applicationBalance.toString().includes(search.toLowerCase())
+          );
+        });
+      }
+
+      if (this.currentTab === this.appliedTab) {
+        this.filteredAppliedApplications = this.orderBalanceApplied.filter(item => {
+          return (
+            item.costCenterCode.toLowerCase().includes(search.toLowerCase()) ||
+            item.costCenterName.toLowerCase().includes(search.toLowerCase()) ||
+            item.hectaresQuantity.toString().includes(search.toLowerCase()) ||
+            item.litersQuantity.toString().includes(search.toLowerCase())
+          );
+        });
+      }
+    } else {
+      this.filteredToApplyApplications = [...this.orderBalanceToApply];
+      this.filteredAppliedApplications = [...this.orderBalanceApplied];
+    }
+  }
+
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = (): void => {
+    this.filteredToApplyApplications = [...this.orderBalanceToApply];
+    this.filteredAppliedApplications = [...this.orderBalanceApplied];
   }
 
 }

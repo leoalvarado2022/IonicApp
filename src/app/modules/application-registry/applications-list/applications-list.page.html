@@ -12,7 +12,8 @@
   </ion-toolbar>
 
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never">
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+      (ionChange)="searchApplication($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
 
@@ -67,6 +68,7 @@
     </ion-virtual-scroll>
   </ng-container>
 
+  <!-- APPLIED TAB -->
   <ng-container *ngIf="currentTab === appliedTab">
     <ion-virtual-scroll [items]="filteredAppliedApplications">
       <ion-item-sliding #slide *virtualItem="let application">
@@ -78,9 +80,6 @@
             </ion-item>
 
             <ion-card-content>
-              <p *ngIf="application.costCenterMachineryName"><strong>Maquina:</strong>
-                {{ application.costCenterMachineryName | titlecase }}</p>
-
               <div class="ion-text-right">
                 <ion-chip>
                   <ion-icon name="calculator-outline" color="primary"></ion-icon>
@@ -107,8 +106,6 @@
       </ion-item-sliding>
     </ion-virtual-scroll>
   </ng-container>
-
-
 
 </ion-content>
 

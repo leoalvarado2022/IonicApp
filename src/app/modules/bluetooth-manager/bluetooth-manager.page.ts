@@ -16,7 +16,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
   public isDeviceConnected: boolean;
   public isSearching: boolean;
   public lastWeight: number;
-  public isAndroid: boolean = false;
+  public isAndroid = false;
 
   private unsubscriber = new Subject();
 
@@ -31,7 +31,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
     this.platform.ready().then(() => {
       this.isAndroid = this.platform.is('android');
 
-      if (this.isAndroid) {        
+      if (this.isAndroid) {
         this.bluetoothService.getBluetoothStatus().pipe(
           takeUntil(this.unsubscriber)
         ).subscribe((status: boolean) => {
@@ -48,7 +48,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
           takeUntil(this.unsubscriber)
         ).subscribe((status: boolean) => {
           this.isSearching = status;
-        });        
+        });
       }
     });
   }
@@ -80,7 +80,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
 
   /**
    * connectDevice
-   * @param device 
+   * @param device
    */
   public connectDevice = (device: BluetoothDevice) => {
     this.bluetoothService.connectDevice(device);
@@ -88,7 +88,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
 
   /**
    * disconnectDevice
-   * @param device 
+   * @param device
    */
   public disconnectDevice = (device: BluetoothDevice) => {
     this.bluetoothService.disconnectDevice();

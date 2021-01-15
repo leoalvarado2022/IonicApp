@@ -1,11 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Caliber, CostCenter, Generic, QualityDetail, QualityEstimate} from '@primetec/primetec-angular';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ModalController} from '@ionic/angular';
-import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
-import {HttpService} from '../../../../shared/services/http/http.service';
-import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {StoreService} from '../../../../shared/services/store/store.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { Caliber, CostCenter, Generic, QualityDetail, QualityEstimate } from '@primetec/primetec-angular';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActionSheetController, ModalController } from '@ionic/angular';
+import { ContractDetailService } from '../../services/contract-detail/contract-detail.service';
+import { HttpService } from '../../../../shared/services/http/http.service';
+import { LoaderService } from '../../../../shared/services/loader/loader.service';
+import { StoreService } from '../../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-quality-estimate-form',
@@ -21,16 +21,10 @@ export class QualityEstimateFormComponent implements OnInit {
   @Input() previous: QualityEstimate;
   @Input() calibers: Array<any>;
 
-  public readonly customActionSheetOptions: any = {
-    header: 'Seleccione',
-    keyboardClose: false,
-    backdropDismiss: false
-  };
-
   public qualityForm: FormGroup;
   public isSaving = false;
   public qualities: Array<Generic>;
-  private userCompany: any;    
+  private userCompany: any;
 
   constructor(
     private modalController: ModalController,
@@ -38,7 +32,8 @@ export class QualityEstimateFormComponent implements OnInit {
     private contractDetailService: ContractDetailService,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private actionSheetController: ActionSheetController
   ) {
 
   }
@@ -51,8 +46,8 @@ export class QualityEstimateFormComponent implements OnInit {
           id: [this.qualityEstimate.id, Validators.required],
           costCenter: [this.costCenter.id, Validators.required],
           user: [this.userCompany.user, Validators.required],
-          quality: [{value: this.qualityEstimate.quality, disabled: true}, Validators.required],
-          exportPercentage: [{value: this.qualityEstimate.exportPercentage, disabled: true}, [
+          quality: [{ value: this.qualityEstimate.quality, disabled: true }, Validators.required],
+          exportPercentage: [{ value: this.qualityEstimate.exportPercentage, disabled: true }, [
             Validators.required,
             Validators.max(100),
             Validators.min(0)
@@ -60,7 +55,7 @@ export class QualityEstimateFormComponent implements OnInit {
           temp: [1]
         }),
         calibers: this.formBuilder.array([])
-      }, {validator: this.validateCalibers});
+      }, { validator: this.validateCalibers });
     } else {
       this.qualityForm = this.formBuilder.group({
         quality: this.formBuilder.group({
@@ -76,7 +71,7 @@ export class QualityEstimateFormComponent implements OnInit {
           temp: [1]
         }),
         calibers: this.formBuilder.array([])
-      }, {validator: this.validateCalibers});
+      }, { validator: this.validateCalibers });
     }
 
     this.loadCalibers();
@@ -136,7 +131,7 @@ export class QualityEstimateFormComponent implements OnInit {
       }
     }
 
-    return accum < 100 || accum > 100 ? {wrongPercentage: true} : null;
+    return accum < 100 || accum > 100 ? { wrongPercentage: true } : null;
   }
 
   /**
@@ -185,7 +180,7 @@ export class QualityEstimateFormComponent implements OnInit {
         id: [find ? find.id : 0, Validators.required],
         quality: [find ? find.qualityEstimate : 0, Validators.required],
         caliber: [item.id, Validators.required],
-        percentage: [{value: find ? find.value : '', disabled: this.isView}, [
+        percentage: [{ value: find ? find.value : '', disabled: this.isView }, [
           Validators.max(100),
           Validators.min(0)
         ]],
@@ -210,6 +205,41 @@ export class QualityEstimateFormComponent implements OnInit {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * qualityActionSheet
+   */
+  public qualityActionSheet = async () => {
+    const buttons = this.qualities.map(item => {
+      return {
+        text: item.name,
+        handler: () => {
+          this.qualityForm.get('quality.quality').setValue(item.id);
+        }
+      }
+    });
+
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Calidad',
+      keyboardClose: false,
+      backdropDismiss: false,
+      cssClass: 'custom-action-sheet',
+      buttons: [
+        ...buttons,
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          cssClass: 'custom-action-sheet-cancel-button',
+          handler: () => {
+
+          }
+        }
+      ]
+    });
+
+    await actionSheet.present();
   }
 
 }

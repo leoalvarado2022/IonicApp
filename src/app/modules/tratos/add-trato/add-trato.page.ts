@@ -45,7 +45,7 @@ export class AddTratoPage implements OnInit {
     await this.modalController.dismiss({
       data
     });
-  };
+  }
 
 
   /**
@@ -85,8 +85,9 @@ export class AddTratoPage implements OnInit {
           break;
       }
 
-      if (data.method === 'nfc')
+      if (data.method === 'nfc') {
         data.nfc = true;
+      }
 
       data.active = true;
     }

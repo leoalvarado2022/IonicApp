@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Orden</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      <h2 class="ion-text-center"><strong>ITEMS</strong></h2>
+      <div class="card-item">
+        <div>
+          <img src="assets/imgs/no-image.png" class="img-card">
+        </div>
+        <div class="description">
+          <p style="font-size: 16px;"><strong>Cocacola</strong></p>
+          <p><span>1,400</span></p>
+          <div class="button-footer">
+            <div class="button-add" (click)="addItems()">+</div>
+            <div class="number-add">0</div>
+            <div class="button-add" (click)="removeItems()">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-item">
+        <div>
+          <img src="assets/imgs/no-image.png" class="img-card">
+        </div>
+        <div class="description">
+          <p style="font-size: 16px;"><strong>Cocacola</strong></p>
+          <p><span>1,400</span></p>
+          <div class="button-footer">
+            <div class="button-add" (click)="addItems()">+</div>
+            <div class="number-add">0</div>
+            <div class="button-add" (click)="removeItems()">-</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-item">
+        <div>
+          <textarea name="" id="" rows="5" placeholder="Escribe un comentario / sugerencia al restaurant"
+                    class="comment"></textarea>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<ion-footer class="show-order ion-text-center">
+  <div>
+    <span>Crear Orden</span>
+  </div>
+</ion-footer>

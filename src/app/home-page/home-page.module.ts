@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HomePagePage } from './home-page.page';
-import { SharedModule } from '../shared/shared.module';
-import { MenuComponent } from '../components/menu/menu.component';
-import { ContractDetailService } from '../modules/planning/services/contract-detail/contract-detail.service';
-import { AuthGuard } from '../guards/auth/auth.guard';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {HomePagePage} from './home-page.page';
+import {SharedModule} from '../shared/shared.module';
+import {MenuComponent} from '../components/menu/menu.component';
+import {ContractDetailService} from '../modules/planning/services/contract-detail/contract-detail.service';
+import {AuthGuard} from '../guards/auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -113,6 +113,14 @@ const routes: Routes = [
         loadChildren: () => import('../modules/delivery/delivery-list/delivery-list.module').then((module) => module.DeliveryListModule),
       },
       {
+        path: 'menu-order',
+        loadChildren: () => import('../modules/delivery/delivery-list/menu-order/menu-order.module').then((module) => module.MenuOrderModule),
+      },
+      {
+        path: 'order-detail',
+        loadChildren: () => import('../modules/delivery/delivery-list/order-detail/order-detail.module').then((module) => module.OrderDetailModule),
+      },
+      {
         path: 'delivery-detail/:id',
         loadChildren: () => import('../modules/delivery/delivery-list/delivery-detail/delivery-detail.module').then((module) => module.DeliveryDetailModule),
       },
@@ -124,7 +132,7 @@ const routes: Routes = [
         path: 'registro_aplicacion',
         loadChildren: () => import('../modules/application-registry/application-registry.module').then(m => m.ApplicationRegistryPageModule)
       },
-      { path: '**', redirectTo: '' },
+      {path: '**', redirectTo: ''},
     ],
   },
 ];

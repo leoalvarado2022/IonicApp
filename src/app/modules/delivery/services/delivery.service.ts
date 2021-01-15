@@ -21,6 +21,7 @@ export class DeliveryService {
   public orderUpdateUrl = 'order-update';
   public changeOrderStatus = 'change-order';
   public orderUrl = 'order';
+  public orderReprocessUrl = 'reprocess';
   private service: Subscription;
   private refreshData: Subscription;
   private timeAccepted = environment.searchDeliveryListAcceptedMSec;
@@ -77,6 +78,17 @@ export class DeliveryService {
    */
   public setNotificationHttpStatus = (data: any) => {
     const url = this.httpService.buildUrl(this.orderUpdateUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description reprocesar una cuenta
+   * @param data
+   */
+  public setOrderReprocess = (data: any) => {
+    const url = this.httpService.buildUrl(this.orderReprocessUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
@@ -154,7 +166,7 @@ export class DeliveryService {
 
     this.service = this.getNotificationHttp(data).subscribe((success: any) => {
       if (success.resp.length) {
-        for (let order of success.resp) {
+        for (const order of success.resp) {
           this.updateStatusOrder(order.id, user, order);
           if (!order.error) {
             this._masterService.insertDataFx10POS(order);

@@ -1,19 +1,19 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {ModalController} from '@ionic/angular';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {CostCenter, EntityList, Generic, Unit} from '@primetec/primetec-angular';
-import {ContractDetailService} from '../../services/contract-detail/contract-detail.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActionSheetController, ModalController } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CostCenter, EntityList, Generic, Unit } from '@primetec/primetec-angular';
+import { ContractDetailService } from '../../services/contract-detail/contract-detail.service';
 import * as moment from 'moment';
-import {HttpService} from '../../../../shared/services/http/http.service';
-import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {debounceTime} from 'rxjs/operators';
-import {StoreService} from '../../../../shared/services/store/store.service';
-import {Subscription} from 'rxjs';
+import { HttpService } from '../../../../shared/services/http/http.service';
+import { LoaderService } from '../../../../shared/services/loader/loader.service';
+import { debounceTime } from 'rxjs/operators';
+import { StoreService } from '../../../../shared/services/store/store.service';
+import { Subscription } from 'rxjs';
 import { HarvestEstimate } from '../harvest-estimate.interface';
 
 function validateQuantities(form: FormGroup) {
   return form.get('quantity').value >= form.get('dailyAmount').value
-  ? null : {'greather': true};
+    ? null : { greather: true };
 }
 
 @Component({
@@ -27,12 +27,6 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   @Input() harvestEstimate: HarvestEstimate;
   @Input() isView: boolean;
   @Input() previous: HarvestEstimate;
-
-  public readonly sheetActions: any = {
-    header: 'Seleccione',
-    keyboardClose: false,
-    backdropDismiss: false
-  };
 
   public showQuantity: string;
   public showDailyAmount: string;
@@ -56,7 +50,8 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     private contractDetailService: ContractDetailService,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private actionSheetController: ActionSheetController
   ) {
 
   }
@@ -71,19 +66,19 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         costCenter: [this.costCenter.id],
         user: [this.userCompany.user],
         unit: [this.costCenter.controlUnit],
-        quantity: [{value: this.harvestEstimate.quantity, disabled: true}],
-        dailyAmount: [{value: this.harvestEstimate.dailyAmount, disabled: true}],
-        workHolidays: [{value: this.harvestEstimate.workHolidays ? '1' : '0', disabled: true}],
-        startDate: [{value: moment.utc(this.harvestEstimate.startDate).format('YYYY-MM-DD'), disabled: true}],
+        quantity: [{ value: this.harvestEstimate.quantity, disabled: true }],
+        dailyAmount: [{ value: this.harvestEstimate.dailyAmount, disabled: true }],
+        workHolidays: [{ value: this.harvestEstimate.workHolidays ? '1' : '0', disabled: true }],
+        startDate: [{ value: moment.utc(this.harvestEstimate.startDate).format('YYYY-MM-DD'), disabled: true }],
         endDate: [moment.utc(this.harvestEstimate.endDate).format('DD/MM/YYYY')],
-        processPlant: [{value: this.harvestEstimate ? this.harvestEstimate.processPlant : '', disabled: true}, Validators.required],
-        destination: [{value: this.harvestEstimate ? this.harvestEstimate.destination : '', disabled: true}, Validators.required],
+        processPlant: [{ value: this.harvestEstimate ? this.harvestEstimate.processPlant : '', disabled: true }, Validators.required],
+        destination: [{ value: this.harvestEstimate ? this.harvestEstimate.destination : '', disabled: true }, Validators.required],
         referenceId: 0
       });
 
       this.showQuantity = this.harvestEstimate.quantity.toString();
       this.showDailyAmount = this.harvestEstimate.dailyAmount.toString();
-    } else {      
+    } else {
       this.harvestForm = this.formBuilder.group({
         id: [0, Validators.required],
         costCenter: [this.costCenter.id],
@@ -92,7 +87,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         quantity: [this.previous ? this.previous.quantity : '', [
           Validators.required,
           Validators.min(1),
-          Validators.pattern(this.decimalRegex)          
+          Validators.pattern(this.decimalRegex)
         ]],
         dailyAmount: [this.previous ? this.previous.dailyAmount : '', [
           Validators.required,
@@ -114,8 +109,6 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
     this.valueChanges$ = this.harvestForm.valueChanges.pipe(
       debounceTime(1000),
     ).subscribe((data) => {
-      console.log('form', this.harvestForm)
-
       this.calculateEndDate();
     });
 
@@ -280,7 +273,7 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
         daysAdded++;
       }
 
-      if(daysAdded === workingDays){
+      if (daysAdded === workingDays) {
         return momentDate;
       }
 
@@ -319,22 +312,92 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
 
   /**
    * inputQuantity
-   * @param value 
+   * @param value
    */
-  public inputQuantity = (value: string) => {    
-    const clean = value.replace(/\D/g,'');    
+  public inputQuantity = (value: string) => {
+    const clean = value.replace(/\D/g, '');
     this.showQuantity = clean;
     this.harvestForm.get('quantity').patchValue(parseFloat(clean));
   }
 
   /**
    * inputDailyAmount
-   * @param value 
+   * @param value
    */
   public inputDailyAmount = (value: string) => {
-    const clean = value.replace(/\D/g,'');
+    const clean = value.replace(/\D/g, '');
     this.showDailyAmount = clean;
     this.harvestForm.get('dailyAmount').patchValue(parseFloat(clean));
+  }
+
+  /**
+   * processPlantActionSheet
+   */
+  public processPlantActionSheet = async () => {
+    const buttons = this.processPlants.map(item => {
+      return {
+        text: item.name,
+        handler: () => {
+          this.harvestForm.get('processPlant').setValue(item.id);
+        }
+      }
+    });
+
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Plantas de Proceso',
+      keyboardClose: false,
+      backdropDismiss: false,
+      cssClass: 'custom-action-sheet',
+      buttons: [
+        ...buttons,
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          cssClass: 'custom-action-sheet-cancel-button',
+          handler: () => {
+
+          }
+        }
+      ]
+    });
+
+    await actionSheet.present();
+  }
+
+  /**
+   * destinationsActionSheet
+   */
+  public destinationsActionSheet = async () => {
+    const buttons = this.destinations.map(item => {
+      return {
+        text: item.name,
+        handler: () => {
+          this.harvestForm.get('destination').setValue(item.id);
+        }
+      }
+    });
+
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Destino',
+      keyboardClose: false,
+      backdropDismiss: false,
+      cssClass: 'custom-action-sheet',
+      buttons: [
+        ...buttons,
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          cssClass: 'custom-action-sheet-cancel-button',
+          handler: () => {
+
+          }
+        }
+      ]
+    });
+
+    await actionSheet.present();
   }
 
 }

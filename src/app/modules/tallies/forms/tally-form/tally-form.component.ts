@@ -222,14 +222,16 @@ export class TallyFormComponent implements OnInit {
     });
 
     const actionSheet = await this.actionSheetController.create({
+      cssClass: 'custom-action-sheet',
       header: 'Jornadas',
       backdropDismiss: false,
-      keyboardClose: false,
+      keyboardClose: false,      
       buttons: [
         ...buildButtons,
         {
           text: 'Cancelar',
-          role: 'cancel'
+          role: 'cancel',
+          cssClass: 'custom-action-sheet-cancel-button',
         }]
     });
 
@@ -415,7 +417,7 @@ export class TallyFormComponent implements OnInit {
         const start = moment(item.startDate).toISOString();
         const end = moment(item.endDate).toISOString();
 
-        return item.costCenterId === costCenterId && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
+        return (item.allCostCenters || item.costCenterId === costCenterId) && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
       });
 
       if (this.availableBonds.length === 1) {

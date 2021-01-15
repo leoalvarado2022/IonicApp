@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 import {TicketDetailsListPage} from './ticket-details-list.page';
 import {RouterModule, Routes} from '@angular/router';
@@ -15,11 +16,14 @@ const routes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),    
   ],
   declarations: [
     TicketDetailsListPage,
     TicketDetailCardComponent
+  ],
+  providers: [
+    InAppBrowser
   ]
 })
 export class TicketDetailsListPageModule {

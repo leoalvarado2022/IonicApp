@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {AuthService} from '../../../../shared/services/auth/auth.service';
-import {Router} from '@angular/router';
-import {ToastService} from '../../../../shared/services/toast/toast.service';
-import {UserService} from '../../../../shared/services/user/user.service';
-import {HttpService} from '../../../../shared/services/http/http.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { LoaderService } from '../../../../shared/services/loader/loader.service';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { Router } from '@angular/router';
+import { ToastService } from '../../../../shared/services/toast/toast.service';
+import { UserService } from '../../../../shared/services/user/user.service';
+import { HttpService } from '../../../../shared/services/http/http.service';
 
 @Component({
   selector: 'app-pin',
@@ -47,7 +47,6 @@ export class PinPage implements OnInit {
       if (data && data.pin) {
         const connectionPin = await this.createUserConnection(data);
 
-
         if (connectionPin.data && connectionPin.status === 201) {
 
           const user: any = await this.userConnection();
@@ -58,14 +57,12 @@ export class PinPage implements OnInit {
 
               this.authService.setConnection(checkToken.data[0]);
 
-              console.log(connectionPin, 'connectionPin');
-              console.log(user, 'user');
-              console.log(checkToken, 'checkToken');
-
               const role = checkToken.data[0].rol;
               const id_conexion = connectionPin.data[0].id_conexion;
 
-              const data = Object.assign(user.user[0], {
+              console.log('id_conexion', id_conexion);
+
+              const data = Object.assign({}, user.user[0], {
                 names: user.user[0].name,
                 password: '',
                 role,

@@ -21,6 +21,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   public order: any;
   public id: any;
   public images: any;
+  public id_integration: any;
 
   constructor(
     private storeService: StoreService,
@@ -72,16 +73,20 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @description cambiar status de notificación
    * @param status
    */
-  setNotificationStatus(status: string) {
+  setNotificationStatus(status: string, id_integration: any) {
     if (this.id) {
+
+      this.id_integration = id_integration;
 
       const user = this.storeService.getActiveCompany();
 
       const data = {
         user: user.user,
         id_order: this.id,
-        status: status
+        status
       };
+
+      // this._posService.openTable(this.order);
 
       this.setHttpNotificationStatus(status, data);
 
@@ -114,7 +119,8 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         const data = {
           origin: this.order.origin,
           orderId: this.order.id_origin,
-          data: {}
+          data: {},
+          id_integration: this.id_integration
         };
 
         const token = integ.api_key;
@@ -159,7 +165,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    */
   productSync() {
     if (this.order && this.order.products && this.order.products.length) {
-      const validateProduct = this.order.products.filter(value => value.id_item_product === null);
+      const validateProduct = this.order.products.filter(value => value.id_item_product === null && value.type !== 'TEXTO');
 
       return validateProduct.length > 0;
     }
@@ -171,7 +177,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    */
   orderProducts() {
     if (this.order && this.order.products && this.order.products.length) {
-      return this.order.products.filter(value => value.id_order_ref === null && value.type === 'ITEM');
+      return this.order.products.filter(value => value.id_order_ref === null);
     }
 
     return [];
@@ -183,7 +189,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    */
   modifierProduct(id: number) {
     if (this.order && this.order.products && this.order.products.length) {
-      return this.order.products.filter(value => value.id_order_ref !== null && value.type === 'MODIFICADOR' && value.id_order_ref === id);
+      return this.order.products.filter(value => value.id_order_ref !== null && value.id_order_ref === id);
     }
     return [];
   }
@@ -197,14 +203,68 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     if (img) {
       return img;
     } else {
-      const imgData = this.images.find(value => value.id_integration === +id_integration);
-      const img = imgData.integration_image;
-      localStorage.setItem(id_integration, img);
+      if (this.images.length) {
+        const imgData = this.images.find(value => value.id_integration === +id_integration);
+        const img = imgData.integration_image;
+        localStorage.setItem(id_integration, img);
 
-      return img;
+        return img;
+      }
     }
 
     return '';
+  }
+
+  /**
+   * @description validacion para mostrar el boton de reprocesar
+   * @param id_integration
+   * @param products
+   */
+  reprocess(id_integration, products) {
+    let rep = false;
+
+    if (products.length) {
+
+      for (let product of products) {
+        if (product.code_item.length > 1 && !product.id_item_product && product.total > 0) {
+          return rep = true;
+        }
+      }
+
+    }
+
+    return rep;
+  }
+
+  /**
+   * @description actualizacion de los items cuando no tienen codigo
+   * @param products
+   * @param order
+   */
+  httpReprocess(products, order) {
+    let data = {
+      products
+    }
+
+    this._deliveryService.setOrderReprocess(data).subscribe((success: any) => {
+      if(success.resp.length) {
+        let error = false;
+        for (let resp of success.resp) {
+          if(resp.respuesta && resp.respuesta.length > 10){
+            const alert = products.find(value => +value.id === +resp.id);
+            this._toastService.warningToast(`${alert.name_item} no existe en la base de datos`);
+            error = true;
+          }
+        }
+
+        if(!error) {
+          this.loadNotifications();
+        }
+      }
+
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
   }
 
 }

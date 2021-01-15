@@ -3,24 +3,29 @@
   <ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()"
     animated class="production" showCancelButton="never"></ion-searchbar>
 
-  <ng-container *ngIf="lat && lng; else retry">
-    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="10" class="map-size">
-      <ng-container *ngFor="let costCenter of filteredCostCenters">
-        <ng-container *ngIf="costCenter.lat && costCenter.lng">
-          <agm-marker (markerClick)="selectedCostCenter = costCenter" [label]="'C'" [latitude]="costCenter.lat"
-            [longitude]="costCenter.lng" [title]="costCenter.code">
-            <agm-info-window [isOpen]="selectedCostCenter === costCenter" [latitude]="costCenter.lat"
-              [longitude]="costCenter.lng">
-              <p>{{ costCenter.code }}</p>
-              <p>{{ costCenter.name }}</p>
-              <p>{{ costCenter.producerName }}</p>
-            </agm-info-window>
-          </agm-marker>
-        </ng-container>
-      </ng-container>
-    </agm-map>
-  </ng-container>
+  <div class="map-size">
 
+    <ng-container *ngIf="lat && lng; else retry">
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="10" style="width: 100%; height: 100%;">
+        <ng-container *ngFor="let costCenter of filteredCostCenters">
+          <ng-container *ngIf="costCenter.lat && costCenter.lng">
+            <agm-marker (markerClick)="selectedCostCenter = costCenter" [label]="'C'" [latitude]="costCenter.lat"
+              [longitude]="costCenter.lng" [title]="costCenter.code">
+              <agm-info-window [isOpen]="selectedCostCenter === costCenter" [latitude]="costCenter.lat"
+                [longitude]="costCenter.lng">
+                <p>{{ costCenter.code }}</p>
+                <p>{{ costCenter.name }}</p>
+                <p>{{ costCenter.producerName }}</p>
+              </agm-info-window>
+            </agm-marker>
+          </ng-container>
+        </ng-container>
+      </agm-map>
+    </ng-container>
+  </div>
+</ion-content>
+
+<ion-footer>
   <ng-template #retry>
     <p class="ion-text-center">
       No se pudo cargar la ubicacion
@@ -30,5 +35,4 @@
       Reintentar
     </ion-button>
   </ng-template>
-
-</ion-content>
+</ion-footer>

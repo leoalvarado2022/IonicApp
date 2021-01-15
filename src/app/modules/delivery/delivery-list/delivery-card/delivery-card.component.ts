@@ -29,7 +29,7 @@ export class DeliveryCardComponent implements OnInit {
    */
   public viewOrder = (order: any) => {
     this.orderSelected.emit(order);
-  };
+  }
 
   /**
    * @description obtener las imagenes
@@ -40,11 +40,13 @@ export class DeliveryCardComponent implements OnInit {
     if (img) {
       return img;
     } else {
-      const imgData = this.images.find(value => value.id_integration === +id_integration);
-      const img = imgData.integration_image;
-      localStorage.setItem(id_integration, img);
+      if (this.images.length) {
+        const imgData = this.images.find(value => value.id_integration === +id_integration);
+        const img = imgData.integration_image;
+        localStorage.setItem(id_integration, img);
+        return img;
+      }
 
-      return img;
     }
 
     return '';

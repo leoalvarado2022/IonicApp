@@ -82,7 +82,7 @@ export class ApplicationEndPage implements OnInit {
       this.weatherService.getWeather()
     ]).then((data: any) => {
       this.currentApplication = data[0];
-      this.orderHeader = Object.assign({}, data[1], { date: this.cleanDate(data[1]["date"]) });
+      this.orderHeader = Object.assign({}, data[1], { date: this.cleanDate(data[1]['date']) });
       this.orderChemicals = data[2];
       this.orderLocations = data[3];
       this.weather = data[4];
@@ -109,7 +109,7 @@ export class ApplicationEndPage implements OnInit {
 
   /**
    * createChemical
-   * @param chemical 
+   * @param chemical
    */
   private createChemical = (chemical: any): FormGroup => {
     return this.formBuilder.group({
@@ -157,14 +157,14 @@ export class ApplicationEndPage implements OnInit {
       applicationOrderId: this.currentApplication.applicationOrderId,
       costCenterId: this.currentApplication.costCenterId,
       tempId: this.tempId,
-      startDate: moment(this.orderLocations[0]["timestamp"]).format('YYYY-MM-DD'),
-      endDate: moment(this.orderLocations[this.orderLocations.length - 1]["timestamp"]).format('YYYY-MM-DD')
+      startDate: moment(this.orderLocations[0]['timestamp']).format('YYYY-MM-DD'),
+      endDate: moment(this.orderLocations[this.orderLocations.length - 1]['timestamp']).format('YYYY-MM-DD')
     });
 
-    const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item["timestamp"]).format('YYYY-MM-DD HH:mm:ss') }));
+    const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item['timestamp']).format('YYYY-MM-DD HH:mm:ss') }));
+    const user = this.storeService.getUser();    
 
-    const user = this.storeService.getUser();
-    this.applicationRegistryService.storeApplication(user.id, this.orderHeader, formData, orderLocations, formData["chemicals"]).subscribe(success => {
+    this.applicationRegistryService.storeApplication(user.id, this.orderHeader, formData, orderLocations, formData['chemicals']).subscribe(success => {
       Promise.all([
         this.orderSyncService.clearApplicationLocationsById(this.id),
         this.orderSyncService.clearApplicationCache()
@@ -172,13 +172,14 @@ export class ApplicationEndPage implements OnInit {
         this.router.navigate(['/home-page/registro_aplicacion/applications', this.id]);
       });
     }, error => {
+      console.log('error', error);
       this.toastService.errorToast('ocurrio un error al grabar la aplicacion');
-    });
+    });    
   }
 
   /**
    * cleanDate
-   * @param date 
+   * @param date
    */
   private cleanDate = (date: string): string => {
     if (date.includes('T')) {

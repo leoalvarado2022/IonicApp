@@ -39,7 +39,7 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.id = +this.route.snapshot.paramMap.get("id");
+    this.id = +this.route.snapshot.paramMap.get('id');
 
     Promise.all([
       this.orderSyncService.getOrderBalanceToApplyById(this.id),
@@ -80,7 +80,7 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
         this.toastService.errorToast('No se pudo cargar el clima');
         this.loading = false;
       });
-    })
+    });
   }
 
   /**
@@ -130,7 +130,7 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
    * endApplication
    */
   public endApplication = () => {
-    this.router.navigate(["/home-page/registro_aplicacion/application-end", this.id]);
+    this.router.navigate(['/home-page/registro_aplicacion/application-end', this.id]);
   }
 
   /**

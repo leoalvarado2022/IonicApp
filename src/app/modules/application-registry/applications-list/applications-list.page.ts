@@ -13,10 +13,16 @@ import { ApplicationRegistryService } from '../services/application-registry/app
 })
 export class ApplicationsListPage implements OnInit {
 
+  public currentTab: 1 | 2 = 1;
+  public readonly toApplyTab = 1;
+  public readonly appliedTab = 2;
+  
+  public filteredToApplyApplications: Array<ApplicationListInterface> = [];
+  public filteredAppliedApplications: Array<ApplicationListInterface> = [];  
+  public selectedApplication: ApplicationListInterface = null;
+
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
-  public filteredApplications: Array<ApplicationListInterface> = [];
-  public selectedApplication: ApplicationListInterface = null;
 
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
@@ -39,7 +45,7 @@ export class ApplicationsListPage implements OnInit {
     this.loaderService.startLoader();
 
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.applicationRegistryService.getApplicationList(+id).subscribe(success => {
+    this.applicationRegistryService.getApplicationList(+id).subscribe((success: any) => {
       const {
         orderBalanceApplied,
         orderBalanceToApply,
@@ -47,7 +53,7 @@ export class ApplicationsListPage implements OnInit {
         orderCostCenter,
         orderHeader,
         orderMachinery
-      } = success["data"];
+      } = success.data;
 
       Promise.all([
         this.orderSyncService.setOrderHeader(orderHeader),
@@ -57,11 +63,14 @@ export class ApplicationsListPage implements OnInit {
         this.orderSyncService.setOrderBalanceToApply(orderBalanceToApply),
         this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied)
       ]).then(() => {
-        this.orderBalanceApplied = orderBalanceApplied;
         this.orderBalanceToApply = orderBalanceToApply;
-        this.filteredApplications = [...this.orderBalanceToApply, ...this.orderBalanceApplied];
+        this.orderBalanceApplied = orderBalanceApplied;        
+
+        this.filteredToApplyApplications = orderBalanceToApply;
+        this.filteredAppliedApplications = orderBalanceApplied;
+
         this.loaderService.stopLoader();
-      })
+      });
     }, error => {
       this.loaderService.stopLoader();
     });
@@ -69,7 +78,7 @@ export class ApplicationsListPage implements OnInit {
 
   /**
    * selectApplication
-   * @param application 
+   * @param application
    */
   public selectApplication = (application: ApplicationListInterface): void => {
     if (application.applicationBalance) {

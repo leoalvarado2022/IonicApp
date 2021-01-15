@@ -3,6 +3,7 @@ import {DeliveryListPage} from './delivery-list.page';
 import {SharedModule} from '../../../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
 import {CommonModule} from '@angular/common';
+import {MenuOrderPage} from './menu-order/menu-order.page';
 
 const routes: Routes = [
   {

@@ -21,7 +21,7 @@ export class MachineryFormComponent implements OnInit {
   @Input() implements: Array<any> = [];
   @Input() date: string;
   @Input() editMachinery: Machinery;
-  @Input() isCopy: boolean = false;
+  @Input() isCopy = false;
 
   // FORM
   public machineryForm: FormGroup;
@@ -56,7 +56,7 @@ export class MachineryFormComponent implements OnInit {
   public filteredImplements: Array<any> = [];
   public implementCode: string;
   public implementName: string;
-  public showImplement: boolean = false;
+  public showImplement = false;
 
   constructor(
     private modalController: ModalController,
@@ -98,14 +98,14 @@ export class MachineryFormComponent implements OnInit {
       }
 
       // Labor
-      const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId)
+      const findLabor = this.labors.find(item => item.id === this.editMachinery.laborId);
       this.laborCode = findLabor.code;
       this.laborName = findLabor.name;
 
       this.selectLaborUnit(findLabor.id);
 
       // Trabajador
-      const findWorker = this.workers.find(item => item.id === this.editMachinery.workerId)
+      const findWorker = this.workers.find(item => item.id === this.editMachinery.workerId);
       this.workerName = findWorker ? findWorker.name : '';
 
       // Load Implements
@@ -207,7 +207,7 @@ export class MachineryFormComponent implements OnInit {
     if (search) {
       this.filteredCostCenters = this.allCostCenters.filter(item => {
         console.log('item', item);
-        return item.machineryType !== "maquinaria" && (
+        return item.machineryType !== 'maquinaria' && (
           item.code.toLowerCase().includes(search.toLowerCase()) ||
           item.name.toLowerCase().includes(search.toLowerCase())
         );
@@ -268,7 +268,7 @@ export class MachineryFormComponent implements OnInit {
     this.laborCode = labor.code;
     this.laborName = labor.name;
     this.filteredLabors = [];
-    
+
     this.selectLaborUnit(labor.unit_id);
   }
 

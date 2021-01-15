@@ -19,9 +19,11 @@
   </ion-item>
 
   <ion-card-content>
-    <p *ngIf="detail.priorityChange" style="color: grey;font-size: 12px;"><span >Prioridad:</span> {{ detail.priority }}</p>
+    <p *ngIf="detail.priorityChange" style="color: grey;font-size: 12px;"><span>Prioridad:</span> {{ detail.priority }}
+    </p>
     <p *ngIf="detail.stateChange" style="color: grey;font-size: 12px;"><strong>Estado:</strong> {{ detail.state }}</p>
-    <p *ngIf="detail.commitmentDateChange" style="color: grey;font-size: 12px;"><span>Fecha de compromiso Cliente:</span> {{detail.commitmentAt}}</p>
+    <p *ngIf="detail.commitmentDateChange" style="color: grey;font-size: 12px;"><span>Fecha de compromiso
+        Cliente:</span> {{detail.commitmentAt}}</p>
     <p style="color: grey;font-size: 12px;"><span>Fecha de compromiso Interna:</span> {{detail.commitmentInternAt}}</p>
     <br>
     <p>{{ detail.observations || 'Sin Observacion' }}</p>
@@ -30,8 +32,8 @@
     <ng-container *ngIf="detail.attached && detail.attached.length">
       Adjuntos:
       <ng-container *ngFor="let file of detail.attached">
-        <p>
-          <a [href]="buildLink(file)" target="_blank">{{ file.name }}</a>
+        <p (click)="openLink(file)" class="file-link">
+          {{ file.name }}
         </p>
       </ng-container>
     </ng-container>

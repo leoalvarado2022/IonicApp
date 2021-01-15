@@ -20,6 +20,7 @@ import { OrderSyncService } from './storage/order-sync/order-sync.service';
 import { AppService } from './app/app.service';
 import { DeviceService } from './device/device.service';
 import { WeatherService } from './weather/weather.service';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { WeatherService } from './weather/weather.service';
     AppService,
     DeviceService,
     WeatherService,
+    InAppBrowser,
 
     // Storage Services Block
     StorageSyncService,

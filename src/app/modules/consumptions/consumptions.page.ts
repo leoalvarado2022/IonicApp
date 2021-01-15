@@ -54,10 +54,10 @@ export class ConsumptionsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
       if (steps.length === 0  && !this.firstLoad) {
-        this.isSyncing = false;        
+        this.isSyncing = false;
         this.loadData();
       } else {
-        this.isSyncing = true;        
+        this.isSyncing = true;
       }
     });
 
@@ -287,10 +287,10 @@ export class ConsumptionsPage implements OnInit, OnDestroy {
 
   /**
    * formatDate
-   * @param date 
+   * @param date
    */
-  public formatDate = (date: string): string => {    
-    return moment.utc(this.cleanDate(date), 'YYYY-MM-DD').format("DD/MM/YYYY");
+  public formatDate = (date: string): string => {
+    return moment.utc(this.cleanDate(date), 'YYYY-MM-DD').format('DD/MM/YYYY');
   }
 
   /**

@@ -10,9 +10,24 @@
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
+
   <ion-toolbar class="toolbar-search">
     <ion-searchbar animated placeholder="Buscar..." showCancelButton="never">
     </ion-searchbar>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-tabs>
+      <ion-tab-bar slot="top" style="height: 100%">
+        <ion-tab-button [ngClass]="{ 'tab-selected': currentTab === toApplyTab }" (click)="currentTab = toApplyTab">
+          <ion-label>Por Aplicar</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button [ngClass]="{ 'tab-selected': currentTab === appliedTab }" (click)="currentTab = appliedTab">
+          <ion-label>Aplicadas</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
   </ion-toolbar>
 </ion-header>
 
@@ -21,27 +36,52 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-virtual-scroll [items]="filteredApplications">
-    <ion-item-sliding #slide *virtualItem="let application" [disabled]="application.applicationBalance">
-      <ion-item class="slide-item" lines="none" (click)="selectApplication(application)">
-        <ion-card
-          [ngClass]="{ 'applied': !application.applicationBalance && selectedApplication !== application, 'applicationSelected': selectedApplication === application}">
+  <!-- TO APPLY TAB -->
+  <ng-container *ngIf="currentTab === toApplyTab">
+    <ion-virtual-scroll [items]="filteredToApplyApplications">
+      <ion-item class="slide-item" lines="none" #slide *virtualItem="let application"
+        (click)="selectApplication(application)">
+        <ion-card [ngClass]="{ 'applicationSelected': selectedApplication === application}">
           <ion-item lines="full">
             <ion-badge slot="start">{{ application.costCenterCode | uppercase }}</ion-badge>
             <ion-label>{{ application.costCenterName | titlecase }}</ion-label>
           </ion-item>
 
           <ion-card-content>
-            <p *ngIf="application.costCenterMachineryName"><strong>Maquina:</strong>
-              {{ application.costCenterMachineryName | titlecase }}</p>
+            <ng-container *ngIf="application.costCenterMachineryName">
+              <p>
+                <strong>Maquina:</strong>
+                {{ application.costCenterMachineryName | titlecase }}
+              </p>
+            </ng-container>
 
             <div class="ion-text-right">
-              <ion-chip *ngIf="application.applicationBalance">
+              <ion-chip>
                 <ion-icon name="calculator-outline" color="success"></ion-icon>
                 <ion-label>{{ application.applicationBalance }} </ion-label>
               </ion-chip>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+    </ion-virtual-scroll>
+  </ng-container>
 
-              <ng-container *ngIf="application.hectaresQuantity && application.litersQuantity">
+  <ng-container *ngIf="currentTab === appliedTab">
+    <ion-virtual-scroll [items]="filteredAppliedApplications">
+      <ion-item-sliding #slide *virtualItem="let application">
+        <ion-item class="slide-item" lines="none">
+          <ion-card>
+            <ion-item lines="full">
+              <ion-badge slot="start">{{ application.costCenterCode | uppercase }}</ion-badge>
+              <ion-label>{{ application.costCenterName | titlecase }}</ion-label>
+            </ion-item>
+
+            <ion-card-content>
+              <p *ngIf="application.costCenterMachineryName"><strong>Maquina:</strong>
+                {{ application.costCenterMachineryName | titlecase }}</p>
+
+              <div class="ion-text-right">
                 <ion-chip>
                   <ion-icon name="calculator-outline" color="primary"></ion-icon>
                   <ion-label>{{ application.hectaresQuantity }} </ion-label>
@@ -51,27 +91,31 @@
                   <ion-icon name="calculator-outline" color="success"></ion-icon>
                   <ion-label>{{ application.litersQuantity }} </ion-label>
                 </ion-chip>
-              </ng-container>
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-item>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-item>
 
-      <ion-item-options side="end">
-        <ion-item-option color="warning" (click)="editApplication(application, slide)">
-          <ion-icon slot="icon-only" name="pencil"></ion-icon>
-        </ion-item-option>
-        <ion-item-option color="danger">
-          <ion-icon slot="icon-only" name="trash"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-virtual-scroll>
+        <ion-item-options side="end">
+          <ion-item-option color="warning" (click)="editApplication(application, slide)">
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-virtual-scroll>
+  </ng-container>
+
+
 
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" [disabled]="!selectedApplication" (click)="startApplication()">
-    Iniciar
-  </ion-button>
+  <ng-container *ngIf="currentTab === toApplyTab">
+    <ion-button expand="block" [disabled]="!selectedApplication" (click)="startApplication()">
+      Iniciar
+    </ion-button>
+  </ng-container>
 </ion-footer>

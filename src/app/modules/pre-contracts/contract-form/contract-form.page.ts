@@ -32,7 +32,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public quadrilles: Array<any> = [];
   public workers: Array<Worker> = [];
   public contractors: Array<Worker> = [];
-  public showContractor: boolean = false;
+  public showContractor = false;
 
   private editPreContrat: any = null;
   private activeCompany: any = null;
@@ -75,7 +75,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
 
         }
       }]
-    }
+    };
 
     this.contractForm = this.formBuilder.group({
       id: [0],

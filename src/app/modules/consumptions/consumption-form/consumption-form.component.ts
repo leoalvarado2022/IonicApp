@@ -19,7 +19,7 @@ export class ConsumptionFormComponent implements OnInit {
   @Input() userId: number;
   @Input() companyId: number;
   @Input() editConsumption: Consumption;
-  @Input() isCopy: boolean = false;
+  @Input() isCopy = false;
 
   public consumptionForm: FormGroup;
   private tempId: number;

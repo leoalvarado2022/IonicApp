@@ -28,14 +28,14 @@ export class NfcPage implements OnInit, OnDestroy {
   sync = false;
 
   constructor(public nativeAudio: NativeAudio,
-    private platform: Platform,
-    public nfc: NFC,
-    public ndef: Ndef,
-    public _changeDetectorRef: ChangeDetectorRef,
-    public modalController: ModalController,
-    private _storageSyncService: StorageSyncService,
-    private _deviceSyncService: DeviceSyncService,
-    private alertCtrl: AlertController
+              private platform: Platform,
+              public nfc: NFC,
+              public ndef: Ndef,
+              public _changeDetectorRef: ChangeDetectorRef,
+              public modalController: ModalController,
+              private _storageSyncService: StorageSyncService,
+              private _deviceSyncService: DeviceSyncService,
+              private alertCtrl: AlertController
   ) {
 
   }

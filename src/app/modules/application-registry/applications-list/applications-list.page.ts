@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonItemSliding } from '@ionic/angular';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
+import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { LoaderService } from 'src/app/shared/services/loader/loader.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { ApplicationListInterface } from '../application-list.interface';
 import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
 
@@ -29,7 +32,10 @@ export class ApplicationsListPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private loaderService: LoaderService,
     private router: Router,
-    private orderSyncService: OrderSyncService
+    private orderSyncService: OrderSyncService,
+    private toastService: ToastService,
+    private alertService: AlertService,
+    private storeService: StoreService
   ) {
 
   }
@@ -102,8 +108,27 @@ export class ApplicationsListPage implements OnInit {
    * @param application application selected to edit
    */
   public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {
-    this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });
     slide.close();
+    this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });    
+  }
+
+  /**
+   * deleteApplication
+   */
+  public deleteApplication = async (application: ApplicationListInterface, slide: IonItemSliding) => {    
+    const yes = await this.alertService.confirmAlert('Seguro que quieres borrar esta applicacion?');
+    const user = this.storeService.getUser();
+
+    slide.close();    
+
+    if (yes) {            
+      const deleteObj = Object.assign({}, application, {id: application.id * -1, applicationOrderId: application.applicationOrderId * -1 });
+      this.applicationRegistryService.deleteApplication(deleteObj, user.id).subscribe(success => {
+        this.router.navigate(['/home-page/registro_aplicacion']);
+      }, error => {
+        this.toastService.errorToast('ocurrio un error al borrar la aplicacion');
+      });            
+    }    
   }
 
   /**

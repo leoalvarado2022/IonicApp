@@ -20,6 +20,7 @@ export class ApplicationEndPage implements OnInit {
   public currentStep: 1 | 2 = 1;
   public readonly step1 = 1;
   public readonly step2 = 2;
+  public isEdit = false;
 
   public endForm: FormGroup;
   public currentApplication: ApplicationListInterface;
@@ -48,6 +49,7 @@ export class ApplicationEndPage implements OnInit {
   ngOnInit() {
     this.id = +this.route.snapshot.paramMap.get("id");
     const edit = this.activatedRoute.snapshot.queryParamMap.get("edit");
+    this.isEdit = !!edit;
 
     this.endForm = this.formBuilder.group({
       id: 0,
@@ -74,6 +76,17 @@ export class ApplicationEndPage implements OnInit {
       chemicals: this.formBuilder.array([])
     });
 
+    if (this.isEdit) {
+      this.loadApplication(this.id.toString());
+    } else {
+      this.loadData();
+    }
+  }
+
+  /**
+   * loadData
+   */
+  private loadData = () => {
     Promise.all([
       this.orderSyncService.getOrderBalanceToApplyById(this.id),
       this.orderSyncService.getOrderHeader(),
@@ -87,10 +100,7 @@ export class ApplicationEndPage implements OnInit {
       this.orderLocations = data[3];
       this.weather = data[4];
 
-      if (!edit) {
-        this.tempId = this.orderLocations[0]["tempId"];
-        this.orderChemicals.forEach(item => this.addChemical(item));
-      }
+      this.orderChemicals.forEach(item => this.addChemical(item));
 
       if (data[4]) {
         this.endForm.patchValue({
@@ -101,19 +111,15 @@ export class ApplicationEndPage implements OnInit {
         this.endForm.updateValueAndValidity();
       }
     });
-
-    if (edit) {
-      this.loadApplication(this.id.toString());
-    }
   }
 
   /**
    * createChemical
    * @param chemical
    */
-  private createChemical = (chemical: any): FormGroup => {
+  private createChemical = (chemical: any): FormGroup => {    
     return this.formBuilder.group({
-      id: 0,
+      id: chemical ? chemical.id: 0,
       applicationId: chemical.applicationId,
       applicationOrderId: chemical.applicationOrderId,
       dosis100l: [chemical ? chemical.dosis100l : '', [
@@ -153,29 +159,72 @@ export class ApplicationEndPage implements OnInit {
    * submit
    */
   public submit = () => {
-    const formData = Object.assign({}, this.endForm.value, {
-      applicationOrderId: this.currentApplication.applicationOrderId,
-      costCenterId: this.currentApplication.costCenterId,
-      tempId: this.tempId,
-      startDate: moment(this.orderLocations[0]['timestamp']).format('YYYY-MM-DD'),
-      endDate: moment(this.orderLocations[this.orderLocations.length - 1]['timestamp']).format('YYYY-MM-DD')
-    });
+    const user = this.storeService.getUser();
 
-    const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item['timestamp']).format('YYYY-MM-DD HH:mm:ss') }));
-    const user = this.storeService.getUser();    
+    if (this.isEdit) {
+      const formData = Object.assign({}, this.endForm.value, {
+        applicationOrderId: this.currentApplication.applicationOrderId,
+        costCenterId: this.currentApplication.costCenterId,
+        tempId: 99
+      });
 
-    this.applicationRegistryService.storeApplication(user.id, this.orderHeader, formData, orderLocations, formData['chemicals']).subscribe(success => {
+      this.updateApplication(user.id, this.orderHeader, formData, [], formData["chemicals"]);
+    } else {
+      const formData = Object.assign({}, this.endForm.value, {
+        applicationOrderId: this.currentApplication.applicationOrderId,
+        costCenterId: this.currentApplication.costCenterId,
+        tempId: this.tempId,
+        startDate: moment(this.orderLocations[0]['timestamp']).format('YYYY-MM-DD'),
+        endDate: moment(this.orderLocations[this.orderLocations.length - 1]['timestamp']).format('YYYY-MM-DD')
+      });
+
+      const orderLocations = this.orderLocations.map(item => Object.assign({}, item, { timestamp: moment(item['timestamp']).format('YYYY-MM-DD HH:mm:ss') }));
+
+      this.storeApplication(user.id, this.orderHeader, formData, orderLocations, formData["chemicals"]);
+    }
+  }
+
+  /**
+   * storeApplication
+   * @param user user id
+   * @param header order header
+   * @param application application data
+   * @param applicationLocations gps locations
+   * @param applicationChemicals chemicals used
+   */
+  private storeApplication = (user: number, header: any, application: any, applicationLocations: Array<any> = [], applicationChemicals: Array<any> = []) => {
+    this.applicationRegistryService.storeApplication(user, header, application, applicationLocations, applicationChemicals).subscribe(success => {
       Promise.all([
         this.orderSyncService.clearApplicationLocationsById(this.id),
         this.orderSyncService.clearApplicationCache()
       ]).then(() => {
-        this.router.navigate(['/home-page/registro_aplicacion/applications', this.id]);
+        this.router.navigate(['/home-page/registro_aplicacion']);
       });
     }, error => {
-      console.log('error', error);
       this.toastService.errorToast('ocurrio un error al grabar la aplicacion');
-    });    
+    });
   }
+
+  /**
+   * updateApplication
+   * @param user user id
+   * @param header order header
+   * @param application application data
+   * @param applicationLocations gps locations
+   * @param applicationChemicals chemicals used
+   */
+  private updateApplication = (user: number, header: any, application: any, applicationLocations: Array<any> = [], applicationChemicals: Array<any> = []) => {
+    this.applicationRegistryService.updateApplication(user, header, application, applicationLocations, applicationChemicals).subscribe(success => {
+      Promise.all([
+        this.orderSyncService.clearApplicationLocationsById(this.id),
+        this.orderSyncService.clearApplicationCache()
+      ]).then(() => {
+        this.router.navigate(['/home-page/registro_aplicacion']);
+      });
+    }, error => {
+      this.toastService.errorToast('ocurrio un error al editar la aplicacion');
+    });
+  }  
 
   /**
    * cleanDate
@@ -194,23 +243,24 @@ export class ApplicationEndPage implements OnInit {
    * @param id application id
    */
   private loadApplication = (id: string): void => {
-    this.applicationRegistryService.getApplication(id).subscribe(success => {
-      const data = success["data"];
+    this.applicationRegistryService.getApplication(id).subscribe((success: any) => {
+      const data = success.data;
+      const { applicationHeader, application, chemicals, locations } = data;
 
-      this.currentApplication = data["orderBalanceApplied"];
-      this.currentApplication["applicationOrderId"] = data["orderBalanceApplied"]["applicationRegistry"];
+      this.orderHeader = applicationHeader;
+      this.currentApplication = application;
 
       this.endForm.patchValue({
-        id: data["orderHeader"]["id"],
-        hectares: data["orderBalanceApplied"][0]["hectaresQuantity"],
-        temperature: data["orderBalanceApplied"][0]["temperature"],
-        humidity: data["orderBalanceApplied"][0]["humidity"],
-        wind: data["orderBalanceApplied"][0]["wind"],
-        litersQuantity: data["orderBalanceApplied"][0]["litersQuantity"]
+        id: applicationHeader.id,
+        hectares: application["hectaresQuantity"],
+        temperature: application["temperature"],
+        humidity: application["humidity"],
+        wind: application["wind"],
+        litersQuantity: application["litersQuantity"]
       });
 
-      if (data["orderChemical"]) {
-        data["orderChemical"].forEach(item => {
+      if (chemicals) {
+        chemicals.forEach(item => {
           this.addChemical(item);
         });
       }

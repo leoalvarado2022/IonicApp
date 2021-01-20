@@ -285,45 +285,14 @@ ion-menu-button {
 }
 
 ion-action-sheet {
-  .action-sheet-group-cancel {
-    button {
-      --button-color: red !important;
-    }
-  }
-}
-
-/*
-ion-action-sheet {
-  .action-sheet-group-cancel .sc-ion-action-sheet-ios {
-    color: red;
-
-    button {
-      background-color: blue;
-    }
-  }
-
-  .action-sheet-group-cancel .sc-ion-action-sheet-md {
+  .action-sheet-group-cancel .sc-ion-action-sheet-md {    
+    background-color: red;
     color: white;
-  }
+  }  
 }
-*/
+
 
 .icon-spinner {
   animation: spin-animation 0.5s infinite;
   display: inline-block;
-}
-
-.custom-action-sheet-cancel-button {
-  --button-background: white !important;
-  --button-color: white !important;
-  color: white !important;
-  background-color: red !important;  
-
-  ion-icon {
-    color: white !important;
-  }  
-}
-
-.action-sheet-group-cancel {
-  --button-background: red !important;
 }

@@ -284,12 +284,15 @@ ion-menu-button {
   margin-top: 8px;
 }
 
-.action-sheet-group-cancel.sc-ion-action-sheet-md {
-  background: rgba(255, 0, 0, 0.58) !important;
-  button {
-    color: white;
+ion-action-sheet {
+  .action-sheet-group-cancel {
+    background: rgba(255, 0, 0, 0.58) !important;    
+    .action-sheet-button {
+      color: white
+    }    
   }
 }
+
 
 .icon-spinner {
   animation: spin-animation 0.5s infinite;

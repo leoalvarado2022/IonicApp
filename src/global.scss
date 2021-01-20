@@ -286,13 +286,27 @@ ion-menu-button {
 
 ion-action-sheet {
   .action-sheet-group-cancel {
-    background: rgba(255, 0, 0, 0.58) !important;    
-    .action-sheet-button {
-      color: white
-    }    
+    button {
+      --button-color: red !important;
+    }
   }
 }
 
+/*
+ion-action-sheet {
+  .action-sheet-group-cancel .sc-ion-action-sheet-ios {
+    color: red;
+
+    button {
+      background-color: blue;
+    }
+  }
+
+  .action-sheet-group-cancel .sc-ion-action-sheet-md {
+    color: white;
+  }
+}
+*/
 
 .icon-spinner {
   animation: spin-animation 0.5s infinite;

@@ -288,9 +288,12 @@ ion-action-sheet {
   .action-sheet-group-cancel .sc-ion-action-sheet-md {    
     background-color: red;
     color: white;
-  }  
-}
+  }
 
+  .action-sheet-group-cancel .sc-ion-action-sheet-ios {    
+    color: red;
+  } 
+}
 
 .icon-spinner {
   animation: spin-animation 0.5s infinite;

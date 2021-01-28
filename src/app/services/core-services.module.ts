@@ -19,6 +19,7 @@ import { BluetoothService } from '../services/bluetooth/bluetooth.service';
 import { OrderSyncService } from './storage/order-sync/order-sync.service';
 import { AppService } from './app/app.service';
 import { DeviceService } from './device/device.service';
+import { WeatherService } from './weather/weather.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
@@ -40,6 +41,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     BluetoothService,
     AppService,
     DeviceService,
+    WeatherService,
     InAppBrowser,
 
     // Storage Services Block

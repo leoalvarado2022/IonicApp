@@ -1,6 +1,6 @@
 {
   "name": "fx360",
-  "version": "1.1.35",
+  "version": "1.1.37",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
   "scripts": {
@@ -72,6 +72,7 @@
     "cordova-sqlite-storage": "^3.4.1",
     "core-js": "^2.6.11",
     "echarts": "^4.9.0",
+    "haversine": "^1.1.1",
     "moment": "^2.27.0",
     "ngx-echarts": "^4.2.2",
     "ngx-mask": "^9.1.4",

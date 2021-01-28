@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IonItemSliding } from '@ionic/angular';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
+import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { LoaderService } from 'src/app/shared/services/loader/loader.service';
+import { StoreService } from 'src/app/shared/services/store/store.service';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { ApplicationListInterface } from '../application-list.interface';
 import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
 
@@ -12,18 +16,26 @@ import { ApplicationRegistryService } from '../services/application-registry/app
 })
 export class ApplicationsListPage implements OnInit {
 
+  public currentTab: 1 | 2 = 1;
+  public readonly toApplyTab = 1;
+  public readonly appliedTab = 2;
+
+  public filteredToApplyApplications: Array<ApplicationListInterface> = [];
+  public filteredAppliedApplications: Array<ApplicationListInterface> = [];
+  public selectedApplication: ApplicationListInterface = null;
+
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
-
-  public filteredApplications: Array<ApplicationListInterface> = [];
-  public selectedApplication: ApplicationListInterface = null;
 
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
     private activatedRoute: ActivatedRoute,
     private loaderService: LoaderService,
     private router: Router,
-    private orderSyncService: OrderSyncService
+    private orderSyncService: OrderSyncService,
+    private toastService: ToastService,
+    private alertService: AlertService,
+    private storeService: StoreService
   ) {
 
   }
@@ -35,11 +47,11 @@ export class ApplicationsListPage implements OnInit {
   /**
    * loadData
    */
-  private loadData = () => {
+  private loadData = (): void => {
     this.loaderService.startLoader();
 
     const id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.applicationRegistryService.getApplicationList(+id).subscribe(success => {
+    this.applicationRegistryService.getApplicationList(+id).subscribe((success: any) => {
       const {
         orderBalanceApplied,
         orderBalanceToApply,
@@ -47,7 +59,7 @@ export class ApplicationsListPage implements OnInit {
         orderCostCenter,
         orderHeader,
         orderMachinery
-      } = success['data'];
+      } = success.data;
 
       Promise.all([
         this.orderSyncService.setOrderHeader(orderHeader),
@@ -57,9 +69,12 @@ export class ApplicationsListPage implements OnInit {
         this.orderSyncService.setOrderBalanceToApply(orderBalanceToApply),
         this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied)
       ]).then(() => {
-        this.orderBalanceApplied = orderBalanceApplied;
         this.orderBalanceToApply = orderBalanceToApply;
-        this.filteredApplications = [...this.orderBalanceToApply, ...this.orderBalanceApplied];
+        this.orderBalanceApplied = orderBalanceApplied;
+
+        this.filteredToApplyApplications = orderBalanceToApply;
+        this.filteredAppliedApplications = orderBalanceApplied;
+
         this.loaderService.stopLoader();
       });
     }, error => {
@@ -71,7 +86,7 @@ export class ApplicationsListPage implements OnInit {
    * selectApplication
    * @param application
    */
-  public selectApplication = (application: ApplicationListInterface) => {
+  public selectApplication = (application: ApplicationListInterface): void => {
     if (application.applicationBalance) {
       if (this.selectedApplication === application) {
         this.selectedApplication = null;
@@ -84,8 +99,76 @@ export class ApplicationsListPage implements OnInit {
   /**
    * startApplication
    */
-  public startApplication = () => {
-    this.router.navigate(['/home-page/registro_aplicacion/application-start', this.selectedApplication.applicationOrderId]);
+  public startApplication = (): void => {
+    this.router.navigate(["/home-page/registro_aplicacion/application-start", this.selectedApplication.id]);
+  }
+
+  /**
+   * editApplication
+   * @param application application selected to edit
+   */
+  public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {    
+    slide.close();
+    this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });    
+  }
+
+  /**
+   * deleteApplication
+   */
+  public deleteApplication = async (application: ApplicationListInterface, slide: IonItemSliding) => {    
+    const yes = await this.alertService.confirmAlert('Seguro que quieres borrar esta applicacion?');
+    const user = this.storeService.getUser();
+    slide.close();            
+
+    if (yes) {            
+      const deleteObj = Object.assign({}, application, { applicationRegistry: (application.applicationRegistry * -1) });
+      this.applicationRegistryService.deleteApplication(deleteObj, user.id).subscribe(success => {
+        this.router.navigate(['/home-page/registro_aplicacion']);
+      }, error => {
+        this.toastService.errorToast('ocurrio un error al borrar la aplicacion');
+      });            
+    }        
+  }
+
+  /**
+   * searchApplication
+   * @param search text to search
+   */
+  public searchApplication = (search: string): void => {
+    if (search) {
+      if (this.currentTab === this.toApplyTab) {
+        this.filteredToApplyApplications = this.orderBalanceToApply.filter(item => {
+          return (
+            item.costCenterCode.toLowerCase().includes(search.toLowerCase()) ||
+            item.costCenterName.toLowerCase().includes(search.toLowerCase()) ||
+            item.costCenterMachineryName.toLowerCase().includes(search.toLowerCase()) ||
+            item.applicationBalance.toString().includes(search.toLowerCase())
+          );
+        });
+      }
+
+      if (this.currentTab === this.appliedTab) {
+        this.filteredAppliedApplications = this.orderBalanceApplied.filter(item => {
+          return (
+            item.costCenterCode.toLowerCase().includes(search.toLowerCase()) ||
+            item.costCenterName.toLowerCase().includes(search.toLowerCase()) ||
+            item.hectaresQuantity.toString().includes(search.toLowerCase()) ||
+            item.litersQuantity.toString().includes(search.toLowerCase())
+          );
+        });
+      }
+    } else {
+      this.filteredToApplyApplications = [...this.orderBalanceToApply];
+      this.filteredAppliedApplications = [...this.orderBalanceApplied];
+    }
+  }
+
+  /**
+   * cancelSearch
+   */
+  public cancelSearch = (): void => {
+    this.filteredToApplyApplications = [...this.orderBalanceToApply];
+    this.filteredAppliedApplications = [...this.orderBalanceApplied];
   }
 
 }

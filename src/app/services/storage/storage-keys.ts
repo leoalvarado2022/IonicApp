@@ -27,6 +27,7 @@ export enum StorageKeys {
   Warehouses = 'warehouses',
   Consumptions = 'consumptions',
   Products = 'products',
+  Weather = 'weather',
 
   // Tallies
   TalliesToRecord = 'talliesToRecord',

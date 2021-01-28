@@ -100,9 +100,9 @@ export class OrderSyncService {
    * getOrderBalanceToApplyById
    * @param id
    */
-  public getOrderBalanceToApplyById = (id: number): Promise<ApplicationListInterface> => {
+  public getOrderBalanceToApplyById = (id: number): Promise<ApplicationListInterface> => {    
     return this.storage.get(StorageKeys.OrderBalanceToApply).then((orderBalanceToApply: Array<ApplicationListInterface>) => {
-      return orderBalanceToApply.find(item => item.applicationOrderId === id);
+      return orderBalanceToApply.find(item => item.id === id);
     });
   }
 

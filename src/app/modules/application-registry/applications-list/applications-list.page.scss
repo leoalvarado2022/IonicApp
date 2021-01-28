@@ -1,16 +1,3 @@
-.applied {
-  ion-item {
-    --background: var(--ion-color-warning);
-  }
-
-  --background: var(--ion-color-warning);
-
-  ion-chip {
-    --background: var(--ion-color-light);
-  }
-}
-
-
 .applicationSelected {
   --background: var(--ion-color-medium);
   --color: var(--ion-color-light);
@@ -24,4 +11,31 @@
     background-color: var(--ion-color-light) !important;
     color:  var(--ion-color-dark) !important;
   }
+}
+
+
+ion-menu-button {
+  --color: white;
+}
+
+ion-title {
+  color: white;
+}
+
+ion-tab-button {
+  font-size: 16px;
+  color: white;
+  --color: white;
+}
+
+.tab-selected {
+  border-bottom: 1px solid white !important;
+}
+
+ion-tab-bar {
+  height: 45px;
+  //height: 100px;
+  --background: var(--color-home-header-menu);
+  --color: white;
+  // margin-bottom: 58px;
 }

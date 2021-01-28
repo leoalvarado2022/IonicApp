@@ -118,17 +118,16 @@ export class ApplicationsListPage implements OnInit {
   public deleteApplication = async (application: ApplicationListInterface, slide: IonItemSliding) => {    
     const yes = await this.alertService.confirmAlert('Seguro que quieres borrar esta applicacion?');
     const user = this.storeService.getUser();
-
-    slide.close();    
+    slide.close();            
 
     if (yes) {            
-      const deleteObj = Object.assign({}, application, {id: application.id * -1, applicationOrderId: application.applicationOrderId * -1 });
+      const deleteObj = Object.assign({}, application, { applicationRegistry: (application.applicationRegistry * -1) });
       this.applicationRegistryService.deleteApplication(deleteObj, user.id).subscribe(success => {
         this.router.navigate(['/home-page/registro_aplicacion']);
       }, error => {
         this.toastService.errorToast('ocurrio un error al borrar la aplicacion');
       });            
-    }    
+    }        
   }
 
   /**

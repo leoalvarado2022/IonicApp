@@ -55,7 +55,6 @@
     "@ionic/storage": "^2.3.1",
     "@primetec/primetec-angular": "0.0.22",
     "compare-func": "^2.0.0",
-    "cordova-android": "^8.1.0",
     "cordova-ios": "6.1.1",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-androidx": "^1.0.2",
@@ -160,8 +159,7 @@
       "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "ios"
     ]
   }
 }

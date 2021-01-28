@@ -45,37 +45,71 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card class="card-item">
-    <ion-card-header class="ion-text-center">
-      <ion-card-title>Obteniendo ubicaciones</ion-card-title>
-    </ion-card-header>
+  <ng-container *ngIf="loading">
+    <ion-card>
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>{{ loadingMessage }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </ng-container>
 
-    <ion-card-content>
-      <!--
-        <div class="ion-text-center">
-        <ion-icon name="compass-outline" style="font-size: 128px"></ion-icon>
-      </div>
-      -->      
-      <agm-map [latitude]="currentLat" [longitude]="currentLng" [zoom]="zoom" class="map-size">
-          <agm-polyline strokeColor="#FF3333">
-            <ng-container *ngFor="let position of positions">
-              <agm-polyline-point [latitude]="position.latitude" [longitude]="position.longitude">
-              </agm-polyline-point>
-            </ng-container>              
-          </agm-polyline>                    
-      </agm-map>      
+  <ng-container *ngIf="!loading">
 
-      <ion-item>
-        <ion-label>Posiciones</ion-label>
-        <ion-badge slot="end"> {{ positions.length }}</ion-badge>
-      </ion-item>      
-    </ion-card-content>
-  </ion-card>
+    <ion-card class="card-item">
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>Obteniendo ubicaciones</ion-card-title>
+      </ion-card-header>
 
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Posiciones</ion-label>
+          <ion-badge slot="end"> {{ positions.length }}</ion-badge>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="card-item" *ngIf="weather">
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>Clima</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label>{{ weather["name"] | titlecase }}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{ weather["weather"][0]["description"] | titlecase }}</ion-label>
+        </ion-item>
+
+        <ion-list>
+          <ion-list-header>
+            <ion-label>Temperatura</ion-label>
+          </ion-list-header>
+          <ion-item>
+            <ion-label>Actual</ion-label>
+            <ion-badge slot="end">°{{  roundUp(weather["main"]["temp"] ) }}</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-label>Sensacion</ion-label>
+            <ion-badge slot="end">°{{  roundUp(weather["main"]["feels_like"] ) }}</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-label>Humedad</ion-label>
+            <ion-badge slot="end">{{  roundUp(weather["main"]["humidity"] ) }}%</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-label>Viento</ion-label>
+            <ion-badge slot="end">{{  roundUp(weather["wind"]["speed"] ) }} m/s</ion-badge>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+  </ng-container>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" color="danger" (click)="endApplication()">
+  <ion-button expand="block" color="danger" (click)="endApplication()" [disabled]="loading || positions.length === 0">
     Finalizar Aplicacion
   </ion-button>
 </ion-footer>

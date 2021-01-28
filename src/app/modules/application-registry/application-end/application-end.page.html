@@ -29,6 +29,7 @@
       <ng-container *ngIf="currentStep === step1">
         <ion-card class="card-item">
 
+          <!-- Hectares -->
           <ion-item>
             <ion-text color="danger" *ngIf="endForm.get('hectares').dirty">
               <p *ngIf="endForm.get('hectares').hasError('required')">Debe ingresar las hectareas</p>
@@ -36,39 +37,10 @@
             </ion-text>
 
             <ion-label position="floating">Hectáreas</ion-label>
-            <ion-input type="number" formControlName="hectares"></ion-input>            
-          </ion-item>          
-
-          <ion-item>
-            <ion-text color="danger" *ngIf="endForm.get('temperature').dirty">
-              <p *ngIf="endForm.get('temperature').hasError('required')">Debe ingresar la temperatura</p>
-              <p *ngIf="endForm.get('temperature').hasError('min')">El valor minimo es 1</p>
-            </ion-text>
-
-            <ion-label position="floating">Temperatura</ion-label>
-            <ion-input type="number" formControlName="temperature"></ion-input>
+            <ion-input type="number" formControlName="hectares"></ion-input>
           </ion-item>
 
-          <ion-item>
-            <ion-text color="danger" *ngIf="endForm.get('humidity').dirty">
-              <p *ngIf="endForm.get('humidity').hasError('required')">Debe ingresar la humedad</p>
-              <p *ngIf="endForm.get('humidity').hasError('min')">El valor minimo es 1</p>
-            </ion-text>
-
-            <ion-label position="floating">Humedad</ion-label>
-            <ion-input type="number" formControlName="humidity"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-text color="danger" *ngIf="endForm.get('wind').dirty">
-              <p *ngIf="endForm.get('wind').hasError('required')">Debe ingresar el viento</p>
-              <p *ngIf="endForm.get('wind').hasError('min')">El valor minimo es 1</p>
-            </ion-text>
-
-            <ion-label position="floating">Viento</ion-label>
-            <ion-input type="number" formControlName="wind"></ion-input>
-          </ion-item>
-
+          <!-- Liters Quantity -->
           <ion-item>
             <ion-text color="danger" *ngIf="endForm.get('litersQuantity').dirty">
               <p *ngIf="endForm.get('litersQuantity').hasError('required')">Debe ingresar la cantidad de litros</p>
@@ -79,12 +51,46 @@
             <ion-input type="number" formControlName="litersQuantity"></ion-input>
           </ion-item>
 
+          <!-- Temperature -->
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('temperature').dirty">
+              <p *ngIf="endForm.get('temperature').hasError('required')">Debe ingresar la temperatura</p>
+              <p *ngIf="endForm.get('temperature').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Temperatura</ion-label>
+            <ion-input type="number" formControlName="temperature"></ion-input>
+          </ion-item>
+
+          <!-- Humidity -->
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('humidity').dirty">
+              <p *ngIf="endForm.get('humidity').hasError('required')">Debe ingresar la humedad</p>
+              <p *ngIf="endForm.get('humidity').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Humedad</ion-label>
+            <ion-input type="number" formControlName="humidity"></ion-input>
+          </ion-item>
+
+          <!-- Wind -->
+          <ion-item>
+            <ion-text color="danger" *ngIf="endForm.get('wind').dirty">
+              <p *ngIf="endForm.get('wind').hasError('required')">Debe ingresar el viento</p>
+              <p *ngIf="endForm.get('wind').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-label position="floating">Viento</ion-label>
+            <ion-input type="number" formControlName="wind"></ion-input>
+          </ion-item>
+
         </ion-card>
       </ng-container>
 
       <!-- STEP 2 --->
       <ng-container *ngIf="currentStep === step2" formArrayName="chemicals">
-        <ion-card class="card-item" *ngFor="let chemical of endForm.get('chemicals')['controls']; let i = index" [formArrayName]="i.toString()">
+        <ion-card class="card-item" *ngFor="let chemical of endForm.get('chemicals')['controls']; let i = index"
+          [formArrayName]="i.toString()">
           <ion-card-header>
             <ion-card-title>{{ chemical.get('itemName').value | titlecase }}</ion-card-title>
           </ion-card-header>
@@ -125,7 +131,7 @@
         <ion-button expand="block" color="warning" [disabled]="validFirstStep()" (click)="currentStep = step2">
           Siguiente
         </ion-button>
-      </ion-col>      
+      </ion-col>
     </ng-container>
 
     <ng-container *ngIf="currentStep === step2">
@@ -138,8 +144,8 @@
       <ion-col>
         <ion-button expand="block" color="primary" [disabled]="endForm.invalid" (click)="submit()">
           Guardar
-        </ion-button>        
-      </ion-col>      
+        </ion-button>
+      </ion-col>
     </ng-container>
-  </ion-row>      
+  </ion-row>
 </ion-footer>

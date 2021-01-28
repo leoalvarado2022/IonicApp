@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {StorageService} from '../storage/storage.service';
-import {HttpService} from '../http/http.service';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { StorageService } from '../storage/storage.service';
+import { HttpService } from '../http/http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +36,7 @@ export class UserService {
    */
   public getUser = () => {
     const url = this.httpService.buildUrl(this.userUrl);
-    return this.httpClient.post(url, this.httpService.buildBody(), {headers: this.httpService.getHeaders()});
+    return this.httpClient.post(url, this.httpService.buildBody(), { headers: this.httpService.getHeaders() });
   }
 
   /**
@@ -45,7 +45,7 @@ export class UserService {
    */
   public updateUser = (data: any) => {
     const url = this.httpService.buildUrl(this.updateUrl);
-    return this.httpClient.put(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+    return this.httpClient.put(url, this.httpService.buildBody(data), { headers: this.httpService.getHeaders() });
   }
 
 
@@ -55,7 +55,7 @@ export class UserService {
    */
   public assignUser = (data: any) => {
     const url = this.httpService.buildUrl(this.assignUrl);
-    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+    return this.httpClient.post(url, this.httpService.buildBody(data), { headers: this.httpService.getHeaders() });
   }
 
   /**
@@ -64,7 +64,7 @@ export class UserService {
    */
   public updatePassword = (data: any) => {
     const url = this.httpService.buildUrl(this.updatePasswordUrl);
-    return this.httpClient.put(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+    return this.httpClient.put(url, this.httpService.buildBody(data), { headers: this.httpService.getHeaders() });
   }
 
   /////////////// USUARIO

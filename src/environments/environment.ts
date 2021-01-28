@@ -1,5 +1,5 @@
-import { iosDeviceNames } from './ios-device-names';
-import { version } from './version';
+import {iosDeviceNames} from './ios-device-names';
+import {version} from './version';
 
 export const environment = {
   production: false,
@@ -8,6 +8,7 @@ export const environment = {
   // api_url: 'http://192.168.1.120:5572',
   // api_url: 'https://apiqa.fx360.cl',
   api_url_delivery: 'http://127.0.0.1:5573',
+  // api_url_delivery: 'https://delivery.fx360.cl',
   appVersion: version.number,
   tz: 'America/Santiago',
   iosDeviceNames,

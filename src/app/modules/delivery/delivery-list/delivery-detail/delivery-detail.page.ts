@@ -22,6 +22,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   public id: any;
   public images: any;
   public id_integration: any;
+  public products: any;
 
   constructor(
     private storeService: StoreService,
@@ -112,7 +113,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     if (integration.length) {
 
       // en el caso se busca con el origen
-      const integ = integration.find(value => value.origin === this.order.origin);
+      const integ = integration.find(value => value.origin === this.order.origin && value.id_entity === this.order.id_entities);
 
       // si existe
       if (integ) {
@@ -226,7 +227,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     if (products.length) {
 
       for (let product of products) {
-        if (product.code_item.length > 1 && !product.id_item_product && product.total > 0) {
+        if (!product.id_item_product && product.total > 0) {
           return rep = true;
         }
       }
@@ -241,30 +242,124 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @param products
    * @param order
    */
-  httpReprocess(products, order) {
-    let data = {
-      products
+  async httpReprocess(products, order) {
+    this.products = products;
+    this.loaderService.startLoader(`Obteniendo la orden con ${this.order.origin}`);
+    // obtener la integraciones
+    const integration = await this._storageSyncService.getIntegrationDelivery();
+
+    // si hay entra
+    if (integration.length) {
+      // datos para obtener una orden unica
+      let orderGet = {
+        origin: this.order.origin,
+        id_integration: this.order.id_integration,
+        id_entity: this.order.id_entities,
+        id_order_origin: this.order.id_origin
+      };
+
+      // en el caso se busca con el origen
+      const integ = integration.find(value => value.origin === this.order.origin && value.id_entity === this.order.id_entities);
+      const token = integ.api_key;
+
+      // cambia estado en la app externa
+      this._deliveryService.setHttpGetOrderDeliveryStatus(orderGet, token).subscribe((success: any) => {
+        // si es correcto actualiza la orden
+        if (success.resp && success.resp.data && success.resp.data.data &&
+          success.resp.data.status && success.resp.data.status === 'ok') {
+          this.loaderService.stopLoader();
+          // actualizar la orden en fx360
+          this.updateOrder(success.resp.data.data, token).then();
+        } else {
+          // si hay un error con justo
+          if (success.resp && success.resp.error) {
+            this.loaderService.stopLoader();
+            this._toastService.warningToast(success.resp.data.error);
+          }
+
+        }
+      }, error => {
+        this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+        this._toastService.errorToast(`No hay conexión con ${this.order.origin}`);
+      });
+
     }
+  }
+
+  /**
+   * @description reprocesar las orden con la base de fx360
+   * @param products
+   */
+  async reprocessWithFX360() {
+    this.loaderService.startLoader(`Revisando datos en fx360..`);
+
+    let data = {
+      products: this.products
+    };
 
     this._deliveryService.setOrderReprocess(data).subscribe((success: any) => {
-      if(success.resp.length) {
+      if (success.resp.length) {
         let error = false;
         for (let resp of success.resp) {
-          if(resp.respuesta && resp.respuesta.length > 10){
-            const alert = products.find(value => +value.id === +resp.id);
-            this._toastService.warningToast(`${alert.name_item} no existe en la base de datos`);
+          if (resp.respuesta && resp.respuesta !== 'ok') {
+            const alert = this.products.find(value => +value.id === +resp.id);
+            // this._toastService.warningToast(`${alert.name_item} no existe en la base de datos FX360`);
             error = true;
           }
         }
 
-        if(!error) {
+        this.loaderService.stopLoader();
+
+        if (!error) {
           this.loadNotifications();
         }
+      } else {
+        this.loaderService.stopLoader();
       }
 
     }, error => {
+      this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * @description actualizar la orden con api delivery
+   * @param data
+   * @param token
+   */
+  async updateOrder(data, token) {
+    this.loaderService.startLoader(`Actualizando la orden`);
+
+    data.id = this.order.id;
+    const updateOrder = {
+      data: {
+        order: data
+      }
+    };
+
+    // actualizar orden
+    this._deliveryService.setHttpUpdateOrderDeliveryJusto(updateOrder, this.order.id_integration, token).subscribe((success: any) => {
+      if (success.response && success.response.length) {
+        if (success.response[0].respuesta) {
+          if (success.response[0].respuesta === 'ok') {
+            this.loaderService.stopLoader();
+            console.log(success, 'updateOrder', success.response[0].respuesta);
+            this.loadNotifications();
+            this.reprocessWithFX360().then();
+          } else {
+            this.loaderService.stopLoader();
+            this._toastService.warningToast('Esta Orden ya se encuentra en la base de datos');
+          }
+        }
+      }
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+      this._toastService.errorToast('No hay conexion para actualizar la orden');
+    });
+
   }
 
 }

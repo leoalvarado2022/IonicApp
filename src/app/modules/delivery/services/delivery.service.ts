@@ -20,6 +20,8 @@ export class DeliveryService {
   public orderListUrl = 'order-list';
   public orderUpdateUrl = 'order-update';
   public changeOrderStatus = 'change-order';
+  public getOrderDelivery = 'get-order';
+  public setOrderUpdateJusto = 'orders-justo';
   public orderUrl = 'order';
   public orderReprocessUrl = 'reprocess';
   private service: Subscription;
@@ -103,6 +105,27 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeadersApiDynamic(token)
     });
+  };
+
+  /**
+   * @description obtener una orden unica de api delivery
+   * @param data
+   */
+  public setHttpGetOrderDeliveryStatus = (data: any, token: string) => {
+    const url = this.httpService.buildUrlApiDelivery(this.getOrderDelivery);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeadersApiDynamic(token)
+    });
+  };
+
+
+  /**
+   * @description set data justo order
+   * @param data
+   */
+  public setHttpUpdateOrderDeliveryJusto = (data: any, id: any = null, token: string) => {
+    const url = this.httpService.buildUrlApiDelivery(this.setOrderUpdateJusto, id);
+    return this.httpClient.post(url, this.httpService.buildBody(data));
   };
 
   /**

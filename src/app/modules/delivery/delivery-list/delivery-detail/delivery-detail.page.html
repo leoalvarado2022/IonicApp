@@ -36,7 +36,7 @@
           </ion-button>
           <ion-button color="warning" class="button-class" style="right: 75px !important;"
                       *ngIf="order?.status === 'delivering'"
-                      (click)="setNotificationStatus('close', order?.id_integration)">Cerrar
+                      (click)="setNotificationStatus('done', order?.id_integration)">Cerrar
           </ion-button>
           <ion-button color="warning" class="button-class" style="right: 75px !important;"
                       *ngIf="order?.status === 'accepted'"

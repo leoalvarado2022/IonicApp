@@ -107,7 +107,7 @@ export class ApplicationsListPage implements OnInit {
    * editApplication
    * @param application application selected to edit
    */
-  public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {
+  public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {    
     slide.close();
     this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });    
   }

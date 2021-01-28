@@ -41,10 +41,10 @@ export class HttpService {
    * getHeaders para api dinamicas
    * @return HttpHeaders
    */
-  public getHeadersApiDynamic = (token): HttpHeaders => {
+  public getHeadersApiDynamic = (token: string): HttpHeaders => {
     return new HttpHeaders({
-      Authorization: token !== null ? 'Bearer ' + token : '',
-      'Content-Type': 'application/json'
+      "Authorization": token !== null ? "Bearer " + token : "",
+      "Content-Type": "application/json"
     });
   }
 
@@ -56,11 +56,10 @@ export class HttpService {
     const token = this.storeService.getToken();
 
     return new HttpHeaders({
-      Authorization: token !== null ? 'Bearer ' + token : '',
-      'Content-Type': 'application/json'
+      "Authorization": token !== null ? "Bearer " + token : "",
+      "Content-Type": "application/json"
     });
   }
-
 
   /**
    * buildBody

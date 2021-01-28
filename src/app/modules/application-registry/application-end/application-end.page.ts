@@ -117,9 +117,9 @@ export class ApplicationEndPage implements OnInit {
    * createChemical
    * @param chemical
    */
-  private createChemical = (chemical: any): FormGroup => {    
+  private createChemical = (chemical: any): FormGroup => {
     return this.formBuilder.group({
-      id: chemical ? chemical.id: 0,
+      id: chemical ? chemical.id : 0,
       applicationId: chemical.applicationId,
       applicationOrderId: chemical.applicationOrderId,
       dosis100l: [chemical ? chemical.dosis100l : '', [
@@ -163,9 +163,9 @@ export class ApplicationEndPage implements OnInit {
 
     if (this.isEdit) {
       const formData = Object.assign({}, this.endForm.value, {
-        applicationOrderId: this.currentApplication.applicationOrderId,
         costCenterId: this.currentApplication.costCenterId,
-        tempId: 99
+        tempId: 99,
+        applicationRegistry: this.currentApplication.applicationRegistry
       });
 
       this.updateApplication(user.id, this.orderHeader, formData, [], formData["chemicals"]);
@@ -201,6 +201,7 @@ export class ApplicationEndPage implements OnInit {
         this.router.navigate(['/home-page/registro_aplicacion']);
       });
     }, error => {
+      console.log('error', error);
       this.toastService.errorToast('ocurrio un error al grabar la aplicacion');
     });
   }
@@ -224,7 +225,7 @@ export class ApplicationEndPage implements OnInit {
     }, error => {
       this.toastService.errorToast('ocurrio un error al editar la aplicacion');
     });
-  }  
+  }
 
   /**
    * cleanDate
@@ -251,7 +252,7 @@ export class ApplicationEndPage implements OnInit {
       this.currentApplication = application;
 
       this.endForm.patchValue({
-        id: applicationHeader.id,
+        id: application.id,
         hectares: application["hectaresQuantity"],
         temperature: application["temperature"],
         humidity: application["humidity"],
@@ -270,6 +271,5 @@ export class ApplicationEndPage implements OnInit {
       this.toastService.errorToast('No se pudo cargar la aplicacion');
     })
   }
-
 
 }

@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {ObservableStore} from '@codewithdan/observable-store';
-import {ContractInterface, RememberData, StoreInterface, Sync} from './store-interface';
-import {StoreActions} from './actions';
+import { Injectable } from '@angular/core';
+import { ObservableStore } from '@codewithdan/observable-store';
+import { ContractInterface, RememberData, StoreInterface, Sync } from './store-interface';
+import { StoreActions } from './actions';
 import {
   Caliber,
   CfgAccess,
@@ -19,8 +19,8 @@ import {
   QualityEstimate,
   Unit
 } from '@primetec/primetec-angular';
-import {environment} from 'src/environments/environment';
-import {debounceTime} from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { debounceTime } from 'rxjs/operators';
 import { HarvestEstimate } from 'src/app/modules/planning/harvest-estimate/harvest-estimate.interface';
 
 @Injectable({
@@ -126,7 +126,10 @@ export class StoreService extends ObservableStore<StoreInterface> {
     };
   }
 
-  public clearStore() {
+  /**
+   * clearStore
+   */
+  public clearStore = (): void => {
     this.setState(this.buildInitialState, 'INIT_STATE');
   }
 
@@ -164,8 +167,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param remember
    */
   public setRemember = (remember: boolean): void => {
-    const auth = {...this.getState().auth, remember};
-    this.setState({auth}, StoreActions.SetRemember);
+    const auth = { ...this.getState().auth, remember };
+    this.setState({ auth }, StoreActions.SetRemember);
   }
 
 
@@ -190,8 +193,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param rememberData
    */
   public setRememberData = (rememberData: RememberData): void => {
-    const auth = {...this.getState().auth, rememberData};
-    this.setState({auth}, StoreActions.SetRememberData);
+    const auth = { ...this.getState().auth, rememberData };
+    this.setState({ auth }, StoreActions.SetRememberData);
   }
 
   /**
@@ -205,8 +208,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * setUser
    */
   public setUser = (userData: any) => {
-    const auth = {...this.getState().auth, userData};
-    this.setState({auth}, StoreActions.SetUser);
+    const auth = { ...this.getState().auth, userData };
+    this.setState({ auth }, StoreActions.SetUser);
   }
 
   /**
@@ -221,11 +224,11 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param userConnections
    */
   public setUserConnections = (userConnections: Array<Connection> = []): void => {
-    const auth = {...this.getState().auth, userConnections};
-    this.setState({auth}, StoreActions.SetUserConnections);
+    const auth = { ...this.getState().auth, userConnections };
+    this.setState({ auth }, StoreActions.SetUserConnections);
 
     if (userConnections.length > 0) {
-      const defaultConnection = userConnections.find(item => item.default);
+      const defaultConnection = userConnections.find(item => item.default);      
 
       if (defaultConnection) {
         this.setActiveConnection(defaultConnection);
@@ -240,8 +243,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param activeConnection
    */
   public setActiveConnection = (activeConnection: Connection = null) => {
-    const auth = {...this.getState().auth, userActiveConnection: activeConnection};
-    this.setState({auth}, StoreActions.SetUserActiveConnection);
+    const auth = { ...this.getState().auth, userActiveConnection: activeConnection };
+    this.setState({ auth }, StoreActions.SetUserActiveConnection);
   }
 
   /**
@@ -256,8 +259,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param token
    */
   public setToken = (userToken: string = null): void => {
-    const auth = {...this.getState().auth, userToken};
-    this.setState({auth}, StoreActions.SetUserToken);
+    const auth = { ...this.getState().auth, userToken };
+    this.setState({ auth }, StoreActions.SetUserToken);
   }
 
   /**
@@ -272,8 +275,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param status
    */
   public setLoginStatus = (status: boolean): void => {
-    const auth = {...this.getState().auth, isLogged: status};
-    this.setState({auth}, StoreActions.SetLoginStatus);
+    const auth = { ...this.getState().auth, isLogged: status };
+    this.setState({ auth }, StoreActions.SetLoginStatus);
   }
 
   /**
@@ -287,8 +290,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * removeRememberData
    */
   public removeRememberData = (): void => {
-    const auth = {...this.getState().auth, rememberData: null};
-    this.setState({auth}, StoreActions.SetRememberData);
+    const auth = { ...this.getState().auth, rememberData: null };
+    this.setState({ auth }, StoreActions.SetRememberData);
   }
 
   /**
@@ -316,11 +319,19 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param companies
    */
   public setCompanies = (companies: Array<Company>) => {
-    const sync = {...this.getState().sync, companies};
-    this.setState({sync}, StoreActions.SetCompanies);
+    const sync = { ...this.getState().sync, companies };
+    this.setState({ sync }, StoreActions.SetCompanies);
 
     if (companies.length > 0) {
-      this.setActiveCompany(companies[0]);
+      const activeConnection: any = this.getActiveConnection();
+      // TODO: Fix interface
+      const defaultCompany = companies.find(item => item.id === activeConnection.default_company);
+
+      if (defaultCompany) {
+        this.setActiveCompany(defaultCompany);
+      } else {
+        this.setActiveCompany(companies[0]);
+      }
     }
   }
 
@@ -354,8 +365,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param company
    */
   public setActiveCompany = (company: Company): void => {
-    const auth = {...this.getState().auth, userActiveCompany: company};
-    this.setState({auth}, StoreActions.SetUserActiveCompany);
+    const auth = { ...this.getState().auth, userActiveCompany: company };
+    this.setState({ auth }, StoreActions.SetUserActiveCompany);
   }
 
   /**
@@ -369,8 +380,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * setCostCenters
    */
   public setCostCenters = (costCenters: Array<CostCenterList>) => {
-    const sync = {...this.getState().sync, costCenters};
-    this.setState({sync}, StoreActions.SetCostCenters);
+    const sync = { ...this.getState().sync, costCenters };
+    this.setState({ sync }, StoreActions.SetCostCenters);
   }
 
   /**
@@ -385,8 +396,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param units
    */
   public setUnits = (units: Array<Unit>) => {
-    const sync = {...this.getState().sync, units};
-    this.setState({sync}, StoreActions.SetUnits);
+    const sync = { ...this.getState().sync, units };
+    this.setState({ sync }, StoreActions.SetUnits);
   }
 
   /**
@@ -401,8 +412,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param menus
    */
   public setQualities = (qualities: Array<Generic>) => {
-    const sync = {...this.getState().sync, qualities};
-    this.setState({sync}, StoreActions.SetQualities);
+    const sync = { ...this.getState().sync, qualities };
+    this.setState({ sync }, StoreActions.SetQualities);
   }
 
   /**
@@ -417,8 +428,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param calibers
    */
   public setCalibers = (calibers: Array<Caliber>) => {
-    const sync = {...this.getState().sync, calibers};
-    this.setState({sync}, StoreActions.SetCalibers);
+    const sync = { ...this.getState().sync, calibers };
+    this.setState({ sync }, StoreActions.SetCalibers);
   }
 
   /**
@@ -504,8 +515,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param costCenter
    */
   public setActiveCostCenter = (costCenter: CostCenterList): void => {
-    const contract = {...this.getState().contract, activeCostCenter: costCenter};
-    this.setState({contract}, StoreActions.SetActiveCostCenter);
+    const contract = { ...this.getState().contract, activeCostCenter: costCenter };
+    this.setState({ contract }, StoreActions.SetActiveCostCenter);
   }
 
   /**
@@ -520,8 +531,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param costCenter
    */
   public setCostCenter = (costCenter: CostCenter): void => {
-    const contract = {...this.getState().contract, costCenter};
-    this.setState({contract}, StoreActions.SetCostCenter);
+    const contract = { ...this.getState().contract, costCenter };
+    this.setState({ contract }, StoreActions.SetCostCenter);
   }
 
   /**
@@ -536,8 +547,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param productionContracts
    */
   public setProductionContracts = (productionContracts: Array<ProductContract>): void => {
-    const contract = {...this.getState().contract, productionContracts};
-    this.setState({contract}, StoreActions.SetProductionContracts);
+    const contract = { ...this.getState().contract, productionContracts };
+    this.setState({ contract }, StoreActions.SetProductionContracts);
   }
 
   /**
@@ -570,8 +581,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param productionContractsDetails
    */
   public setProductionContractsDetails = (productionContractsDetails: Array<ProductContractDetail>): void => {
-    const contract = {...this.getState().contract, productionContractsDetails};
-    this.setState({contract}, StoreActions.SetProductionContractsDetails);
+    const contract = { ...this.getState().contract, productionContractsDetails };
+    this.setState({ contract }, StoreActions.SetProductionContractsDetails);
   }
 
   /**
@@ -586,8 +597,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param harvestEstimate
    */
   public setHarvestEstimate = (harvestEstimate: Array<HarvestEstimate>): void => {
-    const contract = {...this.getState().contract, harvestEstimate};
-    this.setState({contract}, StoreActions.SetHarvestEstimate);
+    const contract = { ...this.getState().contract, harvestEstimate };
+    this.setState({ contract }, StoreActions.SetHarvestEstimate);
   }
 
   /**
@@ -602,8 +613,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param qualityEstimate
    */
   public setQualityEstimate = (qualityEstimate: Array<QualityEstimate>): void => {
-    const contract = {...this.getState().contract, qualityEstimate};
-    this.setState({contract}, StoreActions.SetQualityEstimate);
+    const contract = { ...this.getState().contract, qualityEstimate };
+    this.setState({ contract }, StoreActions.SetQualityEstimate);
   }
 
   /**
@@ -618,8 +629,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param qualityEstimateDetail
    */
   public setQualityEstimateDetail = (qualityEstimateDetail: Array<QualityDetail>): void => {
-    const contract = {...this.getState().contract, qualityEstimateDetail};
-    this.setState({contract}, StoreActions.SetQualityEstimateDetail);
+    const contract = { ...this.getState().contract, qualityEstimateDetail };
+    this.setState({ contract }, StoreActions.SetQualityEstimateDetail);
   }
 
   /**
@@ -634,8 +645,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param notes
    */
   public setNotes = (notes: Array<Note>): void => {
-    const contract = {...this.getState().contract, notes};
-    this.setState({contract}, StoreActions.SetNotes);
+    const contract = { ...this.getState().contract, notes };
+    this.setState({ contract }, StoreActions.SetNotes);
   }
 
   /**
@@ -650,8 +661,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param holidays
    */
   public setHolidays = (holidays: Array<any>): void => {
-    const contract = {...this.getState().contract, holidays};
-    this.setState({contract}, StoreActions.SetHolidays);
+    const contract = { ...this.getState().contract, holidays };
+    this.setState({ contract }, StoreActions.SetHolidays);
   }
 
   /**
@@ -692,7 +703,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param token
    */
   public setPushToken = (token: string): void => {
-    this.setState({pushToken: token}, StoreActions.SetPushToken);
+    this.setState({ pushToken: token }, StoreActions.SetPushToken);
   }
 
   /**
@@ -707,7 +718,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param token
    */
   public setTotalTicket = (total: number): void => {
-    this.setState({totalTicket: total}, StoreActions.AddTotalTickets);
+    this.setState({ totalTicket: total }, StoreActions.AddTotalTickets);
   }
 
   /**
@@ -722,8 +733,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param cfgAccess
    */
   private setAccess = (cfgAccess: Array<CfgAccess>) => {
-    const sync = {...this.getState().sync, cfgAccess};
-    this.setState({sync}, StoreActions.SetAccess);
+    const sync = { ...this.getState().sync, cfgAccess };
+    this.setState({ sync }, StoreActions.SetAccess);
   }
 
   /**
@@ -731,8 +742,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param quadrilles
    */
   private setQuadrilles = (quadrilles: Array<Quadrille>) => {
-    const sync = {...this.getState().sync, quadrilles};
-    this.setState({sync}, StoreActions.SetQuadrilles);
+    const sync = { ...this.getState().sync, quadrilles };
+    this.setState({ sync }, StoreActions.SetQuadrilles);
   }
 
   /**
@@ -740,8 +751,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param workers
    */
   private setWorkers = (workers: Array<any>) => {
-    const sync = {...this.getState().sync, workers};
-    this.setState({sync}, StoreActions.SetWorkers);
+    const sync = { ...this.getState().sync, workers };
+    this.setState({ sync }, StoreActions.SetWorkers);
   }
 
   /**
@@ -749,8 +760,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param processPlants
    */
   private setProcessPlants = (processPlants: Array<EntityList>) => {
-    const sync = {...this.getState().sync, processPlants};
-    this.setState({sync}, StoreActions.SetProcessPlants);
+    const sync = { ...this.getState().sync, processPlants };
+    this.setState({ sync }, StoreActions.SetProcessPlants);
   }
 
   /**
@@ -758,8 +769,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param destinations
    */
   private setDestinations = (destinations: Array<Generic>) => {
-    const sync = {...this.getState().sync, destinations};
-    this.setState({sync}, StoreActions.SetDestinations);
+    const sync = { ...this.getState().sync, destinations };
+    this.setState({ sync }, StoreActions.SetDestinations);
   }
 
   /**
@@ -821,8 +832,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param activeTicket
    */
   public setActiveTicket = (activeTicket: any): void => {
-    const ticket = {...this.getState().ticket, activeTicket};
-    this.setState({ticket}, StoreActions.SetActiveTicket);
+    const ticket = { ...this.getState().ticket, activeTicket };
+    this.setState({ ticket }, StoreActions.SetActiveTicket);
   }
 
   /**
@@ -837,8 +848,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param ticketStates
    */
   public setTicketStates = (ticketStates: Array<any>): void => {
-    const ticket = {...this.getState().ticket, states: ticketStates};
-    this.setState({ticket}, StoreActions.SetTicketStates);
+    const ticket = { ...this.getState().ticket, states: ticketStates };
+    this.setState({ ticket }, StoreActions.SetTicketStates);
   }
 
   /**
@@ -853,8 +864,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param ticketUsers
    */
   public setTicketUsers = (ticketUsers: Array<any>): void => {
-    const ticket = {...this.getState().ticket, users: ticketUsers};
-    this.setState({ticket}, StoreActions.SetTicketUsers);
+    const ticket = { ...this.getState().ticket, users: ticketUsers };
+    this.setState({ ticket }, StoreActions.SetTicketUsers);
   }
 
   /**
@@ -869,8 +880,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param ticketPriorities
    */
   public setTicketPriorities = (ticketPriorities: Array<any>): void => {
-    const ticket = {...this.getState().ticket, priorities: ticketPriorities};
-    this.setState({ticket}, StoreActions.SetTicketPriorities);
+    const ticket = { ...this.getState().ticket, priorities: ticketPriorities };
+    this.setState({ ticket }, StoreActions.SetTicketPriorities);
   }
 
   /**
@@ -885,8 +896,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param ticketDetails
    */
   public setTicketDetails = (ticketDetails: Array<any>): void => {
-    const ticket = {...this.getState().ticket, details: ticketDetails};
-    this.setState({ticket}, StoreActions.SetTicketDetails);
+    const ticket = { ...this.getState().ticket, details: ticketDetails };
+    this.setState({ ticket }, StoreActions.SetTicketDetails);
   }
 
   /**
@@ -919,8 +930,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param laborsCostCenter
    */
   public setLaborsCostCenter = (laborsCostCenter: Array<any> = []): void => {
-    const sync = {...this.getState().sync, laborsCostCenter};
-    this.setState({sync}, StoreActions.SetLaborsCostCenter);
+    const sync = { ...this.getState().sync, laborsCostCenter };
+    this.setState({ sync }, StoreActions.SetLaborsCostCenter);
   }
 
   /**
@@ -934,8 +945,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param deals
    */
   public setDeals = (deals: Array<any> = []): void => {
-    const sync = {...this.getState().sync, deals};
-    this.setState({sync}, StoreActions.SetDeals);
+    const sync = { ...this.getState().sync, deals };
+    this.setState({ sync }, StoreActions.SetDeals);
   }
 
   /**
@@ -950,8 +961,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * @param ticketDetails
    */
   public setDevices = (devices: Array<any>): void => {
-    const sync = {...this.getState().sync, devices};
-    this.setState({sync}, StoreActions.SetDevices);
+    const sync = { ...this.getState().sync, devices };
+    this.setState({ sync }, StoreActions.SetDevices);
   }
 
   /**
@@ -995,13 +1006,13 @@ export class StoreService extends ObservableStore<StoreInterface> {
     // en el caso que voy a eliminar (deassociar)
     if (preDevice.delete) {
       const toRemoved = devicesToRecord.filter(item => item.tempId !== preDevice.tempId);
-      const toRecord = {...this.getState().toRecord, devicesToRecord: [...toRemoved]};
-      this.setState({toRecord}, StoreActions.RemovePreDevices);
+      const toRecord = { ...this.getState().toRecord, devicesToRecord: [...toRemoved] };
+      this.setState({ toRecord }, StoreActions.RemovePreDevices);
     } else {
       // solo va agregar
       devicesToRecord.push(preDevice);
-      const toRecord = {...this.getState().toRecord, devicesToRecord};
-      this.setState({toRecord}, StoreActions.AddPreDevices);
+      const toRecord = { ...this.getState().toRecord, devicesToRecord };
+      this.setState({ toRecord }, StoreActions.AddPreDevices);
 
       this.increaseDeviceTempId();
     }
@@ -1015,8 +1026,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
     const devices = this.getDevicesToRecord();
     const toRemoved = devices.filter(item => !indexes.includes(item.tempId));
 
-    const toRecord = {...this.getState().toRecord, devicesToRecord: [...toRemoved]};
-    this.setState({toRecord}, StoreActions.RemovePreDevices);
+    const toRecord = { ...this.getState().toRecord, devicesToRecord: [...toRemoved] };
+    this.setState({ toRecord }, StoreActions.RemovePreDevices);
 
     return toRemoved.length;
   }
@@ -1034,8 +1045,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public increaseDeviceTempId = (): void => {
     const current = this.getDeviceTempId();
 
-    const toRecord = {...this.getState().toRecord, deviceTempId: (current + 1)};
-    this.setState({toRecord}, StoreActions.IncreaseDeviceTempId);
+    const toRecord = { ...this.getState().toRecord, deviceTempId: (current + 1) };
+    this.setState({ toRecord }, StoreActions.IncreaseDeviceTempId);
   }
 
   /**
@@ -1052,8 +1063,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
   public addDevicesWithErrors = (devices: Array<any>): void => {
     const devicesWithErrors = this.getDevicesWithErrors();
 
-    const toRecord = {...this.getState().toRecord, devicesWithErrors: [...devicesWithErrors, ...devices]};
-    this.setState({toRecord}, StoreActions.AddDevicessWithErrors);
+    const toRecord = { ...this.getState().toRecord, devicesWithErrors: [...devicesWithErrors, ...devices] };
+    this.setState({ toRecord }, StoreActions.AddDevicessWithErrors);
 
     this.increaseDeviceTempId();
   }
@@ -1066,8 +1077,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
     const devicesWithErrors = this.getDevicesWithErrors();
     const toRemoved = devicesWithErrors.filter(item => !indexes.includes(item.tempId));
 
-    const toRecord = {...this.getState().toRecord, devicesWithErrors: [...toRemoved]};
-    this.setState({toRecord}, StoreActions.RemoveDevicesWithErrors);
+    const toRecord = { ...this.getState().toRecord, devicesWithErrors: [...toRemoved] };
+    this.setState({ toRecord }, StoreActions.RemoveDevicesWithErrors);
 
     return toRemoved.length;
   }
@@ -1081,8 +1092,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
     const row = this.getDealsTemp();
     const filter = row.filter(value => value.id !== dealsToRecordRow.id);
     filter.push(dealsToRecordRow);
-    const toRecord = {...this.getState().toRecord, dealsTemp: filter};
-    this.setState({toRecord}, StoreActions.SetDealsTemp);
+    const toRecord = { ...this.getState().toRecord, dealsTemp: filter };
+    this.setState({ toRecord }, StoreActions.SetDealsTemp);
   }
 
   /**
@@ -1099,16 +1110,16 @@ export class StoreService extends ObservableStore<StoreInterface> {
     const row = this.getDealsTemp();
     const filter = row.filter(value => value.id !== id);
 
-    const toRecord = {...this.getState().toRecord, dealsTemp: filter};
-    this.setState({toRecord}, StoreActions.RemoveDealsTemp);
+    const toRecord = { ...this.getState().toRecord, dealsTemp: filter };
+    this.setState({ toRecord }, StoreActions.RemoveDealsTemp);
   }
 
   /**
    * @param costCentersCustom
    */
   public setCostCentersCustom = (costCentersCustom: Array<any> = []): void => {
-    const sync = {...this.getState().sync, costCentersCustom};
-    this.setState({sync}, StoreActions.SetCostCentersCustom);
+    const sync = { ...this.getState().sync, costCentersCustom };
+    this.setState({ sync }, StoreActions.SetCostCentersCustom);
   }
 
   /**

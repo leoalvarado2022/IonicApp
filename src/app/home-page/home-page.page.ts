@@ -1,11 +1,12 @@
-import {HttpService} from './../shared/services/http/http.service';
-import {Component} from '@angular/core';
-import {AuthService} from '../shared/services/auth/auth.service';
-import {StoreService} from '../shared/services/store/store.service';
-import {TimerService} from '../services/storage/timer/timer.service';
-import {Subscription} from 'rxjs';
-import {StepperService} from '../services/storage/stepper/stepper.service';
-import {Platform} from '@ionic/angular';
+import { HttpService } from './../shared/services/http/http.service';
+import { Component } from '@angular/core';
+import { AuthService } from '../shared/services/auth/auth.service';
+import { StoreService } from '../shared/services/store/store.service';
+import { TimerService } from '../services/storage/timer/timer.service';
+import { Subject } from 'rxjs';
+import { StepperService } from '../services/storage/stepper/stepper.service';
+import { Platform } from '@ionic/angular';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home-page',
@@ -13,14 +14,18 @@ import {Platform} from '@ionic/angular';
   styleUrls: ['./home-page.page.scss'],
 })
 export class HomePagePage {
-  private timer$: Subscription;
 
-  constructor(private authService: AuthService,
-              private storeService: StoreService,
-              private timerService: TimerService,
-              private stepperService: StepperService,
-              private httpService: HttpService,
-              private platform: Platform) {
+  private subscription = new Subject();
+
+  constructor(
+    private authService: AuthService,
+    private storeService: StoreService,
+    private timerService: TimerService,
+    private stepperService: StepperService,
+    private httpService: HttpService,
+    private platform: Platform
+  ) {
+
   }
 
   ionViewWillEnter() {
@@ -32,52 +37,38 @@ export class HomePagePage {
     // Run all sync steps
     this.stepperService.syncAll();
 
-    this.timer$ = this.timerService.getTimerNotifier().subscribe(() => {
-      // LOGICA FUERTE
-      /*
-      console.log('verificar ruta dentro del timer', this.router.url);
+    this.timerService.getTimerNotifier()
+      .pipe(takeUntil(this.subscription))
+      .subscribe(() => {
+        this.stepperService.syncAll();
+      });
 
-      if (this.router.url.includes('tarja_tarjas') || this.router.url.includes('tally-workers-list') || this.router.url.includes('tallies-list')) {
-        // this.stepperService.runTallyRecordStep();
-        this.stepperService.onlySyncTallies();
-      } else {
-        this.stepperService.runAllSteps();
-      }
-      */
-
-      this.stepperService.syncAll();
-    });
-
-    // StartTimer
-    console.log('StartTimer');
+    // StartTimer    
     this.timerService.startResume();
   }
 
   ionViewWillLeave() {
-    console.log('StopTimer');
     this.timerService.pauseStop();
-    this.timer$.unsubscribe();
-    // this.router$.unsubscribe();
+    this.subscription.next();
+    this.subscription.complete();
   }
 
   /**
    * storePushToken
    */
-  private storePushToken = (): any => {
+  private storePushToken = (): void => {
     const user = this.storeService.getUser();
     const token = this.storeService.getPushToken();
 
     this.platform.ready().then(() => {
       if (this.platform.is('cordova')) {
-        this.authService.savePushToken(user.id, token).subscribe(
-          () => {
-            // NO SE HACE NADA
-          },
-          (error) => {
-            this.httpService.errorHandler(error);
-          }
-        );
+        this.authService.savePushToken(user.id, token).subscribe(() => {
+          // NO SE HACE NADA
+        }, error => {
+          this.httpService.errorHandler(error);
+        });
       }
     });
   }
+
 }

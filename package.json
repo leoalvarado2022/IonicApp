@@ -79,6 +79,7 @@
     "ngx-mask": "^9.1.4",
     "phonegap-nfc": "^1.2.0",
     "phonegap-plugin-barcodescanner": "^8.1.0",
+    "properties-parser": "^0.3.1",
     "rxjs": "~6.6.2",
     "tslib": "^1.13.0",
     "zone.js": "~0.10.2"

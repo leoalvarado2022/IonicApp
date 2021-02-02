@@ -9,6 +9,8 @@ import { ApplicationRegistryService } from '../services/application-registry/app
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { WeatherService } from 'src/app/services/weather/weather.service';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-application-end',
@@ -21,6 +23,7 @@ export class ApplicationEndPage implements OnInit {
   public readonly step1 = 1;
   public readonly step2 = 2;
   public isEdit = false;
+  public isLoading = false;
 
   public endForm: FormGroup;
   public currentApplication: ApplicationListInterface;
@@ -87,6 +90,7 @@ export class ApplicationEndPage implements OnInit {
    * loadData
    */
   private loadData = () => {
+    this.isLoading = true;
     Promise.all([
       this.orderSyncService.getOrderBalanceToApplyById(this.id),
       this.orderSyncService.getOrderHeader(),
@@ -110,6 +114,8 @@ export class ApplicationEndPage implements OnInit {
         });
         this.endForm.updateValueAndValidity();
       }
+
+      this.isLoading = false;
     });
   }
 
@@ -244,32 +250,39 @@ export class ApplicationEndPage implements OnInit {
    * @param id application id
    */
   private loadApplication = (id: string): void => {
-    this.applicationRegistryService.getApplication(id).subscribe((success: any) => {
-      const data = success.data;
-      const { applicationHeader, application, chemicals, locations } = data;
+    this.isLoading = true;
+    this.applicationRegistryService.getApplication(id)
+      .pipe(
+        catchError(error => {
+          this.isLoading = false;
+          this.toastService.errorToast('No se pudo cargar la aplicacion');
+          return throwError(error);
+        })
+      ).subscribe((success: any) => {
+        const data = success.data;
+        const { applicationHeader, application, chemicals, locations } = data;
 
-      this.orderHeader = applicationHeader;
-      this.currentApplication = application;
+        this.orderHeader = applicationHeader;
+        this.currentApplication = application;
 
-      this.endForm.patchValue({
-        id: application.id,
-        hectares: application["hectaresQuantity"],
-        temperature: application["temperature"],
-        humidity: application["humidity"],
-        wind: application["wind"],
-        litersQuantity: application["litersQuantity"]
-      });
-
-      if (chemicals) {
-        chemicals.forEach(item => {
-          this.addChemical(item);
+        this.endForm.patchValue({
+          id: application.id,
+          hectares: application["hectaresQuantity"],
+          temperature: application["temperature"],
+          humidity: application["humidity"],
+          wind: application["wind"],
+          litersQuantity: application["litersQuantity"]
         });
-      }
 
-      this.endForm.updateValueAndValidity();
-    }, error => {
-      this.toastService.errorToast('No se pudo cargar la aplicacion');
-    })
+        if (chemicals) {
+          chemicals.forEach(item => {
+            this.addChemical(item);
+          });
+        }
+
+        this.endForm.updateValueAndValidity();
+        this.isLoading = false;
+      });
   }
 
 }

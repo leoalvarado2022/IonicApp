@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Warehouse, Product } from 'src/app/shared/services/store/store-interface';
 import { ConsumptionService } from '../services/consumption.service';
 import { Consumption } from './../../../shared/services/store/store-interface';
+import { CleanStringService } from 'src/app/services/clean-string/clean-string.service';
 
 @Component({
   selector: 'app-consumption-form',
@@ -51,7 +52,8 @@ export class ConsumptionFormComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
-    private consumptionService: ConsumptionService
+    private consumptionService: ConsumptionService,
+    private cleanStringService: CleanStringService
   ) {
 
   }
@@ -59,7 +61,7 @@ export class ConsumptionFormComponent implements OnInit {
   ngOnInit() {
     if (this.editConsumption) {
       this.consumptionForm = this.formBuilder.group({
-        id: [ this.isCopy ? 0 : this.editConsumption.id, Validators.required],
+        id: [this.isCopy ? 0 : this.editConsumption.id, Validators.required],
         companyId: [this.editConsumption.companyId, Validators.required],
         date: [this.editConsumption.date.split('T')[0], Validators.required],
         documentId: [this.isCopy ? 0 : this.editConsumption.documentId, Validators.required],
@@ -126,7 +128,7 @@ export class ConsumptionFormComponent implements OnInit {
    * getTempId
    */
   private getTempId = () => {
-    this.consumptionService.getTempId().then( (tempId: number) => {
+    this.consumptionService.getTempId().then((tempId: number) => {
       this.tempId = tempId;
     });
   }
@@ -270,6 +272,8 @@ export class ConsumptionFormComponent implements OnInit {
    * @param data
    */
   private addConsumption = (data: Consumption) => {
+    data.notes = this.cleanStringService.replaceDoubleQuotes(data.notes);
+
     this.consumptionService.addConsumption(data).then(() => {
       this.consumptionService.increaseTempId().then(() => {
         this.closeModal(true);
@@ -297,6 +301,8 @@ export class ConsumptionFormComponent implements OnInit {
    * @param data
    */
   private updateConsumption = (data: Consumption) => {
+    data.notes = this.cleanStringService.replaceDoubleQuotes(data.notes);
+
     this.consumptionService.updateConsumption(data).then(() => {
       this.closeModal(true);
     });

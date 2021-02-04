@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
-import {BehaviorSubject} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {BehaviorSubject, from, of, throwError} from 'rxjs';
+import {catchError, filter, map} from 'rxjs/operators';
 
 interface Position {
   lat: number;
@@ -13,39 +13,38 @@ interface Position {
 })
 export class GeolocationService {
 
-  // Ubicacion por defecto santiago
-  private lat = -33.4724728;
-  private lng = -70.9100195;
-  private positionHistory: Array<{ lat: number, lng: number }> = [];
-
-  private currentPosition: BehaviorSubject<Position> = new BehaviorSubject<Position>({
-    lat: this.lat,
-    lng: this.lng
-  });
-
+  // Santiago map coords
+  private readonly santiagoPosition: Position = { lat: -33.4724728, lng: -70.9100195 };
   private readonly positionOptions = {
     enableHighAccuracy: true,
     timeout: 2000
   };
 
-  constructor(private geolocation: Geolocation) {
-    console.log('GeolocationService constructor');
+  private positionHistory: Array<Position> = [];
+  private currentPosition: BehaviorSubject<Position> = new BehaviorSubject<Position>(null);  
+
+  constructor(private geolocation: Geolocation) {    
 
 
-    this.geolocation.getCurrentPosition(this.positionOptions).then((data: any) => {
-      this.updatePosition(data.coords.latitude, data.coords.longitude);
-    }).catch(error => {
-      console.log('getCurrentPosition', error);
-    });
 
-    this.startTracker();
+    /*
+    
+    */
   }
 
   /**
    * getCurrentPosition
    */
   public getCurrentPosition = () => {
-    return this.currentPosition.asObservable();
+    return from(this.geolocation.getCurrentPosition(this.positionOptions)).pipe(
+      filter( (p: any) => p.coords !== undefined),
+      map( (data) => {
+        return { lat: data.coords.latitude, lng: data.coords.longitude };
+      }),
+      catchError( (error) => {        
+        return throwError(error.message);
+      }),      
+    );    
   }
 
   /**

@@ -21,6 +21,7 @@ import { AppService } from './app/app.service';
 import { DeviceService } from './device/device.service';
 import { WeatherService } from './weather/weather.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { CleanStringService } from './clean-string/clean-string.service';
 
 @NgModule({
   imports: [
@@ -43,6 +44,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     DeviceService,
     WeatherService,
     InAppBrowser,
+    CleanStringService,
 
     // Storage Services Block
     StorageSyncService,

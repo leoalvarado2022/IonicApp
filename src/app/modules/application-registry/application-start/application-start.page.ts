@@ -103,16 +103,25 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
         takeUntil(this.unsubscriber),
         map(item => this.mapCustomPosition(item)),
       ).subscribe(data => {
+        console.log('income', data);
+
         if (this.positions.length === 0) {
           this.positions.push(data);
+          this.positions = [...[], ...this.positions];
           this.orderSyncService.addApplicationLocations(data).then();
+
+          console.log('added', data);
+          console.log('positions', this.positions);
         } else if (this.positions.length > 0) {
           const start = this.positions[this.positions.length - 1];
           const distance = haversine(start, data, { unit: 'meter' });
 
           if (distance > 5) {
             this.positions.push(data);
+            this.positions = [...[], ...this.positions];            
             this.orderSyncService.addApplicationLocations(data).then();
+            console.log('added', data);
+            console.log('positions', this.positions);
           }
         }
       });

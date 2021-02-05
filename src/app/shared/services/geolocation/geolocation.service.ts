@@ -38,8 +38,7 @@ export class GeolocationService {
    */
   public startTracker = () => {
     return this.geolocation.watchPosition(this.positionOptions).pipe(
-      filter( (position: any) => position.coords !== undefined),
-      concatMap(position => of(position).pipe(delay(5000)))
+      filter( (position: any) => position.coords !== undefined)
     );
   }
 

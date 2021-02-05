@@ -5,7 +5,7 @@ import { StoreService } from 'src/app/shared/services/store/store.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import * as moment from 'moment';
 import { Tally } from '../../tally.interface';
-
+import { CleanStringService } from 'src/app/services/clean-string/clean-string.service';
 
 @Component({
   selector: 'app-tally-form-multiple',
@@ -47,11 +47,11 @@ export class TallyFormMultipleComponent implements OnInit {
   public availableBonds: Array<any> = [];
 
   public readonly workingDays: Array<any> = [
-    {text: '1', value: 1},
-    {text: '0.75', value: 0.75},
-    {text: '0.5', value: 0.5},
-    {text: '0.25', value: 0.25},
-    {text: '0.1', value: 0.1}
+    { text: '1', value: 1 },
+    { text: '0.75', value: 0.75 },
+    { text: '0.5', value: 0.5 },
+    { text: '0.25', value: 0.25 },
+    { text: '0.1', value: 0.1 }
   ];
 
   public workersOverMax: Array<any> = [];
@@ -61,7 +61,8 @@ export class TallyFormMultipleComponent implements OnInit {
     private formBuilder: FormBuilder,
     private storeService: StoreService,
     private actionSheetController: ActionSheetController,
-    private tallySyncService: TallySyncService
+    private tallySyncService: TallySyncService,
+    private cleanStringService: CleanStringService
   ) {
 
   }
@@ -92,7 +93,7 @@ export class TallyFormMultipleComponent implements OnInit {
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]],
-      unit: [{value: '', disabled: true}],
+      unit: [{ value: '', disabled: true }],
       notes: [''],
       creatorId: [activeCompany.user, Validators.required],
       multiple: this.formBuilder.array([])
@@ -147,7 +148,7 @@ export class TallyFormMultipleComponent implements OnInit {
       const workers = this.tallyForm.get('multiple') as FormArray;
 
       if (updateTallies) {
-        const workerUpdateTallies = updateTallies.filter( item => item.workerId === worker.id);
+        const workerUpdateTallies = updateTallies.filter(item => item.workerId === worker.id);
         workers.push(this.addWokerRow(worker, workerUpdateTallies[0]));
 
         if (workerUpdateTallies.length > 1) {
@@ -171,11 +172,11 @@ export class TallyFormMultipleComponent implements OnInit {
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]],
-      h: [edit ? edit.hoursExtra || '' : '', [
+      h: [edit ? edit.hoursExtra || '' : '', [
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]],
-      r: [edit ? edit.performance || '' : '', [
+      r: [edit ? edit.performance || '' : '', [
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
       ]]
@@ -295,6 +296,7 @@ export class TallyFormMultipleComponent implements OnInit {
    */
   public submitForm = async () => {
     const formData = Object.assign({}, this.tallyForm.value);
+    formData.notes = this.cleanStringService.replaceDoubleQuotes(formData.notes);
 
     for (const worker of this.workers) {
       if (this.numberOfCases.length === 0) {
@@ -335,7 +337,7 @@ export class TallyFormMultipleComponent implements OnInit {
    */
   private editMultipleTally = (worker: any, formData: any): Tally => {
     const data = formData.multiple.find(i => i.id === worker.id);
-    const workerUpdateTallies = this.updateTallies.find( item => item.workerId === worker.id);
+    const workerUpdateTallies = this.updateTallies.find(item => item.workerId === worker.id);
 
     let tempId = null;
     if (workerUpdateTallies.hasOwnProperty('tempId')) {
@@ -371,14 +373,14 @@ export class TallyFormMultipleComponent implements OnInit {
 
         for (let i = 0; i < workers.length; i++) {
           const value = (division * workers.at(i).get('jr').value || 1);
-          workers.at(i).patchValue({r: value.toFixed(3) });
+          workers.at(i).patchValue({ r: value.toFixed(3) });
         }
       } else if (option.toLowerCase() === 'asistencia') {
         const divide = (this.split / this.workers.length);
 
         const workers = this.tallyForm.get('multiple') as FormArray;
         for (let i = 0; i < workers.length; i++) {
-          workers.at(i).patchValue({r: divide.toFixed(3)});
+          workers.at(i).patchValue({ r: divide.toFixed(3) });
         }
       }
     }
@@ -390,7 +392,7 @@ export class TallyFormMultipleComponent implements OnInit {
   private setWorkingDay = (workingDay: number) => {
     const workers = this.tallyForm.get('multiple') as FormArray;
     for (let i = 0; i < workers.length; i++) {
-      workers.at(i).patchValue({jr: workingDay});
+      workers.at(i).patchValue({ jr: workingDay });
     }
   }
 
@@ -563,10 +565,10 @@ export class TallyFormMultipleComponent implements OnInit {
 
     for (let index = 0; index < all.length; index++) {
       const currentWorker = this.workers.find(item => item.id === all.at(index).get('id').value);
-      const workerUpdateTallies = this.updateTallies.filter( item => item.workerId === currentWorker.id);
+      const workerUpdateTallies = this.updateTallies.filter(item => item.workerId === currentWorker.id);
       const ignore = workerUpdateTallies[0] ? workerUpdateTallies[0].tempId : null;
 
-      this.checkWorkerDailyMax(currentWorker , all.at(index).get('jr').value, ignore);
+      this.checkWorkerDailyMax(currentWorker, all.at(index).get('jr').value, ignore);
     }
   }
 

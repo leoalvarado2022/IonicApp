@@ -5,6 +5,7 @@ import { ModalController, ActionSheetController } from '@ionic/angular';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { TallySyncService } from 'src/app/services/storage/tally-sync/tally-sync.service';
 import { Tally } from '../../tally.interface';
+import { CleanStringService } from 'src/app/services/clean-string/clean-string.service';
 
 @Component({
   selector: 'app-tally-form',
@@ -57,7 +58,8 @@ export class TallyFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private storeService: StoreService,
     private actionSheetController: ActionSheetController,
-    private tallySyncService: TallySyncService
+    private tallySyncService: TallySyncService,
+    private cleanStringService: CleanStringService
   ) {
 
   }
@@ -243,6 +245,7 @@ export class TallyFormComponent implements OnInit {
    */
   public submitForm = () => {
     const formData = Object.assign({}, this.tallyForm.value);
+    formData.notes = this.cleanStringService.replaceDoubleQuotes(formData.notes);
 
     if (this.updateTaly) {
       const editTally = this.editSingleTally(this.worker, formData, this.updateTaly);

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { from, Subject, throwError } from 'rxjs';
 import { takeUntil, map, catchError, switchMap } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import haversine from "haversine";
   selector: 'app-application-start',
   templateUrl: './application-start.page.html',
   styleUrls: ['./application-start.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationStartPage implements OnInit, OnDestroy {
 
@@ -34,7 +35,8 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
     private geolocationService: GeolocationService,
     private router: Router,
     private weatherService: WeatherService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
 
   }
@@ -90,6 +92,7 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
           this.weather = data;
           this.watchPosition();
           this.loading = false;
+          this.changeDetectorRef.detectChanges();
         });
       });
   }
@@ -103,25 +106,18 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
         takeUntil(this.unsubscriber),
         map(item => this.mapCustomPosition(item)),
       ).subscribe(data => {
-        console.log('income', data);
-
         if (this.positions.length === 0) {
           this.positions.push(data);
-          this.positions = [...[], ...this.positions];
           this.orderSyncService.addApplicationLocations(data).then();
-
-          console.log('added', data);
-          console.log('positions', this.positions);
+          this.changeDetectorRef.detectChanges();
         } else if (this.positions.length > 0) {
           const start = this.positions[this.positions.length - 1];
           const distance = haversine(start, data, { unit: 'meter' });
 
           if (distance > 5) {
             this.positions.push(data);
-            this.positions = [...[], ...this.positions];            
             this.orderSyncService.addApplicationLocations(data).then();
-            console.log('added', data);
-            console.log('positions', this.positions);
+            this.changeDetectorRef.detectChanges();
           }
         }
       });

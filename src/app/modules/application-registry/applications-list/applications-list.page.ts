@@ -44,6 +44,10 @@ export class ApplicationsListPage implements OnInit {
     this.loadData();
   }
 
+  ionViewDidLoad(){
+    this.orderSyncService.setApplicationLocations([]).then();
+  }
+
   /**
    * loadData
    */
@@ -67,7 +71,7 @@ export class ApplicationsListPage implements OnInit {
         this.orderSyncService.setOrderMachinery(orderMachinery),
         this.orderSyncService.setOrderChemical(orderChemical),
         this.orderSyncService.setOrderBalanceToApply(orderBalanceToApply),
-        this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied)
+        this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied),
       ]).then(() => {
         this.orderBalanceToApply = orderBalanceToApply;
         this.orderBalanceApplied = orderBalanceApplied;

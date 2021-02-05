@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import { ApplicationListInterface } from 'src/app/modules/application-registry/application-list.interface';
 import { ApplicationLocationInterface } from 'src/app/modules/application-registry/application-location.interface';
 import { StorageKeys } from '../storage-keys';
-
+import haversine from "haversine";
 @Injectable({
   providedIn: 'root'
 })
@@ -100,7 +100,7 @@ export class OrderSyncService {
    * getOrderBalanceToApplyById
    * @param id
    */
-  public getOrderBalanceToApplyById = (id: number): Promise<ApplicationListInterface> => {    
+  public getOrderBalanceToApplyById = (id: number): Promise<ApplicationListInterface> => {
     return this.storage.get(StorageKeys.OrderBalanceToApply).then((orderBalanceToApply: Array<ApplicationListInterface>) => {
       return orderBalanceToApply.find(item => item.id === id);
     });

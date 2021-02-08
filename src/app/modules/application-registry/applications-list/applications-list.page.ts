@@ -42,11 +42,13 @@ export class ApplicationsListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.loadData();
+    
   }
 
   ionViewWillEnter() {
+    this.currentTab = this.toApplyTab;
     this.orderSyncService.setApplicationLocations([]).then();
+    this.loadData();
   }
 
   /**

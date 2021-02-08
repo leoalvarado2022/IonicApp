@@ -87,9 +87,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         status
       };
 
-      // this._posService.openTable(this.order);
+      // console.log(data);
+      this._posService.openTableNew(this.order);
 
-      this.setHttpNotificationStatus(status, data);
+      // this.setHttpNotificationStatus(status, data);
 
       // si el origin es una app externa
       if (this.order.origin === 'JUSTO') {

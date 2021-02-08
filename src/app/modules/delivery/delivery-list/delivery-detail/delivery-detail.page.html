@@ -135,13 +135,13 @@
         </ion-grid>
 
       </ng-container>
-      <div class="space">
+     <!-- <div class="space">
         <p><strong>TOTAL PRODUCTOS</strong> <span
             style="float: right;">{{ order?.value_items | currency:' ':'symbol':'1.0-2'}}</span>
         </p>
         <p *ngIf="order?.value_shipping"><strong>ENVÍO</strong> <span
             style="float: right;">{{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</span></p>
-      </div>
+      </div>-->
       <div class="space">
         <p *ngIf="order?.value_order"><strong>TOTAL ORDEN</strong> <span
             style="float: right;">{{ order?.value_order | currency:' ':'symbol':'1.0-2'}}</span></p>

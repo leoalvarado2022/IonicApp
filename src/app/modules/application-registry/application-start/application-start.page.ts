@@ -32,7 +32,8 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
     private geolocationService: GeolocationService,
     private router: Router,
     private weatherService: WeatherService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
 
   }
@@ -56,7 +57,7 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
     this.unsubscriber.complete();
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.loading = true;
     this.loadingMessage = 'Obteniendo Ubicacion';
 
@@ -112,18 +113,17 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
         map(item => this.mapCustomPosition(item)),
       ).subscribe(data => {
         if (this.positions.length === 0) {
-          const newArray = [...this.positions, data];
-          this.positions = [...newArray];
-
+          this.positions.push(data);
           this.orderSyncService.addApplicationLocations(data).then();
+          this.changeDetectorRef.detectChanges();
         } else if (this.positions.length > 0) {
           const start = this.positions[this.positions.length - 1];
           const distance = haversine(start, data, { unit: 'meter' });
 
           if (distance > 5) {
-            const newArray = [...this.positions, data];
-            this.positions = [...newArray];
+            this.positions.push(data);
             this.orderSyncService.addApplicationLocations(data).then();
+            this.changeDetectorRef.detectChanges();
           }
         }
       });

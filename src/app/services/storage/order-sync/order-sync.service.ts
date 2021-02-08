@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage';
 import { ApplicationListInterface } from 'src/app/modules/application-registry/application-list.interface';
 import { ApplicationLocationInterface } from 'src/app/modules/application-registry/application-location.interface';
 import { StorageKeys } from '../storage-keys';
-import haversine from "haversine";
+
 @Injectable({
   providedIn: 'root'
 })

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { from, Subject, throwError } from 'rxjs';
+import { from, of, Subject, throwError } from 'rxjs';
 import { takeUntil, map, catchError, switchMap } from 'rxjs/operators';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { WeatherService } from 'src/app/services/weather/weather.service';
@@ -12,8 +12,7 @@ import haversine from "haversine";
 @Component({
   selector: 'app-application-start',
   templateUrl: './application-start.page.html',
-  styleUrls: ['./application-start.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./application-start.page.scss']
 })
 export class ApplicationStartPage implements OnInit, OnDestroy {
 
@@ -27,23 +26,19 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
   public loading = false;
   public loadingMessage = 'Cargando...';
 
-  public test: any;
-
   constructor(
     private route: ActivatedRoute,
     private orderSyncService: OrderSyncService,
     private geolocationService: GeolocationService,
     private router: Router,
     private weatherService: WeatherService,
-    private toastService: ToastService,
-    private changeDetectorRef: ChangeDetectorRef
+    private toastService: ToastService
   ) {
 
   }
 
   ngOnInit() {
     this.id = +this.route.snapshot.paramMap.get('id');
-    this.test = from(this.orderSyncService.getApplicationLocationsById(this.id));
 
     Promise.all([
       this.orderSyncService.getOrderBalanceToApplyById(this.id),
@@ -75,25 +70,35 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
               catchError(error => {
                 this.toastService.errorToast('No se pudo cargar el clima');
                 this.loading = false;
-                return throwError(error);
+                return of(null);
               })
             );
         }),
         takeUntil(this.unsubscriber),
         catchError(error => {
-          this.toastService.errorToast(error);
+          if (error === "User denied Geolocation") {
+            this.toastService.errorToast("GPS no tiene permiso");
+          } else if (error === "Timeout expired") {
+            this.toastService.errorToast("Tiempo agotado para obtener ubicacion");
+          } else {
+            this.toastService.errorToast(error);
+          }
+
           this.loading = false;
-          return throwError(error);
+          return of(null);
         }),
       ).subscribe(weather => {
-        const data = weather['data'];
+        if (weather) {
+          const data = weather['data'];
 
-        this.weatherService.setWeather(data).then(() => {
-          this.weather = data;
-          this.watchPosition();
+          this.weatherService.setWeather(data).then(() => {
+            this.weather = data;
+            this.watchPosition();
+            this.loading = false;
+          });
+        } else {
           this.loading = false;
-          this.changeDetectorRef.detectChanges();
-        });
+        }
       });
   }
 
@@ -107,17 +112,18 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
         map(item => this.mapCustomPosition(item)),
       ).subscribe(data => {
         if (this.positions.length === 0) {
-          this.positions.push(data);
+          const newArray = [...this.positions, data];
+          this.positions = [...newArray];
+
           this.orderSyncService.addApplicationLocations(data).then();
-          this.changeDetectorRef.detectChanges();
         } else if (this.positions.length > 0) {
           const start = this.positions[this.positions.length - 1];
           const distance = haversine(start, data, { unit: 'meter' });
 
           if (distance > 5) {
-            this.positions.push(data);
+            const newArray = [...this.positions, data];
+            this.positions = [...newArray];
             this.orderSyncService.addApplicationLocations(data).then();
-            this.changeDetectorRef.detectChanges();
           }
         }
       });

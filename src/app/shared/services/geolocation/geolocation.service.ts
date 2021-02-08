@@ -10,8 +10,8 @@ export class GeolocationService {
 
   private readonly positionOptions = {
     enableHighAccuracy: true,
-    timeout: 5000,
-    maximunAge: 3000
+    timeout: 10000,
+    maximunAge: 5000
   };
 
   constructor(private geolocation: Geolocation) {

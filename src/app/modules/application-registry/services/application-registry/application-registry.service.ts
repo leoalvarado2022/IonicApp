@@ -74,9 +74,9 @@ export class ApplicationRegistryService {
    * @param application application data
    * @param user user id
    */
-  public deleteApplication = (application: any, user: number) => {
+  public deleteApplication = (applicationHeader: any, application: any, user: number) => {
     const url = this.httpService.buildUrl(this.deleteApplicationUrl);
-    const body = this.httpService.buildBody({ application, user });
+    const body = this.httpService.buildBody({ applicationHeader, application, user });
     return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
   }
 

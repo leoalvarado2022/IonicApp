@@ -204,10 +204,9 @@ export class ApplicationEndPage implements OnInit {
         this.orderSyncService.clearApplicationLocationsById(this.id),
         this.orderSyncService.clearApplicationCache()
       ]).then(() => {
-        this.router.navigate(['/home-page/registro_aplicacion']);
+        this.router.navigate(['/home-page/registro_aplicacion/applications', application.applicationOrderId]);
       });
     }, error => {
-      console.log('error', error);
       this.toastService.errorToast('ocurrio un error al grabar la aplicacion');
     });
   }
@@ -226,7 +225,7 @@ export class ApplicationEndPage implements OnInit {
         this.orderSyncService.clearApplicationLocationsById(this.id),
         this.orderSyncService.clearApplicationCache()
       ]).then(() => {
-        this.router.navigate(['/home-page/registro_aplicacion']);
+        this.router.navigate(['/home-page/registro_aplicacion/applications', header.applicationOrderId]);
       });
     }, error => {
       this.toastService.errorToast('ocurrio un error al editar la aplicacion');

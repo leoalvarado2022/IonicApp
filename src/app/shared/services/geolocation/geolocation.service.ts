@@ -25,10 +25,13 @@ export class GeolocationService {
 
   private readonly positionOptions = {
     enableHighAccuracy: true,
-    timeout: 5000
+    timeout: 2000
   };
 
   constructor(private geolocation: Geolocation) {
+    console.log('GeolocationService constructor');
+
+
     this.geolocation.getCurrentPosition(this.positionOptions).then((data: any) => {
       this.updatePosition(data.coords.latitude, data.coords.longitude);
     }).catch(error => {

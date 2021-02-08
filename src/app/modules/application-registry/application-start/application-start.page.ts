@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Geoposition } from '@ionic-native/geolocation/ngx';
-import { Subject } from 'rxjs';
-import { takeUntil, filter, map, take } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
+import { takeUntil, filter, map, take, catchError, switchMap } from 'rxjs/operators';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { WeatherService } from 'src/app/services/weather/weather.service';
 import { GeolocationService } from 'src/app/shared/services/geolocation/geolocation.service';
@@ -61,26 +61,73 @@ export class ApplicationStartPage implements OnInit, OnDestroy {
     this.loading = true;
     this.loadingMessage = "Obteniendo Ubicacion";
 
-    this.geolocationService.watchPosition().pipe(
-      takeUntil(this.unsubscriber),
-      filter((position: Geoposition) => position.coords !== undefined),
-      map(item => this.mapCustomPosition(item)),
-      take(1)
-    ).subscribe((geoposition: ApplicationLocationInterface) => {
-      this.loadingMessage = "Obteniendo Clima";
-
-      this.weatherService.getLatLngWeather(geoposition.latitude, geoposition.longitude).subscribe(weather => {
+    this.geolocationService.getCurrentPosition()
+      .pipe(
+        take(1),
+        catchError(error => {
+          console.log('watchPositionerror caught in pipe', error);
+          this.loading = false;
+          this.toastService.errorToast('No se pudo cargar el la posicion');
+          return throwError(error);
+        }),
+        switchMap(data => {
+          this.loadingMessage = "Obteniendo Clima";
+          return this.weatherService.getLatLngWeather(data.lat, data.lng)
+            .pipe(
+              takeUntil(this.unsubscriber),
+              catchError(error => {
+                console.log('getLatLngWeather error caught in pipe', error);
+                this.loading = false;
+                this.toastService.errorToast('No se pudo cargar el clima');
+                return throwError(error);
+              })
+            );
+        }),
+      ).subscribe(weather => {
         const data = weather["data"];
+
         this.weatherService.setWeather(data).then(() => {
           this.weather = data;
           this.watchPosition();
           this.loading = false;
         });
-      }, error => {
-        this.toastService.errorToast('No se pudo cargar el clima');
+      });
+
+    /*
+
+    this.geolocationService.watchPosition().pipe(
+      takeUntil(this.unsubscriber),
+      filter((position: Geoposition) => position.coords !== undefined),
+      map(item => this.mapCustomPosition(item)),
+      take(1),
+      switchMap(geoposition => {
+        this.loadingMessage = "Obteniendo Clima";
+        return this.weatherService.getLatLngWeather(geoposition.latitude, geoposition.longitude)
+          .pipe(
+            takeUntil(this.unsubscriber),
+            catchError(error => {
+              console.log('getLatLngWeather error caught in pipe', error);
+              this.loading = false;
+              this.toastService.errorToast('No se pudo cargar el clima');
+              return throwError(error);
+            })
+          );
+      }),
+      catchError(error => {
+        console.log('watchPositionerror caught in pipe', error);
+        this.loading = false;
+        this.toastService.errorToast('No se pudo cargar el la posicion');
+        return throwError(error);
+      })
+    ).subscribe(weather => {
+      const data = weather["data"];
+      this.weatherService.setWeather(data).then(() => {
+        this.weather = data;
+        this.watchPosition();
         this.loading = false;
       });
     });
+    */
   }
 
   /**

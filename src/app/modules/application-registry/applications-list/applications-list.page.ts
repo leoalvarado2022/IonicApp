@@ -3,12 +3,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonItemSliding } from '@ionic/angular';
 import { map, switchMap } from 'rxjs/operators';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { LoaderService } from 'src/app/shared/services/loader/loader.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
+import { MachineryService } from '../../machinery/services/machinery.service';
 import { ApplicationListInterface } from '../application-list.interface';
 import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
+import * as moment from "moment";
 
 @Component({
   selector: 'app-applications-list',
@@ -27,6 +30,8 @@ export class ApplicationsListPage implements OnInit {
 
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
+  private implementTypeCostCenters: Array<any> = [];
+  private workers: Array<any> = [];
 
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
@@ -36,13 +41,15 @@ export class ApplicationsListPage implements OnInit {
     private orderSyncService: OrderSyncService,
     private toastService: ToastService,
     private alertService: AlertService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private storageSyncService: StorageSyncService,
+    private machineryService: MachineryService,
   ) {
 
   }
 
   ngOnInit() {
-    
+
   }
 
   ionViewWillEnter() {
@@ -56,6 +63,9 @@ export class ApplicationsListPage implements OnInit {
    */
   private loadData = (): void => {
     this.loaderService.startLoader();
+
+    const activeCompany = this.storeService.getActiveCompany();
+    const date = moment().format('YYYY-MM-DD');
 
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.applicationRegistryService.getApplicationList(+id).subscribe((success: any) => {
@@ -75,12 +85,16 @@ export class ApplicationsListPage implements OnInit {
         this.orderSyncService.setOrderChemical(orderChemical),
         this.orderSyncService.setOrderBalanceToApply(orderBalanceToApply),
         this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied),
-      ]).then(() => {
+        this.storageSyncService.getImplementTypeCostCenters(),
+        this.machineryService.getWorkers(activeCompany.id, date),
+      ]).then((data: any) => {
         this.orderBalanceToApply = orderBalanceToApply;
         this.orderBalanceApplied = orderBalanceApplied;
 
         this.filteredToApplyApplications = orderBalanceToApply;
         this.filteredAppliedApplications = orderBalanceApplied;
+        this.implementTypeCostCenters = data[6];
+        this.workers = data[7]
 
         this.loaderService.stopLoader();
       });
@@ -191,6 +205,24 @@ export class ApplicationsListPage implements OnInit {
   public reload = (event: any) => {
     this.loadData();
     event.target.complete();
+  }
+
+  /**
+   * getImplementName
+   * @param application application item
+   */
+  public getImplementName = (application: ApplicationListInterface): string => {
+    const find = this.implementTypeCostCenters.find(item => item.id === application.id);
+    return find ? find.name : '';
+  }
+
+  /**
+   * getWorkerName
+   */
+  public getWorkerName = (): string => {
+    const activeCompany = this.storeService.getActiveCompany();
+    const find = this.workers.find(item => item.id === activeCompany.user);
+    return find ? find.name : '';
   }
 
 }

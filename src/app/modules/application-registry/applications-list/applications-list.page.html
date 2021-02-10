@@ -49,12 +49,16 @@
           </ion-item>
 
           <ion-card-content>
-            <ng-container *ngIf="application.costCenterMachineryName">
-              <p>
-                <strong>Maquina:</strong>
-                {{ application.costCenterMachineryName | titlecase }}
-              </p>
-            </ng-container>
+            <p *ngIf="getImplementName(application)">
+              <strong>Implemento:</strong> {{ getImplementName(application) }}
+            </p>
+            <p *ngIf="getWorkerName()">
+              <strong>Operador:</strong> {{ getWorkerName() }}
+            </p>
+            <p *ngIf="application.costCenterMachineryName">
+              <strong>Maquina:</strong>
+              {{ application.costCenterMachineryName | titlecase }}
+            </p>
 
             <div class="ion-text-right">
               <ion-chip>

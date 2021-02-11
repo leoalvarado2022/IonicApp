@@ -213,4 +213,29 @@ export class OrderSyncService {
     });
   }
 
+
+  /**
+   *************************************************************************** 
+   * NEW TEMP STORAGE
+   *************************************************************************** 
+   *************************************************************************** 
+   */
+
+  private setTempApplications = (tempApplications: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.TempApplications, tempApplications);
+  }
+
+  public getTempApplications = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.TempApplications).then((tempApplications: Array<any>) => {
+      return tempApplications ? tempApplications : [];
+    });
+  }  
+
+  public addTempApplication = (tempApplication: any): Promise<Array<any>> => {
+    return this.getTempApplications().then((tempApplications: Array<any>) => {
+      tempApplications.push(tempApplication);
+      return this.setTempApplications(tempApplications);
+    });
+  }  
+
 }

@@ -132,11 +132,9 @@ export class ConfirmationStepPage implements OnInit {
    * nextStep
    */
   public nextStep = () => {
-    const data = Object.assign({}, this.applicationForm.value);
+    const data = Object.assign(this.currentApplication, this.applicationForm.value, { tempId: this.tempId });
 
-    console.log('data', data);
-    console.log('currentApplication', this.currentApplication);
-    
+    console.log('data', data);        
   }
 
 }

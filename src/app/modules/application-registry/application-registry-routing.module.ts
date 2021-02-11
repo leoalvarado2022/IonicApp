@@ -21,7 +21,12 @@ const routes: Routes = [
   {
     path: 'application-end/:id',
     component: ApplicationEndPage
+  },
+  {
+    path: 'confirmation-step/:id',
+    loadChildren: () => import('./steps/confirmation-step/confirmation-step.module').then( m => m.ConfirmationStepPageModule)
   }
+
 ];
 
 @NgModule({

@@ -30,6 +30,8 @@ export class ApplicationsListPage implements OnInit {
 
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
+  private orderMachinery: any = null;
+
   private implementTypeCostCenters: Array<any> = [];
   private workers: Array<any> = [];
 
@@ -76,8 +78,7 @@ export class ApplicationsListPage implements OnInit {
         orderCostCenter,
         orderHeader,
         orderMachinery
-      } = success.data;
-
+      } = success.data;      
       Promise.all([
         this.orderSyncService.setOrderHeader(orderHeader),
         this.orderSyncService.setOrderCostCenter(orderCostCenter),
@@ -95,6 +96,8 @@ export class ApplicationsListPage implements OnInit {
         this.filteredAppliedApplications = orderBalanceApplied;
         this.implementTypeCostCenters = data[6];
         this.workers = data[7]
+
+        this.orderMachinery = orderMachinery[0];
 
         this.loaderService.stopLoader();
       });
@@ -121,7 +124,7 @@ export class ApplicationsListPage implements OnInit {
    * startApplication
    */
   public startApplication = (): void => {
-    this.router.navigate(["/home-page/registro_aplicacion/application-start", this.selectedApplication.id]);
+    this.router.navigate(["/home-page/registro_aplicacion/confirmation-step", this.selectedApplication.id]);
   }
 
   /**
@@ -208,20 +211,18 @@ export class ApplicationsListPage implements OnInit {
   }
 
   /**
-   * getImplementName
-   * @param application application item
+   * getImplementName   
    */
-  public getImplementName = (application: ApplicationListInterface): string => {
-    const find = this.implementTypeCostCenters.find(item => item.id === application.id);
+  public getImplementName = (): string => {    
+    const find = this.implementTypeCostCenters.find(item => item.id === this.orderMachinery.costCenterImplementId);
     return find ? find.name : '';
   }
 
   /**
    * getWorkerName
    */
-  public getWorkerName = (): string => {
-    const activeCompany = this.storeService.getActiveCompany();
-    const find = this.workers.find(item => item.id === activeCompany.user);
+  public getWorkerName = (): string => {    
+    const find = this.workers.find(item => item.id === this.orderMachinery.operatorId);
     return find ? find.name : '';
   }
 

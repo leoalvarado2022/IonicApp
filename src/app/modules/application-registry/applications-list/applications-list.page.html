@@ -49,16 +49,15 @@
           </ion-item>
 
           <ion-card-content>
-            <p *ngIf="getImplementName(application)">
-              <strong>Implemento:</strong> {{ getImplementName(application) }}
+            <p *ngIf="application.costCenterMachineryName">
+              <strong>Maquina:</strong> {{ application.costCenterMachineryName }}              
+            </p>            
+            <p *ngIf="getImplementName()">
+              <strong>Implemento:</strong> {{ getImplementName() }}
             </p>
             <p *ngIf="getWorkerName()">
               <strong>Operador:</strong> {{ getWorkerName() }}
-            </p>
-            <p *ngIf="application.costCenterMachineryName">
-              <strong>Maquina:</strong>
-              {{ application.costCenterMachineryName | titlecase }}
-            </p>
+            </p>           
 
             <div class="ion-text-right">
               <ion-chip>
@@ -116,7 +115,7 @@
 <ion-footer>
   <ng-container *ngIf="currentTab === toApplyTab">
     <ion-button expand="block" [disabled]="!selectedApplication" (click)="startApplication()">
-      Iniciar
+      Ver
     </ion-button>
   </ng-container>
 </ion-footer>

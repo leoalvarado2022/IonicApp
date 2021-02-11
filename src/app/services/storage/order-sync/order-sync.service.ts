@@ -46,7 +46,7 @@ export class OrderSyncService {
   }
 
   /**
-   *setOrderMachinery
+   * setOrderMachinery
    * @param orderMachinery
    */
   public setOrderMachinery = (orderMachinery: Array<any>): Promise<Array<any>> => {

@@ -3,7 +3,7 @@ import { MachineryService } from 'src/app/modules/machinery/services/machinery.s
 import * as moment from "moment";
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { ApplicationListInterface } from '../../application-list.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -32,7 +32,8 @@ export class ConfirmationStepPage implements OnInit {
     private storageSyncService: StorageSyncService,
     private activatedRoute: ActivatedRoute,
     private orderSyncService: OrderSyncService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router
   ) {
 
   }
@@ -126,7 +127,7 @@ export class ConfirmationStepPage implements OnInit {
     const id = this.applicationForm.get('implement').value;
     const find = this.implementTypeCostCenters.find(item => item.id === id);
     return find ? find.name : '';
-  } 
+  }
 
   /**
    * nextStep
@@ -134,7 +135,9 @@ export class ConfirmationStepPage implements OnInit {
   public nextStep = () => {
     const data = Object.assign(this.currentApplication, this.applicationForm.value, { tempId: this.tempId });
 
-    console.log('data', data);        
+    this.orderSyncService.addTempApplication(data).then(() => {
+      this.router.navigate(["/home-page/registro_aplicacion/information-step", this.tempId]);
+    });
   }
 
 }

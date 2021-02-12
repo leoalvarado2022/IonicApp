@@ -221,21 +221,70 @@ export class OrderSyncService {
    *************************************************************************** 
    */
 
+  /**
+   * setTempApplications
+   * @param tempApplications array of temp applications
+   */
   private setTempApplications = (tempApplications: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.TempApplications, tempApplications);
   }
 
-  public getTempApplications = (): Promise<Array<any>> => {
+  /**
+   * getTempApplications
+   */
+  private getTempApplications = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.TempApplications).then((tempApplications: Array<any>) => {
       return tempApplications ? tempApplications : [];
     });
-  }  
+  }
 
+  /**
+   * addTempApplication
+   * @param tempApplication temp object
+   */
   public addTempApplication = (tempApplication: any): Promise<Array<any>> => {
     return this.getTempApplications().then((tempApplications: Array<any>) => {
       tempApplications.push(tempApplication);
       return this.setTempApplications(tempApplications);
     });
-  }  
+  }
+
+  /**
+   * getTempApplicationById
+   * @param tempId application temp id
+   */
+  public getTempApplicationById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplications().then((tempApplications: Array<any>) => {
+      return tempApplications.find(item => item.tempId === tempId);
+    });
+  }
+
+  /**
+   * setTempApplicationChemicals
+   * @param tempApplicationChemicals array of temp chemicals
+   */
+  private setTempApplicationChemicals = (tempApplicationChemicals: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.TempApplicationChemicals, tempApplicationChemicals);
+  }
+
+  /**
+   * getTempApplicationChemicals
+   */
+  private getTempApplicationChemicals = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.TempApplicationChemicals).then((tempApplicationChemicals: Array<any>) => {
+      return tempApplicationChemicals ? tempApplicationChemicals : [];
+    });
+  }
+
+  /**
+   * addTempApplicationChemicals
+   * @param newChemicals array of temp chemicals
+   */
+  public addTempApplicationChemicals = (newChemicals: Array<any>): Promise<Array<any>> => {
+    return this.getTempApplicationChemicals().then((tempApplicationChemicals: Array<any>) => {
+      const newArray = [...newChemicals, ...tempApplicationChemicals]
+      return this.setTempApplicationChemicals(newArray);
+    });
+  }
 
 }

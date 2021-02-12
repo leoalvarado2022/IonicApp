@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Clima</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="loading">
+    <ion-card>
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>{{ loadingMessage }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </ng-container>
+
+  <form [formGroup]="weatherForm">
+    <ion-card class="card-item" *ngIf="weather">
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>
+          <ion-input formControlName="location"></ion-input>
+        </ion-card-title>
+        <ion-card-subtitle>
+          <ion-input formControlName="sky"></ion-input>
+        </ion-card-subtitle>
+        <!--
+        <ion-card-title>{{ weather["name"] | titlecase }}</ion-card-title>
+        <ion-card-subtitle>{{ weather["weather"][0]["description"] | titlecase }}</ion-card-subtitle>
+        -->
+      </ion-card-header>
+  
+      <ion-card-content>        
+        <ion-list>          
+          <ion-item>
+            <ion-label>Temperatura Actual</ion-label>
+            <ion-badge slot="end">°{{  roundUp(weather["main"]["temp"] ) }}</ion-badge>
+          </ion-item>          
+          <ion-item>
+            <ion-label>Humedad</ion-label>
+            <ion-badge slot="end">{{  roundUp(weather["main"]["humidity"] ) }}%</ion-badge>
+          </ion-item>
+          <ion-item>
+            <ion-label>Viento</ion-label>
+            <ion-badge slot="end">{{  roundUp(weather["wind"]["speed"] ) }} m/s</ion-badge>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>  
+  </form>  
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="warning">
+    Siguiente
+  </ion-button>
+</ion-footer>

@@ -24,9 +24,16 @@ const routes: Routes = [
   },
   {
     path: 'confirmation-step/:id',
-    loadChildren: () => import('./steps/confirmation-step/confirmation-step.module').then( m => m.ConfirmationStepPageModule)
+    loadChildren: () => import('./steps/confirmation-step/confirmation-step.module').then(m => m.ConfirmationStepPageModule)
+  },
+  {
+    path: 'information-step/:tempId',
+    loadChildren: () => import('./steps/information-step/information-step.module').then(m => m.InformationStepPageModule)
+  },
+  {
+    path: 'weather-step/:tempId',
+    loadChildren: () => import('./steps/weather-step/weather-step.module').then(m => m.WeatherStepPageModule)
   }
-
 ];
 
 @NgModule({

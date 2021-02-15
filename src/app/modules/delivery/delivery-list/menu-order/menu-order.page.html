@@ -1,12 +1,18 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button class="header-back-button" text=""></ion-back-button>
+     <!-- <ion-back-button class="header-back-button" text=""></ion-back-button>-->
+      <ion-button class="toolbar-button white-button" (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
-      <strong>MENU</strong>
+      <strong>{{ menuTitle }}</strong>
     </ion-title>
     <ion-buttons slot="end">
+      <ion-button class="toolbar-button white-button" (click)="typeSaleChange()">
+        <ion-icon name="repeat-outline"></ion-icon>
+      </ion-button>
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
@@ -14,58 +20,38 @@
 <ion-content>
   <ion-card>
     <ion-card-content>
-      <div class="scrollmenu">
-        <span class="group select">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
-        <span class="group">Home</span>
+      <div class="scrollmenu" *ngIf="menuHeader.length">
+        <span class="group" *ngFor="let header of menuHeader"
+              [ngClass]="{'select': headerSelect === header}" (click)="selectFilterItems(header)">{{header}}</span>
       </div>
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
-    <ion-card-content style="padding: 0;">
-      <div>
+  <ng-container *ngIf="itemsSelect && itemsSelect.length">
+    <ion-card *ngFor="let item of itemsSelectFilter(headerSelect)">
+      <ion-card-content style="padding: 0;">
         <div>
-          <img src="assets/imgs/no-image.png" class="img-card">
-        </div>
-        <div class="description">
-          <p style="font-size: 16px;"><strong>Cocacola</strong></p>
-          <p><span>1,400</span></p>
-          <div class="button-footer">
-            <div class="button-add" (click)="addItems()">+</div>
-            <div class="number-add">0</div>
-            <div class="button-add" (click)="removeItems()">-</div>
+          <div>
+            <img src="assets/imgs/no-image.png" class="img-card">
+          </div>
+          <div class="description">
+            <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
+            <p><span>{{item.price | currency:' ':'symbol':'1.0-2' }}</span></p>
+            <div class="button-footer">
+              <div class="button-add" (click)="addItems(item)">+</div>
+              <div class="number-add">{{quantityOrder(item)}}</div>
+              <div class="button-add" (click)="removeItems(item)">-</div>
+            </div>
           </div>
         </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
-
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
 </ion-content>
 
-<ion-footer class="show-order" (click)="showOrder()">
+<ion-footer class="show-order" (click)="showOrder()" *ngIf="orderCountTotal() !== 0">
   <div>
     <span style="float: left;">Ver Orden</span>
-    <span style="float: right;">0</span>
+    <span style="float: right;">Items: {{orderCountTotal()}}</span>
   </div>
 </ion-footer>

@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {MenuOrderPage} from './menu-order.page';
+import {MenuDetailPage} from './menu-detail.page';
 import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../../../../shared/shared.module';
 import {CommonModule} from '@angular/common';
@@ -7,7 +7,7 @@ import {CommonModule} from '@angular/common';
 const routes: Routes = [
   {
     path: '',
-    component: MenuOrderPage,
+    component: MenuDetailPage,
   }
 ];
 
@@ -19,9 +19,9 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   declarations: [
-    MenuOrderPage
+    MenuDetailPage
   ]
 })
-export class MenuOrderModule {
+export class MenuDetailModule {
 
 }

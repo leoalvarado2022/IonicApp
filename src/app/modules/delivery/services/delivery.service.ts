@@ -18,6 +18,7 @@ import {MasterService} from './master.service';
 export class DeliveryService {
 
   public orderListUrl = 'order-list';
+  public getMenuOrderUrl = 'menu-order';
   public orderUpdateUrl = 'order-update';
   public changeOrderStatus = 'change-order';
   public getOrderDelivery = 'get-order';
@@ -53,11 +54,60 @@ export class DeliveryService {
   }
 
   /**
+   * @description si la venta es directa es verdadero, si la venta es delivery es falso
+   * @param status
+   */
+  public setTypeSaleDirect(status: boolean) {
+    localStorage.setItem('SaleDirect', JSON.stringify(status));
+  }
+
+  /**
+   * @description obtener la informacion del delivery
+   */
+  public getInfoTypeDeliveryForm() {
+    return JSON.parse(localStorage.getItem('infoDeliveryForm'));
+  }
+
+  /**
+   * @description agregar informacion del delivery
+   * @param status
+   */
+  public setInfoTypeDeliveryForm(infoDeliveryForm: any) {
+    localStorage.setItem('infoDeliveryForm', JSON.stringify(infoDeliveryForm));
+  }
+
+  /**
+   * @description remover data para el form delivery
+   * @param status
+   */
+  public removeInfoTypeDeliveryForm() {
+    localStorage.removeItem('infoDeliveryForm');
+  }
+
+  /**
+   * @description obtener el tipo de venta
+   */
+  public getTypeSaleDirect() {
+    return JSON.parse(localStorage.getItem('SaleDirect'));
+  }
+
+  /**
    * @description list notifications
    * @param data
    */
   public getNotificationHttp = (data: any) => {
     const url = this.httpService.buildUrl(this.orderListUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description list notifications
+   * @param data
+   */
+  public httpGetMenuOrderUrl = (data: any) => {
+    const url = this.httpService.buildUrl(this.getMenuOrderUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });

@@ -9,6 +9,7 @@ import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {environment} from '../../../../environments/environment';
 import {PosService} from '../services/pos.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
+import {ActionSheetController} from '@ionic/angular';
 
 @Component({
   selector: 'app-delivery-list',
@@ -34,7 +35,8 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private router: Router,
     private backgroundMode: BackgroundMode,
-    public _posService: PosService
+    public _posService: PosService,
+    public actionSheetController: ActionSheetController
   ) {
   }
 
@@ -129,8 +131,54 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   /**
    * @description abrir menu de ordenes
    */
-  openOrder() {
-    this.router.navigate(['/home-page/menu-order']);
+  async openOrder() {
+    localStorage.removeItem('orders');
+    const typeSale = this._deliveryService.getTypeSaleDirect();
+
+    if (typeSale !== null) {
+      if (typeSale) {
+        this.router.navigate(['/home-page/menu-order']);
+      } else {
+        this.router.navigate(['/home-page/menu-detail']);
+      }
+    } else {
+      const actionSheet = await this.actionSheetController.create({
+        header: 'Tipo de venta',
+        cssClass: 'my-custom-class',
+        buttons: [
+          {
+            text: 'Venta directa',
+            icon: 'share',
+            handler: () => {
+              this._deliveryService.setTypeSaleDirect(true);
+              this.router.navigate(['/home-page/menu-order']);
+              // console.log('Share clicked');
+            }
+          }, {
+            text: 'Venta delivery',
+            icon: 'caret-forward-circle',
+            handler: () => {
+              this._deliveryService.setTypeSaleDirect(false);
+              this.router.navigate(['/home-page/menu-detail']);
+            }
+          }, {
+            text: 'Cancelar',
+            icon: 'close',
+            role: 'cancel',
+            handler: () => {
+              // console.log('Cancel clicked');
+            }
+          }]
+      });
+      await actionSheet.present();
+    }
+  }
+
+  /**
+   * @description ir atras
+   */
+  goBack() {
+    this.router.navigate(['/home-page']);
   }
 
 }

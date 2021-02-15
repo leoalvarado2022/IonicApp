@@ -15,34 +15,22 @@
   <ion-card>
     <ion-card-content>
       <h2 class="ion-text-center"><strong>ITEMS</strong></h2>
-      <div class="card-item">
-        <div>
-          <img src="assets/imgs/no-image.png" class="img-card">
-        </div>
-        <div class="description">
-          <p style="font-size: 16px;"><strong>Cocacola</strong></p>
-          <p><span>1,400</span></p>
-          <div class="button-footer">
-            <div class="button-add" (click)="addItems()">+</div>
-            <div class="number-add">0</div>
-            <div class="button-add" (click)="removeItems()">-</div>
+      <ng-container *ngIf="items && items.length">
+        <div class="card-item" *ngFor="let item of items">
+          <div>
+            <img src="assets/imgs/no-image.png" class="img-card">
+          </div>
+          <div class="description">
+            <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
+            <p><span>{{item.price * quantityOrder(item) | currency:' ':'symbol':'1.0-2' }}</span></p>
+            <div class="button-footer">
+              <div class="button-add" (click)="addItems(item)">+</div>
+              <div class="number-add">{{quantityOrder(item)}}</div>
+              <div class="button-add" (click)="removeItems(item)">-</div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card-item">
-        <div>
-          <img src="assets/imgs/no-image.png" class="img-card">
-        </div>
-        <div class="description">
-          <p style="font-size: 16px;"><strong>Cocacola</strong></p>
-          <p><span>1,400</span></p>
-          <div class="button-footer">
-            <div class="button-add" (click)="addItems()">+</div>
-            <div class="number-add">0</div>
-            <div class="button-add" (click)="removeItems()">-</div>
-          </div>
-        </div>
-      </div>
+      </ng-container>
       <div class="card-item">
         <div>
           <textarea name="" id="" rows="5" placeholder="Escribe un comentario / sugerencia al restaurant"
@@ -54,7 +42,7 @@
 
 </ion-content>
 
-<ion-footer class="show-order ion-text-center">
+<ion-footer class="show-order ion-text-center" *ngIf="items.length" (click)="createOrder()">
   <div>
     <span>Crear Orden</span>
   </div>

@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <!--      <ion-back-button class="header-back-button" text=""></ion-back-button>-->
+      <ion-button class="toolbar-button white-button" (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Venta Delivery</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="toolbar-button white-button" (click)="typeSaleChange()">
+        <ion-icon name="repeat-outline"></ion-icon>
+      </ion-button>
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<div>
+  <ion-searchbar placeholder="Buscar..." animated class="production" showCancelButton="never"></ion-searchbar>
+</div>
+<ion-content>
+  <ion-card class="card-form-delivery">
+    <form [formGroup]="menuDetailForm">
+      <ion-item>
+        <ion-label position="floating">Nombres</ion-label>
+        <ion-input formControlName="firstName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Apellidos</ion-label>
+        <ion-input formControlName="lastName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Teléfono</ion-label>
+        <ion-input formControlName="phone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Correo</ion-label>
+        <ion-input formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Dirección</ion-label>
+        <ion-input formControlName="address"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Fecha de Entrega</ion-label>
+        <ion-datetime displayFormat="DD-MM-YYYY HH:mm" formControlName="dateDelivery"></ion-datetime>
+      </ion-item>
+    </form>
+  </ion-card>
+</ion-content>
+
+<ion-footer>
+  <div>
+    <ion-button [disabled]="menuDetailForm.invalid" color="warning" style="width: 99%;" (click)="menuOrder()">
+      Siguiente
+    </ion-button>
+  </div>
+</ion-footer>

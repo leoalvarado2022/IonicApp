@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Operacion</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="card-item" *ngIf="application">
+    <ion-item lines="full">
+      <ion-badge slot="start">{{ application.costCenterCode | uppercase }}</ion-badge>
+      <ion-label>{{ application.costCenterName | titlecase }}</ion-label>
+    </ion-item>
+
+    <ion-card-content>
+      <p> <strong>Maquinaria</strong>: {{ application.machineryName }}</p>
+      <p> <strong>Implemento</strong>: {{ application.implementName }}</p>
+      <p> <strong>Operador</strong>: {{ application.operatorName }}</p>
+
+      <div class="ion-text-right">
+        <ion-chip>
+          <ion-icon name="calculator-outline" color="success"></ion-icon>
+          <ion-label>{{ application.applicationBalance }} </ion-label>
+        </ion-chip>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="card-item">
+    <div id="chrono">
+      {{ getChrono() }}
+    </div>
+
+    <div class="ion-text-center">
+      <ion-button (click)="startResume()" [disabled]="!(getTimerStatus() | async)">
+        <ion-icon slot="icon-only" name="play-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="pauseStop()" [disabled]="(getTimerStatus() | async)">
+        <ion-icon slot="icon-only" name="pause-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="reset()">
+        <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-card>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" [disabled]="getChrono() === startTime" (click)="endApplication()">Finalizar</ion-button>
+</ion-footer>

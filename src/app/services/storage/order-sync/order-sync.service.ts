@@ -287,4 +287,103 @@ export class OrderSyncService {
     });
   }
 
+  /**
+   * getTempApplicationChemicalsById
+   * @param tempId id
+   */
+  public getTempApplicationChemicalsById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplicationChemicals().then((tempApplicationChemicals: Array<any>) => {
+      return tempApplicationChemicals.filter(item => item.tempId === tempId);
+    });
+  }
+
+  /**
+   * setTempWeather
+   * @param tempWeather temp weathers
+   */
+  private setTempWeather = (tempWeather: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.TempWeather, tempWeather);
+  }
+
+  /**
+   * getTempWeather
+   */
+  private getTempWeather = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.TempWeather).then((tempWeathers: Array<any>) => {
+      return tempWeathers ? tempWeathers : [];
+    });
+  }
+
+  /**
+   * addTempWeather 
+   * @param tempWeather weather to add
+   */
+  public addTempWeather = (tempWeather: any): Promise<Array<any>> => {
+    return this.getTempWeather().then((tempWeathers: Array<any>) => {
+      tempWeathers.push(tempWeather);
+      return this.setTempWeather(tempWeathers);
+    });
+  }
+
+  /**
+   * getTempWeatherById
+   * @param tempId id
+   */
+  public getTempWeatherById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempWeather().then((tempWeathers: Array<any>) => {
+      return tempWeathers.find(item => item.tempId === tempId);
+    });
+  }
+
+  /**
+   * setTempApplicationsTime
+   * @param tempApplicationsTime applications array
+   */
+  private setTempApplicationsTime = (tempApplicationsTime: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.TempApplicationsTime, tempApplicationsTime);
+  }
+
+  /**
+   * getTempApplicationsTime
+   */
+  private getTempApplicationsTime = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.TempApplicationsTime).then((tempApplicationsTime: Array<any>) => {
+      return tempApplicationsTime ? tempApplicationsTime : [];
+    });
+  }
+
+  /**
+   * addTempApplicationsTime
+   * @param tempApplicationTime temp obj
+   */
+  public addTempApplicationsTime = (tempApplicationTime: any): Promise<Array<any>> => {
+    return this.getTempApplicationsTime().then((tempApplicationsTime: Array<any>) => {
+      tempApplicationsTime.push(tempApplicationTime);
+      return this.setTempApplicationsTime(tempApplicationsTime);
+    });
+  }
+
+  /**
+   * getTempApplicationTimeById
+   * @param tempId id
+   */
+  public getTempApplicationTimeById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplicationsTime().then((tempApplicationsTime: Array<any>) => {
+      return tempApplicationsTime.find(item => item.tempId === tempId);
+    });
+  }
+
+  /**
+   * getAllTempDataById
+   * @param tempId id
+   */
+  public getAllTempDataById = (tempId: number): Promise<Array<any>> => {
+    return Promise.all([
+      this.getTempApplicationById(tempId),
+      this.getTempApplicationChemicalsById(tempId),
+      this.getTempWeatherById(tempId),
+      this.getTempApplicationTimeById(tempId)
+    ]);
+  }
+
 }

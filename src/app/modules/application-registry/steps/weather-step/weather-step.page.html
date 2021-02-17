@@ -22,42 +22,43 @@
   </ng-container>
 
   <form [formGroup]="weatherForm">
-    <ion-card class="card-item" *ngIf="weather">
-      <ion-card-header class="ion-text-center">
-        <ion-card-title>
-          <ion-input formControlName="location"></ion-input>
-        </ion-card-title>
-        <ion-card-subtitle>
-          <ion-input formControlName="sky"></ion-input>
-        </ion-card-subtitle>
-        <!--
-        <ion-card-title>{{ weather["name"] | titlecase }}</ion-card-title>
-        <ion-card-subtitle>{{ weather["weather"][0]["description"] | titlecase }}</ion-card-subtitle>
-        -->
-      </ion-card-header>
-  
-      <ion-card-content>        
-        <ion-list>          
-          <ion-item>
-            <ion-label>Temperatura Actual</ion-label>
-            <ion-badge slot="end">°{{  roundUp(weather["main"]["temp"] ) }}</ion-badge>
-          </ion-item>          
-          <ion-item>
-            <ion-label>Humedad</ion-label>
-            <ion-badge slot="end">{{  roundUp(weather["main"]["humidity"] ) }}%</ion-badge>
-          </ion-item>
-          <ion-item>
-            <ion-label>Viento</ion-label>
-            <ion-badge slot="end">{{  roundUp(weather["wind"]["speed"] ) }} m/s</ion-badge>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>  
-  </form>  
+    <ion-card class="card-item">
+      <ion-list>
+        <ion-item>
+          <ion-icon slot="start" name="location-outline"></ion-icon>
+          <ion-label position="floating">Ubicacion</ion-label>
+          <ion-input type="text" formControlName="location" style="text-transform: capitalize"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="cloud-outline"></ion-icon>
+          <ion-label position="floating">Cielo</ion-label>
+          <ion-input type="text" formControlName="sky" style="text-transform: capitalize"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="thermometer-outline"></ion-icon>
+          <ion-label position="floating">Temperatura Actual</ion-label>
+          <ion-input type="number" formControlName="temperature"></ion-input>
+          <ion-badge slot="end">°C</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="water-outline"></ion-icon>
+          <ion-label position="floating">Humedad</ion-label>
+          <ion-input type="number" formControlName="humidity"></ion-input>
+          <ion-badge slot="end">%</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="speedometer-outline"></ion-icon>
+          <ion-label position="floating">Viento</ion-label>
+          <ion-input type="number" formControlName="wind"></ion-input>
+          <ion-badge slot="end">m/s</ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </form>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" color="warning">
+  <ion-button expand="block" color="warning" [disabled]="weatherForm.invalid" (click)="nextStep()">
     Siguiente
   </ion-button>
 </ion-footer>

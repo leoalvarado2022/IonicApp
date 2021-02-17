@@ -26,7 +26,7 @@
         </p>
         <p>
           <strong>Capacidad:</strong> {{ getMachineryCapacity() }}
-        </p>        
+        </p>
       </ng-container>
 
 
@@ -48,37 +48,40 @@
 
         <ion-item lines="none">
           <ion-label [position]="getOperatorName() ? 'stacked': 'floating'">Operador</ion-label>
-          <ion-select interface="action-sheet" cancelText="Cancelar" formControlName="operator" [selectedText]="getOperatorName()">
+          <ion-select interface="action-sheet" cancelText="Cancelar" formControlName="operator"
+            [selectedText]="getOperatorName()" (ionChange)="changeOperator($event.target.value)">
             <ion-select-option *ngFor="let worker of workers" [value]="worker.id">
               {{ worker.name | titlecase }}
             </ion-select-option>
           </ion-select>
         </ion-item>
-  
+
         <ion-item lines="none">
-          <ion-label  [position]="getMachineryName() ? 'stacked': 'floating'">Maquina</ion-label>
-          <ion-select interface="action-sheet" cancelText="Cancelar" formControlName="machinery" [selectedText]="getMachineryName()">
+          <ion-label [position]="getMachineryName() ? 'stacked': 'floating'">Maquina</ion-label>
+          <ion-select interface="action-sheet" cancelText="Cancelar" formControlName="machinery"
+            [selectedText]="getMachineryName()" (ionChange)="changeMachinery($event.target.value)">
             <ion-select-option *ngFor="let machine of machinery" [value]="machine.id">
               {{ machine.name | titlecase }}
             </ion-select-option>
           </ion-select>
         </ion-item>
-  
+
         <ion-item lines="none">
-          <ion-label  [position]="getImplementName() ? 'stacked': 'floating'">Implemento</ion-label>
-          <ion-select interface="action-sheet" cancelText="Cancelar" formControlName="implement" [selectedText]="getImplementName()">
+          <ion-label [position]="getImplementName() ? 'stacked': 'floating'">Implemento</ion-label>
+          <ion-select interface="action-sheet" cancelText="Cancelar" formControlName="implement"
+            [selectedText]="getImplementName()" (ionChange)="changeImplement($event.target.value)">
             <ion-select-option *ngFor="let implement of implementTypeCostCenters" [value]="implement.id">
               {{ implement.name | titlecase }}
             </ion-select-option>
           </ion-select>
         </ion-item>
-      </form> 
+      </form>
     </ion-card-content>
   </ion-card>
 
 </ion-content>
 
-<ion-footer>  
+<ion-footer>
   <ion-button expand="block" color="warning" [disabled]="applicationForm.invalid" (click)="nextStep()">
     Siguiente
   </ion-button>

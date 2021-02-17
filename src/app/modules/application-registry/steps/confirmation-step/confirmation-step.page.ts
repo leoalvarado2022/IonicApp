@@ -43,8 +43,11 @@ export class ConfirmationStepPage implements OnInit {
 
     this.applicationForm = this.formBuilder.group({
       operator: ['', Validators.required],
+      operatorName: ['', Validators.required],
       machinery: ['', Validators.required],
+      machineryName: ['', Validators.required],
       implement: ['', Validators.required],
+      implementName: ['', Validators.required],
     });
   }
 
@@ -138,6 +141,42 @@ export class ConfirmationStepPage implements OnInit {
     this.orderSyncService.addTempApplication(data).then(() => {
       this.router.navigate(["/home-page/registro_aplicacion/information-step", this.tempId]);
     });
+  }
+
+  /**
+   * changeOperator
+   * @param operatorId id
+   */
+  public changeOperator = (operatorId: number): void => {
+    if (operatorId) {
+      const name = this.getOperatorName();
+      this.applicationForm.get('operatorName').patchValue(name);
+      this.applicationForm.get('operatorName').updateValueAndValidity();
+    }
+  }
+
+  /**
+   * changeMachinery
+   * @param machineryId id
+   */
+  public changeMachinery = (machineryId: number): void => {
+    if (machineryId) {
+      const name = this.getMachineryName();
+      this.applicationForm.get('machineryName').patchValue(name);
+      this.applicationForm.get('machineryName').updateValueAndValidity();
+    }
+  }
+
+  /**
+   * changeImplement
+   * @param implementId id
+   */
+  public changeImplement = (implementId: number): void => {
+    if (implementId) {
+      const name = this.getImplementName();
+      this.applicationForm.get('implementName').patchValue(name);
+      this.applicationForm.get('implementName').updateValueAndValidity();
+    }
   }
 
 }

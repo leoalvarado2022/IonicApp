@@ -38,21 +38,6 @@ export class WeatherService {
     const url = this.httpService.buildUrl(this.getLatLngWeatherUrl);
     const body = this.httpService.buildBody({ lat, lng });
     return this.httpClient.post(url, body);
-  }
-
-  /**
-   * setWeather
-   * @param weather weather object
-   */
-  public setWeather = (weather: any): Promise<any> => {
-    return this.storage.set(StorageKeys.Weather, weather);
-  }
-
-  /**
-   * getWeather
-   */
-  public getWeather = (): Promise<any> => {
-    return this.storage.get(StorageKeys.Weather);
-  }
+  }  
 
 }

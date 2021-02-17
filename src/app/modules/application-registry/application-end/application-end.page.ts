@@ -96,7 +96,7 @@ export class ApplicationEndPage implements OnInit {
       this.orderSyncService.getOrderHeader(),
       this.orderSyncService.getOrderChemical(),
       this.orderSyncService.getApplicationLocationsById(this.id),
-      this.weatherService.getWeather()
+      
     ]).then((data: any) => {
       this.currentApplication = data[0];
       this.orderHeader = Object.assign({}, data[1], { date: this.cleanDate(data[1]['date']) });

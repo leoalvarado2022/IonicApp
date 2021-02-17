@@ -63,17 +63,37 @@ export class OrderDetailPage implements OnInit, OnDestroy {
   }
 
   createOrder() {
-    const headerData = this._deliveryService.getInfoTypeDeliveryForm();
+    let headerData = this._deliveryService.getInfoTypeDeliveryForm();
     const items = JSON.parse(localStorage.getItem('orders'));
+    const entity = this.storeService.getActiveCompany().id;
+
+    if (!headerData) {
+      headerData = {
+        id: 0,
+        dateDelivery: new Date(),
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        address: '',
+      };
+    }
 
     const data = {
+      entity,
       headerData,
       items
     };
 
-    console.log(data);
 
-    localStorage.setItem('prueba', JSON.stringify(data));
+    this._deliveryService.createOrderManual(data).subscribe((data) => {
+      this._deliveryService.removeInfoTypeDeliveryForm();
+      localStorage.removeItem('orders');
+      this.router.navigate(['/home-page/delivery']);
+    }, error => {
+      this.httpService.errorHandler(error);
+    });
+
   }
 
   /**
@@ -116,8 +136,11 @@ export class OrderDetailPage implements OnInit, OnDestroy {
 
     if (ordersLocal) {
       const orderIndex = ordersLocal.findIndex(value => value.id === item.id);
+      // si existe en la lista
       if (orderIndex !== -1) {
+        // se elimina de la lista
         ordersLocal.splice(orderIndex, 1);
+        // si todavia hay items en la lista
         if (ordersLocal.length) {
           if (ordersLocal.filter(value => value.id === item.id).length === 0) {
             ordersLocal.filter(value => value.id !== item.id);
@@ -127,7 +150,9 @@ export class OrderDetailPage implements OnInit, OnDestroy {
             localStorage.setItem('orders', JSON.stringify(ordersLocal));
           }
         } else {
+          // si no es que ya no existen items en la lista
           this.items = [];
+          localStorage.removeItem('orders');
         }
       }
     }

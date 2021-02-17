@@ -19,9 +19,19 @@
 </ion-header>
 
 <div>
-  <ion-searchbar placeholder="Buscar..." animated class="production" showCancelButton="never"></ion-searchbar>
+  <ion-searchbar #searchCustomer placeholder="Buscar..." animated class="production" showCancelButton="never" (ionClear)="clearSearch()"
+                 (ionInput)="searchInput($event)"></ion-searchbar>
 </div>
 <ion-content>
+  <ion-card class="card-form-delivery search-card onDisplay" *ngIf="searchData.length">
+    <ion-list>
+      <ion-item *ngFor="let data of searchData" (click)="clickCustomer(data)">
+        <ion-label>{{data.name}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+
   <ion-card class="card-form-delivery">
     <form [formGroup]="menuDetailForm">
       <ion-item>
@@ -46,7 +56,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Fecha de Entrega</ion-label>
-        <ion-datetime displayFormat="DD-MM-YYYY HH:mm" formControlName="dateDelivery"></ion-datetime>
+        <ion-datetime displayFormat="DD-MM-YYYY HH:mm" formControlName="dateDelivery" [cancelText]="'Cancelar'" [doneText]="'Ok'"></ion-datetime>
       </ion-item>
     </form>
   </ion-card>
@@ -54,7 +64,16 @@
 
 <ion-footer>
   <div>
-    <ion-button [disabled]="menuDetailForm.invalid" color="warning" style="width: 99%;" (click)="menuOrder()">
+    <ion-button [disabled]="menuDetailForm.invalid" color="warning" style="width: 99%;" (click)="menuOrder()"
+                *ngIf="!customerSelect">
+      Siguiente
+    </ion-button>
+    <ion-button color="primary" style="width: 49%;" (click)="newCustomer()"
+                *ngIf="customerSelect">
+      Nuevo
+    </ion-button>
+    <ion-button [disabled]="menuDetailForm.invalid" color="warning" style="width: 49%;" (click)="menuOrder()"
+                *ngIf="customerSelect">
       Siguiente
     </ion-button>
   </div>

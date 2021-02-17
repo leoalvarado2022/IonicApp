@@ -170,6 +170,7 @@ export class MenuOrderPage implements OnInit, OnDestroy {
    */
   typeSaleChange() {
     const goBack_ = this._deliveryService.getTypeSaleDirect();
+    this._deliveryService.removeInfoTypeDeliveryForm();
     localStorage.removeItem('orders');
     if (goBack_) {
       this._deliveryService.setTypeSaleDirect(false);

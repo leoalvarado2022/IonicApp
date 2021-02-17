@@ -18,6 +18,8 @@ import {MasterService} from './master.service';
 export class DeliveryService {
 
   public orderListUrl = 'order-list';
+  public listCustomerUrl = 'list-customer';
+  public orderManualUrl = 'order-manual';
   public getMenuOrderUrl = 'menu-order';
   public orderUpdateUrl = 'order-update';
   public changeOrderStatus = 'change-order';
@@ -97,6 +99,28 @@ export class DeliveryService {
    */
   public getNotificationHttp = (data: any) => {
     const url = this.httpService.buildUrl(this.orderListUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description list customer
+   * @param data
+   */
+  public getListCustomer = (data: any) => {
+    const url = this.httpService.buildUrl(this.listCustomerUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description crear orden manual
+   * @param data
+   */
+  public createOrderManual = (data: any) => {
+    const url = this.httpService.buildUrl(this.orderManualUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });

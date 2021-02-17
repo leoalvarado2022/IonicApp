@@ -222,8 +222,7 @@ export class PosService {
       // guardar la orden en memoria
       this.order = order;
 
-      console.log(order);
-
+      // console.log(order);
       this.httpInsertCommand(order).subscribe((success: any) => {
         if (success && success.length) {
           for (let data of success) {
@@ -236,53 +235,8 @@ export class PosService {
       }, error => {
         this.httpService.errorHandlerPos(error);
       });
-
-
-      // this.getMenuCustom(checkMenu).subscribe(data => {
-      //   // se asigna la primera vez para setear la data
-      //   this.checkMenuData = data;
-      //
-      //   // banderas para tratar la data
-      //   const dataCompareCheckMenu = [];
-      //   let error = false;
-      //
-      //   // compruebo que las productos de las ordenes existan
-      //   if (this.order && this.order.products && this.order.products.length) {
-      //     // recorro los productos
-      //     for (const product of this.order.products) {
-      //       // busco los productos
-      //       // const productRow = this.checkMenuData.find(value => value.code === product.code_product && value.type === product.type);
-      //       const productRow = this.checkMenuData.find(value => value.code === product.code_product && value.type === 'ITEM');
-      //       // si existe el producto
-      //       if (productRow) {
-      //         // agregamos el precio de la orden
-      //         productRow.price = product.total;
-      //         productRow.text = product.text;
-      //         // lo agrego
-      //         dataCompareCheckMenu.push(productRow);
-      //         // de lo contrario no esta syncronizado
-      //       } else {
-      //         error = true;
-      //       }
-      //     }
-      //   } else {
-      //     error = true;
-      //   }
-      //
-      //   // si no existe el producto dentro del menu-order
-      //   if (error) {
-      //     this._toastService.errorToast('El producto no esta syncronizado o no estas conectado a la red...');
-      //   } else {
-      //     // se reasigna con la data seteada y filtrada
-      //     this.checkMenuData = dataCompareCheckMenu;
-      //   }
-      //
-      // }, error => {
-      //   this.httpService.errorHandlerPos(error);
-      //   this.connection = false;
-      // });
     } else {
-
+      //
     }
   };
 

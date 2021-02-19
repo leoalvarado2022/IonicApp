@@ -41,11 +41,19 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   }
 
   ionViewDidEnter() {
-    if (this._deliveryService.getAutomatic()) {
+    // if (this._deliveryService.getAutomatic()) {
       // this.checkedAutomatic = this._deliveryService.getAutomatic();
-    }
+    // }
     this._storageSyncService.getIntegrationImages().then((data) => {
       this.integrationImages = data;
+    });
+
+    this._deliveryService.getItemsImage().subscribe((data: any) => {
+      if (data.resp && data.resp.length) {
+        this._deliveryService.setItemImageStorage(data.resp);
+      }
+    }, error => {
+      this.httpService.errorHandler(error);
     });
     this.loadNotifications(this.selected);
     this.refreshOrder(true);

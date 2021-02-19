@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-     <!-- <ion-back-button class="header-back-button" text=""></ion-back-button>-->
+      <!-- <ion-back-button class="header-back-button" text=""></ion-back-button>-->
       <ion-button class="toolbar-button white-button" (click)="goBack()">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
@@ -31,8 +31,9 @@
     <ion-card *ngFor="let item of itemsSelectFilter(headerSelect)">
       <ion-card-content style="padding: 0;">
         <div>
-          <div>
-            <img src="assets/imgs/no-image.png" class="img-card">
+          <div style="position:relative;" (click)="changePhoto(item.id_par_items)">
+            <img [src]="attachment(item.id_par_items)" class="img-card">
+            <ion-icon name="camera" class="icon-cam-fixed"></ion-icon>
           </div>
           <div class="description">
             <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>

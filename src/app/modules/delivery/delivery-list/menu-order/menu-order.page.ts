@@ -7,6 +7,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
+import {CameraService} from '../../../../shared/services/camera/camera.service';
+import {AlertController} from '@ionic/angular';
 
 @Component({
   selector: 'app-accepted',
@@ -18,7 +20,9 @@ export class MenuOrderPage implements OnInit, OnDestroy {
   public items: Array<any> = [];
   public itemsSelect: any;
   public headerSelect: any;
+  public id_item: any;
   public menuTitle: string;
+  public imagesItems: Array<any> = [];
 
   constructor(
     private storeService: StoreService,
@@ -29,7 +33,9 @@ export class MenuOrderPage implements OnInit, OnDestroy {
     private _location: Location,
     private _toastService: ToastService,
     private _storageSyncService: StorageSyncService,
-    private router: Router
+    private router: Router,
+    private cameraService: CameraService,
+    private alertController: AlertController
   ) {
     this.loadOrder();
   }
@@ -47,6 +53,14 @@ export class MenuOrderPage implements OnInit, OnDestroy {
     }
   }
 
+  async loadImages() {
+    const itemImageStorage = await this._deliveryService.getItemImageStorage();
+
+    if (itemImageStorage) {
+      this.imagesItems = itemImageStorage;
+    }
+  }
+
   /**
    * @description obtener las ordene de url
    */
@@ -55,6 +69,8 @@ export class MenuOrderPage implements OnInit, OnDestroy {
     const data = {
       user: user.user
     };
+
+    this.loadImages().then();
 
     this._deliveryService.httpGetMenuOrderUrl(data).subscribe((success: any) => {
       if (success.resp && success.resp.menuItems && success.resp.menuItems.length) {
@@ -192,5 +208,127 @@ export class MenuOrderPage implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/home-page/menu-detail']);
     }
+  }
+
+  /**
+   * @description obtener la imagen de la carta
+   * @param id
+   */
+  attachment(id_item: number) {
+    if (this.imagesItems.length) {
+      const image = this.imagesItems.find(value => value.id_item === id_item);
+
+      if (image) {
+        return image.imagen;
+      }
+    }
+
+    return 'assets/imgs/no-image.png';
+  }
+
+  /**
+   * @description cambiar foto de la lista de menu
+   * @param id
+   */
+  async changePhoto(id_item: number) {
+    this.id_item = id_item;
+    const alert = await this.alertController.create({
+      cssClass: 'alertCamGallery',
+      buttons: [
+        {
+          text: 'Abrir Camara',
+          cssClass: 'alertCamGallery__',
+          handler: () => {
+            this.openCamera().then();
+          }
+        }, {
+          text: 'Abrir Galería',
+          cssClass: 'alertCamGallery__',
+          handler: () => {
+            this.openGallery().then();
+          }
+        },
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'alertCamGallery__',
+          handler: () => {
+            console.log('cancelado');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  /**
+   * openCamera
+   */
+  public openCamera = async () => {
+    const base64 = await this.cameraService.openCamera();
+    this.attachmentProcess(this.id_item, base64);
+  };
+
+
+  /**
+   * openGallery
+   */
+  public openGallery = async () => {
+    const base64 = await this.cameraService.openGallery();
+    this.attachmentProcess(this.id_item, base64);
+  };
+
+
+  /**
+   * @description procesar imagen para transformarlo en base 64
+   * @param id
+   * @param base64
+   */
+  attachmentProcess(id_item: number, base64: string) {
+    //data:image/jpeg;base64,
+    if (base64 && base64.length) {
+
+      const imageIndex = this.imagesItems.findIndex(value => value.id_item === id_item);
+
+      const user = this.storeService.getActiveCompany();
+
+      let data = {};
+
+      data = {
+        user: user.user,
+        id: imageIndex !== -1 ? this.imagesItems[imageIndex].id : 0,
+        id_item: id_item,
+        image: base64
+      };
+
+      this.loaderService.startLoader();
+      this._deliveryService.itemImageSave(data).subscribe((data: any) => {
+        this.loaderService.stopLoader();
+        this.reloadImages();
+      }, error => {
+        this.loaderService.stopLoader();
+        this.httpService.errorHandler(error);
+      });
+    }
+  }
+
+  /**
+   * @description recargar las imagenes
+   */
+  reloadImages() {
+    this.loaderService.startLoader();
+    this._deliveryService.getItemsImage().subscribe((data: any) => {
+      this.loaderService.stopLoader();
+      if (data.resp && data.resp.length) {
+        this._deliveryService.setItemImageStorage(data.resp);
+        setTimeout(() => {
+          this.loadImages();
+        }, 1000);
+      }
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
   }
 }

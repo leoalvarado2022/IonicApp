@@ -74,7 +74,7 @@ ion-card {
   margin-right: 5px;
 }
 
-.img-card{
+.img-card {
   height: 79px;
   width: 93px;
   position: relative;
@@ -85,4 +85,12 @@ ion-card {
   padding: 10px;
   background: rgb(0 128 0 / 68%);
   color: white;
+}
+
+.icon-cam-fixed {
+  position: absolute;
+  left: 0;
+  color: white;
+  padding: 5px;
+  font-size: 15px;
 }

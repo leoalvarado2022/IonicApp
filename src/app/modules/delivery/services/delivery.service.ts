@@ -18,6 +18,8 @@ import {MasterService} from './master.service';
 export class DeliveryService {
 
   public orderListUrl = 'order-list';
+  public itemImageSaveUrl = 'item-image-save';
+  public getItemImageUrl = 'get-item-image';
   public listCustomerUrl = 'list-customer';
   public orderManualUrl = 'order-manual';
   public getMenuOrderUrl = 'menu-order';
@@ -110,6 +112,28 @@ export class DeliveryService {
    */
   public getListCustomer = (data: any) => {
     const url = this.httpService.buildUrl(this.listCustomerUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description obtener las imagenes de la carta
+   * @param data
+   */
+  public getItemsImage = () => {
+    const url = this.httpService.buildUrl(this.getItemImageUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({}), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description guardar imagenes de la carta
+   * @param data
+   */
+  public itemImageSave = (data: any) => {
+    const url = this.httpService.buildUrl(this.itemImageSaveUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
@@ -217,6 +241,23 @@ export class DeliveryService {
    */
   public setDeliveryNotification = (data): Promise<any> => {
     return this.storage.set(StorageKeys.DeliveryNotifications, data).then();
+  };
+
+  /**
+   * getItemImageStorage
+   */
+  public getItemImageStorage = (): Promise<any> => {
+    return this.storage.get(StorageKeys.ItemImageStorage).then((images: any) => {
+      return images ? images : [];
+    });
+  };
+
+
+  /**
+   * setItemImageStorage
+   */
+  public setItemImageStorage = (data): Promise<any> => {
+    return this.storage.set(StorageKeys.ItemImageStorage, data).then();
   };
 
 

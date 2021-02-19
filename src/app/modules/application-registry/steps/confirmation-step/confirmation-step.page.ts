@@ -88,6 +88,8 @@ export class ConfirmationStepPage implements OnInit {
       this.orderMachinery = data[5][0];
       this.implementTypeCostCenters = data[6];
 
+      console.log(data[2]);
+
       this.patchForm();
     });
   }
@@ -144,7 +146,13 @@ export class ConfirmationStepPage implements OnInit {
    * nextStep
    */
   public nextStep = () => {
-    const data = Object.assign(this.currentApplication, this.applicationForm.value, { tempId: this.tempId });
+    const activeCompany = this.storeService.getActiveCompany();
+
+    const data = Object.assign(this.currentApplication, this.applicationForm.value, {
+      tempId: this.tempId,
+      companyId: activeCompany.id,
+      orderId: this.currentApplication.applicationOrderId
+    });
 
     this.orderSyncService.addTempApplication(data).then(() => {
       this.router.navigate(["/home-page/registro_aplicacion/information-step", this.tempId]);

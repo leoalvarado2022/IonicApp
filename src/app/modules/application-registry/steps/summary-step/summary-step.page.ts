@@ -61,7 +61,7 @@ export class SummaryStepPage implements OnInit {
    * storeApplication
    */
   public storeApplication = () => {
-    const user = this.storeService.getUser();
+    const activeCompany = this.storeService.getActiveCompany();
 
     const application = Object.assign({}, this.applicationData, {
       totalTime: this.operationData.time,
@@ -72,7 +72,7 @@ export class SummaryStepPage implements OnInit {
       wind: this.weatherData.wind
     });
 
-    this.applicationRegistryService.storeApplication(application, this.locationsData, this.chemicalsData, user.id).subscribe(success => {
+    this.applicationRegistryService.storeApplication(application, this.locationsData, this.chemicalsData, activeCompany.user).subscribe(success => {
       this.router.navigate(["/home-page/registro_aplicacion/applications", application.applicationOrderId]);
     }, error => {
       this.toastService.errorToast(error);

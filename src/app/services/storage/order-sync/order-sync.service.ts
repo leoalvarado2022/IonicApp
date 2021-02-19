@@ -192,14 +192,14 @@ export class OrderSyncService {
       return this.setApplicationLocations(applicationLocations);
     });
   }
-
+  
   /**
    * getApplicationLocationsById
-   * @param id
+   * @param tempId temp id
    */
-  public getApplicationLocationsById = (id: number): Promise<Array<ApplicationLocationInterface>> => {
+  public getApplicationLocationsById = (tempId: number): Promise<Array<ApplicationLocationInterface>> => {
     return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
-      return applicationLocations.filter(item => item.id === id);
+      return applicationLocations.filter(item => item.tempId === tempId);
     });
   }
 
@@ -382,7 +382,8 @@ export class OrderSyncService {
       this.getTempApplicationById(tempId),
       this.getTempApplicationChemicalsById(tempId),
       this.getTempWeatherById(tempId),
-      this.getTempApplicationTimeById(tempId)
+      this.getTempApplicationTimeById(tempId),
+      this.getApplicationLocationsById(tempId)      
     ]);
   }
 

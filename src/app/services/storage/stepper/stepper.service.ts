@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { SyncService } from 'src/app/shared/services/sync/sync.service';
 import { StorageSyncService } from '../storage-sync/storage-sync.service';
@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MachineryService } from 'src/app/modules/machinery/services/machinery.service';
 import { ConsumptionService } from './../../../modules/consumptions/services/consumption.service';
 import { Consumption } from './../../../shared/services/store/store-interface';
+import { throttle } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -138,11 +139,14 @@ export class StepperService {
       const username = userData.username;
       const activeConnection = this.storeService.getActiveConnection();
 
-      this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe(success => {
-        resolve(success['data']);
-      }, error => {
-        resolve(error);
-      });
+      this.syncService.syncData(username, activeConnection.superuser ? 1 : 0)
+        .pipe(
+          throttle(event => interval(5000))
+        ).subscribe(success => {
+          resolve(success['data']);
+        }, error => {
+          resolve(error);
+        });
     });
   }
 

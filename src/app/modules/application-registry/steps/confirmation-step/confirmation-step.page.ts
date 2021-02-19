@@ -48,6 +48,14 @@ export class ConfirmationStepPage implements OnInit {
       machineryName: ['', Validators.required],
       implement: ['', Validators.required],
       implementName: ['', Validators.required],
+      litersQuantity: ['', [
+        Validators.required,
+        Validators.min(1),
+      ]],
+      hectares: ['', [
+        Validators.required,
+        Validators.min(1),
+      ]]
     });
   }
 

@@ -4,7 +4,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { ApplicationRegistryService } from './services/application-registry/application-registry.service';
 import { ApplicationsListPage } from './applications-list/applications-list.page';
 import { OrdersListPage } from './orders-list/orders-list.page';
-import { ApplicationEndPage } from './application-end/application-end.page';
 import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
@@ -15,8 +14,7 @@ import { AgmCoreModule } from '@agm/core';
   ],
   declarations: [
     OrdersListPage,
-    ApplicationsListPage,    
-    ApplicationEndPage
+    ApplicationsListPage
   ],
   providers: [
     ApplicationRegistryService

@@ -89,7 +89,7 @@ export class OperationStepPage implements OnInit, OnDestroy {
    */
   private mapCustomPosition = (item: any): ApplicationLocationInterface => ({
     id: 0,
-    timestamp: item.timestamp,
+    timestamp: moment(item.timestamp).format("YYYY-MM-DD HH:mm:ss"),
     latitude: item.coords.latitude,
     longitude: item.coords.longitude,
     accuracy: item.coords.accuracy,

@@ -40,18 +40,17 @@ export class ApplicationRegistryService {
     const body = this.httpService.buildBody({ orderId, filter });
     return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
   }
-
+  
   /**
    * storeApplication
-   * @param user user id
-   * @param applicationHeader order header
    * @param application application data
-   * @param applicationLocations gps locations
-   * @param applicationChemicals chemicals used
+   * @param applicationLocations application locations
+   * @param applicationChemicals application chemicals
+   * @param userId user id
    */
-  public storeApplication = (user: number, applicationHeader: any, application: any, applicationLocations: Array<any> = [], applicationChemicals: Array<any> = []) => {
+  public storeApplication = (application: any, applicationLocations: Array<any> = [], applicationChemicals: Array<any> = [], userId: number) => {
     const url = this.httpService.buildUrl(this.storeApplicationUrl);
-    const body = this.httpService.buildBody({ user, applicationHeader, application, applicationLocations, applicationChemicals });
+    const body = this.httpService.buildBody({ user: userId, application, applicationLocations, applicationChemicals });
     return this.httpClient.post(url, body, { headers: this.httpService.getHeaders() });
   }
 

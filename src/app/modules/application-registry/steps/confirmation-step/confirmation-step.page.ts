@@ -88,8 +88,6 @@ export class ConfirmationStepPage implements OnInit {
       this.orderMachinery = data[5][0];
       this.implementTypeCostCenters = data[6];
 
-      console.log(data[2]);
-
       this.patchForm();
     });
   }

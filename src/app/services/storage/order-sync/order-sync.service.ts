@@ -192,7 +192,7 @@ export class OrderSyncService {
       return this.setApplicationLocations(applicationLocations);
     });
   }
-  
+
   /**
    * getApplicationLocationsById
    * @param tempId temp id
@@ -215,10 +215,10 @@ export class OrderSyncService {
 
 
   /**
-   *************************************************************************** 
+   ***************************************************************************
    * NEW TEMP STORAGE
-   *************************************************************************** 
-   *************************************************************************** 
+   ***************************************************************************
+   ***************************************************************************
    */
 
   /**
@@ -315,7 +315,7 @@ export class OrderSyncService {
   }
 
   /**
-   * addTempWeather 
+   * addTempWeather
    * @param tempWeather weather to add
    */
   public addTempWeather = (tempWeather: any): Promise<Array<any>> => {
@@ -383,8 +383,40 @@ export class OrderSyncService {
       this.getTempApplicationChemicalsById(tempId),
       this.getTempWeatherById(tempId),
       this.getTempApplicationTimeById(tempId),
-      this.getApplicationLocationsById(tempId)      
+      this.getApplicationLocationsById(tempId)
     ]);
+  }
+
+  /**
+   * getApplicationsPendingToSave
+   */
+  public getApplicationsPendingToSave = (): Promise<Array<any>> => {
+    return this.getTempApplications().then((tempApplications: Array<any>) => {
+      const promises = [];
+
+      tempApplications.forEach(item => {
+        promises.push(this.getAllTempDataById(item.tempId));
+      });
+
+      return Promise.all(promises);
+    });
+  }
+
+  /**
+   * mapApplicationsPendingToSave
+   * @param items array of data
+   */
+  public mapApplicationsPendingToSave = (items: Array<any>) => {
+    return items.map( item => {
+      return  Object.assign({}, item[0], {
+        humidity: item[2]["humidity"],
+        wind: item[2]["wind"],
+        temperature: item[2]["temperature"],
+        totalTime: item[3]["time"],
+        startDate: item[3]["startDate"],
+        endDate: item[3]["endDate"],
+      });
+    });
   }
 
 }

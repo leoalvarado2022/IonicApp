@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
+import { ApplicationRegistryService } from 'src/app/services/application-registry/application-registry.service';
 import { LoaderService } from 'src/app/shared/services/loader/loader.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { OrderListInterface } from '../order-list.interface';
-import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
 
 @Component({
   selector: 'app-orders-list',

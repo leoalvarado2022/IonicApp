@@ -10,8 +10,8 @@ import { StoreService } from 'src/app/shared/services/store/store.service';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { MachineryService } from '../../machinery/services/machinery.service';
 import { ApplicationListInterface } from '../application-list.interface';
-import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
 import * as moment from "moment";
+import { ApplicationRegistryService } from 'src/app/services/application-registry/application-registry.service';
 
 @Component({
   selector: 'app-applications-list',
@@ -27,6 +27,7 @@ export class ApplicationsListPage implements OnInit {
   public filteredToApplyApplications: Array<ApplicationListInterface> = [];
   public filteredAppliedApplications: Array<ApplicationListInterface> = [];
   public selectedApplication: ApplicationListInterface = null;
+  public pendingToSaveApplications: Array<any> = [];
 
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
@@ -78,7 +79,7 @@ export class ApplicationsListPage implements OnInit {
         orderCostCenter,
         orderHeader,
         orderMachinery
-      } = success.data;      
+      } = success.data;
       Promise.all([
         this.orderSyncService.setOrderHeader(orderHeader),
         this.orderSyncService.setOrderCostCenter(orderCostCenter),
@@ -88,15 +89,17 @@ export class ApplicationsListPage implements OnInit {
         this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied),
         this.storageSyncService.getImplementTypeCostCenters(),
         this.machineryService.getWorkers(activeCompany.id, date),
+        this.orderSyncService.getApplicationsPendingToSave()
       ]).then((data: any) => {
+        this.pendingToSaveApplications = this.orderSyncService.mapApplicationsPendingToSave(data[8]);
+
         this.orderBalanceToApply = orderBalanceToApply;
         this.orderBalanceApplied = orderBalanceApplied;
 
         this.filteredToApplyApplications = orderBalanceToApply;
-        this.filteredAppliedApplications = orderBalanceApplied;
+        this.filteredAppliedApplications = [...this.pendingToSaveApplications, ...orderBalanceApplied];
         this.implementTypeCostCenters = data[6];
         this.workers = data[7]
-
         this.orderMachinery = orderMachinery[0];
 
         this.loaderService.stopLoader();
@@ -111,7 +114,7 @@ export class ApplicationsListPage implements OnInit {
    * @param application
    */
   public selectApplication = (application: ApplicationListInterface): void => {
-    if (application.applicationBalance) {
+    if (application.applicationBalance !== undefined) {
       if (this.selectedApplication === application) {
         this.selectedApplication = null;
       } else {
@@ -211,9 +214,9 @@ export class ApplicationsListPage implements OnInit {
   }
 
   /**
-   * getImplementName   
+   * getImplementName
    */
-  public getImplementName = (): string => {    
+  public getImplementName = (): string => {
     const find = this.implementTypeCostCenters.find(item => item.id === this.orderMachinery.costCenterImplementId);
     return find ? find.name : '';
   }
@@ -221,7 +224,7 @@ export class ApplicationsListPage implements OnInit {
   /**
    * getWorkerName
    */
-  public getWorkerName = (): string => {    
+  public getWorkerName = (): string => {
     const find = this.workers.find(item => item.id === this.orderMachinery.operatorId);
     return find ? find.name : '';
   }

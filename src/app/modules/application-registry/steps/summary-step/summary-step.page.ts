@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import * as moment from "moment";
-import { ApplicationRegistryService } from '../../services/application-registry/application-registry.service';
-import { StoreService } from 'src/app/shared/services/store/store.service';
-import { ToastService } from 'src/app/shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-summary-step',
@@ -25,10 +22,7 @@ export class SummaryStepPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private orderSyncService: OrderSyncService,
-    private applicationRegistryService: ApplicationRegistryService,
-    private storeService: StoreService,
-    private router: Router,
-    private toastService: ToastService
+    private router: Router
   ) {
 
   }
@@ -61,7 +55,24 @@ export class SummaryStepPage implements OnInit {
    * storeApplication
    */
   public storeApplication = () => {
-    const activeCompany = this.storeService.getActiveCompany();
+    const application = Object.assign({}, this.applicationData, {
+      totalTime: this.operationData.time,
+      startDate: this.operationData.startDate,
+      endDate: this.operationData.endDate,
+      temperature: this.weatherData.temperature,
+      humidity: this.weatherData.humidity,
+      wind: this.weatherData.wind
+    });
+
+    this.router.navigate(["/home-page/registro_aplicacion/applications", application.applicationOrderId]);
+  }
+
+  /**
+   * endApplication
+   */
+  public endApplication = () => {
+    /**
+     const activeCompany = this.storeService.getActiveCompany();
 
     const application = Object.assign({}, this.applicationData, {
       totalTime: this.operationData.time,
@@ -78,6 +89,7 @@ export class SummaryStepPage implements OnInit {
       this.toastService.errorToast(error);
       console.log('error', error);
     });
+     */
   }
 
 }

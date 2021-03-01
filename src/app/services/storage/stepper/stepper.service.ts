@@ -16,6 +16,8 @@ import { MachineryService } from 'src/app/modules/machinery/services/machinery.s
 import { ConsumptionService } from './../../../modules/consumptions/services/consumption.service';
 import { Consumption } from './../../../shared/services/store/store-interface';
 import { throttle } from 'rxjs/operators';
+import { OrderSyncService } from '../order-sync/order-sync.service';
+import { ApplicationRegistryService } from '../../application-registry/application-registry.service';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +51,9 @@ export class StepperService {
     private deviceSyncService: DeviceSyncService,
     private httpService: HttpService,
     private machineryService: MachineryService,
-    private consumptionService: ConsumptionService
+    private consumptionService: ConsumptionService,
+    private orderSyncService: OrderSyncService,
+    private applicationRegistryService: ApplicationRegistryService
   ) {
     this.networkService.getNetworkStatus().subscribe(status => this.isOnline = status);
   }
@@ -101,6 +105,14 @@ export class StepperService {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Consumos' });
         this.stepsArraySubject.next(this.stepsArray);
         this.onlySyncConsumptions(validConsumptions);
+      }
+
+      // If Applications
+      const validAplications = await this.orderSyncService.getApplicationsPendingToSave();
+      if (validAplications.length && this.syncError === null) {
+        this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Registros de Aplicación' });
+        this.stepsArraySubject.next(this.stepsArray);
+        this.onlySyncApplications(validAplications);
       }
 
       // Sync data
@@ -457,6 +469,33 @@ export class StepperService {
       this.httpService.errorHandler(error);
       this.syncError = true;
     });
+  }
+
+  public onlySyncApplications = async (applications: Array<any> = []) => {
+    for (let index = 0; index < applications.length; index++) {
+      const element = applications[index];
+
+      const application = Object.assign({}, element[0], {
+        humidity: element[2]["humidity"],
+        wind: element[2]["wind"],
+        temperature: element[2]["temperature"],
+        totalTime: element[3]["time"],
+        startDate: element[3]["startDate"],
+        endDate: element[3]["endDate"],
+      });
+
+
+      console.log(element);
+
+      /*
+      this.applicationRegistryService.storeApplication(application, this.locationsData, this.chemicalsData, activeCompany.user).subscribe(success => {
+
+      }, error => {
+        this.httpService.errorHandler(error);
+        this.syncError = true;
+      });
+      */
+    }
   }
 
 }

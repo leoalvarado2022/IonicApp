@@ -1,13 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { TabMenu } from '@primetec/primetec-angular';
 import { SyncService } from '../../shared/services/sync/sync.service';
 import { Router } from '@angular/router';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { NetworkService } from 'src/app/shared/services/network/network.service';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { HttpClient } from '@angular/common/http';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-menu-list',
@@ -15,16 +16,14 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./menu-list.page.scss'],
 })
 export class MenuListPage implements OnInit, OnDestroy {
-  public menus: Array<TabMenu> = [];
-  private workers: Array<any> = [];
-  private firstLoad = true;
 
+  public menus: Array<TabMenu> = [];
   public readonly defaultIcon = '/assets/svg_icons/default.svg';
 
+  private workers: Array<any> = [];
+  private firstLoad = true;
   private isOnline: boolean;
-
-  private network$: Subscription;
-  private step$: Subscription;
+  private unsubscriber = new Subject();
 
   constructor(
     public syncService: SyncService,
@@ -39,17 +38,23 @@ export class MenuListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.network$ = this.networkService.getNetworkStatus().subscribe((status) => (this.isOnline = status));
-    this.step$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
-      if (steps.length === 0 && !this.firstLoad) {
-        this.loadData();
-      }
-    });
+    this.networkService.getNetworkStatus()
+      .pipe(
+        takeUntil(this.unsubscriber)
+      ).subscribe((status) => (this.isOnline = status));
+
+    this.stepperService.getStepper()
+      .pipe(
+        takeUntil(this.unsubscriber)
+      ).subscribe((steps: Array<any>) => {
+        if (steps.length === 0 && !this.firstLoad) {
+          this.loadData();
+        }
+      });
   }
 
   ngOnDestroy() {
-    this.step$.unsubscribe();
-    this.network$.unsubscribe();
+    this.unsubscriber.complete();
   }
 
   ionViewWillEnter() {
@@ -151,6 +156,12 @@ export class MenuListPage implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+  public getMaxHeight(col: ElementRef) {
+    console.log('col', col);
+
+    return 0;
   }
 
 }

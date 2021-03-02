@@ -18,6 +18,11 @@ import {MasterService} from './master.service';
 export class DeliveryService {
 
   public orderListUrl = 'order-list';
+  public itemImageSaveUrl = 'item-image-save';
+  public getItemImageUrl = 'get-item-image';
+  public listCustomerUrl = 'list-customer';
+  public orderManualUrl = 'order-manual';
+  public getMenuOrderUrl = 'menu-order';
   public orderUpdateUrl = 'order-update';
   public changeOrderStatus = 'change-order';
   public getOrderDelivery = 'get-order';
@@ -53,11 +58,104 @@ export class DeliveryService {
   }
 
   /**
+   * @description si la venta es directa es verdadero, si la venta es delivery es falso
+   * @param status
+   */
+  public setTypeSaleDirect(status: boolean) {
+    localStorage.setItem('SaleDirect', JSON.stringify(status));
+  }
+
+  /**
+   * @description obtener la informacion del delivery
+   */
+  public getInfoTypeDeliveryForm() {
+    return JSON.parse(localStorage.getItem('infoDeliveryForm'));
+  }
+
+  /**
+   * @description agregar informacion del delivery
+   * @param status
+   */
+  public setInfoTypeDeliveryForm(infoDeliveryForm: any) {
+    localStorage.setItem('infoDeliveryForm', JSON.stringify(infoDeliveryForm));
+  }
+
+  /**
+   * @description remover data para el form delivery
+   * @param status
+   */
+  public removeInfoTypeDeliveryForm() {
+    localStorage.removeItem('infoDeliveryForm');
+  }
+
+  /**
+   * @description obtener el tipo de venta
+   */
+  public getTypeSaleDirect() {
+    return JSON.parse(localStorage.getItem('SaleDirect'));
+  }
+
+  /**
    * @description list notifications
    * @param data
    */
   public getNotificationHttp = (data: any) => {
     const url = this.httpService.buildUrl(this.orderListUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description list customer
+   * @param data
+   */
+  public getListCustomer = (data: any) => {
+    const url = this.httpService.buildUrl(this.listCustomerUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description obtener las imagenes de la carta
+   * @param data
+   */
+  public getItemsImage = () => {
+    const url = this.httpService.buildUrl(this.getItemImageUrl);
+    return this.httpClient.post(url, this.httpService.buildBody({}), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description guardar imagenes de la carta
+   * @param data
+   */
+  public itemImageSave = (data: any) => {
+    const url = this.httpService.buildUrl(this.itemImageSaveUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description crear orden manual
+   * @param data
+   */
+  public createOrderManual = (data: any) => {
+    const url = this.httpService.buildUrl(this.orderManualUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
+
+  /**
+   * @description list notifications
+   * @param data
+   */
+  public httpGetMenuOrderUrl = (data: any) => {
+    const url = this.httpService.buildUrl(this.getMenuOrderUrl);
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     });
@@ -143,6 +241,23 @@ export class DeliveryService {
    */
   public setDeliveryNotification = (data): Promise<any> => {
     return this.storage.set(StorageKeys.DeliveryNotifications, data).then();
+  };
+
+  /**
+   * getItemImageStorage
+   */
+  public getItemImageStorage = (): Promise<any> => {
+    return this.storage.get(StorageKeys.ItemImageStorage).then((images: any) => {
+      return images ? images : [];
+    });
+  };
+
+
+  /**
+   * setItemImageStorage
+   */
+  public setItemImageStorage = (data): Promise<any> => {
+    return this.storage.set(StorageKeys.ItemImageStorage, data).then();
   };
 
 

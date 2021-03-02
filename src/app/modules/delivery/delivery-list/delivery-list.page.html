@@ -1,7 +1,10 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button class="header-back-button" text=""></ion-back-button>
+<!--      <ion-back-button class="header-back-button" text=""></ion-back-button>-->
+      <ion-button class="toolbar-button white-button" (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
       <strong>DELIVERY</strong>
@@ -70,7 +73,7 @@
   </ion-fab>
   <ng-container *ngIf="allOrder.length">
     <ion-virtual-scroll [items]="allOrder" approxItemHeight="185px">
-      <div *virtualItem="let order"  style="height: 185px;">
+      <div *virtualItem="let order"  style="height: 206pxf;">
         <app-delivery-card
             [order]="order"
             [images]="integrationImages"

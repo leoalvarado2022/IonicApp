@@ -17,6 +17,7 @@ export class PosService {
 
   public authenticationUrl = '/api/login';
   public menuCustomUrl = '/api/get-menu-custom';
+  public insertCommandUrl = '/api/insert-command';
   public syncUrl = '/api/pos/sync';
   public cashRegisterUrl = '/api/caja-activa';
   public openTableUrl = '/api/table/open';
@@ -48,7 +49,7 @@ export class PosService {
       Authorization: token !== null ? 'Bearer ' + token : '',
       'Content-Type': 'application/json'
     });
-  }
+  };
 
   /**
    * buildUrl
@@ -64,7 +65,7 @@ export class PosService {
     }
 
     return;
-  }
+  };
 
   /**
    * hacer login
@@ -74,7 +75,7 @@ export class PosService {
     this.deleteConnection();
     const url = this.buildUrl(this.authenticationUrl);
     return this.httpClient.post(url, data);
-  }
+  };
 
   /**
    * traerse el sync de pos
@@ -85,7 +86,7 @@ export class PosService {
     return this.httpClient.post(url, data, {
       headers: this.getHeaders()
     });
-  }
+  };
 
   /**
    * @description comprobar caja activa
@@ -95,7 +96,7 @@ export class PosService {
     return this.httpClient.get(url, {
       headers: this.getHeaders()
     });
-  }
+  };
 
   /**
    *@description abrir una mesa
@@ -106,7 +107,7 @@ export class PosService {
     return this.httpClient.post(url, data, {
       headers: this.getHeaders()
     });
-  }
+  };
 
   /**
    * obtener los menus por codigo de producto
@@ -117,14 +118,25 @@ export class PosService {
     return this.httpClient.post(url, {items: data}, {
       headers: this.getHeaders()
     });
-  }
+  };
+
+  /**
+   * obtener los menus por codigo de producto
+   * @param data
+   */
+  public httpInsertCommand = (data: any) => {
+    const url = this.buildUrl(this.insertCommandUrl);
+    return this.httpClient.post(url, {data}, {
+      headers: this.getHeaders()
+    });
+  };
 
   public httpSaveCommand = (data: any) => {
     const url = this.buildUrl(this.saveCommandUrl);
     return this.httpClient.post(url, data, {
       headers: this.getHeaders()
     });
-  }
+  };
 
   /**
    * cerrar cuenta
@@ -135,7 +147,7 @@ export class PosService {
     return this.httpClient.post(url, data, {
       headers: this.getHeaders()
     });
-  }
+  };
 
 
   /**
@@ -197,7 +209,36 @@ export class PosService {
     } else {
       this._toastService.warningToast('no esta activada la sincronización debe activar una empresa FX10 POS');
     }
-  }
+  };
+
+  /**
+   * @description abrir mesa nueva version
+   * @param order
+   */
+  public openTableNew = async (order: any) => {
+    // si esta activado el modo pos
+    const modoPos = localStorage.getItem('modoPOS');
+    if (modoPos && modoPos === '1') {
+      // guardar la orden en memoria
+      this.order = order;
+
+      // console.log(order);
+      this.httpInsertCommand(order).subscribe((success: any) => {
+        if (success && success.length) {
+          for (let data of success) {
+            if (data.respuesta !== 'ok') {
+              this._toastService.errorToast(`${data.respuesta} del POS FX10`);
+            }
+          }
+        }
+
+      }, error => {
+        this.httpService.errorHandlerPos(error);
+      });
+    } else {
+      //
+    }
+  };
 
   /**
    * @description abrir una mesa
@@ -259,7 +300,7 @@ export class PosService {
         this.connection = false;
       });
     }
-  }
+  };
 
   /**
    * @description abrir una mesa y servir
@@ -310,7 +351,7 @@ export class PosService {
       this.connection = false;
     });
 
-  }
+  };
 
   /**
    * @description obtener los productos y guardar commanda
@@ -318,7 +359,7 @@ export class PosService {
    */
   public codeChckfxToSaveCommand = (chckfx: number) => {
     this.structureSaveCommand(chckfx).then();
-  }
+  };
 
   /**
    * @description obtener los productos de la orden para sus id
@@ -332,7 +373,7 @@ export class PosService {
       }
     }
     return items;
-  }
+  };
 
   /**
    * @description generar datos de objecto comanda
@@ -411,7 +452,7 @@ export class PosService {
     }
 
     return command;
-  }
+  };
 
 
   /**
@@ -461,7 +502,7 @@ export class PosService {
       this.httpService.errorHandlerPos(error);
       this.connection = false;
     });
-  }
+  };
 
   /**
    * @description cerrar cuenta sin pago
@@ -491,7 +532,7 @@ export class PosService {
       this.httpService.errorHandlerPos(error);
       this.connection = false;
     });
-  }
+  };
 
   /////////////////////////////////////////////////////////
   ////////////////////////////////
@@ -513,14 +554,14 @@ export class PosService {
     this.setTables(data.tables).then();
     this.setTurns(data.turns).then();
     this.setUsers(data.users).then();
-  }
+  };
 
   /**
    * setAgreements
    */
   public setAgreements = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Agreements, data);
-  }
+  };
 
   /**
    * getAgreements
@@ -529,14 +570,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Agreements).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setCashRegister
    */
   public setCashRegister = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.CashRegister, data);
-  }
+  };
 
   /**
    * getCashRegister
@@ -545,14 +586,14 @@ export class PosService {
     return this.storage.get(StorageKeys.CashRegister).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setCauses
    */
   public setCauses = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Causes, data);
-  }
+  };
 
   /**
    * getCashRegister
@@ -561,14 +602,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Causes).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setConfiguration
    */
   public setConfiguration = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Configuration, data);
-  }
+  };
 
   /**
    * getConfiguration
@@ -577,14 +618,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Configuration).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setDiscounts
    */
   public setDiscounts = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Discounts, data);
-  }
+  };
 
   /**
    * getDiscounts
@@ -593,14 +634,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Discounts).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setPaymentTypes
    */
   public setPaymentTypes = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.PaymentTypes, data);
-  }
+  };
 
   /**
    * getPaymentTypes
@@ -609,14 +650,14 @@ export class PosService {
     return this.storage.get(StorageKeys.PaymentTypes).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setPrinters
    */
   public setPrinters = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Printers, data);
-  }
+  };
 
   /**
    * getPrinters
@@ -625,14 +666,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Printers).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setSectors
    */
   public setSectors = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Sectors, data);
-  }
+  };
 
   /**
    * getSectors
@@ -641,14 +682,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Sectors).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setTables
    */
   public setTables = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Tables, data);
-  }
+  };
 
   /**
    * getTables
@@ -657,14 +698,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Tables).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setTurns
    */
   public setTurns = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Turns, data);
-  }
+  };
 
   /**
    * getTurns
@@ -673,14 +714,14 @@ export class PosService {
     return this.storage.get(StorageKeys.Turns).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
   /**
    * setUsers
    */
   public setUsers = (data: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Users, data);
-  }
+  };
 
   /**
    * getUsers
@@ -689,7 +730,7 @@ export class PosService {
     return this.storage.get(StorageKeys.Users).then((data: Array<any>) => {
       return data ? data : [];
     });
-  }
+  };
 
 
   deleteConnection(): void {

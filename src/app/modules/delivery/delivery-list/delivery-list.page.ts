@@ -9,6 +9,7 @@ import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {environment} from '../../../../environments/environment';
 import {PosService} from '../services/pos.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
+import {ActionSheetController} from '@ionic/angular';
 
 @Component({
   selector: 'app-delivery-list',
@@ -34,16 +35,25 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private router: Router,
     private backgroundMode: BackgroundMode,
-    public _posService: PosService
+    public _posService: PosService,
+    public actionSheetController: ActionSheetController
   ) {
   }
 
   ionViewDidEnter() {
-    if (this._deliveryService.getAutomatic()) {
+    // if (this._deliveryService.getAutomatic()) {
       // this.checkedAutomatic = this._deliveryService.getAutomatic();
-    }
+    // }
     this._storageSyncService.getIntegrationImages().then((data) => {
       this.integrationImages = data;
+    });
+
+    this._deliveryService.getItemsImage().subscribe((data: any) => {
+      if (data.resp && data.resp.length) {
+        this._deliveryService.setItemImageStorage(data.resp);
+      }
+    }, error => {
+      this.httpService.errorHandler(error);
     });
     this.loadNotifications(this.selected);
     this.refreshOrder(true);
@@ -129,8 +139,54 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   /**
    * @description abrir menu de ordenes
    */
-  openOrder() {
-    this.router.navigate(['/home-page/menu-order']);
+  async openOrder() {
+    localStorage.removeItem('orders');
+    const typeSale = this._deliveryService.getTypeSaleDirect();
+
+    if (typeSale !== null) {
+      if (typeSale) {
+        this.router.navigate(['/home-page/menu-order']);
+      } else {
+        this.router.navigate(['/home-page/menu-detail']);
+      }
+    } else {
+      const actionSheet = await this.actionSheetController.create({
+        header: 'Tipo de venta',
+        cssClass: 'my-custom-class',
+        buttons: [
+          {
+            text: 'Venta directa',
+            icon: 'share',
+            handler: () => {
+              this._deliveryService.setTypeSaleDirect(true);
+              this.router.navigate(['/home-page/menu-order']);
+              // console.log('Share clicked');
+            }
+          }, {
+            text: 'Venta delivery',
+            icon: 'caret-forward-circle',
+            handler: () => {
+              this._deliveryService.setTypeSaleDirect(false);
+              this.router.navigate(['/home-page/menu-detail']);
+            }
+          }, {
+            text: 'Cancelar',
+            icon: 'close',
+            role: 'cancel',
+            handler: () => {
+              // console.log('Cancel clicked');
+            }
+          }]
+      });
+      await actionSheet.present();
+    }
+  }
+
+  /**
+   * @description ir atras
+   */
+  goBack() {
+    this.router.navigate(['/home-page']);
   }
 
 }

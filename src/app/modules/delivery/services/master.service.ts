@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {PosService} from './pos.service';
-import {DeliveryService} from './delivery.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {HttpService} from '../../../shared/services/http/http.service';
@@ -29,7 +28,7 @@ export class MasterService {
     return this._httpClient.post(url, this._httpService.buildBody(data), {
       headers: this._httpService.getHeaders()
     });
-  }
+  };
 
   /**
    * @description agregar en fx10 automaticamente
@@ -45,7 +44,7 @@ export class MasterService {
       };
       this.getNotificationHttpId(data).subscribe((success: any) => {
         const order = success.resp;
-        this._posService.openTable(order).then();
+        // this._posService.openTable(order).then();
       }, error => {
         this._httpService.errorHandler(error);
       });

@@ -117,6 +117,10 @@ const routes: Routes = [
         loadChildren: () => import('../modules/delivery/delivery-list/menu-order/menu-order.module').then((module) => module.MenuOrderModule),
       },
       {
+        path: 'menu-detail',
+        loadChildren: () => import('../modules/delivery/delivery-list/menu-detail/menu-detail.module').then((module) => module.MenuDetailModule),
+      },
+      {
         path: 'order-detail',
         loadChildren: () => import('../modules/delivery/delivery-list/order-detail/order-detail.module').then((module) => module.OrderDetailModule),
       },

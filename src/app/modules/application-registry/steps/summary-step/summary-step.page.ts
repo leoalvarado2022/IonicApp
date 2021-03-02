@@ -67,29 +67,4 @@ export class SummaryStepPage implements OnInit {
     this.router.navigate(["/home-page/registro_aplicacion/applications", application.applicationOrderId]);
   }
 
-  /**
-   * endApplication
-   */
-  public endApplication = () => {
-    /**
-     const activeCompany = this.storeService.getActiveCompany();
-
-    const application = Object.assign({}, this.applicationData, {
-      totalTime: this.operationData.time,
-      startDate: this.operationData.startDate,
-      endDate: this.operationData.endDate,
-      temperature: this.weatherData.temperature,
-      humidity: this.weatherData.humidity,
-      wind: this.weatherData.wind
-    });
-
-    this.applicationRegistryService.storeApplication(application, this.locationsData, this.chemicalsData, activeCompany.user).subscribe(success => {
-      this.router.navigate(["/home-page/registro_aplicacion/applications", application.applicationOrderId]);
-    }, error => {
-      this.toastService.errorToast(error);
-      console.log('error', error);
-    });
-     */
-  }
-
 }

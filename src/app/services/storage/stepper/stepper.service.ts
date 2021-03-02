@@ -471,7 +471,13 @@ export class StepperService {
     });
   }
 
+  /**
+   * onlySyncApplications
+   * @param applications
+   */
   public onlySyncApplications = async (applications: Array<any> = []) => {
+    const activeCompany = this.storeService.getActiveCompany();
+
     for (let index = 0; index < applications.length; index++) {
       const element = applications[index];
 
@@ -484,17 +490,12 @@ export class StepperService {
         endDate: element[3]["endDate"],
       });
 
-
-      console.log(element);
-
-      /*
-      this.applicationRegistryService.storeApplication(application, this.locationsData, this.chemicalsData, activeCompany.user).subscribe(success => {
-
+      this.applicationRegistryService.storeApplication(application, element[4], element[1], activeCompany.user).subscribe(success => {
+        this.orderSyncService.removeTempApplication(application.tempId);
       }, error => {
         this.httpService.errorHandler(error);
         this.syncError = true;
       });
-      */
     }
   }
 

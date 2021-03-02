@@ -260,6 +260,17 @@ export class OrderSyncService {
   }
 
   /**
+   * removeTempApplicationById
+   * @param tempId
+   */
+  public removeTempApplicationById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplications().then((tempApplications: Array<any>) => {
+      const filtered = tempApplications.filter(item => item.tempId !== tempId);
+      return this.setTempApplications(filtered);
+    });
+  }
+
+  /**
    * setTempApplicationChemicals
    * @param tempApplicationChemicals array of temp chemicals
    */
@@ -294,6 +305,17 @@ export class OrderSyncService {
   public getTempApplicationChemicalsById = (tempId: number): Promise<Array<any>> => {
     return this.getTempApplicationChemicals().then((tempApplicationChemicals: Array<any>) => {
       return tempApplicationChemicals.filter(item => item.tempId === tempId);
+    });
+  }
+
+  /**
+   * removeTempApplicationChemicalsById
+   * @param tempId number
+   */
+  public removeTempApplicationChemicalsById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplicationChemicals().then((tempApplicationChemicals: Array<any>) => {
+      const filtered = tempApplicationChemicals.filter(item => item.tempId !== tempId);
+      return this.setTempApplicationChemicals(filtered);
     });
   }
 
@@ -336,6 +358,17 @@ export class OrderSyncService {
   }
 
   /**
+   * removeTempWeatherById
+   * @param tempId
+   */
+  public removeTempWeatherById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempWeather().then((tempWeathers: Array<any>) => {
+      const filtered = tempWeathers.filter(item => item.tempId !== tempId);
+      return this.setTempWeather(filtered);
+    });
+  }
+
+  /**
    * setTempApplicationsTime
    * @param tempApplicationsTime applications array
    */
@@ -374,6 +407,28 @@ export class OrderSyncService {
   }
 
   /**
+   * removeTempApplicationTimeById
+   * @param tempId number
+   */
+  public removeTempApplicationTimeById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplicationsTime().then((tempApplicationsTime: Array<any>) => {
+      const filtered = tempApplicationsTime.filter(item => item.tempId !== tempId);
+      return this.setTempApplicationsTime(filtered);
+    });
+  }
+
+  /**
+   * removeApplicationLocationsById
+   * @param tempId number
+   */
+  public removeApplicationLocationsById = (tempId: number): Promise<Array<ApplicationLocationInterface>> => {
+    return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
+      const filtered = applicationLocations.filter(item => item.tempId !== tempId);
+      return this.setApplicationLocations(filtered);
+    });
+  }
+
+  /**
    * getAllTempDataById
    * @param tempId id
    */
@@ -407,8 +462,8 @@ export class OrderSyncService {
    * @param items array of data
    */
   public mapApplicationsPendingToSave = (items: Array<any>) => {
-    return items.map( item => {
-      return  Object.assign({}, item[0], {
+    return items.map(item => {
+      return Object.assign({}, item[0], {
         humidity: item[2]["humidity"],
         wind: item[2]["wind"],
         temperature: item[2]["temperature"],
@@ -417,6 +472,20 @@ export class OrderSyncService {
         endDate: item[3]["endDate"],
       });
     });
+  }
+
+  /**
+   * removeTempApplication
+   * @param tempId number
+   */
+  public removeTempApplication = (tempId: number) => {
+    return Promise.all([
+      this.removeTempApplicationById(tempId),
+      this.removeTempApplicationChemicalsById(tempId),
+      this.removeTempWeatherById(tempId),
+      this.removeTempApplicationTimeById(tempId),
+      this.removeApplicationLocationsById(tempId)
+    ]);
   }
 
 }

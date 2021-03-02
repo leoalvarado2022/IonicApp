@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Clima</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="loading">
+    <ion-card>
+      <ion-card-header class="ion-text-center">
+        <ion-card-title>{{ loadingMessage }}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </ng-container>
+
+  <form [formGroup]="weatherForm">
+    <ion-card class="card-item">
+      <ion-list>
+        <ion-item>
+          <ion-icon slot="start" name="location-outline"></ion-icon>
+          <ion-label position="floating">Ubicacion</ion-label>
+          <ion-input type="text" formControlName="location" style="text-transform: capitalize"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="cloud-outline"></ion-icon>
+          <ion-label position="floating">Cielo</ion-label>
+          <ion-input type="text" formControlName="sky" style="text-transform: capitalize"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="thermometer-outline"></ion-icon>
+          <ion-label position="floating">Temperatura Actual</ion-label>
+          <ion-input type="number" formControlName="temperature"></ion-input>
+          <ion-badge slot="end">°C</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="water-outline"></ion-icon>
+          <ion-label position="floating">Humedad</ion-label>
+          <ion-input type="number" formControlName="humidity"></ion-input>
+          <ion-badge slot="end">%</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="speedometer-outline"></ion-icon>
+          <ion-label position="floating">Viento</ion-label>
+          <ion-input type="number" formControlName="wind"></ion-input>
+          <ion-badge slot="end">m/s</ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="warning" [disabled]="weatherForm.invalid" (click)="nextStep()">
+    Siguiente
+  </ion-button>
+</ion-footer>

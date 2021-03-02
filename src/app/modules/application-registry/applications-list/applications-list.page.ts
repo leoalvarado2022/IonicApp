@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonItemSliding } from '@ionic/angular';
+import { map, switchMap } from 'rxjs/operators';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
+import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { LoaderService } from 'src/app/shared/services/loader/loader.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
+import { MachineryService } from '../../machinery/services/machinery.service';
 import { ApplicationListInterface } from '../application-list.interface';
-import { ApplicationRegistryService } from '../services/application-registry/application-registry.service';
+import * as moment from "moment";
+import { ApplicationRegistryService } from 'src/app/services/application-registry/application-registry.service';
 
 @Component({
   selector: 'app-applications-list',
@@ -23,9 +27,14 @@ export class ApplicationsListPage implements OnInit {
   public filteredToApplyApplications: Array<ApplicationListInterface> = [];
   public filteredAppliedApplications: Array<ApplicationListInterface> = [];
   public selectedApplication: ApplicationListInterface = null;
+  public pendingToSaveApplications: Array<any> = [];
 
   private orderBalanceToApply: Array<ApplicationListInterface> = [];
   private orderBalanceApplied: Array<ApplicationListInterface> = [];
+  private orderMachinery: any = null;
+
+  private implementTypeCostCenters: Array<any> = [];
+  private workers: Array<any> = [];
 
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
@@ -35,12 +44,20 @@ export class ApplicationsListPage implements OnInit {
     private orderSyncService: OrderSyncService,
     private toastService: ToastService,
     private alertService: AlertService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private storageSyncService: StorageSyncService,
+    private machineryService: MachineryService,
   ) {
 
   }
 
   ngOnInit() {
+
+  }
+
+  ionViewWillEnter() {
+    this.currentTab = this.toApplyTab;
+    this.orderSyncService.setApplicationLocations([]).then();
     this.loadData();
   }
 
@@ -49,6 +66,9 @@ export class ApplicationsListPage implements OnInit {
    */
   private loadData = (): void => {
     this.loaderService.startLoader();
+
+    const activeCompany = this.storeService.getActiveCompany();
+    const date = moment().format('YYYY-MM-DD');
 
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.applicationRegistryService.getApplicationList(+id).subscribe((success: any) => {
@@ -60,20 +80,27 @@ export class ApplicationsListPage implements OnInit {
         orderHeader,
         orderMachinery
       } = success.data;
-
       Promise.all([
         this.orderSyncService.setOrderHeader(orderHeader),
         this.orderSyncService.setOrderCostCenter(orderCostCenter),
         this.orderSyncService.setOrderMachinery(orderMachinery),
         this.orderSyncService.setOrderChemical(orderChemical),
         this.orderSyncService.setOrderBalanceToApply(orderBalanceToApply),
-        this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied)
-      ]).then(() => {
+        this.orderSyncService.setOrderBalanceApplied(orderBalanceApplied),
+        this.storageSyncService.getImplementTypeCostCenters(),
+        this.machineryService.getWorkers(activeCompany.id, date),
+        this.orderSyncService.getApplicationsPendingToSave()
+      ]).then((data: any) => {
+        this.pendingToSaveApplications = this.orderSyncService.mapApplicationsPendingToSave(data[8]);
+
         this.orderBalanceToApply = orderBalanceToApply;
         this.orderBalanceApplied = orderBalanceApplied;
 
         this.filteredToApplyApplications = orderBalanceToApply;
-        this.filteredAppliedApplications = orderBalanceApplied;
+        this.filteredAppliedApplications = [...this.pendingToSaveApplications, ...orderBalanceApplied];
+        this.implementTypeCostCenters = data[6];
+        this.workers = data[7]
+        this.orderMachinery = orderMachinery[0];
 
         this.loaderService.stopLoader();
       });
@@ -87,7 +114,7 @@ export class ApplicationsListPage implements OnInit {
    * @param application
    */
   public selectApplication = (application: ApplicationListInterface): void => {
-    if (application.applicationBalance) {
+    if (application.applicationBalance !== undefined) {
       if (this.selectedApplication === application) {
         this.selectedApplication = null;
       } else {
@@ -100,34 +127,40 @@ export class ApplicationsListPage implements OnInit {
    * startApplication
    */
   public startApplication = (): void => {
-    this.router.navigate(["/home-page/registro_aplicacion/application-start", this.selectedApplication.id]);
+    this.router.navigate(["/home-page/registro_aplicacion/confirmation-step", this.selectedApplication.id]);
   }
 
   /**
    * editApplication
    * @param application application selected to edit
    */
-  public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {    
+  public editApplication = (application: ApplicationListInterface, slide: IonItemSliding): void => {
     slide.close();
-    this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });    
+    this.router.navigate(["/home-page/registro_aplicacion/application-end", application.applicationRegistry], { queryParams: { edit: true } });
   }
 
   /**
    * deleteApplication
    */
-  public deleteApplication = async (application: ApplicationListInterface, slide: IonItemSliding) => {    
+  public deleteApplication = async (application: ApplicationListInterface, slide: IonItemSliding) => {
     const yes = await this.alertService.confirmAlert('Seguro que quieres borrar esta applicacion?');
     const user = this.storeService.getUser();
-    slide.close();            
+    slide.close();
 
-    if (yes) {            
-      const deleteObj = Object.assign({}, application, { applicationRegistry: (application.applicationRegistry * -1) });
-      this.applicationRegistryService.deleteApplication(deleteObj, user.id).subscribe(success => {
-        this.router.navigate(['/home-page/registro_aplicacion']);
+    if (yes) {
+      this.applicationRegistryService.getApplication(application.applicationRegistry.toString()).pipe(
+        map(data => data["data"]),
+        switchMap((data: any) => {
+          const { applicationHeader, application, chemicals, locations } = data;
+          const deleteObj = Object.assign({}, application, { id: (application.id * -1) });
+          return this.applicationRegistryService.deleteApplication(applicationHeader, deleteObj, user.id)
+        })
+      ).subscribe(success => {
+        this.loadData();
       }, error => {
         this.toastService.errorToast('ocurrio un error al borrar la aplicacion');
-      });            
-    }        
+      });
+    }
   }
 
   /**
@@ -169,6 +202,31 @@ export class ApplicationsListPage implements OnInit {
   public cancelSearch = (): void => {
     this.filteredToApplyApplications = [...this.orderBalanceToApply];
     this.filteredAppliedApplications = [...this.orderBalanceApplied];
+  }
+
+  /**
+   * reload
+   * @param event reload
+   */
+  public reload = (event: any) => {
+    this.loadData();
+    event.target.complete();
+  }
+
+  /**
+   * getImplementName
+   */
+  public getImplementName = (): string => {
+    const find = this.implementTypeCostCenters.find(item => item.id === this.orderMachinery.costCenterImplementId);
+    return find ? find.name : '';
+  }
+
+  /**
+   * getWorkerName
+   */
+  public getWorkerName = (): string => {
+    const find = this.workers.find(item => item.id === this.orderMachinery.operatorId);
+    return find ? find.name : '';
   }
 
 }

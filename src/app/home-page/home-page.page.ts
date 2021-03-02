@@ -48,8 +48,7 @@ export class HomePagePage {
   }
 
   ionViewWillLeave() {
-    this.timerService.pauseStop();
-    this.subscription.next();
+    this.timerService.pauseStop();    
     this.subscription.complete();
   }
 

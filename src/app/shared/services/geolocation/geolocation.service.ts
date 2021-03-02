@@ -1,91 +1,45 @@
 import {Injectable} from '@angular/core';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
-import {BehaviorSubject} from 'rxjs';
-import {filter} from 'rxjs/operators';
-
-interface Position {
-  lat: number;
-  lng: number;
-}
+import {from, of, throwError} from 'rxjs';
+import {catchError, concatMap, delay, filter, map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeolocationService {
 
-  // Ubicacion por defecto santiago
-  private lat = -33.4724728;
-  private lng = -70.9100195;
-  private positionHistory: Array<{ lat: number, lng: number }> = [];
-
-  private currentPosition: BehaviorSubject<Position> = new BehaviorSubject<Position>({
-    lat: this.lat,
-    lng: this.lng
-  });
-
   private readonly positionOptions = {
     enableHighAccuracy: true,
-    timeout: 2000
+    timeout: 10000,
+    maximunAge: 5000
   };
 
   constructor(private geolocation: Geolocation) {
-    console.log('GeolocationService constructor');
 
-
-    this.geolocation.getCurrentPosition(this.positionOptions).then((data: any) => {
-      this.updatePosition(data.coords.latitude, data.coords.longitude);
-    }).catch(error => {
-      console.log('getCurrentPosition', error);
-    });
-
-    this.startTracker();
   }
 
   /**
    * getCurrentPosition
    */
   public getCurrentPosition = () => {
-    return this.currentPosition.asObservable();
-  }
-
-  /**
-   * showHistory
-   */
-  public showHistory = () => {
-    return this.positionHistory;
-  }
-
-  /**
-   * updatePosition
-   * @param lat
-   * @param lng
-   */
-  private updatePosition = (lat: number, lng: number) => {
-    this.currentPosition.next({lat, lng});
+    return from(this.geolocation.getCurrentPosition(this.positionOptions)).pipe(
+      filter( (p: any) => p.coords !== undefined),
+      map( (data) => {
+        return { lat: data.coords.latitude, lng: data.coords.longitude };
+      }),
+      catchError( (error) => {
+        return throwError(error.message);
+      }),
+    );
   }
 
   /**
    * startTracker
    */
-  private startTracker = () => {
-    this.geolocation.watchPosition().pipe(
-      filter( (p: any) => p.coords !== undefined)
-    ).subscribe((position: any) => {
-      this.positionHistory.push({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      });
-
-      this.updatePosition(position.coords.latitude, position.coords.longitude);
-    }, error => {
-      console.log({error});
-    });
+  public startTracker = () => {
+    return this.geolocation.watchPosition(this.positionOptions).pipe(
+      filter( (position: any) => position.coords !== undefined)
+    );
   }
 
-  /**
-   * watchPosition
-   */
-  public watchPosition = () => {
-    return this.geolocation.watchPosition({ enableHighAccuracy: true });
-  }
 }

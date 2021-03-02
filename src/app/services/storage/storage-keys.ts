@@ -60,6 +60,10 @@ export enum StorageKeys {
   OrderChemical = 'orderChemical',
   OrderBalanceToApply = 'orderBalanceToApply',
   OrderBalanceApplied = 'orderBalanceApplied',
+  TempApplications = 'tempApplications',
+  TempApplicationChemicals = 'tempApplicationChemicals',
+  TempWeather = 'tempWeather',
+  TempApplicationsTime = 'TempApplicationsTime',
 
   // pos
   Agreements = 'agreementsPOS',

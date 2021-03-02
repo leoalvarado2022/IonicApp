@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Información</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div [formGroup]=informationForm>
+    <div formArrayName="chemicals">
+      <ion-card class="card-item" *ngFor="let chemical of informationForm.get('chemicals')['controls']; let i = index"
+        [formArrayName]="i.toString()">
+        <ion-card-header>
+          <ion-card-title>{{ chemical.get('itemName').value | titlecase }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div>
+            <ion-text color="danger" *ngIf="chemical.get('dosis100l').dirty">
+              <p *ngIf="chemical.get('dosis100l').hasError('required')">Debe ingresar la dosis 100L</p>
+              <p *ngIf="chemical.get('dosis100l').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+
+            <ion-item>
+              <ion-label>Dosis 100L</ion-label>
+              <ion-input type="number" formControlName="dosis100l" style="text-align: right;"></ion-input>
+            </ion-item>
+          </div>
+
+          <div>
+            <ion-text color="danger" *ngIf="chemical.get('hectaresDosis').dirty">
+              <p *ngIf="chemical.get('hectaresDosis').hasError('required')">Debe ingresar la dosis de hectareas</p>
+              <p *ngIf="chemical.get('hectaresDosis').hasError('min')">El valor minimo es 1</p>
+            </ion-text>
+            <ion-item>
+              <ion-label>Dosis Hectareas</ion-label>
+              <ion-input type="number" formControlName="hectaresDosis" style="text-align: right;"></ion-input>
+            </ion-item>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="warning" [disabled]="informationForm.invalid" (click)="nextStep()">
+    Siguiente
+  </ion-button>
+</ion-footer>

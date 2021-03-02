@@ -1,6 +1,6 @@
 export interface ApplicationLocationInterface {
   id: number;
-  timestamp: number;
+  timestamp: string;
   latitude: number;
   longitude: number;
   accuracy: number;

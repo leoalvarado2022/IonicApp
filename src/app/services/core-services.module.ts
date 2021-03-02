@@ -22,6 +22,7 @@ import { DeviceService } from './device/device.service';
 import { WeatherService } from './weather/weather.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { CleanStringService } from './clean-string/clean-string.service';
+import { ApplicationRegistryService } from './application-registry/application-registry.service';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import { CleanStringService } from './clean-string/clean-string.service';
     StepperService,
     DeviceSyncService,
     MachineryService,
-    OrderSyncService
+    OrderSyncService,
+    ApplicationRegistryService
   ]
 })
 export class CoreServicesModule {

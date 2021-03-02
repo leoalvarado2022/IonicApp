@@ -13,6 +13,8 @@
 </ion-header>
 
 <ion-content class="content">
+  <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed" pullFactor="0.5" pullMin="50"
+    pullMax="100" [disabled]="(stepperService.getStepper() | async)?.length > 0"></ion-refresher>
 
   <ng-container *ngIf="(stepperService.getStepper() | async)?.length > 0 ; else render">
     <ion-list lines="none">
@@ -24,18 +26,16 @@
   </ng-container>
 
   <ng-template #render>
-    <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
-
     <ion-row>
       <ion-col *ngFor="let menu of menus; let i = index" size="6">
-        <ion-card class="item-card" (click)="navigate(menu)" [ngClass]="{ 'disabled': checkDisabled(menu) }">
+        <ion-card #card class="menu-card" (click)="navigate(menu)" [ngClass]="{ 'disabled': checkDisabled(menu) }">
           <ion-card-content>
             <p class="ion-text-center">
-              <ion-icon [src]="menu.icon_url" style="font-size: 64px"></ion-icon>
+              <ion-icon class="menu-icon-size" [src]="menu.icon_url"></ion-icon>
               <ion-badge *ngIf="showBadge(menu) > 0" class="menu-bagde">{{ showBadge(menu) }}</ion-badge>
             </p>
-            <p class="ion-text-center">
-              <strong>{{ menu.caption | titlecase }} </strong>
+            <p class="menu-name">
+              {{ menu.caption }}
             </p>
           </ion-card-content>
         </ion-card>

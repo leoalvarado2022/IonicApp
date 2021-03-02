@@ -1,8 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CostCenterList} from '@primetec/primetec-angular';
-import {GeolocationService} from '../../../../shared/services/geolocation/geolocation.service';
-import {Subscription} from 'rxjs';
-import {StoreService} from '../../../../shared/services/store/store.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CostCenterList } from '@primetec/primetec-angular';
+import { GeolocationService } from '../../../../shared/services/geolocation/geolocation.service';
+import { Subject, throwError } from 'rxjs';
+import { StoreService } from '../../../../shared/services/store/store.service';
+import { catchError, take, takeUntil } from 'rxjs/operators';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-mapa',
@@ -18,12 +20,13 @@ export class MapaPage implements OnInit, OnDestroy {
   public filteredCostCenters: CostCenterList[] = [];
   private costCenters: CostCenterList[] = [];
 
-  private position$: Subscription;
-  private store$: Subscription;
+  private unsubscriber = new Subject();
+
 
   constructor(
     private geolocationService: GeolocationService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private toastService: ToastService
   ) {
 
   }
@@ -31,15 +34,17 @@ export class MapaPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadCurrentPosition();
 
-    this.store$ = this.storeService.stateChanged.subscribe(() => {
+    this.storeService.stateChanged.pipe(
+      takeUntil(this.unsubscriber)
+    ).subscribe(() => {
       this.costCenters = this.storeService.getCostCenters();
       this.filteredCostCenters = this.costCenters;
     });
   }
 
   ngOnDestroy(): void {
-    this.position$.unsubscribe();
-    this.store$.unsubscribe();
+    this.unsubscriber.next();
+    this.unsubscriber.complete();
   }
 
   ionViewDidEnter() {
@@ -80,10 +85,17 @@ export class MapaPage implements OnInit, OnDestroy {
    * loadCurrentPosition
    */
   public loadCurrentPosition = () => {
-    this.position$ = this.geolocationService.getCurrentPosition().subscribe(position => {
-      this.lat = position.lat;
-      this.lng = position.lng;
-    });
+    this.geolocationService.getCurrentPosition()
+      .pipe(
+        takeUntil(this.unsubscriber),
+        catchError(error => {
+          this.toastService.errorToast(error)
+          return throwError(error);
+        }),
+      ).subscribe(position => {
+        this.lat = position.lat;
+        this.lng = position.lng;
+      });
   }
 
 }

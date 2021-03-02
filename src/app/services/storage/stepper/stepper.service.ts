@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { SyncService } from 'src/app/shared/services/sync/sync.service';
 import { StorageSyncService } from '../storage-sync/storage-sync.service';
@@ -15,6 +15,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MachineryService } from 'src/app/modules/machinery/services/machinery.service';
 import { ConsumptionService } from './../../../modules/consumptions/services/consumption.service';
 import { Consumption } from './../../../shared/services/store/store-interface';
+import { throttle } from 'rxjs/operators';
+import { OrderSyncService } from '../order-sync/order-sync.service';
+import { ApplicationRegistryService } from '../../application-registry/application-registry.service';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +51,9 @@ export class StepperService {
     private deviceSyncService: DeviceSyncService,
     private httpService: HttpService,
     private machineryService: MachineryService,
-    private consumptionService: ConsumptionService
+    private consumptionService: ConsumptionService,
+    private orderSyncService: OrderSyncService,
+    private applicationRegistryService: ApplicationRegistryService
   ) {
     this.networkService.getNetworkStatus().subscribe(status => this.isOnline = status);
   }
@@ -102,6 +107,14 @@ export class StepperService {
         this.onlySyncConsumptions(validConsumptions);
       }
 
+      // If Applications
+      const validAplications = await this.orderSyncService.getApplicationsPendingToSave();
+      if (validAplications.length && this.syncError === null) {
+        this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Registros de Aplicación' });
+        this.stepsArraySubject.next(this.stepsArray);
+        this.onlySyncApplications(validAplications);
+      }
+
       // Sync data
       if (this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Sincronizando' });
@@ -138,11 +151,14 @@ export class StepperService {
       const username = userData.username;
       const activeConnection = this.storeService.getActiveConnection();
 
-      this.syncService.syncData(username, activeConnection.superuser ? 1 : 0).subscribe(success => {
-        resolve(success['data']);
-      }, error => {
-        resolve(error);
-      });
+      this.syncService.syncData(username, activeConnection.superuser ? 1 : 0)
+        .pipe(
+          throttle(event => interval(5000))
+        ).subscribe(success => {
+          resolve(success['data']);
+        }, error => {
+          resolve(error);
+        });
     });
   }
 
@@ -453,6 +469,34 @@ export class StepperService {
       this.httpService.errorHandler(error);
       this.syncError = true;
     });
+  }
+
+  /**
+   * onlySyncApplications
+   * @param applications
+   */
+  public onlySyncApplications = async (applications: Array<any> = []) => {
+    const activeCompany = this.storeService.getActiveCompany();
+
+    for (let index = 0; index < applications.length; index++) {
+      const element = applications[index];
+
+      const application = Object.assign({}, element[0], {
+        humidity: element[2]["humidity"],
+        wind: element[2]["wind"],
+        temperature: element[2]["temperature"],
+        totalTime: element[3]["time"],
+        startDate: element[3]["startDate"],
+        endDate: element[3]["endDate"],
+      });
+
+      this.applicationRegistryService.storeApplication(application, element[4], element[1], activeCompany.user).subscribe(success => {
+        this.orderSyncService.removeTempApplication(application.tempId);
+      }, error => {
+        this.httpService.errorHandler(error);
+        this.syncError = true;
+      });
+    }
   }
 
 }

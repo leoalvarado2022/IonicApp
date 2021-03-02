@@ -1,0 +1,119 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-back-button class="header-back-button" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Resumen</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ng-container *ngIf="isLoading">
+    CARGANDO
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading">
+
+    <!-- Apllication Card -->
+    <ion-card class="card-item">
+      <ion-item lines="full">
+        <ion-badge slot="start">{{ applicationData.costCenterCode | uppercase }}</ion-badge>
+        <ion-label>{{ applicationData.costCenterName | titlecase }}</ion-label>
+      </ion-item>
+
+      <ion-card-content>
+        <ng-container>
+          <p> <strong>Maquina</strong>: {{ applicationData.machineryName | titlecase }}</p>
+          <p> <strong>Implemento</strong>: {{ applicationData.implementName | titlecase }} </p>
+          <p> <strong>Operador</strong>: {{ applicationData.operatorName | titlecase }}</p>
+        </ng-container>
+
+        <div class="ion-text-right">
+          <ion-chip>
+            <ion-icon name="calculator-outline" color="success"></ion-icon>
+            <ion-label>{{ applicationData.applicationBalance }} </ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Chemicals Card -->
+    <ion-card class="card-item" *ngFor="let chemical of chemicalsData">
+      <ion-card-header>
+        <ion-card-title>{{ chemical.itemName }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Dosis 100L</ion-label>
+          <ion-input [value]="chemical.dosis100l" style="text-align: right;"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Dosis Hectareas</ion-label>
+          <ion-input [value]="chemical.hectaresDosis" style="text-align: right;"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Weather Card -->
+    <ion-card class="card-item">
+      <ion-list>
+        <ion-item>
+          <ion-icon slot="start" name="location-outline"></ion-icon>
+          <ion-label position="floating">Ubicacion</ion-label>
+          <ion-input type="text" [value]="weatherData.location" style="text-transform: capitalize"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="cloud-outline"></ion-icon>
+          <ion-label position="floating">Cielo</ion-label>
+          <ion-input type="text" [value]="weatherData.sky" style="text-transform: capitalize"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="thermometer-outline"></ion-icon>
+          <ion-label position="floating">Temperatura Actual</ion-label>
+          <ion-input type="number" [value]="weatherData.temperature"></ion-input>
+          <ion-badge slot="end">°C</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="water-outline"></ion-icon>
+          <ion-label position="floating">Humedad</ion-label>
+          <ion-input type="number" [value]="weatherData.humidity"></ion-input>
+          <ion-badge slot="end">%</ion-badge>
+        </ion-item>
+        <ion-item>
+          <ion-icon slot="start" name="speedometer-outline"></ion-icon>
+          <ion-label position="floating">Viento</ion-label>
+          <ion-input type="number" [value]="weatherData.wind"></ion-input>
+          <ion-badge slot="end">m/s</ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <ion-card class="card-item">
+      <ion-item>
+        <ion-label>Tiempo</ion-label>
+        <ion-text>{{ operationData.time }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Fecha Inicio</ion-label>
+        <ion-text>{{ formatDate(operationData.startDate) }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Fecha Fin</ion-label>
+        <ion-text>{{ formatDate(operationData.endDate) }}</ion-text>
+      </ion-item>
+    </ion-card>
+  </ng-container>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="storeApplication()">
+    Guardar
+  </ion-button>
+</ion-footer>

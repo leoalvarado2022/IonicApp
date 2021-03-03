@@ -12,7 +12,6 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { RouteReuseStrategy } from '@angular/router';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { IConfig, NgxMaskModule } from 'ngx-mask';
-import { FCM } from '@ionic-native/fcm/ngx';
 import { Ndef, NFC } from '@ionic-native/nfc/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import localeCL from '@angular/common/locales/es-CL';
@@ -56,7 +55,6 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     Device,
     Camera,
     Geolocation,
-    FCM,
     NFC,
     Ndef,
     NativeAudio,

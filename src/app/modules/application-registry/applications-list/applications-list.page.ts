@@ -95,13 +95,7 @@ export class ApplicationsListPage implements OnInit {
 
         this.orderBalanceToApply = orderBalanceToApply;
         this.orderBalanceApplied = orderBalanceApplied;
-
         this.filteredToApplyApplications = orderBalanceToApply;
-        console.log('orderBalanceToApply', orderBalanceToApply);
-        console.log('orderHeader', orderHeader);
-        console.log('orderCostCenter', orderCostCenter);
-
-
         this.filteredAppliedApplications = [...this.pendingToSaveApplications, ...orderBalanceApplied];
         this.implementTypeCostCenters = data[6];
         this.workers = data[7]
@@ -222,6 +216,10 @@ export class ApplicationsListPage implements OnInit {
    * getImplementName
    */
   public getImplementName = (): string => {
+    if (!this.orderMachinery) {
+      return '';
+    }
+
     const find = this.implementTypeCostCenters.find(item => item.id === this.orderMachinery.costCenterImplementId);
     return find ? find.name : '';
   }
@@ -230,6 +228,10 @@ export class ApplicationsListPage implements OnInit {
    * getWorkerName
    */
   public getWorkerName = (): string => {
+    if (!this.orderMachinery) {
+      return '';
+    }
+
     const find = this.workers.find(item => item.id === this.orderMachinery.operatorId);
     return find ? find.name : '';
   }

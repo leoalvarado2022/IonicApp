@@ -55,16 +55,9 @@ export class SummaryStepPage implements OnInit {
    * storeApplication
    */
   public storeApplication = () => {
-    const application = Object.assign({}, this.applicationData, {
-      totalTime: this.operationData.time,
-      startDate: this.operationData.startDate,
-      endDate: this.operationData.endDate,
-      temperature: this.weatherData.temperature,
-      humidity: this.weatherData.humidity,
-      wind: this.weatherData.wind
+    this.orderSyncService.setTempApplicationReadyById(this.applicationData.tempId).then(() => {
+      this.router.navigate(["/home-page/registro_aplicacion/applications", this.applicationData.applicationOrderId]);
     });
-
-    this.router.navigate(["/home-page/registro_aplicacion/applications", application.applicationOrderId]);
   }
 
 }

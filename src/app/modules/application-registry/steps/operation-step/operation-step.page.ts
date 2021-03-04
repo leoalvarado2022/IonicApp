@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, interval, NEVER, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, takeWhile } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import * as moment from "moment";
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,13 +22,14 @@ export class OperationStepPage implements OnInit, OnDestroy {
   private tempId: number;
   private unsubscriber = new Subject();
 
-  // Timer    
+  // Timer
   private isTimerPaused = new BehaviorSubject(true);
   private readonly startDate = "1900-01-01 00:00:00";
   private currentDate = this.startDate;
   private chrono = this.startTime;
-  private chronoState = true;
   private positions: Array<ApplicationLocationInterface> = [];
+
+  private startOperationDate: string = null;
 
   constructor(
     private orderSyncService: OrderSyncService,
@@ -50,6 +51,10 @@ export class OperationStepPage implements OnInit, OnDestroy {
         return isPaused ? NEVER : interval(1000);
       }),
     ).subscribe(() => {
+      if(this.startOperationDate === null ){
+        this.startOperationDate = moment().format("YYYY-MM-DD HH:mm:ss");
+      }
+
       this.updateChrono();
     });
   }
@@ -65,7 +70,7 @@ export class OperationStepPage implements OnInit, OnDestroy {
     this.geolocationService.startTracker()
       .pipe(
         takeUntil(this.unsubscriber),
-        filter(item => !this.isTimerPaused.getValue()),
+        filter(() => !this.isTimerPaused.getValue()),
         map(item => this.mapCustomPosition(item)),
       ).subscribe(data => {
         if (this.positions.length === 0) {
@@ -176,7 +181,7 @@ export class OperationStepPage implements OnInit, OnDestroy {
       const data = {
         time: totalRounded,
         tempId: this.tempId,
-        startDate: moment().format("YYYY-MM-DD HH:mm:ss"),
+        startDate: this.startOperationDate,
         endDate: moment().format("YYYY-MM-DD HH:mm:ss")
       }
 

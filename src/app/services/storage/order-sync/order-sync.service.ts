@@ -271,6 +271,22 @@ export class OrderSyncService {
   }
 
   /**
+   * setTempApplicationReadyById
+   * @param tempId
+   */
+  public setTempApplicationReadyById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplications().then((tempApplications: Array<any>) => {
+      const setReady = tempApplications.find(item => item.tempId === tempId);
+      setReady.isReady = true;
+
+      const removed = tempApplications.filter(item => item.tempId !== tempId);
+      removed.push(setReady);
+
+      return this.setTempApplications(removed);
+    });
+  }
+
+  /**
    * setTempApplicationChemicals
    * @param tempApplicationChemicals array of temp chemicals
    */
@@ -450,7 +466,9 @@ export class OrderSyncService {
       const promises = [];
 
       tempApplications.forEach(item => {
-        promises.push(this.getAllTempDataById(item.tempId));
+        if (item.isReady) {
+          promises.push(this.getAllTempDataById(item.tempId));
+        }
       });
 
       return Promise.all(promises);

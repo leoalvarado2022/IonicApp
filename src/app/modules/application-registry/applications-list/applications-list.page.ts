@@ -97,6 +97,11 @@ export class ApplicationsListPage implements OnInit {
         this.orderBalanceApplied = orderBalanceApplied;
 
         this.filteredToApplyApplications = orderBalanceToApply;
+        console.log('orderBalanceToApply', orderBalanceToApply);
+        console.log('orderHeader', orderHeader);
+        console.log('orderCostCenter', orderCostCenter);
+
+
         this.filteredAppliedApplications = [...this.pendingToSaveApplications, ...orderBalanceApplied];
         this.implementTypeCostCenters = data[6];
         this.workers = data[7]

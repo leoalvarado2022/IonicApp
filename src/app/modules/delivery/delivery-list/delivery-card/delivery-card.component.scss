@@ -2,8 +2,8 @@
   //margin-bottom: 5px;
 }
 
-ion-card{
-  margin: 7px;
+ion-card {
+  margin: 7px 7px 0 7px;
 }
 
 .icon-delivery {
@@ -21,7 +21,7 @@ ion-card{
   padding: 0;
 }
 
-.error{
+.error {
   //border: 1px solid red !important;
   --background: red;
 }
@@ -100,10 +100,14 @@ ion-item-sliding {
   color: var(--ion-color-primary);
 }
 
-ion-card-header{
+ion-card-header {
   padding: 2px 23px;
 }
 
-ion-card-content{
+ion-card-content {
   padding-bottom: 6px;
+}
+
+p {
+  margin: 2px;
 }

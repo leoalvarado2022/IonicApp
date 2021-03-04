@@ -10,6 +10,7 @@ import {PosService} from '../../services/pos.service';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
+import {Prints} from '../../../../helpers/prints';
 
 @Component({
   selector: 'app-accepted',
@@ -34,6 +35,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     private _posService: PosService,
     private _toastService: ToastService,
     private _storageSyncService: StorageSyncService,
+    public prints: Prints
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
     this.loadNotifications();
@@ -363,4 +365,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
   }
 
+  printOrder(command: any) {
+    this.prints.printCommand(command);
+  }
 }

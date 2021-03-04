@@ -13,6 +13,7 @@ export class DeliveryCardComponent implements OnInit {
   private now = moment();
 
   @Output() orderSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() orderPrint: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor() {
@@ -29,7 +30,7 @@ export class DeliveryCardComponent implements OnInit {
    */
   public viewOrder = (order: any) => {
     this.orderSelected.emit(order);
-  }
+  };
 
   /**
    * @description obtener las imagenes
@@ -50,5 +51,13 @@ export class DeliveryCardComponent implements OnInit {
     }
 
     return '';
+  }
+
+  /**
+   * @description print command
+   * @param command
+   */
+  printCommand(command: any) {
+    this.orderPrint.emit(command);
   }
 }

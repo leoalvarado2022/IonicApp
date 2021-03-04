@@ -10,12 +10,14 @@ import {environment} from '../../../../environments/environment';
 import {PosService} from '../services/pos.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
 import {ActionSheetController} from '@ionic/angular';
+import {Prints} from '../../../helpers/prints';
+
 
 @Component({
   selector: 'app-delivery-list',
   templateUrl: './delivery-list.page.html',
   styleUrls: ['./delivery-list.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class DeliveryListPage implements OnInit, OnDestroy {
 
@@ -23,6 +25,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   private service: Subscription;
   private refreshData: Subscription;
   public allOrder: Array<any> = [];
+  public orderDetail;
   public checkedAutomatic = false;
   public searchDeliveryListMSec = environment.searchDeliveryListMSec;
   public integrationImages: Array<any> = [];
@@ -36,13 +39,13 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     private router: Router,
     private backgroundMode: BackgroundMode,
     public _posService: PosService,
-    public actionSheetController: ActionSheetController
-  ) {
+    public actionSheetController: ActionSheetController,
+    public prints: Prints) {
   }
 
   ionViewDidEnter() {
     // if (this._deliveryService.getAutomatic()) {
-      // this.checkedAutomatic = this._deliveryService.getAutomatic();
+    // this.checkedAutomatic = this._deliveryService.getAutomatic();
     // }
     this._storageSyncService.getIntegrationImages().then((data) => {
       this.integrationImages = data;
@@ -187,6 +190,29 @@ export class DeliveryListPage implements OnInit, OnDestroy {
    */
   goBack() {
     this.router.navigate(['/home-page']);
+  }
+
+  /**
+   * @description print command
+   * @param command
+   */
+  printCommand(command: any) {
+    this.loaderService.startLoader('Imprimiendo...');
+    const user = this.storeService.getActiveCompany();
+
+    const data = {
+      user: user.user,
+      id: command.id
+    };
+
+    this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
+      this.orderDetail = success.resp;
+      this.prints.printCommand(this.orderDetail);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
   }
 
 }

@@ -23,10 +23,15 @@
           <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
           <img [src]="imageIntegration(order.id_integration)" alt="" *ngIf="order?.id_integration"
                class="integration-img">
+          <ion-button color="success" class="icon-delivery" *ngIf="order?.status === 'pending'"
+                      (click)="printOrder(order)">
+            <ion-icon name="print-outline"></ion-icon>
+          </ion-button>
           <ion-button color="danger" style="margin-left: 15%;" class="button-class" *ngIf="order?.status === 'pending'"
                       (click)="setNotificationStatus('rejected', order?.id_integration)">Rechazar
           </ion-button>
-          <ion-button color="warning" style="right: 75px !important;" class="button-class" *ngIf="order?.status === 'pending' && reprocess(order?.id_integration, order.products)"
+          <ion-button color="warning" style="right: 75px !important;" class="button-class"
+                      *ngIf="order?.status === 'pending' && reprocess(order?.id_integration, order.products)"
                       (click)="httpReprocess(order.products, order.id)">Reprocesar
           </ion-button>
           <ion-button color="primary" class="button-class" style="right: 75px !important;"
@@ -122,7 +127,8 @@
                     <span *ngIf="!modifier.name_product && modifier.type === 'ITEM'"
                           style="color: rgba(255,0,0,0.63);font-style: italic;">{{modifier?.name_item}}</span>
                     <span *ngIf="modifier.name_product && modifier.type === 'ITEM'">{{modifier?.name_item}}</span>
-                    <span *ngIf="modifier.type === 'TEXTO'"><span *ngIf="modifier?.header_item">{{modifier?.header_item}}
+                    <span *ngIf="modifier.type === 'TEXTO'"><span
+                        *ngIf="modifier?.header_item">{{modifier?.header_item}}
                       -</span> {{modifier?.name_item}}</span>
                   </p>
                 </ion-col>
@@ -135,13 +141,13 @@
         </ion-grid>
 
       </ng-container>
-     <!-- <div class="space">
-        <p><strong>TOTAL PRODUCTOS</strong> <span
-            style="float: right;">{{ order?.value_items | currency:' ':'symbol':'1.0-2'}}</span>
-        </p>
-        <p *ngIf="order?.value_shipping"><strong>ENVÍO</strong> <span
-            style="float: right;">{{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</span></p>
-      </div>-->
+      <!-- <div class="space">
+         <p><strong>TOTAL PRODUCTOS</strong> <span
+             style="float: right;">{{ order?.value_items | currency:' ':'symbol':'1.0-2'}}</span>
+         </p>
+         <p *ngIf="order?.value_shipping"><strong>ENVÍO</strong> <span
+             style="float: right;">{{ order?.value_shipping | currency:' ':'symbol':'1.0-2'}}</span></p>
+       </div>-->
       <div class="space">
         <p *ngIf="order?.value_order"><strong>TOTAL ORDEN</strong> <span
             style="float: right;">{{ order?.value_order | currency:' ':'symbol':'1.0-2'}}</span></p>

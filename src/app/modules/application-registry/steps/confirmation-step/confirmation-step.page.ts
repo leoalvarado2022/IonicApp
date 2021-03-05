@@ -96,7 +96,10 @@ export class ConfirmationStepPage implements OnInit {
    * patchForm
    */
   private patchForm = () => {
-    if(!this.orderMachinery){
+    this.applicationForm.get('hectares').patchValue(this.currentApplication ? this.currentApplication.applicationBalance : '');
+    this.applicationForm.updateValueAndValidity();
+
+    if (!this.orderMachinery) {
       return;
     }
 
@@ -113,7 +116,7 @@ export class ConfirmationStepPage implements OnInit {
    * getMachineryCapacity
    */
   public getMachineryCapacity = (): number => {
-    if(!this.orderMachinery){
+    if (!this.orderMachinery) {
       return 0;
     }
 

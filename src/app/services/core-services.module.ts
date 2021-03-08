@@ -23,6 +23,7 @@ import { WeatherService } from './weather/weather.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { CleanStringService } from './clean-string/clean-string.service';
 import { ApplicationRegistryService } from './application-registry/application-registry.service';
+import { Insomnia } from '@ionic-native/insomnia/ngx';
 
 @NgModule({
   imports: [
@@ -46,6 +47,7 @@ import { ApplicationRegistryService } from './application-registry/application-r
     WeatherService,
     InAppBrowser,
     CleanStringService,
+    Insomnia,
 
     // Storage Services Block
     StorageSyncService,

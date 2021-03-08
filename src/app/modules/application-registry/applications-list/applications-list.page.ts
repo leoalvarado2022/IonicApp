@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonItemSliding } from '@ionic/angular';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
@@ -12,13 +12,15 @@ import { MachineryService } from '../../machinery/services/machinery.service';
 import { ApplicationListInterface } from '../application-list.interface';
 import * as moment from "moment";
 import { ApplicationRegistryService } from 'src/app/services/application-registry/application-registry.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-applications-list',
   templateUrl: './applications-list.page.html',
   styleUrls: ['./applications-list.page.scss'],
 })
-export class ApplicationsListPage implements OnInit {
+export class ApplicationsListPage implements OnInit, OnDestroy {
 
   public currentTab: 1 | 2 = 1;
   public readonly toApplyTab = 1;
@@ -35,6 +37,8 @@ export class ApplicationsListPage implements OnInit {
 
   private implementTypeCostCenters: Array<any> = [];
   private workers: Array<any> = [];
+  private unsubscribe = new Subject();
+  private firstLoad = true;
 
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
@@ -47,12 +51,23 @@ export class ApplicationsListPage implements OnInit {
     private storeService: StoreService,
     private storageSyncService: StorageSyncService,
     private machineryService: MachineryService,
+    private stepperService: StepperService
   ) {
 
   }
 
   ngOnInit() {
+    this.stepperService.getStepper().pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe((steps: Array<any>) => {
+      if (steps.length === 0 && !this.firstLoad) {
+        this.loadData();
+      }
+    });
+  }
 
+  ngOnDestroy() {
+    this.unsubscribe.complete();
   }
 
   ionViewWillEnter() {
@@ -66,6 +81,7 @@ export class ApplicationsListPage implements OnInit {
    * loadData
    */
   private loadData = (): void => {
+    this.firstLoad = false;
     this.loaderService.startLoader();
 
     const activeCompany = this.storeService.getActiveCompany();

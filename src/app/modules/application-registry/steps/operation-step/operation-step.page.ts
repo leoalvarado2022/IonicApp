@@ -8,6 +8,7 @@ import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { GeolocationService } from 'src/app/shared/services/geolocation/geolocation.service';
 import { ApplicationLocationInterface } from '../../application-location.interface';
 import * as haversine from "haversine";
+import { Insomnia } from '@ionic-native/insomnia/ngx';
 
 @Component({
   selector: 'app-operation-step',
@@ -36,7 +37,8 @@ export class OperationStepPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private alertService: AlertService,
     private geolocationService: GeolocationService,
-    private router: Router
+    private router: Router,
+    private insomnia: Insomnia
   ) {
 
   }
@@ -51,7 +53,7 @@ export class OperationStepPage implements OnInit, OnDestroy {
         return isPaused ? NEVER : interval(1000);
       }),
     ).subscribe(() => {
-      if(this.startOperationDate === null ){
+      if (this.startOperationDate === null) {
         this.startOperationDate = moment().format("YYYY-MM-DD HH:mm:ss");
       }
 
@@ -137,6 +139,7 @@ export class OperationStepPage implements OnInit, OnDestroy {
    * pauseStop
    */
   public pauseStop = (): void => {
+    this.unlockScreen();
     this.isTimerPaused.next(true);
   }
 
@@ -144,6 +147,7 @@ export class OperationStepPage implements OnInit, OnDestroy {
    * startResume
    */
   public startResume = (): void => {
+    this.lockScreen();
     this.isTimerPaused.next(false);
     this.watchPosition();
   }
@@ -171,6 +175,7 @@ export class OperationStepPage implements OnInit, OnDestroy {
     const yes = await this.alertService.confirmAlert("Esta seguro que desea finalizar esta applicacion?");
 
     if (yes) {
+      this.unlockScreen();
       this.pauseStop();
 
       const startDate = moment(this.startDate);
@@ -188,6 +193,26 @@ export class OperationStepPage implements OnInit, OnDestroy {
       await this.orderSyncService.addTempApplicationsTime(data);
       this.router.navigate(["/home-page/registro_aplicacion/summary-step", this.tempId]);
     }
+  }
+
+  /**
+   * lockScreen
+   */
+  private lockScreen = () => {
+    this.insomnia.keepAwake().then(
+      () => console.log('lock success'),
+      () => console.log('lock error')
+    );
+  }
+
+  /**
+   * unlockScreen
+   */
+  private unlockScreen = () => {
+    this.insomnia.allowSleepAgain().then(
+      () => console.log('unlock success'),
+      () => console.log('unlock error')
+    );
   }
 
 }

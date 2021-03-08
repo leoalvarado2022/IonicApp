@@ -58,6 +58,7 @@ export class ApplicationsListPage implements OnInit {
   ionViewWillEnter() {
     this.currentTab = this.toApplyTab;
     this.orderSyncService.setApplicationLocations([]).then();
+    this.selectedApplication = null;
     this.loadData();
   }
 
@@ -209,6 +210,7 @@ export class ApplicationsListPage implements OnInit {
    */
   public reload = (event: any) => {
     this.loadData();
+    this.selectedApplication = null;
     event.target.complete();
   }
 

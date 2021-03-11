@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { StepperService } from '../services/storage/stepper/stepper.service';
 import { Platform } from '@ionic/angular';
 import { takeUntil } from 'rxjs/operators';
+import { GeolocationService } from '../shared/services/geolocation/geolocation.service';
 
 @Component({
   selector: 'app-home-page',
@@ -23,7 +24,8 @@ export class HomePagePage {
     private timerService: TimerService,
     private stepperService: StepperService,
     private httpService: HttpService,
-    private platform: Platform
+    private platform: Platform,
+    private geolocationService: GeolocationService
   ) {
 
   }
@@ -31,6 +33,11 @@ export class HomePagePage {
   ionViewWillEnter() {
     // Store push token
     this.storePushToken();
+
+    // Section of code just for ask the location permission
+    this.geolocationService.getCurrentPosition().subscribe(success => {
+      // NICE
+    });
   }
 
   ionViewDidEnter() {
@@ -43,12 +50,12 @@ export class HomePagePage {
         this.stepperService.syncAll();
       });
 
-    // StartTimer    
+    // StartTimer
     this.timerService.startResume();
   }
 
   ionViewWillLeave() {
-    this.timerService.pauseStop();    
+    this.timerService.pauseStop();
     this.subscription.complete();
   }
 

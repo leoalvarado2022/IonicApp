@@ -109,10 +109,12 @@ export class ApplicationsListPage implements OnInit, OnDestroy {
         this.orderSyncService.getApplicationsPendingToSave()
       ]).then((data: any) => {
         this.pendingToSaveApplications = this.orderSyncService.mapApplicationsPendingToSave(data[8]);
+        const mapped = this.pendingToSaveApplications.map(item => item.id);
+        const filtered = orderBalanceToApply.filter(item => !mapped.includes(item.id));
 
-        this.orderBalanceToApply = orderBalanceToApply;
+        this.orderBalanceToApply = [...filtered];
         this.orderBalanceApplied = orderBalanceApplied;
-        this.filteredToApplyApplications = orderBalanceToApply;
+        this.filteredToApplyApplications = [...filtered];
         this.filteredAppliedApplications = [...this.pendingToSaveApplications, ...orderBalanceApplied];
         this.implementTypeCostCenters = data[6];
         this.workers = data[7]

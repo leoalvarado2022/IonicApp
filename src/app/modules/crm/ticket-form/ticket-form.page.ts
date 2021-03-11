@@ -7,7 +7,7 @@ import { HttpService } from '../../../shared/services/http/http.service';
 import { CameraService } from '../../../shared/services/camera/camera.service';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
-import { ActionSheetController } from '@ionic/angular';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-ticket-form',
@@ -47,7 +47,7 @@ export class TicketFormPage implements OnInit {
     private httpService: HttpService,
     private router: Router,
     private cameraService: CameraService,
-    private actionSheetController: ActionSheetController
+    private toastService: ToastService
   ) {
 
   }
@@ -57,9 +57,9 @@ export class TicketFormPage implements OnInit {
     this.states = this.storeService.getTicketStates();
     this.users = this.storeService.getTicketUsers();
     this.priorities = this.storeService.getTicketPriorities();
-
     const activeCompany = this.storeService.getActiveCompany();
     const details = this.storeService.getTicketDetails();
+
     const lastDetail = details.find(item => item.id === this.activeTicket.tickets_det);
     this.activeTicket.createdAt = moment(this.activeTicket.createdAt, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
     this.activeTicket.description = this.cleanString(this.activeTicket.description);
@@ -131,6 +131,24 @@ export class TicketFormPage implements OnInit {
       wsAuthID: userSelected.wsAuthID
     };
 
+    /*
+    if(this.ticketValidation1(formData)){
+      return ;
+    }
+    */
+
+    if (this.ticketValidation2(formData)) {
+      return;
+    }
+
+    if (this.ticketValidation3(formData)) {
+      return;
+    }
+
+    if (this.ticketValidation4(formData)) {
+      return;
+    }
+
     this.storeDetail(data);
   }
 
@@ -163,10 +181,62 @@ export class TicketFormPage implements OnInit {
 
   /**
    * cleanString
-   * @param string 
+   * @param string
    */
   private cleanString = (string: string): string => {
     return string.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&#60;').replace(/>/g, '&#62;');
-  }  
+  }
+
+  /**
+   * Si el estado del ticket es cerrado y no tiene solución devuelve mensaje la_solucion_no_debe_estar_en_blanco
+   */
+  public ticketValidation1 = (formData: any): boolean => {
+    if (formData.state.toLowerCase() === "cerrado" && (this.activeTicket.solution.toLowerCase() === "ninguna" || this.activeTicket.solution === "")) {
+      this.toastService.warningToast("La solucion no debe estar en blanco");
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Si el ticket es distinto a interno, el estado es abierto y esta asignado a cliente: devuelve el mensaje estado_abierto_no_puede_asignarse_a_cliente
+   */
+  public ticketValidation2 = (formData: any): boolean => {
+    if (this.activeTicket.origin_id.toLowerCase() !== "interno" && formData.state.toLowerCase() === "abierto" && formData.assign_client) {
+      this.toastService.warningToast("Estado abierto no se puede asignar a cliente");
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Si el ticket esta asignado a cliente y el estado es distinto a cerrado, no vamos o en proceso: devuelve el mensaje solo_puede_asignarse_a_cliente_cerrado_no_vamos_y_en_proceso (Esta validación cambiará, se agrega estado por actualizar)
+   * @param formData
+   * @returns
+   */
+  public ticketValidation3 = (formData: any): boolean => {
+    if (formData.assign_client && (formData.state.toLowerCase() !== "cerrado" || formData.state.toLowerCase() !== "no vamos" || formData.state.toLowerCase() !== "en proceso" || formData.state.toLowerCase() !== "por actualizar")) {
+      this.toastService.warningToast("Solo puede asignarse a cliente estados: 'cerrado', 'no vamos', 'por actualizar' y 'en proceso'");
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Si el ticket es interno y asignado a cliente devuelve el mensaje ticket_origen_interno_no_puede_asignarse_a_cliente
+   * @param formData
+   * @returns
+   */
+  public ticketValidation4 = (formData: any): boolean => {
+    if (this.activeTicket.origin_id.toLowerCase() !== "interno" && formData.assign_client) {
+      this.toastService.warningToast("Ticket origen interno no puede asignarse a cliente");
+      return true;
+    }
+
+    return false;
+  }
 
 }

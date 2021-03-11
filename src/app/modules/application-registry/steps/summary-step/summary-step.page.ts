@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import * as moment from "moment";
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 
 @Component({
   selector: 'app-summary-step',
@@ -22,7 +23,8 @@ export class SummaryStepPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private orderSyncService: OrderSyncService,
-    private router: Router
+    private router: Router,
+    private stepperService: StepperService
   ) {
 
   }
@@ -56,6 +58,7 @@ export class SummaryStepPage implements OnInit {
    */
   public storeApplication = () => {
     this.orderSyncService.setTempApplicationReadyById(this.applicationData.tempId).then(() => {
+      this.stepperService.syncAll();
       this.router.navigate(["/home-page/registro_aplicacion/applications", this.applicationData.applicationOrderId]);
     });
   }

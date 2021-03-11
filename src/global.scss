@@ -25,10 +25,6 @@
 /**
 Iphone 11 Home button hack
 */
-body {
-  margin-top: env(safe-area-inset-top);
-  margin-top: constant(safe-area-inset-top);
-}
 
 ion-footer {
   margin-bottom: env(safe-area-inset-bottom);

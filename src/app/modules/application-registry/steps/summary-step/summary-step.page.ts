@@ -39,7 +39,7 @@ export class SummaryStepPage implements OnInit {
       this.weatherData = data[2];
       this.operationData = data[3];
       this.locationsData = data[4];
-
+            
       this.isLoading = false;
     });
   }

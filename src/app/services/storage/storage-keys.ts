@@ -52,8 +52,7 @@ export enum StorageKeys {
   DeliveryNotifications = 'deliveryNotifications',
 
   // Applications
-  ApplicationTempId = 'applicationTempId',
-  ApplicationLocation = 'applicationLocation',
+  ApplicationTempId = 'applicationTempId',  
   OrderHeader = 'orderHeader',
   OrderCostCenter = 'orderCostCenter',
   OrderMachinery = 'orderMachinery',
@@ -64,6 +63,7 @@ export enum StorageKeys {
   TempApplicationChemicals = 'tempApplicationChemicals',
   TempWeather = 'tempWeather',
   TempApplicationsTime = 'TempApplicationsTime',
+  TempApplicationLocation = 'tempApplicationLocation',
 
   // pos
   Agreements = 'agreementsPOS',

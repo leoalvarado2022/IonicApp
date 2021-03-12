@@ -72,7 +72,6 @@ export class ApplicationsListPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.currentTab = this.toApplyTab;
-    this.orderSyncService.setApplicationLocations([]).then();
     this.selectedApplication = null;
     this.loadData();
   }

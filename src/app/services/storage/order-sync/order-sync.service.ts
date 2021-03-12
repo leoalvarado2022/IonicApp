@@ -169,7 +169,7 @@ export class OrderSyncService {
    * getApplicationLocations
    */
   private getApplicationLocations = (): Promise<Array<ApplicationLocationInterface>> => {
-    return this.storage.get(StorageKeys.ApplicationLocation).then((applicationLocations: Array<ApplicationLocationInterface>) => {
+    return this.storage.get(StorageKeys.TempApplicationLocation).then((applicationLocations: Array<ApplicationLocationInterface>) => {
       return applicationLocations ? applicationLocations : [];
     });
   }
@@ -179,7 +179,7 @@ export class OrderSyncService {
    * @param applicationLocations
    */
   public setApplicationLocations = (applicationLocations: Array<ApplicationLocationInterface>): Promise<Array<ApplicationLocationInterface>> => {
-    return this.storage.set(StorageKeys.ApplicationLocation, applicationLocations);
+    return this.storage.set(StorageKeys.TempApplicationLocation, applicationLocations);
   }
 
   /**
@@ -205,11 +205,11 @@ export class OrderSyncService {
 
   /**
    * clearApplicationLocationsById
-   * @param id
+   * @param tempId temp id
    */
-  public clearApplicationLocationsById = (id: number): Promise<Array<ApplicationLocationInterface>> => {
+  public clearApplicationLocationsById = (tempId: number): Promise<Array<ApplicationLocationInterface>> => {
     return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
-      return applicationLocations.filter(item => item.id !== id);
+      return applicationLocations.filter(item => item.tempId !== tempId);
     });
   }
 

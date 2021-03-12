@@ -183,8 +183,7 @@ export class StepperService {
   /**
    * onlySyncTallies
    */
-  public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {
-    console.log('onlySyncTallies');
+  public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {    
     const log = await this.syncTallies(talliesBuilded);
 
     if (log instanceof HttpErrorResponse) {
@@ -277,8 +276,7 @@ export class StepperService {
   /**
    * onlySyncDevices
    */
-  public onlySyncDevices = async (devicesToRecord: Array<any>) => {
-    console.log('onlySyncDevices');
+  public onlySyncDevices = async (devicesToRecord: Array<any>) => {    
     const log = await this.syncDevices(devicesToRecord);
 
     if (log instanceof HttpErrorResponse) {
@@ -475,16 +473,12 @@ export class StepperService {
    * onlySyncApplications
    * @param applications
    */
-  public onlySyncApplications = async (applications: Array<any> = []) => {
-    console.log("onlySyncApplications", applications);
-
+  public onlySyncApplications = async (applications: Array<any> = []) => {    
     const activeCompany = this.storeService.getActiveCompany();
 
     for (let index = 0; index < applications.length; index++) {
       const element = applications[index];
-
-      console.log("element", element);
-
+            
       const application = Object.assign({}, element[0], {
         humidity: element[2]["humidity"],
         wind: element[2]["wind"],
@@ -493,15 +487,13 @@ export class StepperService {
         startDate: element[3]["startDate"],
         endDate: element[3]["endDate"],
       });
-
-      /*
+      
       this.applicationRegistryService.storeApplication(application, element[4], element[1], activeCompany.user).subscribe(success => {
         this.orderSyncService.removeTempApplication(application.tempId);
       }, error => {
         this.httpService.errorHandler(error);
         this.syncError = true;
-      });
-      */
+      });      
     }
   }
 

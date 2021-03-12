@@ -28,6 +28,9 @@
     </ion-item>
 
     <ion-item-options side="end">
+      <ion-item-option (click)="printDocumentPdf417(order)" color="secondary">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </ion-item-option>
       <ion-item-option (click)="printCommand(order)">
         <ion-icon name="print-outline"></ion-icon>
       </ion-item-option>

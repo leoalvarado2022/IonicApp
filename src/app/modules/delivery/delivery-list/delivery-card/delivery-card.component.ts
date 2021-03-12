@@ -14,6 +14,7 @@ export class DeliveryCardComponent implements OnInit {
 
   @Output() orderSelected: EventEmitter<any> = new EventEmitter<any>();
   @Output() orderPrint: EventEmitter<any> = new EventEmitter<any>();
+  @Output() orderPrintDocument: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor() {
@@ -59,5 +60,13 @@ export class DeliveryCardComponent implements OnInit {
    */
   printCommand(command: any) {
     this.orderPrint.emit(command);
+  }
+
+  /**
+   * @description print document pdf417
+   * @param command
+   */
+  printDocumentPdf417(command: any) {
+    this.orderPrintDocument.emit(command);
   }
 }

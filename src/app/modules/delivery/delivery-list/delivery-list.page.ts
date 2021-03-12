@@ -193,6 +193,29 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   }
 
   /**
+   * @description print document pdf417
+   * @param command
+   */
+  printDocumentPdf417(command: any) {
+    this.loaderService.startLoader('Imprimiendo...');
+    const user = this.storeService.getActiveCompany();
+
+    const data = {
+      user: user.user,
+      id: command.id
+    };
+
+    this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
+      this.orderDetail = success.resp;
+      this.prints.printDocumentPdf417(this.orderDetail);
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
+  }
+
+  /**
    * @description print command
    * @param command
    */

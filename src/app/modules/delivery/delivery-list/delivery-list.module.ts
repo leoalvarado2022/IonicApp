@@ -4,6 +4,8 @@ import {SharedModule} from '../../../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {MenuOrderPage} from './menu-order/menu-order.page';
+import {Prints} from '../../../helpers/prints';
+import {Sockets} from '../../../helpers/sockets';
 
 const routes: Routes = [
   {
@@ -21,7 +23,8 @@ const routes: Routes = [
   ],
   declarations: [
     DeliveryListPage
-  ]
+  ],
+  providers: [Prints, Sockets]
 })
 export class DeliveryListModule {
 

@@ -227,7 +227,7 @@ export class PosService {
         if (success && success.length) {
           for (let data of success) {
             if (data.respuesta !== 'ok') {
-              this._toastService.errorToast(`${data.respuesta} del POS FX10`);
+              this._toastService.errorToast(`${data.respuesta} del POS FX10`, 10000);
             }
           }
         }

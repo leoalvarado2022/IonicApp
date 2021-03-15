@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as moment from 'moment';
+import {Platform} from '@ionic/angular';
 
 @Component({
   selector: 'app-delivery-card',
@@ -12,15 +13,23 @@ export class DeliveryCardComponent implements OnInit {
   @Input() images: any = null;
   private now = moment();
 
+  access = true;
+
   @Output() orderSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() orderPrint: EventEmitter<any> = new EventEmitter<any>();
+  @Output() orderPrintDocument: EventEmitter<any> = new EventEmitter<any>();
 
 
-  constructor() {
+  constructor(private platform: Platform) {
 
   }
 
   ngOnInit() {
-    // console.log(this.images, 'this.images');
+    this.platform.ready().then(() => {
+      if (this.platform.is('android')) {
+        this.access = false;
+      }
+    });
   }
 
   /**
@@ -29,7 +38,7 @@ export class DeliveryCardComponent implements OnInit {
    */
   public viewOrder = (order: any) => {
     this.orderSelected.emit(order);
-  }
+  };
 
   /**
    * @description obtener las imagenes
@@ -50,5 +59,21 @@ export class DeliveryCardComponent implements OnInit {
     }
 
     return '';
+  }
+
+  /**
+   * @description print command
+   * @param command
+   */
+  printCommand(command: any) {
+    this.orderPrint.emit(command);
+  }
+
+  /**
+   * @description print document pdf417
+   * @param command
+   */
+  printDocumentPdf417(command: any) {
+    this.orderPrintDocument.emit(command);
   }
 }

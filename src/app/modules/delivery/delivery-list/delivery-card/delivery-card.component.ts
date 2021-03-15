@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as moment from 'moment';
+import {Platform} from '@ionic/angular';
 
 @Component({
   selector: 'app-delivery-card',
@@ -12,17 +13,23 @@ export class DeliveryCardComponent implements OnInit {
   @Input() images: any = null;
   private now = moment();
 
+  access = true;
+
   @Output() orderSelected: EventEmitter<any> = new EventEmitter<any>();
   @Output() orderPrint: EventEmitter<any> = new EventEmitter<any>();
   @Output() orderPrintDocument: EventEmitter<any> = new EventEmitter<any>();
 
 
-  constructor() {
+  constructor(private platform: Platform) {
 
   }
 
   ngOnInit() {
-    // console.log(this.images, 'this.images');
+    this.platform.ready().then(() => {
+      if (this.platform.is('android')) {
+        this.access = false;
+      }
+    });
   }
 
   /**

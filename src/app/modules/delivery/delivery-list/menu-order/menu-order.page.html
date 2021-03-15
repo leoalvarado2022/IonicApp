@@ -21,12 +21,37 @@
   <ion-card>
     <ion-card-content>
       <div class="scrollmenu" *ngIf="menuHeader.length">
-        <span class="group" *ngFor="let header of menuHeader"
-              [ngClass]="{'select': headerSelect === header}" (click)="selectFilterItems(header)">{{header}}</span>
+        <span class="group" *ngFor="let header of menuHeader" [ngClass]="{'select': headerSelect === header}"
+          (click)="selectFilterItems(header)">{{header}}</span>
       </div>
     </ion-card-content>
   </ion-card>
 
+
+  <ng-container *ngIf="itemsSelect && itemsSelect.length">
+    <ion-card *ngFor="let item of itemsSelectFilter(headerSelect)" class="item-card">
+      <ion-item lines="none">
+        <ion-thumbnail slot="start" (click)="changePhoto(item.id_par_items)" class="item-thumbnail">
+          <ion-img [src]="attachment(item.id_par_items)"></ion-img>
+          <ion-icon name="camera" class="icon-cam-fixed"></ion-icon>
+        </ion-thumbnail>
+        <ion-label style="height: 60px;">
+          <div class="description">
+            <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
+            <p><span>{{item.price | currency:' ':'symbol':'1.0-2' }}</span></p>
+            <div class="button-footer">
+              <div class="button-add" (click)="addItems(item)">+</div>
+              <div class="number-add">{{quantityOrder(item)}}</div>
+              <div class="button-add" (click)="removeItems(item)">-</div>
+            </div>
+          </div>
+        </ion-label>
+      </ion-item>
+
+    </ion-card>
+  </ng-container>
+
+  <!--
   <ng-container *ngIf="itemsSelect && itemsSelect.length">
     <ion-card *ngFor="let item of itemsSelectFilter(headerSelect)">
       <ion-card-content style="padding: 0;">
@@ -48,6 +73,7 @@
       </ion-card-content>
     </ion-card>
   </ng-container>
+  -->
 </ion-content>
 
 <ion-footer class="show-order" (click)="showOrder()" *ngIf="orderCountTotal() !== 0">

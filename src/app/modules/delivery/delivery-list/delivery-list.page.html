@@ -25,10 +25,10 @@
     <ion-toggle color="secondary" class="position-automatic" (ionChange)="changeAutomatic($event)"
       [checked]="checkedAutomatic" disabled></ion-toggle>
   </ion-toolbar>
-  <ion-toolbar class="color-automatic">
+  <ion-toolbar class="tabs-toolbar">
     <ion-tabs>
       <!-- Tab bar -->
-      <ion-tab-bar slot="top">
+      <ion-tab-bar slot="top" class="tab-bar"> 
         <ion-tab-button (click)="changeStatus('pending')" [selected]="selected === 'pending'"
           [ngClass]="{'backgroundSelected' : selected === 'pending'}">
           <ion-label *ngIf="selected === 'pending'">Pendientes</ion-label>

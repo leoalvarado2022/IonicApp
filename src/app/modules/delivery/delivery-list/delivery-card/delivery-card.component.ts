@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as moment from 'moment';
 import {Platform} from '@ionic/angular';
+import {StoreService} from '../../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-delivery-card',
@@ -20,7 +21,8 @@ export class DeliveryCardComponent implements OnInit {
   @Output() orderPrintDocument: EventEmitter<any> = new EventEmitter<any>();
 
 
-  constructor(private platform: Platform) {
+  constructor(private platform: Platform,
+              private storeService: StoreService) {
 
   }
 
@@ -44,18 +46,33 @@ export class DeliveryCardComponent implements OnInit {
    * @description obtener las imagenes
    * @param id_integration
    */
-  imageIntegration(id_integration) {
-    const img = localStorage.getItem(id_integration);
+  imageIntegration(order) {
+    const id_integration = order.id_integration;
+
+    let img = localStorage.getItem(id_integration);
+
+    if (order.origin === 'FX360') {
+      const user: any = this.storeService.getActiveCompany();
+      img = localStorage.getItem(order.id_entities);
+    }
+
     if (img) {
       return img;
     } else {
       if (this.images.length) {
-        const imgData = this.images.find(value => value.id_integration === +id_integration);
-        const img = imgData.integration_image;
-        localStorage.setItem(id_integration, img);
+        if (order.origin === 'FX360') {
+          const imgData = this.images.find(value => value.id_entity === +order.id_entities);
+          img = imgData.integration_image;
+          localStorage.setItem(order.id_entities, img);
+        } else {
+          const imgData = this.images.find(value => value.id_integration === +id_integration);
+          img = imgData.integration_image;
+          localStorage.setItem(id_integration, img);
+        }
+
+
         return img;
       }
-
     }
 
     return '';

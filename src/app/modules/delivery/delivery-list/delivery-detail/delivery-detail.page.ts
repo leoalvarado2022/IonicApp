@@ -52,7 +52,6 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       this.images = data;
     });
 
-
     if (this.id) {
       this.loaderService.startLoader('Cargando Notificaciones');
       const user = this.storeService.getActiveCompany();
@@ -90,9 +89,8 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       };
 
       // console.log(data);
-      this._posService.openTableNew(this.order);
-
-      // this.setHttpNotificationStatus(status, data);
+      // this._posService.openTableNew(this.order);
+      this.setHttpNotificationStatus(status, data);
 
       // si el origin es una app externa
       if (this.order.origin === 'JUSTO') {
@@ -202,15 +200,31 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @description obtener las imagenes
    * @param id_integration
    */
-  imageIntegration(id_integration) {
-    const img = localStorage.getItem(id_integration);
+  imageIntegration(order) {
+    const id_integration = order.id_integration;
+
+    let img = localStorage.getItem(id_integration);
+
+    if (order.origin === 'FX360') {
+      const user: any = this.storeService.getActiveCompany();
+      img = localStorage.getItem(order.id_entities);
+    }
+
     if (img) {
       return img;
     } else {
       if (this.images.length) {
-        const imgData = this.images.find(value => value.id_integration === +id_integration);
-        const img = imgData.integration_image;
-        localStorage.setItem(id_integration, img);
+
+        if (order.origin === 'FX360') {
+          const imgData = this.images.find(value => value.id_entity === +order.id_entities);
+          img = imgData.integration_image;
+          localStorage.setItem(id_integration, img);
+        } else {
+          const imgData = this.images.find(value => value.id_integration === +id_integration);
+          img = imgData.integration_image;
+          localStorage.setItem(id_integration, img);
+        }
+
 
         return img;
       }

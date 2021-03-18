@@ -192,7 +192,9 @@
                   (click)="setNotificationStatus('delivering', order?.id_integration)">
         Entregar
       </ion-button>
-      <ion-button color="primary" style="margin-left: auto;" *ngIf="order?.status === 'accepted'">
+      <ion-button color="primary" style="margin-left: auto;"
+                  *ngIf="order?.status !== 'pending' && order?.update_pos_status === 0"
+                  (click)="updatePosStatus(order)">
         Traspasar POS
       </ion-button>
       <!--<ion-button color="medium" style="margin-left: auto;">

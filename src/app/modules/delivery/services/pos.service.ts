@@ -20,6 +20,7 @@ export class PosService {
   public insertCommandUrl = '/api/insert-command';
   public syncUrl = '/api/pos/sync';
   public cashRegisterUrl = '/api/caja-activa';
+  public updatePosStatusUrl = 'update-pos-status';
   public openTableUrl = '/api/table/open';
   public saveCommandUrl = '/api/bill/command';
   public closeUrl = '/api/bill/close';
@@ -28,6 +29,7 @@ export class PosService {
   public product: any;
   public command: any;
   public checkMenuData: any;
+  public userCompany: any;
 
   constructor(private storage: Storage,
               private httpClient: HttpClient,
@@ -106,6 +108,17 @@ export class PosService {
     const url = this.buildUrl(this.openTableUrl);
     return this.httpClient.post(url, data, {
       headers: this.getHeaders()
+    });
+  };
+
+  /**
+   * @description actualizar orden con estatus del pos
+   * @param data
+   */
+  public httpUpdatePosStatus = (data: any) => {
+    const url = this.httpService.buildUrl(this.updatePosStatusUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
     });
   };
 
@@ -215,7 +228,11 @@ export class PosService {
    * @description abrir mesa nueva version
    * @param order
    */
-  public openTableNew = async (order: any) => {
+  public openTableNew = async (order: any, user: any = null) => {
+
+    if (user) {
+      this.userCompany = user;
+    }
     // si esta activado el modo pos
     const modoPos = localStorage.getItem('modoPOS');
     if (modoPos && modoPos === '1') {
@@ -224,10 +241,20 @@ export class PosService {
 
       // console.log(order);
       this.httpInsertCommand(order).subscribe((success: any) => {
+        let noerror = true;
         if (success && success.length) {
           for (let data of success) {
             if (data.respuesta !== 'ok') {
-              this._toastService.errorToast(`${data.respuesta} del POS FX10`, 10000);
+              noerror = false;
+              this._toastService.errorToast(`${data.respuesta} del POS FX10, Orden #${order.id}`, 10000);
+            }
+          }
+          // si no hay error se marca la cuenta
+          if (noerror) {
+            if (user && this.userCompany) {
+              order.update_pos_status = 1;
+              this.httpUpdatePosStatus({pos: 1, id: order.id, user: this.userCompany}).subscribe(() => {
+              });
             }
           }
         }
@@ -731,7 +758,6 @@ export class PosService {
       return data ? data : [];
     });
   };
-
 
   deleteConnection(): void {
     localStorage.removeItem('connectionPos');

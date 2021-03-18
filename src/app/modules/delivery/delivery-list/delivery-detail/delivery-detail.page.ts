@@ -89,7 +89,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       };
 
       // console.log(data);
-      // this._posService.openTableNew(this.order);
+      // this._posService.openTableNew(this.order, user.user);
       this.setHttpNotificationStatus(status, data);
 
       // si el origin es una app externa
@@ -105,6 +105,11 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description actualizar las ordenes de la app externas
+   * @param status
+   * @param dataNotification
+   */
   async updateStatusAppOrigin(status: string, dataNotification: any) {
 
     // obtener la integraciones
@@ -152,13 +157,22 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   setHttpNotificationStatus(status: string, data: any) {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
+        const user = this.storeService.getActiveCompany();
         // agregar datos en el pos
-        this._posService.openTableNew(this.order);
+        this._posService.openTableNew(this.order, user.user);
       }
       this._location.back();
     }, error => {
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * @description actualizar estado del pos
+   */
+  updatePosStatus(order: any) {
+    const user = this.storeService.getActiveCompany();
+    this._posService.openTableNew(order, user.user);
   }
 
 

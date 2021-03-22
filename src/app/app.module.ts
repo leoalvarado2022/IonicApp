@@ -18,7 +18,6 @@ import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import { registerLocaleData } from '@angular/common';
 import { CoreServicesModule } from './services/core-services.module';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { AgmCoreModule } from '@agm/core';
 import { environment } from 'src/environments/environment';
@@ -58,7 +57,6 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     NFC,
     Ndef,
     NativeAudio,
-    BluetoothSerial,
     BackgroundMode
   ],
   bootstrap: [AppComponent]

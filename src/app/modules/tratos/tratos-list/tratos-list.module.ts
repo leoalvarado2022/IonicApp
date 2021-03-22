@@ -10,6 +10,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {DealsService} from '../services/deals/deals.service';
 import {TratosScannedPage} from '../tratos-scanned/tratos-scanned.page';
 import {WorkerDealsComponent} from '../worker-deals/worker-deals.component';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import {WorkerDealsComponent} from '../worker-deals/worker-deals.component';
     HttpClientModule
   ],
   declarations: [TratosListPage, AddTratoPage, AddCenterCostPage, TratosScannedPage, WorkerDealsComponent],
-  providers: [DealsService]
+  providers: [DealsService, BluetoothSerial, BluetoothSerial]
 })
 export class TratosListPageModule {
 }

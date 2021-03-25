@@ -1,16 +1,16 @@
-import {Injectable} from '@angular/core';
-import {Storage} from '@ionic/storage';
-import {StorageKeys} from '../../../services/storage/storage-keys';
-import {HttpClient} from '@angular/common/http';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {BehaviorSubject, interval, Observable, Subject, Subscription} from 'rxjs';
-import {StoreService} from '../../../shared/services/store/store.service';
-import {BackgroundMode} from '@ionic-native/background-mode/ngx';
-import {debounceTime} from 'rxjs/operators';
-import {environment} from '../../../../environments/environment';
-import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
-import {PosService} from './pos.service';
-import {MasterService} from './master.service';
+import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage';
+import { StorageKeys } from '../../../services/storage/storage-keys';
+import { HttpClient } from '@angular/common/http';
+import { HttpService } from '../../../shared/services/http/http.service';
+import { BehaviorSubject, interval, Observable, Subject, Subscription } from 'rxjs';
+import { StoreService } from '../../../shared/services/store/store.service';
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
+import { debounceTime } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
+import { StorageSyncService } from '../../../services/storage/storage-sync/storage-sync.service';
+import { PosService } from './pos.service';
+import { MasterService } from './master.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,12 +34,12 @@ export class DeliveryService {
   private timeAccepted = environment.searchDeliveryListAcceptedMSec;
 
   constructor(private storage: Storage,
-              private httpClient: HttpClient,
-              private httpService: HttpService,
-              private storeService: StoreService,
-              private backgroundMode: BackgroundMode,
-              private _masterService: MasterService,
-              private storageSyncService: StorageSyncService) {
+    private httpClient: HttpClient,
+    private httpService: HttpService,
+    private storeService: StoreService,
+    private backgroundMode: BackgroundMode,
+    private _masterService: MasterService,
+    private storageSyncService: StorageSyncService) {
   }
 
   /**

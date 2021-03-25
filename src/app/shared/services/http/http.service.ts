@@ -8,7 +8,6 @@ import { StoreService } from '../store/store.service';
 @Injectable()
 export class HttpService {
 
-  private readonly apiUrl: string = `${environment.api_url}/api/`;
   private readonly apiDeliveryUrl: string = `${environment.api_url_delivery}/api/`;
 
   constructor(
@@ -20,12 +19,31 @@ export class HttpService {
   }
 
   /**
+   * getApiUrl
+   * @returns
+   */
+  private getApiUrl = (): string => {
+    const connectionEnviroment = localStorage.getItem('connectionEnvironment');
+    if (connectionEnviroment) {
+      if (connectionEnviroment === "prod") {
+        return `${environment.api_url}/api/`;
+      }
+
+      if (connectionEnviroment === "qa") {
+        return `${environment.api_url_qa}/api/`;
+      }
+    }
+
+    return `${environment.api_url}/api/`;
+  }
+
+  /**
    * buildUrl
    * @param url
    * @param id
    */
   public buildUrl = (url: string, id: string = null): string => {
-    return id == null ? this.apiUrl + url : this.apiUrl + `${url}/${id}`;
+    return id == null ? this.getApiUrl() + url : this.getApiUrl() + `${url}/${id}`;
   }
 
   /**

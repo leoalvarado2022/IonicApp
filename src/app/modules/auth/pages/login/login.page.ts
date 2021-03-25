@@ -7,7 +7,7 @@ import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { HttpService } from '../../../../shared/services/http/http.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { Subscription } from 'rxjs';
-import { Platform } from '@ionic/angular';
+import { ActionSheetController, Platform } from '@ionic/angular';
 import { AppService } from 'src/app/services/app/app.service';
 import { DeviceService } from 'src/app/services/device/device.service';
 
@@ -35,7 +35,8 @@ export class LoginPage implements OnInit, OnDestroy {
     private storeService: StoreService,
     private appService: AppService,
     private deviceService: DeviceService,
-    private platform: Platform
+    private platform: Platform,
+    public actionSheetController: ActionSheetController
   ) {
 
   }
@@ -200,4 +201,41 @@ export class LoginPage implements OnInit, OnDestroy {
     longitude: 0,
     version: this.appService.getAppVersion()
   })
+
+  /**
+   * connectionsActionSheet
+   */
+  connectionsActionSheet = async () => {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Seleccione Conexion',
+      buttons: [
+        {
+          text: 'Conexion QA',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'qa');
+            this.toastService.successToast("Conexión cambiada a QA");
+          }
+        },
+        {
+          text: 'Conexion Producción',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'prod');
+            this.toastService.successToast("Conexión cambiada a PROD");
+          }
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+
+          }
+        }]
+    });
+
+    await actionSheet.present();
+  }
+
 }

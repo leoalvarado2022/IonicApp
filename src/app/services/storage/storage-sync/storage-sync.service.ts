@@ -43,7 +43,8 @@ export class StorageSyncService {
       products,
       deliveryConfig,
       integration,
-      integrationImages
+      integrationImages,
+      printConfig
     } = data;
 
     return Promise.all([
@@ -69,9 +70,10 @@ export class StorageSyncService {
       this.setProducts(products),
       this.setConfigDelivery(deliveryConfig),
       this.setIntegrationDelivery(integration),
-      this.setIntegrationImages(integrationImages)
+      this.setIntegrationImages(integrationImages),
+      this.setPrintConfig(printConfig)
     ]);
-  }
+  };
 
   /**
    * storeRemSyncData
@@ -83,7 +85,7 @@ export class StorageSyncService {
       this.setQuadrilles(quadrilles),
       this.setWorkers(workers)
     ]);
-  }
+  };
 
   /**
    * storePreContractsSyncData
@@ -93,7 +95,7 @@ export class StorageSyncService {
     const {preContracts} = data;
 
     return this.setPreContracts(preContracts);
-  }
+  };
 
   /**
    * storeTalliesSyncData
@@ -118,14 +120,14 @@ export class StorageSyncService {
       this.setDeals(deals),
       this.setBonds(bonds),
     ]);
-  }
+  };
 
   /**
    * setQuadrilles
    */
   private setQuadrilles = (quadrilles: Array<Quadrille>): Promise<Array<Quadrille>> => {
     return this.storage.set(StorageKeys.Quadrilles, quadrilles);
-  }
+  };
 
   /**
    * getAllQuadrilles
@@ -134,7 +136,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Quadrilles).then((quadrilles: Array<Quadrille>) => {
       return quadrilles ? quadrilles : [];
     });
-  }
+  };
 
   /**
    * getQuadrillesByCurrentUser
@@ -153,14 +155,14 @@ export class StorageSyncService {
 
       return [];
     });
-  }
+  };
 
   /**
    * setWorkers
    */
   private setWorkers = (workers: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Workers, workers);
-  }
+  };
 
   /**
    * getWorkers
@@ -169,28 +171,28 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Workers).then((workers: Array<any>) => {
       return workers ? workers : [];
     });
-  }
+  };
 
   /**
    * setActiveConfigDelivery
    */
   public setActiveConfigDelivery = (config: Array<any>) => {
     localStorage.setItem('activeConfigDelivery', JSON.stringify(config));
-  }
+  };
 
   /**
    * removeActiveConfigDelivery
    */
   public removeActiveConfigDelivery = () => {
     localStorage.removeItem('activeConfigDelivery');
-  }
+  };
 
   /**
    * getActiveConfigDelivery
    */
   public getActiveConfigDelivery = () => {
     return JSON.parse(localStorage.getItem('activeConfigDelivery'));
-  }
+  };
 
   /**
    * setConfigDelivery
@@ -204,7 +206,7 @@ export class StorageSyncService {
       }
     }
     return this.storage.set(StorageKeys.ConfigDelivery, config);
-  }
+  };
 
   /**
    * getConfigDelivery
@@ -213,7 +215,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.ConfigDelivery).then((config: Array<any>) => {
       return config ? config : [];
     });
-  }
+  };
 
 
   /**
@@ -221,7 +223,7 @@ export class StorageSyncService {
    */
   public setIntegrationDelivery = (delivery: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.IntegrationDelivery, delivery);
-  }
+  };
 
   /**
    * getIntegrationDelivery
@@ -230,14 +232,14 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.IntegrationDelivery).then((delivery: Array<Tally>) => {
       return delivery ? delivery : [];
     });
-  }
+  };
 
   /**
    * setIntegrationImages
    */
   public setIntegrationImages = (images: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.IntegrationImages, images);
-  }
+  };
 
   /**
    * getIntegrationImages
@@ -246,14 +248,43 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.IntegrationImages).then((images: Array<Tally>) => {
       return images ? images : [];
     });
-  }
+  };
+
+  /**
+   * setPrintConfig
+   */
+  public setPrintConfig = (config: Array<any>): Promise<Array<any>> => {
+    // let configNew: Array<any> = [[], []];
+    // if (config && config.length) {
+    // for (let print of config) {
+    //   if (print.app === 'impresion_comandas') {
+    //     configNew[0].push(print);
+    //   }
+    //
+    //   if (print.app === 'impresion_documentos') {
+    //     configNew[1].push(print);
+    //   }
+    // }
+    // }
+
+    return this.storage.set(StorageKeys.PrintConfig, config);
+  };
+
+  /**
+   * getPrintConfig
+   */
+  public getPrintConfig = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.PrintConfig).then((config: Array<Tally>) => {
+      return config ? config : [];
+    });
+  };
 
   /**
    * setTallies
    */
   private setTallies = (tallies: Array<Tally>): Promise<Array<Tally>> => {
     return this.storage.set(StorageKeys.Tallies, tallies);
-  }
+  };
 
   /**
    * getTallies
@@ -262,14 +293,14 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Tallies).then((tallies: Array<Tally>) => {
       return tallies ? tallies : [];
     });
-  }
+  };
 
   /**
    * setCostCentersCustom
    */
   private setCostCentersCustom = (costCentersCustom: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.CostCentersCustom, costCentersCustom);
-  }
+  };
 
   /**
    * costCentersCustom
@@ -278,7 +309,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.CostCentersCustom).then((costCentersCustom: Array<any>) => {
       return costCentersCustom ? costCentersCustom : [];
     });
-  }
+  };
 
   /**
    * getCostCentersCustomByDeal
@@ -303,14 +334,14 @@ export class StorageSyncService {
         });
       }
     });
-  }
+  };
 
   /**
    * setLabors
    */
   private setLabors = (labors: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Labors, labors);
-  }
+  };
 
   /**
    * getLabors
@@ -319,14 +350,14 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Labors).then((labors: Array<any>) => {
       return labors ? labors : [];
     });
-  }
+  };
 
   /**
    * setDeals
    */
   private setDeals = (deals: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Deals, deals);
-  }
+  };
 
   /**
    * getDeals
@@ -335,14 +366,14 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Deals).then((deals: Array<any>) => {
       return deals ? deals : [];
     });
-  }
+  };
 
   /**
    * setBonds
    */
   private setBonds = (bonds: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Bonds, bonds);
-  }
+  };
 
   /**
    * getBonds
@@ -351,14 +382,14 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Bonds).then((bonds: Array<any>) => {
       return bonds ? bonds : [];
     });
-  }
+  };
 
   /**
    * setMenus
    */
   private setMenus = (menus: Array<TabMenu>): Promise<Array<TabMenu>> => {
     return this.storage.set(StorageKeys.TabMenus, menus);
-  }
+  };
 
   /**
    * getMenus
@@ -367,14 +398,14 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.TabMenus).then((menus: Array<TabMenu>) => {
       return menus ? menus : [];
     });
-  }
+  };
 
   /**
    * setPreContracts
    */
   private setPreContracts = (preContracts: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.PreContracts, preContracts);
-  }
+  };
 
   /**
    * getPreContracts
@@ -383,7 +414,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.PreContracts).then((preContracts: Array<any>) => {
       return preContracts ? preContracts : [];
     });
-  }
+  };
 
   /**
    * setCountries
@@ -391,7 +422,7 @@ export class StorageSyncService {
    */
   private setCountries = (countries: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Countries, countries);
-  }
+  };
 
   /**
    * getCountries
@@ -400,7 +431,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Countries).then((countries: Array<any>) => {
       return countries ? countries : [];
     });
-  }
+  };
 
   /**
    * setContractTypes
@@ -408,7 +439,7 @@ export class StorageSyncService {
    */
   private setContractTypes = (contractTypes: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.ContractTypes, contractTypes);
-  }
+  };
 
   /**
    * getContractTypes
@@ -434,7 +465,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.CivilStatus).then((civilStatus: Array<any>) => {
       return civilStatus ? civilStatus : [];
     });
-  }
+  };
 
   /**
    * setAfps
@@ -442,7 +473,7 @@ export class StorageSyncService {
    */
   private setAfps = (afps: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Afp, afps);
-  }
+  };
 
   /**
    * getAfps
@@ -451,7 +482,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Afp).then((afps: Array<any>) => {
       return afps ? afps : [];
     });
-  }
+  };
 
   /**
    * setIsapres
@@ -459,7 +490,7 @@ export class StorageSyncService {
    */
   private setIsapres = (isapres: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Isapre, isapres);
-  }
+  };
 
   /**
    * getIsapres
@@ -468,7 +499,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Isapre).then((isapres: Array<any>) => {
       return isapres ? isapres : [];
     });
-  }
+  };
 
   /**
    * setDevices
@@ -476,7 +507,7 @@ export class StorageSyncService {
    */
   private setDevices = (devices: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Devices, devices);
-  }
+  };
 
   /**
    * getDevices
@@ -485,14 +516,14 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Devices).then((devices: Array<any>) => {
       return devices ? devices : [];
     });
-  }
+  };
 
   /**
    * setMachinery
    */
   private setMachinery = (machinery: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Machinery, machinery);
-  }
+  };
 
   /**
    * getMachinery
@@ -501,7 +532,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Machinery).then((machinery: Array<Machinery>) => {
       return machinery ? machinery : [];
     });
-  }
+  };
 
   /**
    * getMachineryByCompany
@@ -524,7 +555,7 @@ export class StorageSyncService {
         });
       }
     });
-  }
+  };
 
   /**
    * setCostCenterTypes
@@ -532,7 +563,7 @@ export class StorageSyncService {
    */
   private setCostCenterTypes = (costCenterTypes: Array<any>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.CostCenterTypes, costCenterTypes);
-  }
+  };
 
   /**
    * getCostCenterTypes
@@ -541,7 +572,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.CostCenterTypes).then((costCenterTypes: Array<any>) => {
       return costCenterTypes ? costCenterTypes : [];
     });
-  }
+  };
 
   /**
    * setWarehouses
@@ -549,7 +580,7 @@ export class StorageSyncService {
    */
   private setWarehouses = (warehouses: Array<Warehouse>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Warehouses, warehouses);
-  }
+  };
 
   /**
    * getWarehouses
@@ -558,7 +589,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Warehouses).then((warehouses: Array<Warehouse>) => {
       return warehouses ? warehouses : [];
     });
-  }
+  };
 
   /**
    * setConsumption
@@ -566,7 +597,7 @@ export class StorageSyncService {
    */
   private setConsumptions = (consumptions: Array<Consumption>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Consumptions, consumptions);
-  }
+  };
 
   /**
    * getConsumption
@@ -575,7 +606,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Consumptions).then((consumptions: Array<Consumption>) => {
       return consumptions ? consumptions : [];
     });
-  }
+  };
 
   /**
    * setProducts
@@ -583,7 +614,7 @@ export class StorageSyncService {
    */
   private setProducts = (products: Array<Product>): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.Products, products);
-  }
+  };
 
   /**
    * getProducts
@@ -592,7 +623,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.Products).then((products: Array<Product>) => {
       return products ? products : [];
     });
-  }
+  };
 
   /**
    * getMachineryTypeCostCenters
@@ -618,7 +649,7 @@ export class StorageSyncService {
       const mapped = machineryTypes.map(item => item.costCenterId);
       return data[1].filter(item => mapped.includes(item.id) && (item.machineryType.toLowerCase() === 'automata' || item.machineryType.toLowerCase() === 'maquinaria'));
     });
-  }
+  };
 
   /**
    * getImplementTypeCostCenters
@@ -644,7 +675,7 @@ export class StorageSyncService {
       const mapped = machineryTypes.map(item => item.costCenterId);
       return data[1].filter(item => mapped.includes(item.id) && item.machineryType.toLowerCase() === 'implemento');
     });
-  }
+  };
 
   /**
    * setTally Temp
@@ -652,7 +683,7 @@ export class StorageSyncService {
    */
   public setTallyTemp = (tallyTemp: Array<any> = []): Promise<Array<any>> => {
     return this.storage.set(StorageKeys.TallyTemp, tallyTemp);
-  }
+  };
 
   /**
    * getTemp
@@ -661,7 +692,7 @@ export class StorageSyncService {
     return this.storage.get(StorageKeys.TallyTemp).then((tallyTemp: Array<any>) => {
       return tallyTemp ? tallyTemp : [];
     });
-  }
+  };
 
   /**
    * addTalliesToSyncedTallies
@@ -678,7 +709,7 @@ export class StorageSyncService {
 
       return [];
     });
-  }
+  };
 
   /**
    * deletePreContractFromStorage
@@ -694,13 +725,13 @@ export class StorageSyncService {
 
       return Promise.resolve([]);
     });
-  }
+  };
 
   /**
    * clearStorage
    */
   public clearStorage = (): Promise<any> => {
     return this.storage.clear();
-  }
+  };
 
 }

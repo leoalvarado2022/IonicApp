@@ -78,6 +78,7 @@ export interface Sync {
   deliveryConfig?: Array<any>;
   integration?: Array<any>;
   integrationImages?: Array<any>;
+  printConfig?: Array<any>;
 }
 
 export interface ContractInterface {

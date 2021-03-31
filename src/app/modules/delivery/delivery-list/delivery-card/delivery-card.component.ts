@@ -62,8 +62,12 @@ export class DeliveryCardComponent implements OnInit {
       if (this.images.length) {
         if (order.origin === 'FX360') {
           const imgData = this.images.find(value => value.id_entity === +order.id_entities);
-          img = imgData.integration_image;
-          localStorage.setItem(order.id_entities, img);
+          if(imgData) {
+            img = imgData.integration_image;
+            localStorage.setItem(order.id_entities, img);
+          } else {
+            img = '';
+          }
         } else {
           const imgData = this.images.find(value => value.id_integration === +id_integration);
           img = imgData.integration_image;

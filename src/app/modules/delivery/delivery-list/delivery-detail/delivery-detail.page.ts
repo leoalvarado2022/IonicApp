@@ -35,7 +35,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     private _posService: PosService,
     private _toastService: ToastService,
     private _storageSyncService: StorageSyncService,
-    public prints: Prints
+    public prints: Prints,
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
     this.loadNotifications();
@@ -90,7 +90,8 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
       // console.log(data);
       // this._posService.openTableNew(this.order, user.user);
-      this.setHttpNotificationStatus(status, data);
+      // this.setHttpNotificationStatus(status, data);
+      this.printOrderDocument(this.order);
 
       // si el origin es una app externa
       if (this.order.origin === 'JUSTO') {
@@ -157,6 +158,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   setHttpNotificationStatus(status: string, data: any) {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
+
         const user = this.storeService.getActiveCompany();
         // agregar datos en el pos
         this._posService.openTableNew(this.order, user.user);
@@ -231,8 +233,12 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
         if (order.origin === 'FX360') {
           const imgData = this.images.find(value => value.id_entity === +order.id_entities);
-          img = imgData.integration_image;
-          localStorage.setItem(id_integration, img);
+          if(imgData) {
+            img = imgData.integration_image;
+            localStorage.setItem(id_integration, img);
+          } else {
+            img = '';
+          }
         } else {
           const imgData = this.images.find(value => value.id_integration === +id_integration);
           img = imgData.integration_image;
@@ -393,7 +399,17 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
   }
 
-  printOrder(command: any) {
-    this.prints.printCommand(command);
+  printOrderCommand(command: any) {
+    this._storageSyncService.getPrintConfig().then(data => {
+      this.prints.printConfigActive(data, 'comanda');
+      this.prints.printCommand(command);
+    })
+  }
+
+  printOrderDocument(command: any) {
+    this._storageSyncService.getPrintConfig().then(data => {
+      this.prints.printConfigActive(data, 'documento');
+      this.prints.printDocumentPdf417(command);
+    })
   }
 }

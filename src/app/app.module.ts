@@ -21,6 +21,7 @@ import { CoreServicesModule } from './services/core-services.module';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { AgmCoreModule } from '@agm/core';
 import { environment } from 'src/environments/environment';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
@@ -57,7 +58,8 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     NFC,
     Ndef,
     NativeAudio,
-    BackgroundMode
+    BackgroundMode,
+    BluetoothSerial
   ],
   bootstrap: [AppComponent]
 })

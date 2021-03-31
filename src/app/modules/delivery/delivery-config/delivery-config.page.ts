@@ -10,11 +10,18 @@ import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {StepperService} from '../../../services/storage/stepper/stepper.service';
+import {BluetoothService} from '../../../services/bluetooth/bluetooth.service';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
+import {Prints} from '../../../helpers/prints';
 
 @Component({
   selector: 'app-delivery-config',
   templateUrl: './delivery-config.page.html',
   styleUrls: ['./delivery-config.page.scss'],
+  providers: [
+    BluetoothSerial,
+    BluetoothService
+  ],
 })
 export class DeliveryConfigPage implements OnInit {
 
@@ -42,7 +49,9 @@ export class DeliveryConfigPage implements OnInit {
     private storeService: StoreService,
     private toastService: ToastService,
     private httpService: HttpService,
-    private stepperService: StepperService
+    private stepperService: StepperService,
+    private bluetoothService: BluetoothService,
+    public prints: Prints,
   ) {
     this.platform.ready().then((data) => {
       if (this.platform.is('android')) {
@@ -127,6 +136,13 @@ export class DeliveryConfigPage implements OnInit {
       configId: event.detail.value
     });
   }
+
+  /**
+   * getPairedDevices
+   */
+  public getPairedDevices = () => {
+    return this.bluetoothService.getPairedDevices();
+  };
 
   /**
    * @description actualizar datos
@@ -266,6 +282,18 @@ export class DeliveryConfigPage implements OnInit {
   }
 
   /**
+   * @description test de impresion comanda
+   */
+  testPrint(test: string = 'comanda') {
+    this.prints.printConfigActive(this.printConfig, test);
+    if (this.prints.getPrintIP()) {
+      this.prints.printTestIP();
+    } else {
+      this.prints.printTestBT();
+    }
+  }
+
+  /**
    * ///////////////// DOCUMENTOS
    */
   get idDocument() {
@@ -317,6 +345,19 @@ export class DeliveryConfigPage implements OnInit {
     }
 
     return '';
+  }
+
+  /**
+   * @buscarmetodo de busqueda
+   */
+  valueCommandMethod() {
+    const valueCommand = this.valueCommand.controls.find(data => data.value === 'ip');
+
+    if (valueCommand) {
+      return true;
+    }
+
+    return false;
   }
 
   /**

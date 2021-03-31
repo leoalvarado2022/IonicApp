@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-import { BluetoothDevice } from './bluetooth-device.interface';
-import { ToastService } from 'src/app/shared/services/toast/toast.service';
-import { BehaviorSubject, timer } from 'rxjs';
-import { flatMap, take } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
+import {BluetoothDevice} from './bluetooth-device.interface';
+import {ToastService} from 'src/app/shared/services/toast/toast.service';
+import {BehaviorSubject, timer} from 'rxjs';
+import {flatMap, take} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -41,21 +41,21 @@ export class BluetoothService {
    */
   public getBluetoothStatus = (): BehaviorSubject<boolean> => {
     return this.isBluetoothEnabled;
-  }
+  };
 
   /**
    * getSearchingStatus
    */
   public getSearchingStatus = (): BehaviorSubject<boolean> => {
     return this.isSearchingDevices;
-  }
+  };
 
   /**
    * getConnectionStatus
    */
   public getConnectionStatus = (): BehaviorSubject<boolean> => {
     return this.isDeviceConnected;
-  }
+  };
 
   /**
    * getPairedDevices
@@ -87,7 +87,7 @@ export class BluetoothService {
     }, () => {
       this.isDeviceConnected.next(false);
     });
-  }
+  };
 
   /**
    * listPairedDevices
@@ -98,7 +98,7 @@ export class BluetoothService {
     }, () => {
       this.pairedDevices.next([]);
     });
-  }
+  };
 
   /**
    * connectDevice
@@ -112,7 +112,7 @@ export class BluetoothService {
     }, () => {
       this.toastService.errorToast('Ocurrio un error al conectar el dispositivo', 2000, 'bottom');
     });
-  }
+  };
 
   /**
    * disconnectDevice
@@ -125,7 +125,7 @@ export class BluetoothService {
       this.listPairedDevices();
       this.toastService.errorToast('Ocurrio un error desconectando dispositivo', 2000, 'bottom');
     });
-  }
+  };
 
   /**
    * scanDevices
@@ -141,7 +141,7 @@ export class BluetoothService {
       this.availableDevices.next([]);
       this.isSearchingDevices.next(false);
     });
-  }
+  };
 
   /**
    * processWeight
@@ -157,7 +157,7 @@ export class BluetoothService {
     }
 
     return 0;
-  }
+  };
 
   /**
    * showFormattedWeight
@@ -165,7 +165,7 @@ export class BluetoothService {
    */
   public showFormattedWeight = (value: string): string => {
     return value.split(',')[2];
-  }
+  };
 
   /**
    * enableBlueetooth
@@ -176,15 +176,15 @@ export class BluetoothService {
     }, error => {
       console.log('enable error', error);
     });
-  }
+  };
 
   /**
    * getLiveWeight
    */
   public getLiveWeight = () => {
     return timer(0, 500).pipe(
-      flatMap( () => this.bluetoothSerial.subscribe('\n').pipe(take(1)))
+      flatMap(() => this.bluetoothSerial.subscribe('\n').pipe(take(1)))
     );
-  }
+  };
 
 }

@@ -31,8 +31,6 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   public integrationImages: Array<any> = [];
   public printIP = true;
   public printBluetooth = false;
-  public ip = '0.0.0.0';
-
   constructor(
     private storeService: StoreService,
     private httpService: HttpService,
@@ -87,40 +85,9 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._storageSyncService.getPrintConfig().then((data: any) => {
-      console.log(data);
-
-      if (data && data.length) {
-
-        for (let print of data) {
-
-          if (print.app === 'impresion_comandas' && print.param === 'metodo' && print.value === 'ip') {
-            const valueIp = data.find(filter => filter.param === 'direccion').value;
-            this.printBluetooth = false;
-            this.printIP = true;
-            this.ip = valueIp;
-          } else if (print.app === 'impresion_comandas' && print.param === 'metodo' && print.value === 'bluetooth') {
-            this.printBluetooth = true;
-            this.printIP = false;
-          }
-
-          if (print.app === 'impresion_documentos' && print.param === 'metodo' && print.value === 'ip') {
-            const valueIp = data.find(filter => filter.param === 'direccion').value;
-            this.printBluetooth = false;
-            this.printIP = true;
-            this.ip = valueIp;
-          } else if (print.app === 'impresion_documentos' && print.param === 'metodo' && print.value === 'bluetooth') {
-            this.printBluetooth = true;
-            this.printIP = false;
-          }
-
-        }
-
-      }
-
-    });
-
-
+    // this._storageSyncService.getPrintConfig().then((data: any) => {
+    //   console.log(data);
+    // });
   }
 
   /**
@@ -244,7 +211,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
       this.orderDetail = success.resp;
       if (this.printIP) {
-        this.prints.printDocumentPdf417(this.orderDetail, this.ip);
+        this.prints.printDocumentPdf417(this.orderDetail);
       }
       this.loaderService.stopLoader();
     }, error => {
@@ -269,7 +236,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
       this.orderDetail = success.resp;
       if (this.printIP) {
-        this.prints.printCommand(this.orderDetail, this.ip);
+        this.prints.printCommand(this.orderDetail);
       }
       this.loaderService.stopLoader();
     }, error => {

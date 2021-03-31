@@ -52,31 +52,49 @@
 
   <ion-card *ngIf="printCommad && printCommad.length">
     <ion-card-content>
-      <h4 class="ion-text-center">
+      <h4 class="ion-text-center" (click)="testPrint()">
         Impresion Comanda
       </h4>
       <form [formGroup]="configFormComanda">
         <div formArrayName="value">
-          <ion-item *ngFor="let control of valueCommand.controls; let i = index">
-            <ion-label position="floating">{{traduction(labelCommand(i))}}</ion-label>
-            <ion-input type="text" [formControlName]="i"
-                       *ngIf="labelCommand(i) === 'direccion'"></ion-input>
-            <ion-input type="number" [formControlName]="i"
-                       *ngIf="labelCommand(i) === 'copias'"></ion-input>
-            <ion-select [formControlName]="i" *ngIf="labelCommand(i) === 'general'">
-              <ion-select-option value="si">si</ion-select-option>
-              <ion-select-option value="no">no</ion-select-option>
-              <ion-select-option value="preguntar">preguntar</ion-select-option>
-            </ion-select>
-            <ion-select [formControlName]="i" *ngIf="labelCommand(i) === 'metodo'">
-              <ion-select-option value="ip">IP</ion-select-option>
-              <!--              <ion-select-option value="bluetooth">Bluetooth</ion-select-option>-->
-            </ion-select>
-            <ion-select [formControlName]="i" *ngIf="labelCommand(i) === 'codigo_barra'">
-              <ion-select-option value="si">si</ion-select-option>
-              <ion-select-option value="no">no</ion-select-option>
-            </ion-select>
-          </ion-item>
+          <div *ngFor="let control of valueCommand.controls; let i = index">
+            <ion-item *ngIf="labelCommand(i) === 'copias'">
+              <ion-label position="floating">{{traduction(labelCommand(i))}}</ion-label>
+              <ion-input type="number" [formControlName]="i"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="labelCommand(i) === 'codigo_barra'">
+              <ion-label position="floating">{{traduction(labelCommand(i))}}</ion-label>
+              <ion-select [formControlName]="i">
+                <ion-select-option value="si">si</ion-select-option>
+                <ion-select-option value="no">no</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item *ngIf="labelCommand(i) === 'metodo'">
+              <ion-label position="floating">{{traduction(labelCommand(i))}}</ion-label>
+              <ion-select [formControlName]="i">
+                <ion-select-option value="ip">IP</ion-select-option>
+                <ion-select-option value="bluetooth">Bluetooth</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item *ngIf="labelCommand(i) === 'general'">
+              <ion-label position="floating">{{traduction(labelCommand(i))}}</ion-label>
+              <ion-select [formControlName]="i">
+                <ion-select-option value="si">si</ion-select-option>
+                <ion-select-option value="no">no</ion-select-option>
+                <ion-select-option value="preguntar">preguntar</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item *ngIf="labelCommand(i) === 'direccion' && valueCommandMethod()">
+              <ion-label position="floating">{{traduction(labelCommand(i))}}</ion-label>
+              <ion-input type="text" [formControlName]="i"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="labelCommand(i) === 'direccion'  && !valueCommandMethod()">
+              <ion-label position="floating">Dirección</ion-label>
+              <ion-select [formControlName]="i">
+                <ion-select-option [value]="device.address" *ngFor="let device of getPairedDevices() | async">{{ device.name ? device.name : device.address }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
         </div>
         <br>
         <ion-button expand="block" [disabled]="configFormComanda.invalid  || loadingCommand"
@@ -92,7 +110,7 @@
 
   <ion-card *ngIf="printDocument && printDocument.length">
     <ion-card-content>
-      <h4 class="ion-text-center">
+      <h4 class="ion-text-center" (click)="testPrint('documento')">
         Impresion Documentos
       </h4>
       <form [formGroup]="configFormDocuments">

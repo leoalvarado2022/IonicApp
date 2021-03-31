@@ -46,7 +46,7 @@
 
           <ion-button color="tertiary" class="button-class"
                       style="margin-left: auto;" *ngIf="order?.status === 'done'"
-                      (click)="printOrder(order)">
+                      (click)="printOrderCommand(order)">
             Comanda
           </ion-button>
 
@@ -200,7 +200,7 @@
       <!--<ion-button color="medium" style="margin-left: auto;">
         Documento
       </ion-button>-->
-      <ion-button color="tertiary" style="margin-left: auto;">
+      <ion-button color="tertiary" style="margin-left: auto;" (click)="printOrderCommand(order)">
         Comanda
       </ion-button>
     </ion-fab-list>

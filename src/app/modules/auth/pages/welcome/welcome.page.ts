@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../../../../shared/services/storage/storage.service';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
-import { AlertController, Platform } from '@ionic/angular';
+import { ActionSheetController, AlertController, Platform } from '@ionic/angular';
 import { environment } from '../../../../../environments/environment';
 import { StoreService } from '../../../../shared/services/store/store.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
@@ -26,6 +26,7 @@ export class WelcomePage implements OnInit {
     private storageSyncService: StorageSyncService,
     public deviceService: DeviceService,
     public appService: AppService,
+    public actionSheetController: ActionSheetController
   ) {
     this.platform.ready().then(() => {
       this.showCordovaFeatures = this.platform.is('cordova');
@@ -93,6 +94,50 @@ export class WelcomePage implements OnInit {
 
     this.storeService.setUserLocaStorage(user);
     this.toastService.successToast('Datos eliminados');
+  }
+
+  /**
+   * connectionsActionSheet
+   */
+  public connectionsActionSheet = async () => {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Seleccione Conexion',
+      buttons: [
+        {
+          text: 'Conexion QA',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'qa');
+            this.toastService.successToast("Conexión cambiada a QA");
+          }
+        },
+        {
+          text: 'Conexion Producción',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'prod');
+            this.toastService.successToast("Conexión cambiada a PROD");
+          }
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+
+          }
+        }]
+    });
+
+    await actionSheet.present();
+  }
+
+  /**
+   * showQa
+   * @returns
+   */
+  public showQa = (): string => {
+    return localStorage.getItem("connectionEnvironment") === "qa" ? "QA" : "";
   }
 
 }

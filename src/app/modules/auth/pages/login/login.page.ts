@@ -35,8 +35,7 @@ export class LoginPage implements OnInit, OnDestroy {
     private storeService: StoreService,
     private appService: AppService,
     private deviceService: DeviceService,
-    private platform: Platform,
-    public actionSheetController: ActionSheetController
+    private platform: Platform
   ) {
 
   }
@@ -200,42 +199,6 @@ export class LoginPage implements OnInit, OnDestroy {
     latitude: 0,
     longitude: 0,
     version: this.appService.getAppVersion()
-  })
-
-  /**
-   * connectionsActionSheet
-   */
-  connectionsActionSheet = async () => {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Seleccione Conexion',
-      buttons: [
-        {
-          text: 'Conexion QA',
-          icon: 'cloud',
-          handler: () => {
-            localStorage.setItem('connectionEnvironment', 'qa');
-            this.toastService.successToast("Conexión cambiada a QA");
-          }
-        },
-        {
-          text: 'Conexion Producción',
-          icon: 'cloud',
-          handler: () => {
-            localStorage.setItem('connectionEnvironment', 'prod');
-            this.toastService.successToast("Conexión cambiada a PROD");
-          }
-        },
-        {
-          text: 'Cancelar',
-          icon: 'close',
-          role: 'cancel',
-          handler: () => {
-
-          }
-        }]
-    });
-
-    await actionSheet.present();
-  }
+  });
 
 }

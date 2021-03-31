@@ -1,19 +1,23 @@
 <ion-header>
   <ion-toolbar>
-    <ng-container *ngIf="showCordovaFeatures">
-      <ion-buttons slot="start">
-        <ion-button color="default" (click)="deviceService.showDeviceData()" class="button-text-color" fill="clear">
-          {{ appService.getAppVersion() }}
-        </ion-button>
-      </ion-buttons>
-    </ng-container>
+    <ion-buttons slot="start" *ngIf="showCordovaFeatures">
+      <ion-button color="default" class="button-text-color" fill="clear" (click)="connectionsActionSheet()">
+        {{ appService.getAppVersion() }}
+      </ion-button>
+    </ion-buttons>
     <ion-title>&nbsp;</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" *ngIf="showCordovaFeatures">
       <ng-container *ngIf="deviceService.getUUIDLast8()">
-        <ion-button color="default" (click)="deviceService.showFullUUID()" class="button-text-color" fill="clear">
+        <ion-button color="default" (click)="deviceService.showFullUUID()" class="button-text-color" fill="clear"
+          slot="end">
           NC: {{ deviceService.getUUIDLast8() }}
         </ion-button>
       </ng-container>
+
+      <ion-button color="default" slot="end" fill="clear" class="button-text-color"
+        (click)="deviceService.showDeviceData()">
+        <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 

@@ -132,4 +132,12 @@ export class WelcomePage implements OnInit {
     await actionSheet.present();
   }
 
+  /**
+   * showQa
+   * @returns
+   */
+  public showQa = (): string => {
+    return localStorage.getItem("connectionEnvironment") === "qa" ? "QA" : "";
+  }
+
 }

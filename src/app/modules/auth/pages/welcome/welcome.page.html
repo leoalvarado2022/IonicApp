@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="start" *ngIf="showCordovaFeatures">
       <ion-button color="default" class="button-text-color" fill="clear" (click)="connectionsActionSheet()">
-        {{ appService.getAppVersion() }}
+        {{ appService.getAppVersion() }} {{ showQa() }}
       </ion-button>
     </ion-buttons>
     <ion-title>&nbsp;</ion-title>

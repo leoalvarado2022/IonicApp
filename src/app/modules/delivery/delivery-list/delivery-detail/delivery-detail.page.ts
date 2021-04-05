@@ -35,10 +35,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     private _posService: PosService,
     private _toastService: ToastService,
     private _storageSyncService: StorageSyncService,
-    public prints: Prints
+    public prints: Prints,
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
-    this.loadNotifications();
+    this.loadNotifications().then();
   }
 
   ngOnDestroy(): void {
@@ -47,29 +47,32 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  loadNotifications() {
-    this._storageSyncService.getIntegrationImages().then((data) => {
-      this.images = data;
-    });
-
-
-    if (this.id) {
-      this.loaderService.startLoader('Cargando Notificaciones');
-      const user = this.storeService.getActiveCompany();
-
-      const data = {
-        user: user.user,
-        id: this.id
-      };
-
-      this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
-        this.order = success.resp;
-        this.loaderService.stopLoader();
-      }, error => {
-        this.loaderService.stopLoader();
-        this.httpService.errorHandler(error);
+  async loadNotifications(): Promise<any> {
+    return new Promise(resolve => {
+      this._storageSyncService.getIntegrationImages().then((data) => {
+        this.images = data;
       });
-    }
+
+      if (this.id) {
+        this.loaderService.startLoader('Cargando Notificaciones');
+        const user = this.storeService.getActiveCompany();
+
+        const data = {
+          user: user.user,
+          id: this.id
+        };
+
+        this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
+          this.order = success.resp;
+          resolve(true);
+          this.loaderService.stopLoader();
+        }, error => {
+          resolve(false);
+          this.loaderService.stopLoader();
+          this.httpService.errorHandler(error);
+        });
+      }
+    });
   }
 
   /**
@@ -90,9 +93,9 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       };
 
       // console.log(data);
-      this._posService.openTableNew(this.order);
-
-      // this.setHttpNotificationStatus(status, data);
+      // this._posService.openTableNew(this.order, user.user);
+      this.setHttpNotificationStatus(status, data);
+      // this.printOrderDocument(this.order);
 
       // si el origin es una app externa
       if (this.order.origin === 'JUSTO') {
@@ -107,6 +110,11 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @description actualizar las ordenes de la app externas
+   * @param status
+   * @param dataNotification
+   */
   async updateStatusAppOrigin(status: string, dataNotification: any) {
 
     // obtener la integraciones
@@ -154,13 +162,24 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   setHttpNotificationStatus(status: string, data: any) {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
+
+        const user = this.storeService.getActiveCompany();
+        this.printOrderDocument(this.order);
         // agregar datos en el pos
-        this._posService.openTableNew(this.order);
+        this._posService.openTableNew(this.order, user.user);
       }
       this._location.back();
     }, error => {
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * @description actualizar estado del pos
+   */
+  updatePosStatus(order: any) {
+    const user = this.storeService.getActiveCompany();
+    this._posService.openTableNew(order, user.user);
   }
 
 
@@ -202,15 +221,35 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @description obtener las imagenes
    * @param id_integration
    */
-  imageIntegration(id_integration) {
-    const img = localStorage.getItem(id_integration);
+  imageIntegration(order) {
+    const id_integration = order.id_integration;
+
+    let img = localStorage.getItem(id_integration);
+
+    if (order.origin === 'FX360') {
+      const user: any = this.storeService.getActiveCompany();
+      img = localStorage.getItem(order.id_entities);
+    }
+
     if (img) {
       return img;
     } else {
       if (this.images.length) {
-        const imgData = this.images.find(value => value.id_integration === +id_integration);
-        const img = imgData.integration_image;
-        localStorage.setItem(id_integration, img);
+
+        if (order.origin === 'FX360') {
+          const imgData = this.images.find(value => value.id_entity === +order.id_entities);
+          if (imgData) {
+            img = imgData.integration_image;
+            localStorage.setItem(id_integration, img);
+          } else {
+            img = '';
+          }
+        } else {
+          const imgData = this.images.find(value => value.id_integration === +id_integration);
+          img = imgData.integration_image;
+          localStorage.setItem(id_integration, img);
+        }
+
 
         return img;
       }
@@ -227,7 +266,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   reprocess(id_integration, products) {
     let rep = false;
 
-    if (products.length) {
+    if (products && products.length) {
 
       for (let product of products) {
         if (!product.id_item_product && product.total > 0) {
@@ -245,8 +284,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @param products
    * @param order
    */
-  async httpReprocess(products, order) {
-    this.products = products;
+  async httpReprocess() {
     this.loaderService.startLoader(`Obteniendo la orden con ${this.order.origin}`);
     // obtener la integraciones
     const integration = await this._storageSyncService.getIntegrationDelivery();
@@ -298,7 +336,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     this.loaderService.startLoader(`Revisando datos en fx360..`);
 
     let data = {
-      products: this.products
+      products: this.order.products
     };
 
     this._deliveryService.setOrderReprocess(data).subscribe((success: any) => {
@@ -306,7 +344,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         let error = false;
         for (let resp of success.resp) {
           if (resp.respuesta && resp.respuesta !== 'ok') {
-            const alert = this.products.find(value => +value.id === +resp.id);
+            const alert = this.order.products.find(value => +value.id === +resp.id);
             // this._toastService.warningToast(`${alert.name_item} no existe en la base de datos FX360`);
             error = true;
           }
@@ -315,7 +353,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         this.loaderService.stopLoader();
 
         if (!error) {
-          this.loadNotifications();
+          this.loadNotifications().then();
         }
       } else {
         this.loaderService.stopLoader();
@@ -325,6 +363,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+
+    // setTimeout(() => {
+    //   this.loaderService.stopLoader();
+    // }, 10000)
   }
 
   /**
@@ -348,9 +390,13 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         if (success.response[0].respuesta) {
           if (success.response[0].respuesta === 'ok') {
             this.loaderService.stopLoader();
-            console.log(success, 'updateOrder', success.response[0].respuesta);
-            this.loadNotifications();
-            this.reprocessWithFX360().then();
+            // console.log(success, 'updateOrder', success.response[0].respuesta);
+            this.loadNotifications().then((success) => {
+              // console.log(success, 'setHttpUpdateOrderDeliveryJusto');
+              if (success) {
+                this.reprocessWithFX360().then();
+              }
+            });
           } else {
             this.loaderService.stopLoader();
             this._toastService.warningToast('Esta Orden ya se encuentra en la base de datos');
@@ -365,7 +411,17 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
   }
 
-  printOrder(command: any) {
-    this.prints.printCommand(command);
+  printOrderCommand(command: any) {
+    this._storageSyncService.getPrintConfig().then(data => {
+      this.prints.printConfigActive(data, 'comanda');
+      this.prints.printCommand(command);
+    });
+  }
+
+  printOrderDocument(command: any) {
+    this._storageSyncService.getPrintConfig().then(data => {
+      this.prints.printConfigActive(data, 'documento');
+      this.prints.printDocumentPdf417(command);
+    });
   }
 }

@@ -107,13 +107,13 @@ export class StepperService {
         this.onlySyncConsumptions(validConsumptions);
       }
 
-      // If Applications
-      const validAplications = await this.orderSyncService.getApplicationsPendingToSave();
+      // If Applications        
+      const validAplications = await this.orderSyncService.getApplicationsPendingToSave();      
       if (validAplications.length && this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Registros de Aplicación' });
         this.stepsArraySubject.next(this.stepsArray);
         this.onlySyncApplications(validAplications);
-      }
+      }      
 
       // Sync data
       if (this.syncError === null) {
@@ -154,7 +154,7 @@ export class StepperService {
       this.syncService.syncData(username, activeConnection.superuser ? 1 : 0)
         .pipe(
           throttle(event => interval(5000))
-        ).subscribe(success => {
+        ).subscribe((success: any) => {
           resolve(success['data']);
         }, error => {
           resolve(error);
@@ -183,8 +183,7 @@ export class StepperService {
   /**
    * onlySyncTallies
    */
-  public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {
-    console.log('onlySyncTallies');
+  public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {    
     const log = await this.syncTallies(talliesBuilded);
 
     if (log instanceof HttpErrorResponse) {
@@ -277,8 +276,7 @@ export class StepperService {
   /**
    * onlySyncDevices
    */
-  public onlySyncDevices = async (devicesToRecord: Array<any>) => {
-    console.log('onlySyncDevices');
+  public onlySyncDevices = async (devicesToRecord: Array<any>) => {    
     const log = await this.syncDevices(devicesToRecord);
 
     if (log instanceof HttpErrorResponse) {
@@ -475,12 +473,12 @@ export class StepperService {
    * onlySyncApplications
    * @param applications
    */
-  public onlySyncApplications = async (applications: Array<any> = []) => {
+  public onlySyncApplications = async (applications: Array<any> = []) => {    
     const activeCompany = this.storeService.getActiveCompany();
 
     for (let index = 0; index < applications.length; index++) {
       const element = applications[index];
-
+            
       const application = Object.assign({}, element[0], {
         humidity: element[2]["humidity"],
         wind: element[2]["wind"],
@@ -489,13 +487,13 @@ export class StepperService {
         startDate: element[3]["startDate"],
         endDate: element[3]["endDate"],
       });
-
+      
       this.applicationRegistryService.storeApplication(application, element[4], element[1], activeCompany.user).subscribe(success => {
         this.orderSyncService.removeTempApplication(application.tempId);
       }, error => {
         this.httpService.errorHandler(error);
         this.syncError = true;
-      });
+      });      
     }
   }
 

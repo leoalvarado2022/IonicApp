@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import * as moment from "moment";
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 
 @Component({
   selector: 'app-summary-step',
@@ -22,7 +23,8 @@ export class SummaryStepPage implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private orderSyncService: OrderSyncService,
-    private router: Router
+    private router: Router,
+    private stepperService: StepperService
   ) {
 
   }
@@ -37,7 +39,7 @@ export class SummaryStepPage implements OnInit {
       this.weatherData = data[2];
       this.operationData = data[3];
       this.locationsData = data[4];
-
+            
       this.isLoading = false;
     });
   }
@@ -55,16 +57,10 @@ export class SummaryStepPage implements OnInit {
    * storeApplication
    */
   public storeApplication = () => {
-    const application = Object.assign({}, this.applicationData, {
-      totalTime: this.operationData.time,
-      startDate: this.operationData.startDate,
-      endDate: this.operationData.endDate,
-      temperature: this.weatherData.temperature,
-      humidity: this.weatherData.humidity,
-      wind: this.weatherData.wind
+    this.orderSyncService.setTempApplicationReadyById(this.applicationData.tempId).then(() => {
+      this.stepperService.syncAll();
+      this.router.navigate(["/home-page/registro_aplicacion/applications", this.applicationData.applicationOrderId]);
     });
-
-    this.router.navigate(["/home-page/registro_aplicacion/applications", application.applicationOrderId]);
   }
 
 }

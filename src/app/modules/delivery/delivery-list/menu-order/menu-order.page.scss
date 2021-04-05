@@ -21,7 +21,7 @@ ion-card {
 .scrollmenu span {
   display: inline-block;
   text-align: center;
-  padding: 14px;
+  padding: 5px;
   text-decoration: none;
   margin-left: 10px;
   margin-right: 0;
@@ -36,13 +36,6 @@ ion-card-content {
   padding: 7px;
 }
 
-.description {
-  position: absolute;
-  right: 10px;
-  width: 73%;
-  top: 15px;
-}
-
 ion-content {
   --background: var(--color-background-tabs);
 }
@@ -54,7 +47,7 @@ ion-card {
 .button-footer {
   position: absolute;
   right: 0;
-  top: 24px;
+  top: 45px;
 }
 
 .button-add {
@@ -87,10 +80,35 @@ ion-card {
   color: white;
 }
 
+/*
 .icon-cam-fixed {
   position: absolute;
   left: 0;
   color: white;
   padding: 5px;
   font-size: 15px;
+  z-index: 100;
 }
+*/
+
+.icon-cam-fixed {
+  position: absolute;
+  top: 3px;
+  color: white;
+  padding: 5px;
+  font-size: 15px;
+}
+
+.item-thumbnail {
+  height: 90px;
+  width: 90px;
+  position: relative;
+  margin-top: 0;
+  margin-left: -16px;
+}
+
+.item-card {
+  height: 90px;
+}
+
+

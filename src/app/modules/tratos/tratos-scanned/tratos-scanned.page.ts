@@ -12,12 +12,17 @@ import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 
 @Component({
   selector: 'app-tratos-scanned',
   templateUrl: './tratos-scanned.page.html',
   styleUrls: ['./tratos-scanned.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    BluetoothSerial,
+    BluetoothService
+  ],
 })
 export class TratosScannedPage implements OnInit, OnDestroy {
 

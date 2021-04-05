@@ -22,6 +22,13 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+/**
+Iphone 11 Home button hack
+*/
+ion-footer {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+
 /** GLOBAL TOOLBAR MENU */
 ion-menu-button {
   --color: white;
@@ -316,4 +323,9 @@ ion-action-sheet {
     width: auto;
     margin: 0 auto;
   }
+}
+
+.list-order-button {
+  left: -77px;
+  top: -5px;
 }

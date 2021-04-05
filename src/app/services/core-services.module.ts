@@ -15,7 +15,6 @@ import { StepperService } from './storage/stepper/stepper.service';
 import { HttpClientModule } from '@angular/common/http';
 import { DeviceSyncService } from './storage/device-sync/device-sync.service';
 import { MachineryService } from '../modules/machinery/services/machinery.service';
-import { BluetoothService } from '../services/bluetooth/bluetooth.service';
 import { OrderSyncService } from './storage/order-sync/order-sync.service';
 import { AppService } from './app/app.service';
 import { DeviceService } from './device/device.service';
@@ -23,6 +22,7 @@ import { WeatherService } from './weather/weather.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { CleanStringService } from './clean-string/clean-string.service';
 import { ApplicationRegistryService } from './application-registry/application-registry.service';
+import { Insomnia } from '@ionic-native/insomnia/ngx';
 
 @NgModule({
   imports: [
@@ -40,12 +40,12 @@ import { ApplicationRegistryService } from './application-registry/application-r
     ToastService,
     HttpService,
     AlertService,
-    BluetoothService,
     AppService,
     DeviceService,
     WeatherService,
     InAppBrowser,
     CleanStringService,
+    Insomnia,
 
     // Storage Services Block
     StorageSyncService,

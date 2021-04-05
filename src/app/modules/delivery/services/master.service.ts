@@ -4,20 +4,36 @@ import {StorageSyncService} from '../../../services/storage/storage-sync/storage
 import {StoreService} from '../../../shared/services/store/store.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {HttpClient} from '@angular/common/http';
+import {DeviceService} from '../../../services/device/device.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MasterService {
   public orderUrl = 'order';
+  public updateConfigUrl = 'update-configuration';
 
   constructor(private _posService: PosService,
               private _storageSyncService: StorageSyncService,
               private _storeService: StoreService,
               private _httpService: HttpService,
-              private _httpClient: HttpClient
+              private _httpClient: HttpClient,
+              private deviceService: DeviceService
   ) {
+
   }
+
+  /**
+   * @description get notification for by id
+   * @param data
+   */
+  public setHttpUpdateConfig = (data: any) => {
+    data.nc = this.deviceService.getUUIDAndroid();
+    const url = this._httpService.buildUrl(this.updateConfigUrl);
+    return this._httpClient.post(url, this._httpService.buildBody(data), {
+      headers: this._httpService.getHeaders()
+    });
+  };
 
   /**
    * @description get notification for by id

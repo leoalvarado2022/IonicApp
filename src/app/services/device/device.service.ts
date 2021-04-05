@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { AlertController, Platform } from '@ionic/angular';
-import { iosDeviceNames } from 'src/environments/ios-device-names';
-import { Device } from '@ionic-native/device/ngx';
+import {Injectable} from '@angular/core';
+import {AlertController, Platform} from '@ionic/angular';
+import {iosDeviceNames} from 'src/environments/ios-device-names';
+import {Device} from '@ionic-native/device/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,18 @@ export class DeviceService {
     }
 
     return '';
-  }
+  };
+
+  /**
+   * getUUIDAndroid
+   */
+  public getUUIDAndroid = () => {
+    if (this.platform.is('android')) {
+      return this.device.uuid;
+    } else {
+      return '';
+    }
+  };
 
   /**
    * showFullUUID
@@ -44,7 +55,7 @@ export class DeviceService {
 
       await alert.present();
     }
-  }
+  };
 
   /**
    * showDeviceData
@@ -65,6 +76,6 @@ export class DeviceService {
     });
 
     await alert.present();
-  }
+  };
 
 }

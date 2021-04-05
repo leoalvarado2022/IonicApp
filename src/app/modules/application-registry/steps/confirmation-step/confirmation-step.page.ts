@@ -96,6 +96,13 @@ export class ConfirmationStepPage implements OnInit {
    * patchForm
    */
   private patchForm = () => {
+    this.applicationForm.get('hectares').patchValue(this.currentApplication ? this.currentApplication.applicationBalance : '');
+    this.applicationForm.updateValueAndValidity();
+
+    if (!this.orderMachinery) {
+      return;
+    }
+
     this.applicationForm.patchValue({
       operator: this.workers.find(item => item.id === this.orderMachinery.operatorId) ? this.orderMachinery.operatorId : '',
       machinery: this.allCostCenters.find(item => item.id === this.orderMachinery.costCenterMachineryId) ? this.orderMachinery.costCenterMachineryId : '',
@@ -109,6 +116,10 @@ export class ConfirmationStepPage implements OnInit {
    * getMachineryCapacity
    */
   public getMachineryCapacity = (): number => {
+    if (!this.orderMachinery) {
+      return 0;
+    }
+
     const find = this.allCostCenters.find(item => item.id === this.orderMachinery.costCenterMachineryId);
     return find ? find.machineryCapacity : 0;
   }
@@ -149,7 +160,8 @@ export class ConfirmationStepPage implements OnInit {
     const data = Object.assign(this.currentApplication, this.applicationForm.value, {
       tempId: this.tempId,
       companyId: activeCompany.id,
-      orderId: this.currentApplication.applicationOrderId
+      orderId: this.currentApplication.applicationOrderId,
+      isReady: false
     });
 
     this.orderSyncService.addTempApplication(data).then(() => {

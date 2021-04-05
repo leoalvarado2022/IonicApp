@@ -5,7 +5,6 @@ import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
-import {FCM} from '@ionic-native/fcm/ngx';
 import {ToastService} from './shared/services/toast/toast.service';
 import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {DeliveryService} from './modules/delivery/services/delivery.service';
@@ -23,7 +22,6 @@ export class AppComponent {
     private statusBar: StatusBar,
     private networkService: NetworkService,
     private storeService: StoreService,
-    private fcm: FCM,
     private toastService: ToastService,
     private backgroundMode: BackgroundMode,
     private _deliveryService: DeliveryService
@@ -78,6 +76,7 @@ export class AppComponent {
       }
 
       // CHECK PUSH PERMISSION
+      /*
       this.fcm.hasPermission().then(() => {
         // get token
         this.fcm.getToken().then(token => {
@@ -114,6 +113,7 @@ export class AppComponent {
         console.log('No tiene permiso para recibir notificaciones PUSH: ', error);
         this.toastService.errorToast('No tiene permiso para recibir notificaciones PUSH', 1000, 'bottom');
       });
+      */
 
       this.platform.pause.subscribe(() => {
         this.storeService.backupState();

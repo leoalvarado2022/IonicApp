@@ -169,7 +169,7 @@ export class OrderSyncService {
    * getApplicationLocations
    */
   private getApplicationLocations = (): Promise<Array<ApplicationLocationInterface>> => {
-    return this.storage.get(StorageKeys.ApplicationLocation).then((applicationLocations: Array<ApplicationLocationInterface>) => {
+    return this.storage.get(StorageKeys.TempApplicationLocation).then((applicationLocations: Array<ApplicationLocationInterface>) => {
       return applicationLocations ? applicationLocations : [];
     });
   }
@@ -179,7 +179,7 @@ export class OrderSyncService {
    * @param applicationLocations
    */
   public setApplicationLocations = (applicationLocations: Array<ApplicationLocationInterface>): Promise<Array<ApplicationLocationInterface>> => {
-    return this.storage.set(StorageKeys.ApplicationLocation, applicationLocations);
+    return this.storage.set(StorageKeys.TempApplicationLocation, applicationLocations);
   }
 
   /**
@@ -205,11 +205,11 @@ export class OrderSyncService {
 
   /**
    * clearApplicationLocationsById
-   * @param id
+   * @param tempId temp id
    */
-  public clearApplicationLocationsById = (id: number): Promise<Array<ApplicationLocationInterface>> => {
+  public clearApplicationLocationsById = (tempId: number): Promise<Array<ApplicationLocationInterface>> => {
     return this.getApplicationLocations().then((applicationLocations: Array<ApplicationLocationInterface>) => {
-      return applicationLocations.filter(item => item.id !== id);
+      return applicationLocations.filter(item => item.tempId !== tempId);
     });
   }
 
@@ -267,6 +267,22 @@ export class OrderSyncService {
     return this.getTempApplications().then((tempApplications: Array<any>) => {
       const filtered = tempApplications.filter(item => item.tempId !== tempId);
       return this.setTempApplications(filtered);
+    });
+  }
+
+  /**
+   * setTempApplicationReadyById
+   * @param tempId
+   */
+  public setTempApplicationReadyById = (tempId: number): Promise<Array<any>> => {
+    return this.getTempApplications().then((tempApplications: Array<any>) => {
+      const setReady = tempApplications.find(item => item.tempId === tempId);
+      setReady.isReady = true;
+
+      const removed = tempApplications.filter(item => item.tempId !== tempId);
+      removed.push(setReady);
+
+      return this.setTempApplications(removed);
     });
   }
 
@@ -450,7 +466,9 @@ export class OrderSyncService {
       const promises = [];
 
       tempApplications.forEach(item => {
-        promises.push(this.getAllTempDataById(item.tempId));
+        if (item.isReady) {
+          promises.push(this.getAllTempDataById(item.tempId));
+        }
       });
 
       return Promise.all(promises);

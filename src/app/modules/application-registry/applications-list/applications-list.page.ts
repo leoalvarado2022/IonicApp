@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonItemSliding } from '@ionic/angular';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { OrderSyncService } from 'src/app/services/storage/order-sync/order-sync.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
@@ -12,13 +12,15 @@ import { MachineryService } from '../../machinery/services/machinery.service';
 import { ApplicationListInterface } from '../application-list.interface';
 import * as moment from "moment";
 import { ApplicationRegistryService } from 'src/app/services/application-registry/application-registry.service';
+import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-applications-list',
   templateUrl: './applications-list.page.html',
   styleUrls: ['./applications-list.page.scss'],
 })
-export class ApplicationsListPage implements OnInit {
+export class ApplicationsListPage implements OnInit, OnDestroy {
 
   public currentTab: 1 | 2 = 1;
   public readonly toApplyTab = 1;
@@ -35,6 +37,8 @@ export class ApplicationsListPage implements OnInit {
 
   private implementTypeCostCenters: Array<any> = [];
   private workers: Array<any> = [];
+  private unsubscribe = new Subject();
+  private firstLoad = true;
 
   constructor(
     private applicationRegistryService: ApplicationRegistryService,
@@ -47,17 +51,28 @@ export class ApplicationsListPage implements OnInit {
     private storeService: StoreService,
     private storageSyncService: StorageSyncService,
     private machineryService: MachineryService,
+    private stepperService: StepperService
   ) {
 
   }
 
   ngOnInit() {
+    this.stepperService.getStepper().pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe((steps: Array<any>) => {
+      if (steps.length === 0 && !this.firstLoad) {
+        this.loadData();
+      }
+    });
+  }
 
+  ngOnDestroy() {
+    this.unsubscribe.complete();
   }
 
   ionViewWillEnter() {
     this.currentTab = this.toApplyTab;
-    this.orderSyncService.setApplicationLocations([]).then();
+    this.selectedApplication = null;
     this.loadData();
   }
 
@@ -65,6 +80,7 @@ export class ApplicationsListPage implements OnInit {
    * loadData
    */
   private loadData = (): void => {
+    this.firstLoad = false;
     this.loaderService.startLoader();
 
     const activeCompany = this.storeService.getActiveCompany();
@@ -92,11 +108,12 @@ export class ApplicationsListPage implements OnInit {
         this.orderSyncService.getApplicationsPendingToSave()
       ]).then((data: any) => {
         this.pendingToSaveApplications = this.orderSyncService.mapApplicationsPendingToSave(data[8]);
+        const mapped = this.pendingToSaveApplications.map(item => item.id);
+        const filtered = orderBalanceToApply.filter(item => !mapped.includes(item.id));
 
-        this.orderBalanceToApply = orderBalanceToApply;
+        this.orderBalanceToApply = [...filtered];
         this.orderBalanceApplied = orderBalanceApplied;
-
-        this.filteredToApplyApplications = orderBalanceToApply;
+        this.filteredToApplyApplications = [...filtered];
         this.filteredAppliedApplications = [...this.pendingToSaveApplications, ...orderBalanceApplied];
         this.implementTypeCostCenters = data[6];
         this.workers = data[7]
@@ -210,6 +227,7 @@ export class ApplicationsListPage implements OnInit {
    */
   public reload = (event: any) => {
     this.loadData();
+    this.selectedApplication = null;
     event.target.complete();
   }
 
@@ -217,6 +235,10 @@ export class ApplicationsListPage implements OnInit {
    * getImplementName
    */
   public getImplementName = (): string => {
+    if (!this.orderMachinery) {
+      return '';
+    }
+
     const find = this.implementTypeCostCenters.find(item => item.id === this.orderMachinery.costCenterImplementId);
     return find ? find.name : '';
   }
@@ -225,6 +247,10 @@ export class ApplicationsListPage implements OnInit {
    * getWorkerName
    */
   public getWorkerName = (): string => {
+    if (!this.orderMachinery) {
+      return '';
+    }
+
     const find = this.workers.find(item => item.id === this.orderMachinery.operatorId);
     return find ? find.name : '';
   }

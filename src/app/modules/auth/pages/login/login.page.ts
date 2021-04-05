@@ -7,7 +7,7 @@ import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { HttpService } from '../../../../shared/services/http/http.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { Subscription } from 'rxjs';
-import { Platform } from '@ionic/angular';
+import { ActionSheetController, Platform } from '@ionic/angular';
 import { AppService } from 'src/app/services/app/app.service';
 import { DeviceService } from 'src/app/services/device/device.service';
 
@@ -199,5 +199,6 @@ export class LoginPage implements OnInit, OnDestroy {
     latitude: 0,
     longitude: 0,
     version: this.appService.getAppVersion()
-  })
+  });
+
 }

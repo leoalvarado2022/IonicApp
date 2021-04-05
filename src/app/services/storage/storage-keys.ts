@@ -4,6 +4,7 @@ export enum StorageKeys {
   ConfigDelivery = 'ConfigDelivery',
   IntegrationDelivery = 'IntegrationDelivery',
   IntegrationImages = 'IntegrationImages',
+  PrintConfig = 'PrintConfig',
   Tallies = 'tallies',
   CostCentersCustom = 'costCentersCustom',
   Labors = 'labors',
@@ -53,7 +54,6 @@ export enum StorageKeys {
 
   // Applications
   ApplicationTempId = 'applicationTempId',
-  ApplicationLocation = 'applicationLocation',
   OrderHeader = 'orderHeader',
   OrderCostCenter = 'orderCostCenter',
   OrderMachinery = 'orderMachinery',
@@ -64,6 +64,7 @@ export enum StorageKeys {
   TempApplicationChemicals = 'tempApplicationChemicals',
   TempWeather = 'tempWeather',
   TempApplicationsTime = 'TempApplicationsTime',
+  TempApplicationLocation = 'tempApplicationLocation',
 
   // pos
   Agreements = 'agreementsPOS',

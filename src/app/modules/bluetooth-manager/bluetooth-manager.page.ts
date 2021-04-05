@@ -1,14 +1,19 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
-import { takeUntil } from 'rxjs/operators';
-import { BluetoothDevice } from 'src/app/services/bluetooth/bluetooth-device.interface';
-import { Platform } from '@ionic/angular';
-import { Subject } from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {BluetoothService} from 'src/app/services/bluetooth/bluetooth.service';
+import {takeUntil} from 'rxjs/operators';
+import {BluetoothDevice} from 'src/app/services/bluetooth/bluetooth-device.interface';
+import {Platform} from '@ionic/angular';
+import {Subject} from 'rxjs';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 
 @Component({
   selector: 'app-bluetooth-manager',
   templateUrl: './bluetooth-manager.page.html',
   styleUrls: ['./bluetooth-manager.page.scss'],
+  providers: [
+    BluetoothSerial,
+    BluetoothService
+  ],
 })
 export class BluetoothManagerPage implements OnInit, OnDestroy {
 
@@ -62,21 +67,21 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
    */
   public getPairedDevices = () => {
     return this.bluetoothService.getPairedDevices();
-  }
+  };
 
   /**
    * getAvailableDevices
    */
   public getAvailableDevices = () => {
     return this.bluetoothService.getAvailableDevices();
-  }
+  };
 
   /**
    * scanDevices
    */
   public scanDevices = () => {
     return this.bluetoothService.scanDevices();
-  }
+  };
 
   /**
    * connectDevice
@@ -84,7 +89,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
    */
   public connectDevice = (device: BluetoothDevice) => {
     this.bluetoothService.connectDevice(device);
-  }
+  };
 
   /**
    * disconnectDevice
@@ -92,7 +97,7 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
    */
   public disconnectDevice = (device: BluetoothDevice) => {
     this.bluetoothService.disconnectDevice();
-  }
+  };
 
 
   /**
@@ -100,6 +105,6 @@ export class BluetoothManagerPage implements OnInit, OnDestroy {
    */
   public enableBlueetooth = () => {
     this.bluetoothService.enableBlueetooth();
-  }
+  };
 
 }

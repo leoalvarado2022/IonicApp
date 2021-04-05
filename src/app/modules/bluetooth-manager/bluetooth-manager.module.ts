@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { BluetoothManagerPageRoutingModule } from './bluetooth-manager-routing.module';
-import { BluetoothManagerPage } from './bluetooth-manager.page';
-import { SharedModule } from 'src/app/shared/shared.module';
+import {BluetoothManagerPageRoutingModule} from './bluetooth-manager-routing.module';
+import {BluetoothManagerPage} from './bluetooth-manager.page';
+import {SharedModule} from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [

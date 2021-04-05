@@ -4,24 +4,24 @@ import { TicketsService } from '../services/tickets/tickets.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoaderService } from '../../../shared/services/loader/loader.service';
 import { HttpService } from '../../../shared/services/http/http.service';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { NetworkService } from '../../../shared/services/network/network.service';
 import * as moment from 'moment';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-ticket-details-list',
   templateUrl: './ticket-details-list.page.html',
   styleUrls: ['./ticket-details-list.page.scss'],
 })
-export class TicketDetailsListPage implements OnInit, OnDestroy {
+export class TicketDetailsListPage implements OnInit {
 
   private id: string;
   public details: Array<any> = [];
   public ticket: any = null;
-  private network$: Subscription;
-  public isOnline = false;
   private now = moment();
   public openSelected = false;
+  private unsubscriber = new Subject();
 
   constructor(
     private storeService: StoreService,
@@ -37,15 +37,17 @@ export class TicketDetailsListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
-    this.network$ = this.networkService.getNetworkStatus().subscribe((status: boolean) => this.isOnline = status);
-  }
-
-  ngOnDestroy(): void {
-    this.network$.unsubscribe();
   }
 
   ionViewWillEnter() {
     this.loadTicket();
+  }
+
+  /**
+   * getNetworkStatus
+   */
+  public getNetworkStatus = () => {
+    return this.networkService.getNetworkStatus();
   }
 
   /**

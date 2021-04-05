@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {ToastService} from '../shared/services/toast/toast.service';
 
 declare var Socket: any;
 
@@ -7,6 +8,9 @@ declare var Socket: any;
 })
 export class Sockets {
 
+  constructor(public toastServie: ToastService) {
+  }
+
   /**
    * @description write socket
    * @param data
@@ -14,16 +18,16 @@ export class Sockets {
    * @param port
    */
   write(data: BinaryType, ip: string = '192.168.1.50', port: string = '9100') {
-    const socket = new Socket();
-    // send byte code into the printer
-    socket.open(ip, port, () => {
-        socket.write(data, () => {
-          socket.shutdownWrite();
-        });
-        // socket.close();
-      }, (err) => {
-        // console.error(err);
-      }
-    );
+      const socket = new Socket();
+      // send byte code into the printer
+      socket.open(ip, port, () => {
+          socket.write(data, () => {
+            socket.shutdownWrite();
+          });
+          // socket.close();
+        }, (err) => {
+        this.toastServie.errorToast('Error al Imprimir, revisar la configuración');
+        }
+      );
   }
 }

@@ -78,3 +78,25 @@ ion-card {
 ion-content {
   --background: var(--color-background-tabs);
 }
+
+
+.tabs-toolbar {
+  --background: var(--color-home-header-menu);
+  --color: white;
+  height: 66px;
+  margin: 0;
+  padding: 0;
+
+  ion-tabs {
+    position: relative;
+    z-index: 99;
+    height: 65px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .tab-bar {
+    height: 65px;
+  }
+}

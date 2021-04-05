@@ -27,7 +27,7 @@
       <p class="ticket-p"><strong>Producto:</strong> {{ ticket.productName }}</p>
       <p class="ticket-p"><strong>Funcionalidad:</strong> {{ ticket.funcionalityName }}</p>
       <!--    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>-->
-      <p class="ticket-p"><strong>Estado:</strong> {{ ticket.state  }}</p>
+      <p class="ticket-p"><strong>Estado:</strong> {{ ticket.state }}</p>
       <p class="ticket-p"><strong>Referencia:</strong> {{ ticket.reference }}</p>
       <p class="ticket-p"><strong>Creador:</strong> {{ ticket.creator }}</p>
       <!--<p class="ticket-p"><strong>Asignado:</strong> {{ ticket.creatorName }}</p>-->
@@ -61,7 +61,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button (click)="openForm()" [disabled]="!isOnline" color="primary" expand="block">
+  <ion-button (click)="openForm()" [disabled]="!(getNetworkStatus() | async)" color="primary" expand="block">
     Crear
   </ion-button>
 </ion-footer>

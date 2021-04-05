@@ -12,17 +12,16 @@ import { Camera } from '@ionic-native/camera/ngx';
 import { RouteReuseStrategy } from '@angular/router';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { IConfig, NgxMaskModule } from 'ngx-mask';
-import { FCM } from '@ionic-native/fcm/ngx';
 import { Ndef, NFC } from '@ionic-native/nfc/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import { registerLocaleData } from '@angular/common';
 import { CoreServicesModule } from './services/core-services.module';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { AgmCoreModule } from '@agm/core';
 import { environment } from 'src/environments/environment';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
@@ -56,12 +55,11 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     Device,
     Camera,
     Geolocation,
-    FCM,
     NFC,
     Ndef,
     NativeAudio,
-    BluetoothSerial,
-    BackgroundMode
+    BackgroundMode,
+    BluetoothSerial
   ],
   bootstrap: [AppComponent]
 })

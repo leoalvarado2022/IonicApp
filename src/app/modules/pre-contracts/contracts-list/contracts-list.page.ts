@@ -1,13 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {ContractsService} from '../services/contracts/contracts.service';
-import {ContractListItem} from '../contract-interfaces';
-import {HttpService} from '../../../shared/services/http/http.service';
-import {Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ContractsService } from '../services/contracts/contracts.service';
+import { ContractListItem } from '../contract-interfaces';
+import { HttpService } from '../../../shared/services/http/http.service';
+import { Subject, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { IonItemSliding } from '@ionic/angular';
+import { take, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contracts-list',
@@ -21,8 +22,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
 
   private firstLoad = true;
   public isLoading = false;
-
-  private stepper$: Subscription;
+  private unsubscribe = new Subject();
 
   constructor(
     private router: Router,
@@ -36,8 +36,10 @@ export class ContractsListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.stepper$ = this.stepperService.getStepper().subscribe((steps: Array<any>) => {
-      if (steps.length === 0  && !this.firstLoad) {
+    this.stepperService.getStepper().pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe((steps: Array<any>) => {
+      if (steps.length === 0 && !this.firstLoad) {
         this.loadPreContracts();
       }
     });
@@ -46,7 +48,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.stepper$.unsubscribe();
+    this.unsubscribe.complete();
   }
 
   /**
@@ -56,7 +58,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.firstLoad = false;
     this.isLoading = true;
 
-    this.storageSyncService.getPreContracts().then( data => {
+    this.storageSyncService.getPreContracts().then(data => {
       const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
 
       this.contracts = [...preContractsMapped];
@@ -137,7 +139,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
       this.contracts = [...preContractsMapped];
       this.filteredContracts = [...this.contracts];
 
-      const deleteContract = Object.assign({}, contract, {id: contract.id * -1, retired: contract.retired ? 1 : 0});
+      const deleteContract = Object.assign({}, contract, { id: contract.id * -1, retired: contract.retired ? 1 : 0 });
       await this.storeContract(deleteContract);
     }
   }

@@ -50,7 +50,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="printCommad && printCommad.length">
+  <ion-card *ngIf="android && printCommad && printCommad.length">
     <ion-card-content>
       <h4 class="ion-text-center" (click)="testPrint()">
         Impresion Comanda
@@ -108,7 +108,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="printDocument && printDocument.length">
+  <ion-card *ngIf="android && printDocument && printDocument.length">
     <ion-card-content>
       <h4 class="ion-text-center" (click)="testPrint('documento')">
         Impresion Documentos

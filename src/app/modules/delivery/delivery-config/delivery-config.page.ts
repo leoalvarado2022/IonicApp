@@ -37,6 +37,7 @@ export class DeliveryConfigPage implements OnInit {
   public loadingDocument = false;
   public printCommad;
   public printDocument;
+  public nc: any;
 
 
   constructor(
@@ -51,6 +52,7 @@ export class DeliveryConfigPage implements OnInit {
     private httpService: HttpService,
     private stepperService: StepperService,
     private bluetoothService: BluetoothService,
+    private deviceService: DeviceService,
     public prints: Prints,
   ) {
     this.platform.ready().then((data) => {
@@ -61,6 +63,10 @@ export class DeliveryConfigPage implements OnInit {
   }
 
   ngOnInit() {
+    this.nc = this.deviceService.getUUIDAndroid();
+
+    console.log(this.nc);
+
     this.configForm = this.formBuilder.group({
       configId: ['', Validators.required],
     });
@@ -106,8 +112,8 @@ export class DeliveryConfigPage implements OnInit {
     this.storageSyncService.getPrintConfig().then((data: any) => {
       this.printConfig = data;
 
-      this.printCommad = this.printConfig.filter(value => value.app === 'impresion_comandas');
-      this.printDocument = this.printConfig.filter(value => value.app === 'impresion_documentos');
+      this.printCommad = this.printConfig.filter(value => value.app === 'impresion_comandas' && value.nc === this.nc);
+      this.printDocument = this.printConfig.filter(value => value.app === 'impresion_documentos' && value.nc === this.nc);
 
       if (this.printCommad && this.printCommad.length) {
         this.setDataCommand(this.printCommad);

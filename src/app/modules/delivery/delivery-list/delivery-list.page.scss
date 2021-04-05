@@ -80,15 +80,15 @@ ion-content {
 }
 
 
-.tabs-toolbar {  
+.tabs-toolbar {
   --background: var(--color-home-header-menu);
   --color: white;
-  height: 75px;
+  height: 66px;
   margin: 0;
   padding: 0;
 
   ion-tabs {
-    position: relative;    
+    position: relative;
     z-index: 99;
     height: 65px;
     margin: 0;
@@ -96,7 +96,7 @@ ion-content {
     width: 100%;
   }
 
-  .tab-bar {    
+  .tab-bar {
     height: 65px;
   }
 }

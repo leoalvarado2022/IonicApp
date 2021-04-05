@@ -29,7 +29,8 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   public checkedAutomatic = false;
   public searchDeliveryListMSec = environment.searchDeliveryListMSec;
   public integrationImages: Array<any> = [];
-
+  public printIP = true;
+  public printBluetooth = false;
   constructor(
     private storeService: StoreService,
     private httpService: HttpService,
@@ -84,7 +85,9 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
+    // this._storageSyncService.getPrintConfig().then((data: any) => {
+    //   console.log(data);
+    // });
   }
 
   /**
@@ -207,7 +210,9 @@ export class DeliveryListPage implements OnInit, OnDestroy {
 
     this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
       this.orderDetail = success.resp;
-      this.prints.printDocumentPdf417(this.orderDetail);
+      if (this.printIP) {
+        this.prints.printDocumentPdf417(this.orderDetail);
+      }
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
@@ -230,7 +235,9 @@ export class DeliveryListPage implements OnInit, OnDestroy {
 
     this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
       this.orderDetail = success.resp;
-      this.prints.printCommand(this.orderDetail);
+      if (this.printIP) {
+        this.prints.printCommand(this.orderDetail);
+      }
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();

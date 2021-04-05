@@ -15,7 +15,6 @@ import { StepperService } from './storage/stepper/stepper.service';
 import { HttpClientModule } from '@angular/common/http';
 import { DeviceSyncService } from './storage/device-sync/device-sync.service';
 import { MachineryService } from '../modules/machinery/services/machinery.service';
-import { BluetoothService } from '../services/bluetooth/bluetooth.service';
 import { OrderSyncService } from './storage/order-sync/order-sync.service';
 import { AppService } from './app/app.service';
 import { DeviceService } from './device/device.service';
@@ -41,7 +40,6 @@ import { Insomnia } from '@ionic-native/insomnia/ngx';
     ToastService,
     HttpService,
     AlertService,
-    BluetoothService,
     AppService,
     DeviceService,
     WeatherService,

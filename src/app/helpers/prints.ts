@@ -4,6 +4,10 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {HttpService} from '../shared/services/http/http.service';
 import {StoreService} from '../shared/services/store/store.service';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
+import {ToastService} from '../shared/services/toast/toast.service';
+import {AlertController} from '@ionic/angular';
+import {AlertService} from '../shared/services/alert/alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +16,14 @@ export class Prints {
 
   public pdf417Result;
   public dataPDF417;
+  public printBluetooth;
+  public printIP;
+  public valueBP;
+  public generalQuestion;
+  public copy;
+  public isConnected = false;
+  public attempts = 0;
+  public numberCopy = 1;
 
   public readonly getPD417Url = 'get-pdf417';
   public readonly getHeaderDocumentUrl = 'get-header-document';
@@ -19,7 +31,10 @@ export class Prints {
   constructor(public sockets: Sockets,
               private httpClient: HttpClient,
               private httpService: HttpService,
-              private storeService: StoreService) {
+              private storeService: StoreService,
+              private bluetoothSerial: BluetoothSerial,
+              private toastService: ToastService,
+              private alertService: AlertService) {
   }
 
   /**
@@ -43,6 +58,144 @@ export class Prints {
       headers: this.httpService.getHeaders()
     });
   };
+
+  /**
+   * @description numero de copias para impresion
+   * @param value
+   */
+  setCopy(value: number) {
+    this.copy = value;
+  }
+
+  /**
+   * @description obtener el numero de copias para impresion
+   * @param value
+   */
+  getCopy() {
+    return +this.copy;
+  }
+
+  /**
+   * @description preguntas para impresion
+   * @param value
+   */
+  setGeneralQuestion(value: string) {
+    this.generalQuestion = value;
+  }
+
+  /**
+   * @description obtener el valor para las preguntas de impresion
+   * @param value
+   */
+  getGeneralQuestion() {
+    return this.generalQuestion;
+  }
+
+  /**
+   * @description agregar si el BT esta encendido o no
+   * @param value
+   */
+  setPrintBluetooth(value: boolean) {
+    this.printBluetooth = value;
+  }
+
+  /**
+   * @description obtner el valor de BT
+   * @param value
+   */
+  getPrintBluetooth() {
+    return this.printBluetooth;
+  }
+
+  /**
+   * @description agregar si el La impresora esta activada esta encendido o no
+   * @param value
+   */
+  setPrintIP(value: boolean) {
+    this.printIP = value;
+  }
+
+  /**
+   * @descriptionobtner el valor de Impresosra
+   * @param value
+   */
+  getPrintIP() {
+    return this.printIP;
+  }
+
+  /**
+   * @description guardar el valor de impresion
+   * @param value
+   */
+  setValueBP(value: string) {
+    this.valueBP = value;
+  }
+
+  /**
+   * @description optener valor de impresion
+   * @param value
+   */
+  getValueBP() {
+    return this.valueBP;
+  }
+
+  /**
+   * @description imprimir test de impresion
+   * @param data
+   * @param ip
+   * @param port
+   */
+  printTest() {
+    const encoder = new EscPosEncoder();
+    const result = encoder.initialize();
+
+    result
+      .align('left')
+      .newline()
+      .line(`TEST IMPRESION`)
+      .line(`IMPRESION LINEA1`)
+      .line(`IMPRESION LINEA2`)
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline();
+
+    result.cut();
+
+    return result.encode();
+  }
+
+  /**
+   * @description test de impresion impresora
+   * @param result
+   * @param ip
+   * @param port
+   */
+  printTestIP() {
+    this.sockets.write(this.printTest(), this.getValueBP());
+  }
+
+  /**
+   * @description test de impresion BT
+   * @param result
+   * @param address
+   */
+  printTestBT() {
+    this.bluetoothSerial.connect(this.getValueBP()).subscribe(() => {
+      this.bluetoothSerial.write(this.printTest())
+        .then(() => {
+
+        })
+        .catch((err) => {
+          // console.error(err, 'Print error write');
+          this.toastService.errorToast('Error al imprimir');
+        });
+    }, error => {
+      this.toastService.warningToast('Impresora no conectada por favor encienda la impresora');
+    });
+  }
+
 
   /**
    * @description imprimir comanda full
@@ -158,6 +311,46 @@ export class Prints {
   }
 
   /**
+   * @description opciones de impresion y preguntar si desea o no preguntar
+   */
+  async printQuestion() {
+    if (this.getGeneralQuestion() === 'si') {
+      return true;
+    } else if (this.getGeneralQuestion() === 'no') {
+      return false;
+    } else if (this.getGeneralQuestion() === 'preguntar') {
+      const alert = await this.alertService.confirmAlert('Desea Imprimir');
+      return alert;
+    }
+
+    return true;
+  }
+
+  /**
+   * @description formas de imprimir un documento
+   * @param result
+   * @param port
+   */
+  printOptions(result: any, port: string = '9100') {
+    this.printQuestion().then((success: boolean) => {
+      if (success) {
+        if (this.getPrintBluetooth()) {
+          this.connectBT();
+          setTimeout(() => {
+            if (this.isConnected) {
+              this.printBT(result, this.getValueBP());
+            }
+          }, 3000);
+        } else if (this.getPrintIP()) {
+          for (let i = 0; i < this.getCopy(); ++i) {
+            this.sockets.write(result, this.getValueBP(), port);
+          }
+        }
+      }
+    });
+  }
+
+  /**
    * @description generar el pdf417 y enviar a imprimir
    * @param data
    * @param ip
@@ -176,7 +369,7 @@ export class Prints {
     this.getHttpPDF417(dataHttp).subscribe((success: any) => {
       const imgBase64PDF417 = success.response.xml;
       this.commandLegal(data, imgBase64PDF417, ip, port).then((commandResolve: any) => {
-        this.sockets.write(commandResolve, ip, port);
+        this.printOptions(commandResolve);
       });
     });
   }
@@ -207,7 +400,123 @@ export class Prints {
   printCommand(data: any, ip: string = '192.168.1.50', port: string = '9100') {
     const dataProcess = this.addNameProducts(data);
     const result: any = this.commandFull(dataProcess, ip, port);
-    this.sockets.write(result, ip, port);
+    this.printOptions(result);
+  }
+
+  /**
+   * @description impresion en impresora BT
+   * @param result
+   * @param address
+   */
+  printBT(result: any, address: string) {
+    // console.log(address);
+    // send byte code into the printer
+    this.bluetoothSerial.connect(address).subscribe(() => {
+      this.bluetoothSerial.write(result)
+        .then(() => {
+          // console.log('Print success');
+          this.attempts = 0;
+          this.toastService.successToast('Imprimiendo...');
+          if (this.getCopy() !== this.numberCopy) {
+            this.numberCopy++;
+            setTimeout(() => {
+              // console.log(error, 'reimpresion')
+              this.printBT(result, address);
+            }, 2000 * this.numberCopy);
+          }
+        })
+        .catch((err) => {
+          // console.error(err, 'Print error write');
+          this.attempts = 0;
+          this.toastService.errorToast('Error al imprimir');
+        });
+    }, error => {
+      // console.log(error, 'Print error connect');
+      if (this.attempts === 0) {
+        this.attempts++;
+        setTimeout(() => {
+          // console.log(error, 'reimpresion')
+          this.printBT(result, address);
+        }, 3000);
+      } else {
+        this.attempts = 0;
+        this.numberCopy = 1;
+        this.toastService.warningToast('Impresora no conectada por favor encienda la impresora');
+      }
+    });
+  }
+
+  /**
+   * @description comprobar conexion con BT
+   */
+  connectBT() {
+    this.bluetoothSerial.isEnabled().then((data) => {
+      // console.log(data, 'then.isEnabled');
+      this.isConnected = true;
+    }).catch(data => {
+      // console.log(data, 'catch.isEnabled');
+      this.isConnected = false;
+      this.toastService.errorToast('Bluetooth no esta activado');
+    });
+  }
+
+  /**
+   * @description obtener configuracion de impresion
+   * @param data
+   */
+  printConfigActive(data: Array<any>, type: string = 'comanda') {
+    this.numberCopy = 1;
+    if (data && data.length) {
+      for (let print of data) {
+        if (type === 'comanda') {
+          const valueIp = data.find(filter => filter.param === 'direccion' && filter.app === 'impresion_comandas').value;
+          if (print.app === 'impresion_comandas' && print.param === 'metodo' && print.value === 'ip') {
+            if (valueIp) {
+              this.setPrintBluetooth(false);
+              this.setPrintIP(true);
+              this.setValueBP(valueIp);
+            }
+          } else if (print.app === 'impresion_comandas' && print.param === 'metodo' && print.value === 'bluetooth') {
+            if (valueIp) {
+              this.setPrintBluetooth(true);
+              this.setPrintIP(false);
+              this.setValueBP(valueIp);
+            }
+          } else if (print.app === 'impresion_comandas' && print.param === 'general') {
+            if (valueIp) {
+              this.setGeneralQuestion(print.value);
+            }
+          } else if (print.app === 'impresion_comandas' && print.param === 'copias') {
+            if (valueIp) {
+              this.setCopy(print.value);
+            }
+          }
+        } else {
+          const valueIp = data.find(filter => filter.param === 'direccion' && filter.app === 'impresion_documentos').value;
+          if (print.app === 'impresion_documentos' && print.param === 'metodo' && print.value === 'ip') {
+            if (valueIp) {
+              this.setPrintBluetooth(false);
+              this.setPrintIP(true);
+              this.setValueBP(valueIp);
+            }
+          } else if (print.app === 'impresion_documentos' && print.param === 'metodo' && print.value === 'bluetooth') {
+            if (valueIp) {
+              this.setPrintBluetooth(true);
+              this.setPrintIP(false);
+              this.setValueBP(valueIp);
+            }
+          } else if (print.app === 'impresion_documentos' && print.param === 'general') {
+            if (valueIp) {
+              this.setGeneralQuestion(print.value);
+            }
+          } else if (print.app === 'impresion_documentos' && print.param === 'copias') {
+            if (valueIp) {
+              this.setCopy(print.value);
+            }
+          }
+        }
+      }
+    }
   }
 
   /**

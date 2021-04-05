@@ -18,10 +18,10 @@ import localeCL from '@angular/common/locales/es-CL';
 import localeCLExtra from '@angular/common/locales/extra/es-CL';
 import { registerLocaleData } from '@angular/common';
 import { CoreServicesModule } from './services/core-services.module';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 import { AgmCoreModule } from '@agm/core';
 import { environment } from 'src/environments/environment';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
@@ -58,8 +58,8 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
     NFC,
     Ndef,
     NativeAudio,
-    BluetoothSerial,
-    BackgroundMode
+    BackgroundMode,
+    BluetoothSerial
   ],
   bootstrap: [AppComponent]
 })

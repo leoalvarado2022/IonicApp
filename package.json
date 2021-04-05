@@ -1,8 +1,8 @@
 {
   "name": "fx360",
-  "version": "1.1.50",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "version": "1.1.54",
+  "author": "Primetec LTDA",
+  "homepage": "http://primetec.cl/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",

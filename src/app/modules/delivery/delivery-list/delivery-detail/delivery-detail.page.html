@@ -184,8 +184,8 @@
         Rechazar
       </ion-button>
       <ion-button color="warning"
-                  *ngIf="order?.status === 'pending' && reprocess(order?.id_integration, order.products)"
-                  (click)="httpReprocess(order.products, order.id)">
+                  *ngIf="reprocess(order?.id_integration, order?.products)"
+                  (click)="httpReprocess()">
         Reprocesar
       </ion-button>
       <ion-button color="dark" style="margin-left: auto;" *ngIf="order?.status === 'accepted'"

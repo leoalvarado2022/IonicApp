@@ -26,7 +26,8 @@ export class Sockets {
           });
           // socket.close();
         }, (err) => {
-        this.toastServie.errorToast('Error al Imprimir, revisar la configuración');
+        console.log(err);
+        this.toastServie.errorToast(err + ' Error al Imprimir, revisar la configuración');
         }
       );
   }

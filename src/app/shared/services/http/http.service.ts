@@ -9,6 +9,7 @@ import { StoreService } from '../store/store.service';
 export class HttpService {
 
   private readonly apiDeliveryUrl: string = `${environment.api_url_delivery}/api/`;
+  private readonly apiDTEUrl: string = `${environment.api_url_dte}/api/`;
 
   constructor(
     private router: Router,
@@ -53,6 +54,15 @@ export class HttpService {
    */
   public buildUrlApiDelivery = (url: string, id: string = null): string => {
     return id == null ? this.apiDeliveryUrl + url : this.apiDeliveryUrl + `${url}/${id}`;
+  }
+
+  /**
+   * buildUrl para api delivery
+   * @param url
+   * @param id
+   */
+  public buildUrlApiDTE = (url: string, id: string = null): string => {
+    return id == null ? this.apiDTEUrl + url : this.apiDTEUrl + `${url}/${id}`;
   }
 
   /**

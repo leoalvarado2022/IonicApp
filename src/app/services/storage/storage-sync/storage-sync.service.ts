@@ -44,7 +44,8 @@ export class StorageSyncService {
       deliveryConfig,
       integration,
       integrationImages,
-      printConfig
+      printConfig,
+      foliosConfig
     } = data;
 
     return Promise.all([
@@ -71,7 +72,8 @@ export class StorageSyncService {
       this.setConfigDelivery(deliveryConfig),
       this.setIntegrationDelivery(integration),
       this.setIntegrationImages(integrationImages),
-      this.setPrintConfig(printConfig)
+      this.setPrintConfig(printConfig),
+      this.setFoliosConfig(foliosConfig)
     ]);
   };
 
@@ -229,7 +231,7 @@ export class StorageSyncService {
    * getIntegrationDelivery
    */
   public getIntegrationDelivery = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.IntegrationDelivery).then((delivery: Array<Tally>) => {
+    return this.storage.get(StorageKeys.IntegrationDelivery).then((delivery: Array<any>) => {
       return delivery ? delivery : [];
     });
   };
@@ -245,7 +247,7 @@ export class StorageSyncService {
    * getIntegrationImages
    */
   public getIntegrationImages = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.IntegrationImages).then((images: Array<Tally>) => {
+    return this.storage.get(StorageKeys.IntegrationImages).then((images: Array<any>) => {
       return images ? images : [];
     });
   };
@@ -254,19 +256,6 @@ export class StorageSyncService {
    * setPrintConfig
    */
   public setPrintConfig = (config: Array<any>): Promise<Array<any>> => {
-    // let configNew: Array<any> = [[], []];
-    // if (config && config.length) {
-    // for (let print of config) {
-    //   if (print.app === 'impresion_comandas') {
-    //     configNew[0].push(print);
-    //   }
-    //
-    //   if (print.app === 'impresion_documentos') {
-    //     configNew[1].push(print);
-    //   }
-    // }
-    // }
-
     return this.storage.set(StorageKeys.PrintConfig, config);
   };
 
@@ -274,10 +263,28 @@ export class StorageSyncService {
    * getPrintConfig
    */
   public getPrintConfig = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.PrintConfig).then((config: Array<Tally>) => {
+    return this.storage.get(StorageKeys.PrintConfig).then((config: Array<any>) => {
       return config ? config : [];
     });
   };
+
+  /**
+   * setFoliosConfig
+   */
+  public setFoliosConfig = (config: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.FoliosConfig, config);
+  };
+
+
+  /**
+   * getFoliosConfig
+   */
+  public getFoliosConfig = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.FoliosConfig).then((config: Array<any>) => {
+      return config ? config : [];
+    });
+  };
+
 
   /**
    * setTallies

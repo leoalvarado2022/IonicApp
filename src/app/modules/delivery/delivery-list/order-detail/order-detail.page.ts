@@ -19,6 +19,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
   public menuHeader: Array<any> = [];
   public items: Array<any> = [];
   public itemsSelect: any;
+  public imagesItems: Array<any> = [];
 
   constructor(
     private storeService: StoreService,
@@ -38,7 +39,16 @@ export class OrderDetailPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.loadImages().then();
     this.loadOrders();
+  }
+
+  async loadImages() {
+    const itemImageStorage = await this._deliveryService.getItemImageStorage();
+
+    if (itemImageStorage) {
+      this.imagesItems = itemImageStorage;
+    }
   }
 
   /**
@@ -156,5 +166,21 @@ export class OrderDetailPage implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  /**
+   * @description obtener la imagen de la carta
+   * @param id
+   */
+  attachment(id_item: number) {
+    if (this.imagesItems.length) {
+      const image = this.imagesItems.find(value => value.id_item === id_item);
+
+      if (image) {
+        return image.imagen;
+      }
+    }
+
+    return 'assets/imgs/no-image.png';
   }
 }

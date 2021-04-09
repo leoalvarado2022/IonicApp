@@ -129,6 +129,10 @@ const routes: Routes = [
         loadChildren: () => import('../modules/delivery/delivery-list/delivery-detail/delivery-detail.module').then((module) => module.DeliveryDetailModule),
       },
       {
+        path: 'delivery-payment/:id',
+        loadChildren: () => import('../modules/delivery/delivery-list/delivery-payment/delivery-payment.module').then((module) => module.DeliveryPaymentModule),
+      },
+      {
         path: 'config_delivery',
         loadChildren: () => import('../modules/delivery/delivery-config/delivery-config.module').then((module) => module.DeliveryConfigModule),
       },

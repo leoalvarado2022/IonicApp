@@ -8,6 +8,10 @@ import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 import {ToastService} from '../shared/services/toast/toast.service';
 import {AlertController} from '@ionic/angular';
 import {AlertService} from '../shared/services/alert/alert.service';
+import {DeliveryService} from '../modules/delivery/services/delivery.service';
+import {StorageSyncService} from '../services/storage/storage-sync/storage-sync.service';
+import {BehaviorSubject} from 'rxjs';
+import {LoaderService} from '../shared/services/loader/loader.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,18 +28,43 @@ export class Prints {
   public isConnected = false;
   public attempts = 0;
   public numberCopy = 1;
+  public order;
 
   public readonly getPD417Url = 'get-pdf417';
   public readonly getHeaderDocumentUrl = 'get-header-document';
+
+  private isGenerateDocument: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private loaderButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(public sockets: Sockets,
               private httpClient: HttpClient,
               private httpService: HttpService,
               private storeService: StoreService,
+              private deliveryService: DeliveryService,
               private bluetoothSerial: BluetoothSerial,
+              private storageSyncService: StorageSyncService,
               private toastService: ToastService,
-              private alertService: AlertService) {
+              private alertService: AlertService,
+              private loaderService: LoaderService) {
   }
+
+  /**
+   * getBluetoothStatus
+   */
+  public getGenerateDocument = (): BehaviorSubject<boolean> => {
+    return this.isGenerateDocument;
+  };
+
+  /**
+   * getBluetoothStatus
+   */
+  public getLoaderBotton = (): BehaviorSubject<boolean> => {
+    return this.loaderButton;
+  };
+
+  public setOrder = (data) => {
+    this.order = data;
+  };
 
   /**
    * @description obtener el formato del codigo pdf417
@@ -153,8 +182,8 @@ export class Prints {
       .align('left')
       .newline()
       .line(`TEST IMPRESION`)
-      .line(`IMPRESION LINEA1`)
-      .line(`IMPRESION LINEA2`)
+      .line(`LINEA1`)
+      .line(`LINEA2`)
       .newline()
       .newline()
       .newline()
@@ -260,7 +289,7 @@ export class Prints {
           .line('----------------------------------------')
           .align('center')
           .line(`R.U.T. : ${this.formatRut(data?.header?.rut)}`)
-          .line(`Nro. ${data?.id}`)
+          .line(`Nro. ${data?.documentsAvailable.number_document}`)
           .line('----------------------------------------')
           .align('center')
           .line(`S. I. I Santiago Oriente`)
@@ -343,7 +372,17 @@ export class Prints {
           }, 3000);
         } else if (this.getPrintIP()) {
           for (let i = 0; i < this.getCopy(); ++i) {
-            this.sockets.write(result, this.getValueBP(), port);
+            this.loaderService.startLoader(`Imprimiendo...`);
+            setTimeout(() => {
+              this.loaderService.stopLoader();
+            }, 1500);
+            if (i = 0) {
+              this.sockets.write(result, this.getValueBP(), port);
+            } else {
+              setTimeout(() => {
+                this.sockets.write(result, this.getValueBP(), port);
+              }, 2000 * i);
+            }
           }
         }
       }
@@ -357,8 +396,9 @@ export class Prints {
    * @param port
    */
   printPdf417(data: any, ip, port) {
-    const xmlString = '<TED version="1.0"><DD><RE>76484902-7</RE><TD>34</TD><F>166</F><FE>2018-09-24</FE><RR>11111111-1</RR><RSR>Nombre Receptor</RSR><MNT>100</MNT><IT1>Primer detalle</IT1><CAF version="1.0"><DA><RE>76484902-7</RE><RS>SHAREABLE INNOVATIONS SPA</RS><TD>34</TD><RNG><D>164</D><H>213</H></RNG><FA>2018-05-02</FA><RSAPK><M>xEgzQHlbuDyVQ/o2en9fyXZ5CbOhCfeWngsGoiURilsMrTDJYxzVEyYycnaOYn9xe7PueENj8GkxYxM2TxOERQ==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">em1SxWkeCDql+jX35oruOy1MfBWT60fEBaJ2Cc0yNI0aysy437B6kXOfXDN51TZZJ1cZPSsWdprnLYmEbeZ6Bw==</FRMA></CAF><TSTED>2018-09-24T00:51:02</TSTED></DD><FRMT algoritmo="SHA1withRSA">uDNJNlohWaJ2qKGp7Eo4/V3zu+Y3KnGNvBwKX+FNojlDApDAyiPne2P44M78EOLSrv6El/78ZKPBGFgXDS09eQ==</FRMT></TED>';
+    // const xmlString = '<TED version="1.0"><DD><RE>76484902-7</RE><TD>34</TD><F>166</F><FE>2018-09-24</FE><RR>11111111-1</RR><RSR>Nombre Receptor</RSR><MNT>100</MNT><IT1>Primer detalle</IT1><CAF version="1.0"><DA><RE>76484902-7</RE><RS>SHAREABLE INNOVATIONS SPA</RS><TD>34</TD><RNG><D>164</D><H>213</H></RNG><FA>2018-05-02</FA><RSAPK><M>xEgzQHlbuDyVQ/o2en9fyXZ5CbOhCfeWngsGoiURilsMrTDJYxzVEyYycnaOYn9xe7PueENj8GkxYxM2TxOERQ==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">em1SxWkeCDql+jX35oruOy1MfBWT60fEBaJ2Cc0yNI0aysy437B6kXOfXDN51TZZJ1cZPSsWdprnLYmEbeZ6Bw==</FRMA></CAF><TSTED>2018-09-24T00:51:02</TSTED></DD><FRMT algoritmo="SHA1withRSA">uDNJNlohWaJ2qKGp7Eo4/V3zu+Y3KnGNvBwKX+FNojlDApDAyiPne2P44M78EOLSrv6El/78ZKPBGFgXDS09eQ==</FRMT></TED>';
 
+    const xmlString = data.documentsAvailable.ted;
     const user = this.storeService.getActiveCompany();
 
     const dataHttp = {
@@ -381,14 +421,153 @@ export class Prints {
    * @param ip
    * @param port
    */
-  printDocumentPdf417(data: any, ip: string = '192.168.1.50', port: string = '9100') {
-    const dataProcess = this.addNameProducts(data);
-    this.getHttpHeaderDocument({order: dataProcess.id}).subscribe((success: any) => {
-      if (success && success.resp && success.resp.length) {
-        dataProcess.header = success.resp[0];
-        this.printPdf417(dataProcess, ip, port);
+  async printDocumentPdf417(data: any, ip: string = '192.168.1.50', port: string = '9100') {
+    this.loaderButton.next(true);
+    this.loaderService.startLoader(`Procesando...`);
+
+    const document: string = 'BOEV';
+
+    setTimeout(() => {
+      this.loaderService.stopLoader();
+    }, 3000);
+
+    // buscar si tiene documentos
+    if (this.order.documents && this.order.documents.length) {
+      // comprobar si ya existe el documento
+      const documentAvailable = this.order.documents.find(value => value.type_document === document);
+      if (!documentAvailable) {
+        await this.generateDocumentDB(data);
       }
-    });
+    } else {
+      await this.generateDocumentDB(data);
+    }
+    this.loaderButton.next(false);
+    // esperar el delay para cambiar de datos e imprimir
+    setTimeout(() => {
+    // buscar si tiene documentos
+    if (this.order.documents && this.order.documents.length) {
+      // comprobar si ya existe el documento
+      const documentAvailable = this.order.documents.find(value => value.type_document === document);
+      // procesar la data
+      const dataProcess = this.addNameProducts(this.order);
+      // si existe envia la data
+      if (documentAvailable) {
+        dataProcess.documentsAvailable = documentAvailable;
+        this.getHttpHeaderDocument({order: dataProcess.id}).subscribe((success: any) => {
+          if (success && success.resp && success.resp.length) {
+            dataProcess.header = success.resp[0];
+            this.printPdf417(dataProcess, ip, port);
+          }
+        });
+      }
+    }
+    }, 2500);
+  }
+
+  /**
+   * @description guardar documento en la base de datos
+   * @param data
+   */
+  async generateDocumentDB(data) {
+    const document: string = 'BOEV';
+
+    // obtener el usuario logueado
+    const user: any = this.storeService.getUser();
+
+    const getSN: any = {
+      user: +user.id,
+      entity: +data.id_entities,
+      document
+    };
+
+    // obtener el numero sugerido
+    const suggestNumber: any = await this.deliveryService.getSuggestNumber(getSN);
+
+    // obtener la integraciones
+    const integration = await this.storageSyncService.getIntegrationDelivery();
+    // obtener los folios
+    const folios = await this.storageSyncService.getFoliosConfig();
+
+    // buscar productos que sean de tipo item nada mas
+    const itemsProducts = data.products.filter(value => value.type === 'ITEM');
+
+    // si existe un numero sugerido y si hay integraciones para dte
+    if (folios && folios.length && suggestNumber && suggestNumber.resp &&
+      itemsProducts && itemsProducts.length &&
+      suggestNumber.resp.number && integration && integration.length) {
+      getSN.folio = suggestNumber.resp.number;
+
+
+      // valida el numero sugerido
+      const validate: any = await this.deliveryService.getValidateFolio(getSN);
+
+      // buscar la integracion depende el dte
+      const integ = integration.find(value => value.id_entity === getSN.entity && value.type_integration === 'DTE');
+      const foliosIntegration = folios.find(value => value.entity_id === getSN.entity && value.type_dte === 39);
+
+      // si existe un numero valido
+      if (foliosIntegration && foliosIntegration.xmlCaf && foliosIntegration.xmlCaf !== ''
+        && integ && validate && validate.resp &&
+        validate.resp.available && validate.resp.alert > 0) {
+
+        // si quedan pocos folios
+        if (validate.resp.available !== 'ok') {
+          this.toastService.warningToast(validate.resp.available.toLocaleUpperCase());
+        }
+        // obtener el tocken
+        const token = integ.api_key;
+        // get data dte
+        const dte = {
+          transmitter_rut: data.rut_format,
+          first_item: itemsProducts[0].name_product,
+          total: data.value_total,
+          entity_id: data.id_entities,
+          type_dte: 39,
+          folio: validate.resp.validate,
+          xmlCaf: foliosIntegration.xmlCaf
+        };
+
+        // obtener el ted que se enviara con el documento
+        const tedApiDTE: any = await this.deliveryService.getHttpTEDDTE(dte, token);
+
+        // si existe el documento ted y ademas de eso existe el xml
+        if (tedApiDTE && tedApiDTE.ted && tedApiDTE.ted.xml) {
+          // guardar una boleta
+          const folio: number = validate.resp.validate;
+          const user: number = getSN.user;
+          const entity: number = getSN.entity;
+          const order_id: number = data.id;
+          const total: number = data.value_total;
+
+          // object para grabar el documento
+          const dataSaveDocument = {
+            folio,
+            document,
+            user,
+            entity,
+            order_id,
+            total,
+            order: data,
+            xml: tedApiDTE.ted.xml
+          };
+          // guardar el documento
+          const saveDocument: any = await this.deliveryService.saveDocument(dataSaveDocument);
+          // si el documento esta ok
+          if (saveDocument.response && saveDocument.response.length && saveDocument.response[0].respuesta === 'ok') {
+            this.isGenerateDocument.next(true);
+          } else {
+            this.toastService.warningToast(saveDocument.response);
+          }
+          // si el documento tiene alertas
+          if (saveDocument.response && saveDocument.response.length && saveDocument.response.alert) {
+            this.toastService.warningToast(saveDocument.response.alert);
+          }
+        }
+      } else {
+        // si no hay folios
+        this.toastService.errorToast(validate.resp.available.toLocaleUpperCase());
+      }
+    }
   }
 
   /**
@@ -409,6 +588,7 @@ export class Prints {
    * @param address
    */
   printBT(result: any, address: string) {
+    this.loaderService.startLoader(`Imprimiendo...`);
     // console.log(address);
     // send byte code into the printer
     this.bluetoothSerial.connect(address).subscribe(() => {
@@ -416,7 +596,6 @@ export class Prints {
         .then(() => {
           // console.log('Print success');
           this.attempts = 0;
-          this.toastService.successToast('Imprimiendo...');
           if (this.getCopy() !== this.numberCopy) {
             this.numberCopy++;
             setTimeout(() => {
@@ -444,6 +623,10 @@ export class Prints {
         this.toastService.warningToast('Impresora no conectada por favor encienda la impresora');
       }
     });
+
+    setTimeout(() => {
+      this.loaderService.stopLoader();
+    }, 1500);
   }
 
   /**

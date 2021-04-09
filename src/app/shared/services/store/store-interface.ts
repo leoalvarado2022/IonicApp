@@ -79,6 +79,7 @@ export interface Sync {
   integration?: Array<any>;
   integrationImages?: Array<any>;
   printConfig?: Array<any>;
+  foliosConfig?: Array<any>;
 }
 
 export interface ContractInterface {

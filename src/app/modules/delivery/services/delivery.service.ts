@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
-import { StorageKeys } from '../../../services/storage/storage-keys';
-import { HttpClient } from '@angular/common/http';
-import { HttpService } from '../../../shared/services/http/http.service';
-import { BehaviorSubject, interval, Observable, Subject, Subscription } from 'rxjs';
-import { StoreService } from '../../../shared/services/store/store.service';
-import { BackgroundMode } from '@ionic-native/background-mode/ngx';
-import { debounceTime } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment';
-import { StorageSyncService } from '../../../services/storage/storage-sync/storage-sync.service';
-import { PosService } from './pos.service';
-import { MasterService } from './master.service';
+import {Injectable} from '@angular/core';
+import {Storage} from '@ionic/storage';
+import {StorageKeys} from '../../../services/storage/storage-keys';
+import {HttpClient} from '@angular/common/http';
+import {HttpService} from '../../../shared/services/http/http.service';
+import {BehaviorSubject, interval, Observable, Subject, Subscription} from 'rxjs';
+import {StoreService} from '../../../shared/services/store/store.service';
+import {BackgroundMode} from '@ionic-native/background-mode/ngx';
+import {debounceTime} from 'rxjs/operators';
+import {environment} from '../../../../environments/environment';
+import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
+import {PosService} from './pos.service';
+import {MasterService} from './master.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,19 +27,23 @@ export class DeliveryService {
   public changeOrderStatus = 'change-order';
   public getOrderDelivery = 'get-order';
   public setOrderUpdateJusto = 'orders-justo';
+  public getSuggestNumberUrl = 'suggest-number';
+  public getValidateFolioUrl = 'validate-folio';
+  public getTEDUrl = 'get-ted';
   public orderUrl = 'order';
   public orderReprocessUrl = 'reprocess';
+  public saveDocumentUrl = 'save-document';
   private service: Subscription;
   private refreshData: Subscription;
   private timeAccepted = environment.searchDeliveryListAcceptedMSec;
 
   constructor(private storage: Storage,
-    private httpClient: HttpClient,
-    private httpService: HttpService,
-    private storeService: StoreService,
-    private backgroundMode: BackgroundMode,
-    private _masterService: MasterService,
-    private storageSyncService: StorageSyncService) {
+              private httpClient: HttpClient,
+              private httpService: HttpService,
+              private storeService: StoreService,
+              private backgroundMode: BackgroundMode,
+              private _masterService: MasterService,
+              private storageSyncService: StorageSyncService) {
   }
 
   /**
@@ -195,6 +199,17 @@ export class DeliveryService {
   };
 
   /**
+   * @description guardar documento
+   * @param data
+   */
+  public saveDocument = (data: any) => {
+    const url = this.httpService.buildUrl(this.saveDocumentUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    }).toPromise();
+  };
+
+  /**
    * @description cambiar estatus de la api delivery
    * @param data
    */
@@ -203,6 +218,17 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeadersApiDynamic(token)
     });
+  };
+
+  /**
+   * @description obtener el ted de api-dte
+   * @param data
+   */
+  public getHttpTEDDTE = (data: any, token: string) => {
+    const url = this.httpService.buildUrlApiDTE(this.getTEDUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeadersApiDynamic(token)
+    }).toPromise();
   };
 
   /**
@@ -258,6 +284,28 @@ export class DeliveryService {
    */
   public setItemImageStorage = (data): Promise<any> => {
     return this.storage.set(StorageKeys.ItemImageStorage, data).then();
+  };
+
+  /**
+   * @description obtener sugierenumero
+   * @param data
+   */
+  public getSuggestNumber = (data: any) => {
+    const url = this.httpService.buildUrl(this.getSuggestNumberUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    }).toPromise();
+  };
+
+  /**
+   * @description obtener sugierenumero
+   * @param data
+   */
+  public getValidateFolio = (data: any) => {
+    const url = this.httpService.buildUrl(this.getValidateFolioUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    }).toPromise();
   };
 
 

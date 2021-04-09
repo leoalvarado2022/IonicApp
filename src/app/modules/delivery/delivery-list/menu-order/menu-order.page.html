@@ -50,35 +50,12 @@
 
     </ion-card>
   </ng-container>
-
-  <!--
-  <ng-container *ngIf="itemsSelect && itemsSelect.length">
-    <ion-card *ngFor="let item of itemsSelectFilter(headerSelect)">
-      <ion-card-content style="padding: 0;">
-        <div>
-          <div style="position:relative;" (click)="changePhoto(item.id_par_items)">
-            <img [src]="attachment(item.id_par_items)" class="img-card">
-            <ion-icon name="camera" class="icon-cam-fixed"></ion-icon>
-          </div>
-          <div class="description">
-            <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
-            <p><span>{{item.price | currency:' ':'symbol':'1.0-2' }}</span></p>
-            <div class="button-footer">
-              <div class="button-add" (click)="addItems(item)">+</div>
-              <div class="number-add">{{quantityOrder(item)}}</div>
-              <div class="button-add" (click)="removeItems(item)">-</div>
-            </div>
-          </div>
-        </div>
-      </ion-card-content>
-    </ion-card>
-  </ng-container>
-  -->
 </ion-content>
 
-<ion-footer class="show-order" (click)="showOrder()" *ngIf="orderCountTotal() !== 0">
-  <div>
-    <span style="float: left;">Ver Orden</span>
-    <span style="float: right;">Items: {{orderCountTotal()}}</span>
-  </div>
+<ion-footer *ngIf="orderCountTotal() !== 0">
+    <ion-button color="warning" expand="block"
+                (click)="showOrder()">
+      <span style="text-align: left;width: 49%">Ver Orden</span>
+      <span style="text-align: right;width: 48%">Items: {{orderCountTotal()}}</span>
+    </ion-button>
 </ion-footer>

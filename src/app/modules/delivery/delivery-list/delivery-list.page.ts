@@ -211,7 +211,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
       this.orderDetail = success.resp;
       if (this.printIP) {
-        this.prints.printDocumentPdf417(this.orderDetail);
+        this.prints.printDocumentPdf417(this.orderDetail).then();
       }
       this.loaderService.stopLoader();
     }, error => {

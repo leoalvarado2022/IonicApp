@@ -154,5 +154,8 @@ ion-content {
 }
 
 .md ion-fab {
-  font-size: 31px;
+  //font-size: 31px;
+  ion-button{
+    height: 43px !important;
+  }
 }

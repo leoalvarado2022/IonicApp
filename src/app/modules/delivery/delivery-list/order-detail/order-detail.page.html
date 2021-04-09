@@ -18,7 +18,7 @@
       <ng-container *ngIf="items && items.length">
         <div class="card-item" *ngFor="let item of items">
           <div>
-            <img src="assets/imgs/no-image.png" class="img-card">
+            <img [src]="attachment(item.id_par_items)" class="img-card">
           </div>
           <div class="description">
             <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
@@ -33,7 +33,7 @@
       </ng-container>
       <div class="card-item">
         <div>
-          <textarea name="" id="" rows="5" placeholder="Escribe un comentario / sugerencia al restaurant"
+          <textarea name="" id="" rows="5" placeholder="Escribe un comentario / sugerencias"
                     class="comment"></textarea>
         </div>
       </div>
@@ -42,8 +42,9 @@
 
 </ion-content>
 
-<ion-footer class="show-order ion-text-center" *ngIf="items.length" (click)="createOrder()">
-  <div>
-    <span>Crear Orden</span>
-  </div>
+<ion-footer class="ion-text-center" *ngIf="items.length">
+  <ion-button color="success" expand="block"
+              (click)="createOrder()">
+    Crear Orden
+  </ion-button>
 </ion-footer>

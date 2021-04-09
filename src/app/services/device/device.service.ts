@@ -9,6 +9,7 @@ import {Device} from '@ionic-native/device/ngx';
 export class DeviceService {
 
   private isIos = false;
+  private isAndroid = false;
 
   constructor(
     private device: Device,
@@ -17,8 +18,16 @@ export class DeviceService {
   ) {
     this.platform.ready().then(() => {
       this.isIos = this.platform.is('ios');
+      this.isAndroid = this.platform.is('android');
     });
   }
+
+  /**
+   * @description si es android
+   */
+  public isAndroidPlatform = () => {
+    return this.isAndroid;
+  };
 
   /**
    * getUUIDLast8

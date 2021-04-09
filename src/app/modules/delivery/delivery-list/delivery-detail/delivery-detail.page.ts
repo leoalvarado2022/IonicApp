@@ -3,14 +3,15 @@ import {StoreService} from '../../../../shared/services/store/store.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {DeliveryService} from '../../services/delivery.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
-import {NavParams} from '@ionic/angular';
-import {ActivatedRoute} from '@angular/router';
+import {NavParams, Platform} from '@ionic/angular';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {PosService} from '../../services/pos.service';
 import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {Prints} from '../../../../helpers/prints';
+import {DeviceService} from '../../../../services/device/device.service';
 
 @Component({
   selector: 'app-accepted',
@@ -24,6 +25,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   public images: any;
   public id_integration: any;
   public products: any;
+  public isAndroid = false;
+  public loadingButton = false;
+  public documents = false;
+  public payments = false;
 
   constructor(
     private storeService: StoreService,
@@ -35,16 +40,39 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     private _posService: PosService,
     private _toastService: ToastService,
     private _storageSyncService: StorageSyncService,
+    public deviceService: DeviceService,
+    public platform: Platform,
     public prints: Prints,
+    private router: Router,
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
     this.loadNotifications().then();
+
+    this.platform.ready().then(() => {
+      this.isAndroid = this.platform.is('android');
+    });
   }
 
   ngOnDestroy(): void {
   }
 
   ngOnInit() {
+    this.prints.getGenerateDocument().subscribe((data) => {
+      if (data) {
+        this.loadNotifications().then();
+      }
+    });
+
+    this.prints.getLoaderBotton().subscribe((data) => {
+      this.loadingButton = data;
+    });
+  }
+
+  /**
+   * @description pagar cuenta
+   */
+  deliveryPayment() {
+    this.router.navigate(['/home-page/delivery-payment', this.order.id]);
   }
 
   async loadNotifications(): Promise<any> {
@@ -54,7 +82,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       });
 
       if (this.id) {
-        this.loaderService.startLoader('Cargando Notificaciones');
+        this.loaderService.startLoader('Cargando...');
         const user = this.storeService.getActiveCompany();
 
         const data = {
@@ -64,6 +92,13 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
         this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
           this.order = success.resp;
+          if (this.order.documents && this.order.documents.length) {
+            this.documents = true;
+          }
+          if (this.order.payments && this.order.payments.length) {
+            this.payments = true;
+          }
+          this.prints.setOrder(success.resp);
           resolve(true);
           this.loaderService.stopLoader();
         }, error => {
@@ -124,7 +159,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     if (integration.length) {
 
       // en el caso se busca con el origen
-      const integ = integration.find(value => value.origin === this.order.origin && value.id_entity === this.order.id_entities);
+      const integ = integration.find(value => value.origin === this.order.origin && value.id_entity === this.order.id_entities && value.type_integration === 'DLV');
 
       // si existe
       if (integ) {
@@ -164,7 +199,9 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       if (status === 'accepted') {
 
         const user = this.storeService.getActiveCompany();
-        this.printOrderDocument(this.order);
+        if (this.platform.is('android')) {
+          this.printOrderDocument(this.order);
+        }
         // agregar datos en el pos
         this._posService.openTableNew(this.order, user.user);
       }
@@ -300,7 +337,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
       };
 
       // en el caso se busca con el origen
-      const integ = integration.find(value => value.origin === this.order.origin && value.id_entity === this.order.id_entities);
+      const integ = integration.find(value => value.origin === this.order.origin && value.id_entity === this.order.id_entities && value.type_integration === 'DLV');
       const token = integ.api_key;
 
       // cambia estado en la app externa
@@ -421,7 +458,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   printOrderDocument(command: any) {
     this._storageSyncService.getPrintConfig().then(data => {
       this.prints.printConfigActive(data, 'documento');
-      this.prints.printDocumentPdf417(command);
+      this.prints.printDocumentPdf417(command).then();
     });
   }
 }

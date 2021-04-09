@@ -5,6 +5,7 @@ export enum StorageKeys {
   IntegrationDelivery = 'IntegrationDelivery',
   IntegrationImages = 'IntegrationImages',
   PrintConfig = 'PrintConfig',
+  FoliosConfig = 'FoliosConfig',
   Tallies = 'tallies',
   CostCentersCustom = 'costCentersCustom',
   Labors = 'labors',

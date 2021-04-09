@@ -23,6 +23,12 @@
           <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
           <img [src]="imageIntegration(order)" alt="" *ngIf="order?.id_integration || order?.origin === 'FX360'"
                class="integration-img">
+          <div class="documents-payments">
+            <ion-icon name="document-attach-outline" style="color: #052a61;"
+                      *ngIf="documents"></ion-icon>
+            <ion-icon name="cash-outline" style="color: #0ec254;"
+                      *ngIf="payments"></ion-icon>
+          </div>
           <!--<ion-button color="success" class="icon-delivery" *ngIf="order?.status === 'pending'"
                       (click)="printOrder(order)">
             <ion-icon name="print-outline"></ion-icon>
@@ -30,8 +36,10 @@
 
           <ion-button color="primary" class="button-class"
                       *ngIf="!productSync() && order?.status === 'pending'"
+                      [disabled]="loadingButton"
                       (click)="setNotificationStatus('accepted', order?.id_integration)">
-            Aceptar
+            <span *ngIf="!loadingButton">Aceptar</span>
+            <span *ngIf="loadingButton"><ion-spinner name="crescent"></ion-spinner></span>
           </ion-button>
 
           <ion-button color="warning" class="button-class"
@@ -45,7 +53,7 @@
           </ion-button>
 
           <ion-button color="tertiary" class="button-class"
-                      style="margin-left: auto;" *ngIf="order?.status === 'done'"
+                      style="margin-left: auto;" *ngIf="order?.status === 'done' && isAndroid"
                       (click)="printOrderCommand(order)">
             Comanda
           </ion-button>
@@ -179,6 +187,9 @@
       <ion-icon name="ellipsis-vertical-outline"></ion-icon>
     </ion-button>
     <ion-fab-list class="list-order-button">
+      <ion-button color="success" style="margin-left: auto;" *ngIf="!payments" (click)="deliveryPayment()">
+        Pagar
+      </ion-button>
       <ion-button color="danger" style="margin-left: auto;" *ngIf="order?.status === 'pending'"
                   (click)="setNotificationStatus('rejected', order?.id_integration)">
         Rechazar
@@ -200,7 +211,8 @@
       <!--<ion-button color="medium" style="margin-left: auto;">
         Documento
       </ion-button>-->
-      <ion-button color="tertiary" style="margin-left: auto;" (click)="printOrderCommand(order)">
+      <ion-button color="tertiary" style="margin-left: auto;" *ngIf="isAndroid"
+                  (click)="printOrderCommand(order)">
         Comanda
       </ion-button>
     </ion-fab-list>

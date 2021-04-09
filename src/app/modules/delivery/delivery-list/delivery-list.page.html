@@ -66,8 +66,8 @@
 
 <ion-content>
   <ng-container *ngIf="allOrder.length">
-    <ion-virtual-scroll [items]="allOrder" approxItemHeight="185px">
-      <div *virtualItem="let order" style="height: 185px;">
+    <ion-virtual-scroll [items]="allOrder" approxItemHeight="205px">
+      <div *virtualItem="let order" style="height: 205px;">
         <app-delivery-card [order]="order" [images]="integrationImages" (orderSelected)="orderSelected($event)"
           (orderPrint)="printCommand($event)" (orderPrintDocument)="printDocumentPdf417($event)">
         </app-delivery-card>

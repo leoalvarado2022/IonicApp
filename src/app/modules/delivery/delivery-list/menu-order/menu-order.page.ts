@@ -85,8 +85,10 @@ export class MenuOrderPage implements OnInit, OnDestroy {
         }
 
         if (this.menuHeader.length) {
-          this.headerSelect = this.menuHeader[0];
-          this.itemsSelect = this.items.filter(value => value.name_section === this.menuHeader[0]);
+          this.menuHeader.unshift('Todos');
+
+          this.headerSelect = this.menuHeader[1];
+          this.itemsSelect = this.items.filter(value => value.name_section === this.menuHeader[1]);
         }
 
       }
@@ -101,7 +103,11 @@ export class MenuOrderPage implements OnInit, OnDestroy {
    */
   itemsSelectFilter(headerSelect) {
     if (this.items && this.items.length) {
-      return this.items.filter(value => value.name_section === headerSelect);
+      if (this.headerSelect === 'Todos') {
+        return this.items;
+      } else {
+        return this.items.filter(value => value.name_section === headerSelect);
+      }
     }
 
     return [];

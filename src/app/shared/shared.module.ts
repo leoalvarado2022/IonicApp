@@ -34,6 +34,7 @@ import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-fo
 import {DeliveryService} from '../modules/delivery/services/delivery.service';
 import {DeliveryCardComponent} from '../modules/delivery/delivery-list/delivery-card/delivery-card.component';
 import {PosService} from '../modules/delivery/services/pos.service';
+import {CalculatorComponent} from './components/calculator/calculator.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import {PosService} from '../modules/delivery/services/pos.service';
     NoteItemComponent,
     ImageViewerComponent,
     CustomDatetimePipe,
+    CalculatorComponent,
     RutPipe,
     TicketCardComponent,
     NumericOrderPipe,
@@ -96,12 +98,14 @@ import {PosService} from '../modules/delivery/services/pos.service';
     NumericOrderPipe,
     ToolbarButtonsComponent,
     TallyFormComponent,
-    TallyFormMultipleComponent
+    TallyFormMultipleComponent,
+    CalculatorComponent
   ],
   entryComponents: [
     ImageViewerComponent,
     TallyFormComponent,
-    TallyFormMultipleComponent
+    TallyFormMultipleComponent,
+    CalculatorComponent
   ]
 })
 export class SharedModule {

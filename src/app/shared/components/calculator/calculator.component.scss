@@ -1,0 +1,70 @@
+ion-content {
+  --background: var(--color-background-tabs);
+}
+
+.description {
+  font-size: 16px;
+  color: black;
+  padding: 8px 15px 0 15px;
+
+  p {
+    margin: 0;
+    font-weight: bold;
+  }
+}
+
+.number {
+  padding: 0 10px 10px 10px;
+
+  ion-input {
+    font-size: 2rem;
+    text-align: center;
+    color: #000000;
+    font-weight: bold;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+  }
+}
+
+.color-grey {
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+ion-card {
+  box-shadow: none;
+}
+
+.tg {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+form {
+  width: 100%;
+}
+
+.tg td {
+  font-family: Arial, sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  //border-style: solid;
+  //border-width: 1px;
+  overflow: hidden;
+  word-break: normal;
+  //border-color: rgba(190, 190, 190, 0.32);
+  color: rgb(157, 157, 157);
+  padding: 20px 0px;
+  cursor: pointer;
+}
+
+.tg .tg-yw4l {
+  vertical-align: top;
+  text-align: center;
+
+  &:active {
+    background: #152635 !important;
+  }
+}

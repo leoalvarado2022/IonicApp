@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Ingresar Valor</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <div>
+      <div class="description">
+        <div class="color-grey">
+          <p>
+            Nro. Orden #{{data?.id}}
+          </p>
+          <div *ngIf="data?.value_discount; else noDiscount">
+            <p>
+              Total Orden {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
+            </p>
+            <p>
+              Descuento -{{data?.value_discount | currency:' ':'symbol':'1.0-2'}}
+            </p>
+          </div>
+          <ng-template #noDiscount>
+            <p>
+              Total {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
+            </p>
+          </ng-template>
+          <p *ngIf="data?.type_payment === 'cash'">
+            Efectivo
+          </p>
+          <p *ngIf="data?.type_payment === 'debito'">
+            Débito
+          </p>
+          <p *ngIf="data?.type_payment === 'credito'">
+            Crédito
+          </p>
+        </div>
+      </div>
+      <ion-grid>
+        <ion-row>
+          <form [formGroup]="form" novalidate autocomplete="off">
+            <ion-col size="12">
+              <div class="number">
+                <ion-input type="text" formControlName="number" disabled></ion-input>
+              </div>
+              <div *ngIf="submitted && this.form.controls.number.errors" class="error">
+                <!--                <div *ngIf="this.form.controls.number.errors.required">Debe agregar un numero</div>-->
+                <div *ngIf="this.form.controls.number.errors.maxlength">max. 100 caracteres</div>
+              </div>
+            </ion-col>
+            <ion-col size="12" class="ion-no-padding">
+              <table class="tg">
+                <tr>
+                  <td class="tg-yw4l" (click)="editNumber(1)">1</td>
+                  <td class="tg-yw4l" (click)="editNumber(2)">2</td>
+                  <td class="tg-yw4l" (click)="editNumber(3)">3</td>
+                </tr>
+                <tr>
+                  <td class="tg-yw4l" (click)="editNumber(4)">4</td>
+                  <td class="tg-yw4l" (click)="editNumber(5)">5</td>
+                  <td class="tg-yw4l" (click)="editNumber(6)">6</td>
+                </tr>
+                <tr>
+                  <td class="tg-yw4l" (click)="editNumber(7)">7</td>
+                  <td class="tg-yw4l" (click)="editNumber(8)">8</td>
+                  <td class="tg-yw4l" (click)="editNumber(9)">9</td>
+                </tr>
+                <tr>
+                  <td class="tg-yw4l">
+                  </td>
+                  <td class="tg-yw4l" (click)="editNumber(0)">0</td>
+                  <td class="tg-yw4l ion-text-center" style="position: relative" (click)="deleteNumber()">
+                    <ion-icon name="arrow-back-circle-outline"
+                              style="position: absolute;top: 20px;right: 40px;"></ion-icon>
+                  </td>
+                </tr>
+              </table>
+            </ion-col>
+          </form>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </ion-card>
+</ion-content>
+
+<ion-footer>
+  <ion-button color="success" expand="block" [disabled]="form.invalid" (click)="onSubmit()">
+    <span style="text-align: center;">AGREGAR</span>
+  </ion-button>
+</ion-footer>

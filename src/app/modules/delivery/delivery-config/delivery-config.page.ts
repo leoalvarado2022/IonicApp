@@ -65,7 +65,7 @@ export class DeliveryConfigPage implements OnInit {
   ngOnInit() {
     this.nc = this.deviceService.getUUIDAndroid();
 
-    console.log(this.nc);
+    // console.log(this.nc);
 
     this.configForm = this.formBuilder.group({
       configId: ['', Validators.required],
@@ -354,12 +354,25 @@ export class DeliveryConfigPage implements OnInit {
   }
 
   /**
-   * @buscarmetodo de busqueda
+   * @description buscar metodo de busqueda
    */
   valueCommandMethod() {
     const valueCommand = this.valueCommand.controls.find(data => data.value === 'ip');
 
     if (valueCommand) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * @buscarmetodo de busqueda
+   */
+  valueDocumentMethod() {
+    const valueDocument = this.valueDocument.controls.find(data => data.value === 'ip');
+
+    if (valueDocument) {
       return true;
     }
 

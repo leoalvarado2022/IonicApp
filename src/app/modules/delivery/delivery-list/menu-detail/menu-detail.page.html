@@ -68,11 +68,11 @@
                 *ngIf="!customerSelect">
       Siguiente
     </ion-button>
-    <ion-button color="primary" style="width: 49%;" (click)="newCustomer()"
+    <ion-button color="primary" style="width: 49%;display: inline-block;" (click)="newCustomer()"
                 *ngIf="customerSelect">
       Nuevo
     </ion-button>
-    <ion-button [disabled]="menuDetailForm.invalid" color="warning" style="width: 49%;" (click)="menuOrder()"
+    <ion-button [disabled]="menuDetailForm.invalid" color="warning" style="width: 48%;display: inline-block;" (click)="menuOrder()"
                 *ngIf="customerSelect">
       Siguiente
     </ion-button>

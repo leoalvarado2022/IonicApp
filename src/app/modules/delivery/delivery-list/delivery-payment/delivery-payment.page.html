@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <!-- <ion-back-button class="header-back-button" text=""></ion-back-button>-->
+      <ion-button class="toolbar-button white-button" (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>{{ menuTitle }}</strong>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-content style="color: black;">
+      <strong>Nro. Orden #{{order?.id}}</strong>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ng-container *ngIf="order && order.products.length">
+    <div class="overflow">
+      <ion-card *ngFor="let item of order.products" class="item-card">
+        <ion-item lines="none" style="height: 60px;">
+          <ion-thumbnail slot="start" class="item-thumbnail">
+            <ion-img [src]="attachment(item?.id_item_product)"></ion-img>
+          </ion-thumbnail>
+          <div class="description-label">
+            <div class="description">
+              <p style="font-size: 12px;" *ngIf="item.type === 'ITEM'"><strong
+                  style="text-transform: uppercase;">{{item?.name_item}}</strong></p>
+              <p style="font-size: 12px;" *ngIf="item.type === 'TEXTO'">
+                <strong style="text-transform: uppercase;" *ngIf="item?.header_item; else noHeader;">{{item?.name_item}}
+                  - {{item?.header_item}}
+                </strong>
+                <ng-template #noHeader>
+                  <strong style="text-transform: uppercase;">{{item?.name_item}}
+                  </strong>
+                </ng-template>
+              </p>
+            </div>
+          </div>
+          <div class="quantity">
+            {{item?.quantity}}
+          </div>
+          <div class="total">
+            {{item?.total | currency:' ':'symbol':'1.0-2'}}
+          </div>
+        </ion-item>
+      </ion-card>
+    </div>
+  </ng-container>
+  <ion-card>
+    <ion-card-content class="total-order">
+
+      <div *ngIf="order?.value_discount">
+        <span>Total Orden</span>
+        <span class="ion-float-end"
+              style="font-weight: bold;">{{order?.value_order | currency:' ':'symbol':'1.0-2'}}</span>
+      </div>
+      <div *ngIf="order?.value_discount">
+        <span>Descuento</span>
+        <span class="ion-float-end"
+              style="font-weight: bold;">- {{order?.value_discount | currency:' ':'symbol':'1.0-2'}}</span>
+      </div>
+
+      <div>
+        <span>Total</span>
+        <span class="ion-float-end"
+              style="font-weight: bold;">{{order?.value_total | currency:' ':'symbol':'1.0-2'}}</span>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-grid class="ion-no-padding">
+    <ion-row class="ion-no-padding">
+      <ion-col class="ion-no-padding">
+        <ion-card class="ion-text-center" (click)="calculator('cash')">
+          <img src="assets/imgs/cash.png" alt="" style="height: 89px;">
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card class="ion-text-center" (click)="calculator('debito')">
+          <img src="assets/imgs/debito.png" alt="" style="height: 89px;">
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card class="ion-text-center" (click)="calculator('credito')">
+          <img src="assets/imgs/credito.png" alt="" style="height: 89px;">
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <h4 style="margin-left: 10px">Transacciones</h4>
+
+  <ion-card *ngIf="transactions && transactions.length">
+    <ion-card-content class="total-order">
+      <div *ngFor="let transaction of transactions">
+        <span *ngIf="transaction?.type === 'cash'">Efectivo</span>
+        <span *ngIf="transaction?.type === 'debito'">Débito</span>
+        <span *ngIf="transaction?.type === 'credito'">Crédito</span>
+        <span class="ion-float-end"
+              style="font-weight: bold;">{{transaction?.number | currency:' ':'symbol':'1.0-2'}}</span>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-footer>
+  <ion-button color="success" expand="block">
+    <span style="text-align: center;">Pagar</span>
+  </ion-button>
+</ion-footer>

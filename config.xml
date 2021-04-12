@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="cl.primetec.fx11" version="1.1.55" xmlns="http://www.w3.org/ns/widgets">
+<widget id="cl.primetec.fx11" version="1.1.55.1" xmlns="http://www.w3.org/ns/widgets">
     <name>FX360</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
@@ -161,5 +161,5 @@
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2"/>
     <plugin name="cordova-plugin-ionic-webview" spec="^4.0.0"/>
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5"/>
-    <allow-navigation href="http://localhost:8100" sessionid="cd113827"/>
+    <allow-navigation href="http://localhost:8100" sessionid="2e390ad1"/>
 </widget>

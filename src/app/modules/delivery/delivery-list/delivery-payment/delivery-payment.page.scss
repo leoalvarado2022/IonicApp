@@ -144,3 +144,8 @@ ion-card {
   //height: 34px;
   text-align: right;
 }
+
+ion-item {
+  --border-color: transparent !important;
+  --border-width: 0px !important;
+}

@@ -44,16 +44,16 @@
       <ion-grid>
         <ion-row>
           <form [formGroup]="form" novalidate autocomplete="off">
-            <ion-col size="12">
-              <div class="number">
-                <ion-input type="text" formControlName="number" disabled></ion-input>
-              </div>
-              <div *ngIf="submitted && this.form.controls.number.errors" class="error">
-                <!--                <div *ngIf="this.form.controls.number.errors.required">Debe agregar un numero</div>-->
-                <div *ngIf="this.form.controls.number.errors.maxlength">max. 100 caracteres</div>
-              </div>
-            </ion-col>
             <ion-col size="12" class="ion-no-padding">
+              <div>
+                <div class="number-class">
+                  <ion-input type="text" formControlName="number" disabled></ion-input>
+                </div>
+                <div *ngIf="submitted && this.form.controls.number.errors" class="error">
+                  <!--                <div *ngIf="this.form.controls.number.errors.required">Debe agregar un numero</div>-->
+                  <div *ngIf="this.form.controls.number.errors.maxlength">max. 100 caracteres</div>
+                </div>
+              </div>
               <table class="tg">
                 <tr>
                   <td class="tg-yw4l" (click)="editNumber(1)">1</td>

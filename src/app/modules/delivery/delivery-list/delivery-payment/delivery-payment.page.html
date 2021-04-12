@@ -18,7 +18,6 @@
     </ion-card-content>
   </ion-card>
 
-
   <ng-container *ngIf="order && order.products.length">
     <div class="overflow">
       <ion-card *ngFor="let item of order.products" class="item-card">
@@ -53,23 +52,22 @@
   </ng-container>
   <ion-card>
     <ion-card-content class="total-order">
-
-      <div *ngIf="order?.value_discount">
+      <ion-item *ngIf="order?.value_discount">
         <span>Total Orden</span>
-        <span class="ion-float-end"
+        <span slot="end"
               style="font-weight: bold;">{{order?.value_order | currency:' ':'symbol':'1.0-2'}}</span>
-      </div>
-      <div *ngIf="order?.value_discount">
+      </ion-item>
+      <ion-item *ngIf="order?.value_discount">
         <span>Descuento</span>
-        <span class="ion-float-end"
+        <span slot="end"
               style="font-weight: bold;">- {{order?.value_discount | currency:' ':'symbol':'1.0-2'}}</span>
-      </div>
+      </ion-item>
 
-      <div>
+      <ion-item>
         <span>Total</span>
-        <span class="ion-float-end"
+        <span slot="end"
               style="font-weight: bold;">{{order?.value_total | currency:' ':'symbol':'1.0-2'}}</span>
-      </div>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 
@@ -97,13 +95,13 @@
 
   <ion-card *ngIf="transactions && transactions.length">
     <ion-card-content class="total-order">
-      <div *ngFor="let transaction of transactions">
+      <ion-item *ngFor="let transaction of transactions">
         <span *ngIf="transaction?.type === 'cash'">Efectivo</span>
         <span *ngIf="transaction?.type === 'debito'">Débito</span>
         <span *ngIf="transaction?.type === 'credito'">Crédito</span>
-        <span class="ion-float-end"
+        <span slot="end"
               style="font-weight: bold;">{{transaction?.number | currency:' ':'symbol':'1.0-2'}}</span>
-      </div>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 </ion-content>

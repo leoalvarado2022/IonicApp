@@ -68,45 +68,65 @@
         <span slot="end"
               style="font-weight: bold;">{{order?.value_total | currency:' ':'symbol':'1.0-2'}}</span>
       </ion-item>
+      <ion-item *ngIf="order?.value_tip || tip > 0">
+        <span>Propina</span>
+        <span slot="end" style="font-weight: bold;">
+            <span [class.lineT]="tip > 0 && order?.value_tip > 0" *ngIf="order?.value_tip > 0">
+              {{order?.value_tip | currency:' ':'symbol':'1.0-2'}}
+            </span>
+            <span
+                *ngIf="tip > 0">{{order?.value_tip + tip | currency:' ':'symbol':'1.0-2'}}
+            </span>
+        </span>
+      </ion-item>
+      <ion-item *ngIf="order?.value_tip">
+        <span>Total a pagar</span>
+        <span slot="end"
+              style="font-weight: bold;">
+          {{order?.value_pay | currency:' ':'symbol':'1.0-2'}}
+        </span>
+      </ion-item>
+      <ion-item *ngIf="change > 0">
+        <span>Vuelto</span>
+        <span slot="end"
+              style="font-weight: bold;">{{change | currency:' ':'symbol':'1.0-2'}}</span>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 
-  <ion-grid class="ion-no-padding">
+  <ion-grid class="ion-no-padding" *ngIf="payments.length">
     <ion-row class="ion-no-padding">
-      <ion-col class="ion-no-padding">
-        <ion-card class="ion-text-center" (click)="calculator('cash')">
-          <img src="assets/imgs/cash.png" alt="" style="height: 89px;">
-        </ion-card>
-      </ion-col>
-      <ion-col>
-        <ion-card class="ion-text-center" (click)="calculator('debito')">
-          <img src="assets/imgs/debito.png" alt="" style="height: 89px;">
-        </ion-card>
-      </ion-col>
-      <ion-col>
-        <ion-card class="ion-text-center" (click)="calculator('credito')">
-          <img src="assets/imgs/credito.png" alt="" style="height: 89px;">
+      <ion-col class="ion-no-padding" *ngFor="let pay of payments">
+        <ion-card class="ion-text-center" (click)="calculator(pay.name, pay.id, pay.your_change)">
+          <img [src]="pay.icon ? pay.icon : ''" [alt]="pay.name" style="height: 89px;">
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <h4 style="margin-left: 10px">Transacciones</h4>
-
+  <ion-item class="title-transactions">
+    <h4 style="margin-left: 10px">Transacciones</h4>
+    <strong slot="end">{{forPayFunction() | currency:' ':'symbol':'1.0-2'}}</strong>
+  </ion-item>
   <ion-card *ngIf="transactions && transactions.length">
     <ion-card-content class="total-order">
-      <ion-item *ngFor="let transaction of transactions">
-        <span *ngIf="transaction?.type === 'cash'">Efectivo</span>
-        <span *ngIf="transaction?.type === 'debito'">Débito</span>
-        <span *ngIf="transaction?.type === 'credito'">Crédito</span>
-        <span slot="end"
-              style="font-weight: bold;">{{transaction?.number | currency:' ':'symbol':'1.0-2'}}</span>
-      </ion-item>
+      <ion-item-sliding *ngFor="let transaction of transactions; let it = index;">
+        <ion-item-options side="start">
+          <ion-item-option color="danger" (click)="removeTransaction(it)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+        <ion-item>
+          <span>{{transaction?.type}}</span>
+          <span slot="end"
+                style="font-weight: bold;">{{transaction?.value | currency:' ':'symbol':'1.0-2'}}</span>
+        </ion-item>
+      </ion-item-sliding>
     </ion-card-content>
   </ion-card>
 </ion-content>
 <ion-footer>
-  <ion-button color="success" expand="block">
-    <span style="text-align: center;">Pagar</span>
+  <ion-button color="success" expand="block" [disabled]="transactions.length === 0 || !paymentCorrect()"
+              (click)="paymentSubmit()">
+    <span style="text-align: center;">Pagar $ {{pay | currency:' ':'symbol':'1.0-2'}}</span>
   </ion-button>
 </ion-footer>

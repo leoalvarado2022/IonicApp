@@ -80,6 +80,7 @@ export interface Sync {
   integrationImages?: Array<any>;
   printConfig?: Array<any>;
   foliosConfig?: Array<any>;
+  typePayment?: Array<any>;
 }
 
 export interface ContractInterface {

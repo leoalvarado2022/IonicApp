@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-card *ngIf="!skeleton">
     <ion-card-header>
       <ion-card-title>
         <ion-item lines="full" style="--padding-start: 0;--padding-end: 0;">
@@ -38,8 +38,8 @@
                       *ngIf="!productSync() && order?.status === 'pending'"
                       [disabled]="loadingButton"
                       (click)="setNotificationStatus('accepted', order?.id_integration)">
-            <span *ngIf="!loadingButton">Aceptar</span>
-            <span *ngIf="loadingButton"><ion-spinner name="crescent"></ion-spinner></span>
+            <span>Aceptar</span>
+            <!--            <span *ngIf="loadingButton"><ion-spinner name="crescent"></ion-spinner></span>-->
           </ion-button>
 
           <ion-button color="warning" class="button-class"
@@ -182,7 +182,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="order?.status !== 'done'">
+  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="order?.status !== 'done' && !skeleton && order">
     <ion-button color="light">
       <ion-icon name="ellipsis-vertical-outline"></ion-icon>
     </ion-button>
@@ -218,4 +218,6 @@
     </ion-fab-list>
   </ion-fab>
 
+
+  <app-delivery-list-skeleton-component *ngIf="skeleton"></app-delivery-list-skeleton-component>
 </ion-content>

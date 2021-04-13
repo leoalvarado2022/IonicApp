@@ -18,26 +18,46 @@
             Nro. Orden #{{data?.id}}
           </p>
           <div *ngIf="data?.value_discount; else noDiscount">
-            <p>
-              Total Orden {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
-            </p>
-            <p>
-              Descuento -{{data?.value_discount | currency:' ':'symbol':'1.0-2'}}
-            </p>
+            <ion-item>
+              <span>Total Orden</span> <strong slot="end">
+              {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
+            </strong>
+            </ion-item>
+            <ion-item>
+              <span>
+                Descuento
+              </span>
+              <strong slot="end">
+                -{{data?.value_discount | currency:' ':'symbol':'1.0-2'}}
+              </strong>
+            </ion-item>
           </div>
           <ng-template #noDiscount>
-            <p>
-              Total {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
-            </p>
+            <ion-item>
+              <span>Total</span>
+              <strong slot="end">
+                {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
+              </strong>
+            </ion-item>
           </ng-template>
-          <p *ngIf="data?.type_payment === 'cash'">
-            Efectivo
-          </p>
-          <p *ngIf="data?.type_payment === 'debito'">
-            Débito
-          </p>
-          <p *ngIf="data?.type_payment === 'credito'">
-            Crédito
+          <div *ngIf="data?.value_tip;">
+            <ion-item>
+              <span>Propina</span>
+              <strong slot="end">
+                {{data?.value_tip | currency:' ':'symbol':'1.0-2'}}
+              </strong>
+            </ion-item>
+            <ion-item>
+              <span>
+                Total a Pagar
+              </span>
+              <strong slot="end">
+                {{data?.value_pay | currency:' ':'symbol':'1.0-2'}}
+              </strong>
+            </ion-item>
+          </div>
+          <p *ngIf="data?.type_payment">
+            {{data?.type_payment}}
           </p>
         </div>
       </div>

@@ -23,7 +23,10 @@ export class DeliveryPaymentPage implements OnInit, OnDestroy {
   public imagesItems: Array<any> = [];
   public id: any;
   public order: any;
+  public payments: any = [];
   public transactions: any = [];
+  public pay: number = 0;
+  public forPay: number = 0;
 
   constructor(
     private storeService: StoreService,
@@ -68,12 +71,15 @@ export class DeliveryPaymentPage implements OnInit, OnDestroy {
       user: user.user
     };
 
+    // tipos de pagos
+    this._storageSyncService.getTypePayment().then((data) => {
+      this.payments = data.sort((a, b) => a.order - b.order);
+    });
     this.loadImages().then();
 
     this._deliveryService.httpGetMenuOrderUrl(data).subscribe((success: any) => {
       if (success.resp && success.resp.menuItems && success.resp.menuItems.length) {
         this.items = success.resp.menuItems;
-
       }
     }, error => {
       this.httpService.errorHandler(error);
@@ -83,6 +89,7 @@ export class DeliveryPaymentPage implements OnInit, OnDestroy {
       data.id = this.id;
       this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
         this.order = success.resp;
+        this.forPay = this.order.value_pay;
         this.loaderService.stopLoader();
       }, error => {
         this.loaderService.stopLoader();
@@ -126,11 +133,15 @@ export class DeliveryPaymentPage implements OnInit, OnDestroy {
    * @param number
    * @param type
    */
-  setTransaction(number: number, type: string) {
-    this.transactions.push({number, type});
+  setTransaction(number: number, type: string, id: number, your_change: boolean) {
+    this.transactions.push({value: number, type, id, your_change});
   }
 
-  async calculator(type: string) {
+  /**
+   * @description abrir calculadora
+   * @param type
+   */
+  async calculator(type: string, id: number, your_change: boolean) {
     this.order.type_payment = type;
     const modal = await this.modalController.create({
       componentProps: {
@@ -143,7 +154,173 @@ export class DeliveryPaymentPage implements OnInit, OnDestroy {
     const {data} = await modal.onWillDismiss();
 
     if (data) {
-      this.setTransaction(data, type);
+      this.setTransaction(data, type, id, your_change);
     }
+  }
+
+  /**
+   * @description muestra el valor del descuento a pagar
+   */
+  forPayFunction() {
+    let forPay = this.forPay;
+    if (this.transactions && this.transactions.length) {
+      const total = this.transactions.reduce((total, value) => total + (+value.value), 0);
+      forPay -= total;
+      if (forPay < 0) {
+        return 0;
+      }
+    }
+
+    return forPay;
+  }
+
+  /**
+   * @description si hay vuelto
+   */
+  get change() {
+    // solo si existen transacciones
+    if (this.transactions && this.transactions.length) {
+      // buscar las transacciones que tienen vuelto
+      const rowSearchChange = this.transactions.filter(value => value.your_change);
+      // buscar transacciones que no tienen vuelto
+      const rowSearchNOChange = this.transactions.filter(value => !value.your_change);
+      // el valor inicial es 0
+      let change = 0;
+      // suma de todos las transacciones para comprar que sean mayor al monto
+      const total = this.transactions.reduce((total, value) => total + (+value.value), 0);
+      // si existen montos con vuelto activado
+      if (rowSearchChange && rowSearchChange.length) {
+        // sumar todos las transacciones con vuelto activado
+        const change = rowSearchChange.reduce((total, value) => total + (+value.value), 0);
+        // sumar los valores sin vuelto activado
+        const noChange = rowSearchNOChange.reduce((total, value) => total + (+value.value), 0);
+        // si vuelto es mayor a 0 y  la suma de las transacciones es mayor a total a pagar
+        if (total > this.order.value_pay) {
+          const differenceValue = total - this.order.value_pay;
+
+          // si el vuelto es mayor a 0 y mayor o igual al monto de pago
+          if (change > 0 && change >= differenceValue) {
+            return differenceValue - noChange;
+          }
+
+          // si el vuelto es mayor a 0 pero es menor al pago
+          if (change > 0 && change < differenceValue) {
+            return change;
+          }
+
+          return differenceValue;
+        }
+      }
+
+      return 0;
+    }
+  }
+
+  /**
+   * @description si hay propina
+   */
+  get tip() {
+    // solo si existen transacciones
+    if (this.transactions && this.transactions.length) {
+      // buscar transacciones que no tienen vuelto
+      const rowSearchNOChange = this.transactions.filter(value => !value.your_change);
+      // buscar las transacciones que tienen vuelto
+      const rowSearchChange = this.transactions.filter(value => value.your_change);
+      // el valor inicial es 0
+      let change = 0;
+      // suma de todos las transacciones para comprar que sean mayor al monto
+      const total = this.transactions.reduce((total, value) => total + (+value.value), 0);
+      // si existen montos con vuelto desactivado
+      if (rowSearchNOChange && rowSearchNOChange.length) {
+        // sumar los valores sin vuelto
+        const noChange = rowSearchNOChange.reduce((total, value) => total + (+value.value), 0);
+        // sumar todos las transacciones con vuelto activado
+        const change = rowSearchChange.reduce((total, value) => total + (+value.value), 0);
+
+        // la suma de las transacciones es mayor a total a pagar
+        if (total > this.order.value_pay) {
+          // si el valor a pagar es mayor a 0 y mayor o igual al monto de pago
+          if (noChange > 0 && noChange >= this.order.value_pay) {
+            return noChange - this.order.value_pay;
+          }
+
+          // si el cambios es menor a la diferencia del valor
+          if (noChange > 0 && noChange < this.order.value_pay && change === 0) {
+            return noChange;
+          }
+
+          // si el no vuelto es menor al total a pagar y no vuelto es mayor a las transacciones que pueden dar vuelto
+          if (noChange > 0 && noChange < this.order.value_pay && change > 0) {
+            return total - this.order.value_pay;
+          }
+        }
+      }
+
+      return 0;
+    }
+
+    return 0;
+  }
+
+  /**
+   * @description revisar que los montos sean los correctos
+   */
+  paymentCorrect() {
+    if (this.transactions && this.transactions.length) {
+      const total = this.transactions.reduce((total, value) => total + (+value.value), 0);
+      this.pay = total;
+
+      return total >= this.order.value_pay;
+    }
+
+    return true;
+  }
+
+  /**
+   * @description darle valor al pago total;
+   */
+  setPay() {
+    const total = this.transactions.reduce((total, value) => total + (+value.value), 0);
+    this.pay = total;
+  }
+
+  /**
+   * @description remover transaccion de la lista
+   * @param index
+   */
+  removeTransaction(index: number) {
+    this.transactions.splice(index, 1);
+    this.setPay();
+  }
+
+  /**
+   * @description enviar pago
+   */
+  paymentSubmit() {
+    this.loaderService.startLoader('Enviando pago..');
+    const tip = this.tip > 0 ? this.tip : 0;
+    const change = this.change > 0 ? this.change : 0;
+
+    this.order.value_tip += tip;
+    this.order.change = change;
+
+    // obtener el usuario logueado
+    const user: any = this.storeService.getUser();
+    const data: any = {
+      user: +user.id,
+      entity: +this.order.id_entities,
+      transactions: this.transactions,
+      order: this.order
+    };
+
+    // console.log(data, tip, change);
+    this.loaderService.stopLoader();
+    this._deliveryService.savePayment(data).subscribe((data) => {
+      this.goBack();
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
   }
 }

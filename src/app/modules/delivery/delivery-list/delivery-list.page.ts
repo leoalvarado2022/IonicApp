@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {DeliveryService} from '../services/delivery.service';
@@ -9,8 +9,9 @@ import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {environment} from '../../../../environments/environment';
 import {PosService} from '../services/pos.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
-import {ActionSheetController} from '@ionic/angular';
+import {ActionSheetController, IonInfiniteScroll} from '@ionic/angular';
 import {Prints} from '../../../helpers/prints';
+import {InfiniteScrollPaginatorService} from '../../../shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 
 
 @Component({
@@ -25,12 +26,17 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   private service: Subscription;
   private refreshData: Subscription;
   public allOrder: Array<any> = [];
+  public filteredData: Array<any> = [];
   public orderDetail;
   public checkedAutomatic = false;
   public searchDeliveryListMSec = environment.searchDeliveryListMSec;
   public integrationImages: Array<any> = [];
   public printIP = true;
   public printBluetooth = false;
+  public skeleton = true;
+
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+
   constructor(
     private storeService: StoreService,
     private httpService: HttpService,
@@ -59,6 +65,8 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     }, error => {
       this.httpService.errorHandler(error);
     });
+    this.allOrder = [];
+    this.skeleton = true;
     this.loadNotifications(this.selected);
     this.refreshOrder(true);
   }
@@ -70,6 +78,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.refreshOrder(false);
   }
+
 
   refreshOrder(on: boolean) {
     if (on) {
@@ -89,13 +98,11 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     //   console.log(data);
     // });
   }
-
   /**
    * @description change status, default = pending
    * @param status
    */
   private loadNotifications(status: string) {
-
     const user = this.storeService.getActiveCompany();
     const data = {
       user: user.user,
@@ -103,6 +110,9 @@ export class DeliveryListPage implements OnInit, OnDestroy {
     };
     this.service = this._deliveryService.getNotificationHttp(data).subscribe((success: any) => {
       this.allOrder = success.resp;
+      setTimeout(() => {
+        this.skeleton = false;
+      }, 3000);
     }, error => {
       this.httpService.errorHandler(error);
     });
@@ -111,6 +121,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
   changeStatus(status: string) {
     this.selected = status;
     this.allOrder = [];
+    this.skeleton = true;
     this.loadNotifications(status);
   }
 

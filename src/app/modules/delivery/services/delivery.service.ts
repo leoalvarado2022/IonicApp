@@ -33,6 +33,7 @@ export class DeliveryService {
   public orderUrl = 'order';
   public orderReprocessUrl = 'reprocess';
   public saveDocumentUrl = 'save-document';
+  public savePaymentUrl = 'save-payment';
   private service: Subscription;
   private refreshData: Subscription;
   private timeAccepted = environment.searchDeliveryListAcceptedMSec;
@@ -207,6 +208,17 @@ export class DeliveryService {
     return this.httpClient.post(url, this.httpService.buildBody(data), {
       headers: this.httpService.getHeaders()
     }).toPromise();
+  };
+
+  /**
+   * @description guardar documento
+   * @param data
+   */
+  public savePayment = (data: any) => {
+    const url = this.httpService.buildUrl(this.savePaymentUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
   };
 
   /**

@@ -24,17 +24,18 @@ import {TicketCardComponent} from '../modules/crm/tickets/ticket-card/ticket-car
 import {TicketsService} from '../modules/crm/services/tickets/tickets.service';
 import {NfcService} from './services/nfc/nfc.service';
 import {ContractsService} from '../modules/pre-contracts/services/contracts/contracts.service';
-import { NumericOrderPipe } from './pipes/numeric-order/numeric-order.pipe';
-import { AuthService } from './services/auth/auth.service';
-import { TallyService } from '../modules/tallies/services/tally/tally.service';
-import { InfiniteScrollPaginatorService } from './services/inifite-scroll-paginator/infinite-scroll-paginator.service';
-import { ToolbarButtonsComponent } from '../components/toolbar-buttons/toolbar-buttons.component';
-import { TallyFormMultipleComponent } from '../modules/tallies/forms/tally-form-multiple/tally-form-multiple.component';
-import { TallyFormComponent } from '../modules/tallies/forms/tally-form/tally-form.component';
+import {NumericOrderPipe} from './pipes/numeric-order/numeric-order.pipe';
+import {AuthService} from './services/auth/auth.service';
+import {TallyService} from '../modules/tallies/services/tally/tally.service';
+import {InfiniteScrollPaginatorService} from './services/inifite-scroll-paginator/infinite-scroll-paginator.service';
+import {ToolbarButtonsComponent} from '../components/toolbar-buttons/toolbar-buttons.component';
+import {TallyFormMultipleComponent} from '../modules/tallies/forms/tally-form-multiple/tally-form-multiple.component';
+import {TallyFormComponent} from '../modules/tallies/forms/tally-form/tally-form.component';
 import {DeliveryService} from '../modules/delivery/services/delivery.service';
 import {DeliveryCardComponent} from '../modules/delivery/delivery-list/delivery-card/delivery-card.component';
 import {PosService} from '../modules/delivery/services/pos.service';
 import {CalculatorComponent} from './components/calculator/calculator.component';
+import {DeliveryListSkeletonComponent as DeliveryListSkeletonComponent} from './components/skeleton/delivery-list-skeleton/delivery-list-skeleton.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import {CalculatorComponent} from './components/calculator/calculator.component'
     ToolbarButtonsComponent,
     DeliveryCardComponent,
     TallyFormComponent,
-    TallyFormMultipleComponent
+    TallyFormMultipleComponent,
+    DeliveryListSkeletonComponent
   ],
   imports: [
     CommonModule,
@@ -99,7 +101,8 @@ import {CalculatorComponent} from './components/calculator/calculator.component'
     ToolbarButtonsComponent,
     TallyFormComponent,
     TallyFormMultipleComponent,
-    CalculatorComponent
+    CalculatorComponent,
+    DeliveryListSkeletonComponent
   ],
   entryComponents: [
     ImageViewerComponent,

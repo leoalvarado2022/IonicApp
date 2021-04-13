@@ -29,6 +29,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   public loadingButton = false;
   public documents = false;
   public payments = false;
+  public skeleton = true;
 
   constructor(
     private storeService: StoreService,
@@ -46,11 +47,15 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     private router: Router,
   ) {
     this.id = this._activatedRoute.snapshot.params.id;
-    this.loadNotifications().then();
 
     this.platform.ready().then(() => {
       this.isAndroid = this.platform.is('android');
     });
+  }
+
+  ionViewWillEnter() {
+    this.skeleton = true;
+    this.loadNotifications().then();
   }
 
   ngOnDestroy(): void {
@@ -92,10 +97,11 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
         this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
           this.order = success.resp;
+          this.skeleton = false;
           if (this.order.documents && this.order.documents.length) {
             this.documents = true;
           }
-          if (this.order.payments && this.order.payments.length) {
+          if (this.order.payments && this.order.payments > 0) {
             this.payments = true;
           }
           this.prints.setOrder(success.resp);

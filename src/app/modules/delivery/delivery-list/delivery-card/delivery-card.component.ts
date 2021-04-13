@@ -12,6 +12,7 @@ export class DeliveryCardComponent implements OnInit {
 
   @Input() order: any = null;
   @Input() images: any = null;
+  @Input() skeleton: any = true;
   private now = moment();
 
   access = true;

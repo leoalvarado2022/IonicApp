@@ -36,7 +36,6 @@
 
           <ion-button color="primary" class="button-class"
                       *ngIf="!productSync() && order?.status === 'pending'"
-                      [disabled]="loadingButton"
                       (click)="setNotificationStatus('accepted', order?.id_integration)">
             <span>Aceptar</span>
             <!--            <span *ngIf="loadingButton"><ion-spinner name="crescent"></ion-spinner></span>-->

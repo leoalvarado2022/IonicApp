@@ -4,7 +4,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {HttpService} from '../shared/services/http/http.service';
 import {StoreService} from '../shared/services/store/store.service';
-import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
+import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx'; // ocultar para ios
 import {ToastService} from '../shared/services/toast/toast.service';
 import {AlertController} from '@ionic/angular';
 import {AlertService} from '../shared/services/alert/alert.service';
@@ -29,6 +29,8 @@ export class Prints {
   public attempts = 0;
   public numberCopy = 1;
   public order;
+  // activar para ios
+  // public bluetoothSerial: any; // ocultar para android
 
   public readonly getPD417Url = 'get-pdf417';
   public readonly getHeaderDocumentUrl = 'get-header-document';
@@ -41,7 +43,7 @@ export class Prints {
               private httpService: HttpService,
               private storeService: StoreService,
               private deliveryService: DeliveryService,
-              private bluetoothSerial: BluetoothSerial,
+              private bluetoothSerial: BluetoothSerial, // ocultar para ios
               private storageSyncService: StorageSyncService,
               private toastService: ToastService,
               private alertService: AlertService,

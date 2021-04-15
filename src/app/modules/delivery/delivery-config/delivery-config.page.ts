@@ -10,16 +10,15 @@ import {StoreService} from '../../../shared/services/store/store.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
 import {HttpService} from '../../../shared/services/http/http.service';
 import {StepperService} from '../../../services/storage/stepper/stepper.service';
-import {BluetoothService} from '../../../services/bluetooth/bluetooth.service';
-import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
+import {BluetoothService} from '../../../services/bluetooth/bluetooth.service'; // ocultar para ios
 import {Prints} from '../../../helpers/prints';
 
 @Component({
   selector: 'app-delivery-config',
   templateUrl: './delivery-config.page.html',
   styleUrls: ['./delivery-config.page.scss'],
+  // ocultar para ios
   providers: [
-    BluetoothSerial,
     BluetoothService
   ],
 })
@@ -38,7 +37,8 @@ export class DeliveryConfigPage implements OnInit {
   public printCommad;
   public printDocument;
   public nc: any;
-
+  // activar para ios
+  // bluetoothService: any; // ocultar para android
 
   constructor(
     private formBuilder: FormBuilder,
@@ -51,7 +51,7 @@ export class DeliveryConfigPage implements OnInit {
     private toastService: ToastService,
     private httpService: HttpService,
     private stepperService: StepperService,
-    private bluetoothService: BluetoothService,
+    private bluetoothService: BluetoothService, // ocultar para ios
     private deviceService: DeviceService,
     public prints: Prints,
   ) {

@@ -132,7 +132,6 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
         id_order: this.id,
         status
       };
-
       // console.log(data);
       // this._posService.openTableNew(this.order, user.user);
       this.setHttpNotificationStatus(status, data);
@@ -203,11 +202,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   setHttpNotificationStatus(status: string, data: any) {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
-
         const user = this.storeService.getActiveCompany();
-        if (this.platform.is('android')) {
-          this.printOrderDocument(this.order);
-        }
+        // if (this.platform.is('android') && !this.documents) {
+        //   this.printOrderDocument(this.order);
+        // }
         // agregar datos en el pos
         this._posService.openTableNew(this.order, user.user);
       }
@@ -454,6 +452,10 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
 
   }
 
+  /**
+   * @description imprimir comanda
+   * @param command
+   */
   printOrderCommand(command: any) {
     this._storageSyncService.getPrintConfig().then(data => {
       this.prints.printConfigActive(data, 'comanda');
@@ -461,10 +463,16 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * @description imprimir documento
+   * @param command
+   */
   printOrderDocument(command: any) {
-    this._storageSyncService.getPrintConfig().then(data => {
-      this.prints.printConfigActive(data, 'documento');
-      this.prints.printDocumentPdf417(command).then();
-    });
+    if (this.platform.is('android') && !this.documents) {
+      this._storageSyncService.getPrintConfig().then(data => {
+        this.prints.printConfigActive(data, 'documento');
+        this.prints.printDocumentPdf417(command).then();
+      });
+    }
   }
 }

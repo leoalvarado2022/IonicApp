@@ -207,9 +207,10 @@
                   (click)="updatePosStatus(order)">
         Traspasar POS
       </ion-button>
-      <!--<ion-button color="medium" style="margin-left: auto;">
+      <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && !documents"
+                  (click)="printOrderDocument(order)">
         Documento
-      </ion-button>-->
+      </ion-button>
       <ion-button color="tertiary" style="margin-left: auto;" *ngIf="isAndroid"
                   (click)="printOrderCommand(order)">
         Comanda

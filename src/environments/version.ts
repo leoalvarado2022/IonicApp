@@ -1,3 +1,3 @@
 export const version = {
-  number: 'v1.1.58'
+  number: 'v1.1.59'
 };

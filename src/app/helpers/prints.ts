@@ -446,23 +446,23 @@ export class Prints {
     this.loaderButton.next(false);
     // esperar el delay para cambiar de datos e imprimir
     setTimeout(() => {
-    // buscar si tiene documentos
-    if (this.order.documents && this.order.documents.length) {
-      // comprobar si ya existe el documento
-      const documentAvailable = this.order.documents.find(value => value.type_document === document);
-      // procesar la data
-      const dataProcess = this.addNameProducts(this.order);
-      // si existe envia la data
-      if (documentAvailable) {
-        dataProcess.documentsAvailable = documentAvailable;
-        this.getHttpHeaderDocument({order: dataProcess.id}).subscribe((success: any) => {
-          if (success && success.resp && success.resp.length) {
-            dataProcess.header = success.resp[0];
-            this.printPdf417(dataProcess, ip, port);
-          }
-        });
+      // buscar si tiene documentos
+      if (this.order.documents && this.order.documents.length) {
+        // comprobar si ya existe el documento
+        const documentAvailable = this.order.documents.find(value => value.type_document === document);
+        // procesar la data
+        const dataProcess = this.addNameProducts(this.order);
+        // si existe envia la data
+        if (documentAvailable) {
+          dataProcess.documentsAvailable = documentAvailable;
+          this.getHttpHeaderDocument({order: dataProcess.id}).subscribe((success: any) => {
+            if (success && success.resp && success.resp.length) {
+              dataProcess.header = success.resp[0];
+              this.printPdf417(dataProcess, ip, port);
+            }
+          });
+        }
       }
-    }
     }, 2500);
   }
 
@@ -533,7 +533,7 @@ export class Prints {
         const tedApiDTE: any = await this.deliveryService.getHttpTEDDTE(dte, token);
 
         // si existe el documento ted y ademas de eso existe el xml
-        if (tedApiDTE && tedApiDTE.ted && tedApiDTE.ted.xml) {
+        if (tedApiDTE && tedApiDTE.integration && tedApiDTE.integration.ted && tedApiDTE.integration.ted.xml) {
           // guardar una boleta
           const folio: number = validate.resp.validate;
           const user: number = getSN.user;
@@ -550,7 +550,7 @@ export class Prints {
             order_id,
             total,
             order: data,
-            xml: tedApiDTE.ted.xml
+            xml: tedApiDTE.integration.ted.xml
           };
           // guardar el documento
           const saveDocument: any = await this.deliveryService.saveDocument(dataSaveDocument);

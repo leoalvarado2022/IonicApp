@@ -33,15 +33,16 @@ export class ListaPage implements OnInit {
   /**
    * loadCostCenters
    */
-  private loadCostCenters = () => {
+  private loadCostCenters = (): void => {
     this.isLoading = true;
-
     const costCenters = this.storeService.getCostCenters();
 
-    this.costCenters = [...costCenters];
-    this.filteredCostCenters = [...costCenters];
+    setTimeout(() => {
+      this.costCenters = [...costCenters];
+      this.filteredCostCenters = [...costCenters];
 
-    this.isLoading = false;
+      this.isLoading = false;
+    }, 1000);
   }
 
   /**

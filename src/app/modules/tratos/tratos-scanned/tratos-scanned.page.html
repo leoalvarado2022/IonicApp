@@ -15,11 +15,12 @@
 <ion-content>
   <ion-row *ngIf="notSupported">
     <ion-col col-12>
-      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize">
+      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize" (click)="showAlert()">
         Dispositivo no soporta NFC
       </ion-button>
     </ion-col>
   </ion-row>
+
   <ng-container *ngIf="isLoading">
     CARGANDO
   </ng-container>

@@ -1,19 +1,17 @@
-<ion-header>
-  <ion-refresher class="refresher-position" (ionRefresh)="reSync($event)" class="refresher" slot="fixed"></ion-refresher>
-</ion-header>
-
 <ion-content>
-  <ion-searchbar
-    placeholder="Buscar..."
-    animated
-    class="production"
-    showCancelButton="never"
-    (ionChange)="searchCostCenter($event.target.value)"
-    (ionClear)="cancelSearch()">
+  <ion-refresher (ionRefresh)="reSync($event)" slot="fixed" pullFactor="0.5" pullMin="200" pullMax="300">
+  </ion-refresher>
+
+  <ion-searchbar placeholder="Buscar..." animated class="production" showCancelButton="never"
+    (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()">
   </ion-searchbar>
 
   <ng-container *ngIf="isLoading">
-    <h1>Cargando...</h1>
+    <ion-card class="card-item">
+      <ion-item lines="none">
+        <ion-label> Cargando...</ion-label>
+      </ion-item>
+    </ion-card>
   </ng-container>
 
   <ng-container *ngIf="!isLoading">
@@ -39,8 +37,6 @@
           </ion-chip>
         </ion-card-content>
       </ion-card>
-
-
     </ion-virtual-scroll>
   </ng-container>
 

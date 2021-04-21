@@ -12,7 +12,7 @@ import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
-import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 
 @Component({
   selector: 'app-tratos-scanned',
@@ -640,6 +640,13 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  /**
+   * showAlert
+   */
+  public showAlert = (): void => {
+    this.toastService.errorToast("Dispositivo no es compatible con NFC", null, 'bottom');
   }
 
 }

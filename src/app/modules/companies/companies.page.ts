@@ -1,9 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {Company} from '@primetec/primetec-angular';
-import {AuthService} from '../../shared/services/auth/auth.service';
-import {Router} from '@angular/router';
-import {LoaderService} from '../../shared/services/loader/loader.service';
-import {StoreService} from '../../shared/services/store/store.service';
+import { Component, OnInit } from '@angular/core';
+import { Company, Connection } from '@primetec/primetec-angular';
+import { AuthService } from '../../shared/services/auth/auth.service';
+import { Router } from '@angular/router';
+import { LoaderService } from '../../shared/services/loader/loader.service';
+import { StoreService } from '../../shared/services/store/store.service';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { ToastService } from 'src/app/shared/services/toast/toast.service';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-companies',
@@ -19,7 +22,8 @@ export class CompaniesPage implements OnInit {
     private authService: AuthService,
     private loaderService: LoaderService,
     private router: Router,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private toastService: ToastService
   ) {
 
   }
@@ -35,13 +39,25 @@ export class CompaniesPage implements OnInit {
   public selectCompany = (company: Company) => {
     if (company.id !== this.selectedCompany.id) {
 
-      const user = this.storeService.getUser();
       const connection = this.storeService.getActiveConnection();
-      this.authService.companyChange({connection: connection.token, company: company.id, loggedUser: user.id}).subscribe(() => {
-        this.storeService.setActiveCompany(company);
-        this.loadCompanies();
-        this.router.navigate(['home-page']);
-      });
+      const user = this.storeService.getUser();
+
+      this.authService.companyChange({ connection: connection.token, company: company.id, loggedUser: user.id })
+        .pipe(
+          switchMap(() => this.authService.checkToken()),
+          map(response => response["data"]),
+          catchError(error => {
+            console.log('error', error);
+            this.toastService.errorToast("No se pudo cambiar de empresa");
+            return of(null);
+          })
+        ).subscribe((connections: Array<Connection>) => {
+          this.storeService.setUserConnections(connections);
+          this.storeService.setActiveCompany(company);
+
+          this.loadCompanies();
+          this.router.navigate(['home-page']);
+        });
     }
   }
 
@@ -56,5 +72,6 @@ export class CompaniesPage implements OnInit {
     this.selectedCompany = company;
     this.loaderService.stopLoader();
   }
+
 
 }

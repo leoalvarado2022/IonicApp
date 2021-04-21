@@ -74,7 +74,7 @@
   <!-- APPLIED TAB -->
   <ng-container *ngIf="currentTab === appliedTab">
     <ion-virtual-scroll [items]="filteredAppliedApplications">
-      <ion-item-sliding #slide *virtualItem="let application">
+      <ion-item-sliding #slide *virtualItem="let application" disabled="true">
         <ion-item class="slide-item" lines="none">
           <ion-card>
             <ion-item lines="full">

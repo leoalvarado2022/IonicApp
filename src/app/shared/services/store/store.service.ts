@@ -228,7 +228,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setState({ auth }, StoreActions.SetUserConnections);
 
     if (userConnections.length > 0) {
-      const defaultConnection = userConnections.find(item => item.default);      
+      const defaultConnection = userConnections.find(item => item.default);
 
       if (defaultConnection) {
         this.setActiveConnection(defaultConnection);
@@ -324,6 +324,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
 
     if (companies.length > 0) {
       const activeConnection: any = this.getActiveConnection();
+
       // TODO: Fix interface
       const defaultCompany = companies.find(item => item.id === activeConnection.default_company);
 

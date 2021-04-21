@@ -35,8 +35,9 @@ export class CompaniesPage implements OnInit {
   public selectCompany = (company: Company) => {
     if (company.id !== this.selectedCompany.id) {
 
-      const user = this.storeService.getUser();
       const connection = this.storeService.getActiveConnection();
+      const user = this.storeService.getUser();
+
       this.authService.companyChange({connection: connection.token, company: company.id, loggedUser: user.id}).subscribe(() => {
         this.storeService.setActiveCompany(company);
         this.loadCompanies();

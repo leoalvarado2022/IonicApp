@@ -36,7 +36,7 @@ export class ToastService {
    * @param time
    * @param position
    */
-  public errorToast = async (msg: string = 'Loading...', time: number = 2000, position: any = 'top') => {
+  public errorToast = async (msg: string = 'Loading...', time: number = 2000, position: 'top' | 'bottom' = 'top') => {
     const toast = await this.toastController.create({
       message: msg,
       duration: time,

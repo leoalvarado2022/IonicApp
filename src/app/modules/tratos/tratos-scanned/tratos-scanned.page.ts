@@ -646,7 +646,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * showAlert
    */
   public showAlert = (): void => {
-    this.toastService.errorToast("Dispositivo no es compatible con NFC", null, 'bottom');
+    this.toastService.errorToast("Dispositivo no es compatible con NFC", 2000, 'bottom');
   }
 
 }

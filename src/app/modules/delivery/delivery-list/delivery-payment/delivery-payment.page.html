@@ -54,42 +54,36 @@
     <ion-card-content class="total-order">
       <ion-item *ngIf="order?.value_discount">
         <span>Total Orden</span>
-        <span slot="end"
-              style="font-weight: bold;">{{order?.value_order | currency:' ':'symbol':'1.0-2'}}</span>
+        <span slot="end" style="font-weight: bold;">{{order?.value_order | currency:' ':'symbol':'1.0-2'}}</span>
       </ion-item>
       <ion-item *ngIf="order?.value_discount">
         <span>Descuento</span>
-        <span slot="end"
-              style="font-weight: bold;">- {{order?.value_discount | currency:' ':'symbol':'1.0-2'}}</span>
+        <span slot="end" style="font-weight: bold;">- {{order?.value_discount | currency:' ':'symbol':'1.0-2'}}</span>
       </ion-item>
 
       <ion-item>
         <span>Total</span>
-        <span slot="end"
-              style="font-weight: bold;">{{order?.value_total | currency:' ':'symbol':'1.0-2'}}</span>
+        <span slot="end" style="font-weight: bold;">{{order?.value_total | currency:' ':'symbol':'1.0-2'}}</span>
       </ion-item>
       <ion-item *ngIf="order?.value_tip || tip > 0">
         <span>Propina</span>
         <span slot="end" style="font-weight: bold;">
-            <span [class.lineT]="tip > 0 && order?.value_tip > 0" *ngIf="order?.value_tip > 0">
-              {{order?.value_tip | currency:' ':'symbol':'1.0-2'}}
-            </span>
-            <span
-                *ngIf="tip > 0">{{order?.value_tip + tip | currency:' ':'symbol':'1.0-2'}}
-            </span>
+          <span [class.lineT]="tip > 0 && order?.value_tip > 0" *ngIf="order?.value_tip > 0">
+            {{order?.value_tip | currency:' ':'symbol':'1.0-2'}}
+          </span>
+          <span *ngIf="tip > 0">{{order?.value_tip + tip | currency:' ':'symbol':'1.0-2'}}
+          </span>
         </span>
       </ion-item>
       <ion-item *ngIf="order?.value_tip">
         <span>Total a pagar</span>
-        <span slot="end"
-              style="font-weight: bold;">
+        <span slot="end" style="font-weight: bold;">
           {{order?.value_pay | currency:' ':'symbol':'1.0-2'}}
         </span>
       </ion-item>
       <ion-item *ngIf="change > 0">
         <span>Vuelto</span>
-        <span slot="end"
-              style="font-weight: bold;">{{change | currency:' ':'symbol':'1.0-2'}}</span>
+        <span slot="end" style="font-weight: bold;">{{change | currency:' ':'symbol':'1.0-2'}}</span>
       </ion-item>
     </ion-card-content>
   </ion-card>
@@ -117,16 +111,15 @@
         </ion-item-options>
         <ion-item>
           <span>{{transaction?.type}}</span>
-          <span slot="end"
-                style="font-weight: bold;">{{transaction?.value | currency:' ':'symbol':'1.0-2'}}</span>
+          <span slot="end" style="font-weight: bold;">{{transaction?.value | currency:' ':'symbol':'1.0-2'}}</span>
         </ion-item>
       </ion-item-sliding>
     </ion-card-content>
   </ion-card>
 </ion-content>
 <ion-footer>
-  <ion-button color="success" expand="block" [disabled]="transactions.length === 0 || !paymentCorrect()"
-              (click)="paymentSubmit()">
+  <ion-button color="success" expand="block"
+    [disabled]="transactions.length === 0 || !paymentCorrect() || isPaymentOnProcess" (click)="paymentSubmit()">
     <span style="text-align: center;">Pagar $ {{pay | currency:' ':'symbol':'1.0-2'}}</span>
   </ion-button>
 </ion-footer>

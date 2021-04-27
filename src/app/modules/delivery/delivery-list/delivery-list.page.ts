@@ -112,7 +112,7 @@ export class DeliveryListPage implements OnInit, OnDestroy {
       this.allOrder = success.resp;
       setTimeout(() => {
         this.skeleton = false;
-      }, 3000);
+      }, 1000);
     }, error => {
       this.httpService.errorHandler(error);
     });

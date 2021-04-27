@@ -30,6 +30,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   public documents = false;
   public payments = false;
   public skeleton = true;
+  public loadingActionButton = false;
 
   constructor(
     private storeService: StoreService,
@@ -117,10 +118,21 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
   }
 
   /**
+   * @description para que no puedan pulsar varias veces a la vez
+   */
+  loadingButtonFunction() {
+    this.loadingActionButton = true;
+    setTimeout(() => {
+      this.loadingActionButton = false;
+    }, 2000);
+  }
+
+  /**
    * @description cambiar status de notificación
    * @param status
    */
   setNotificationStatus(status: string, id_integration: any) {
+    this.loadingButtonFunction();
     if (this.id) {
 
       this.id_integration = id_integration;
@@ -219,6 +231,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @description actualizar estado del pos
    */
   updatePosStatus(order: any) {
+    this.loadingButtonFunction();
     const user = this.storeService.getActiveCompany();
     this._posService.openTableNew(order, user.user);
   }
@@ -326,6 +339,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @param order
    */
   async httpReprocess() {
+    this.loadingButtonFunction();
     this.loaderService.startLoader(`Obteniendo la orden con ${this.order.origin}`);
     // obtener la integraciones
     const integration = await this._storageSyncService.getIntegrationDelivery();
@@ -457,6 +471,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @param command
    */
   printOrderCommand(command: any) {
+    this.loadingButtonFunction();
     this._storageSyncService.getPrintConfig().then(data => {
       this.prints.printConfigActive(data, 'comanda');
       this.prints.printCommand(command);
@@ -468,6 +483,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
    * @param command
    */
   printOrderDocument(command: any) {
+    this.loadingButtonFunction();
     if (this.platform.is('android') && !this.documents) {
       this._storageSyncService.getPrintConfig().then(data => {
         this.prints.printConfigActive(data, 'documento');

@@ -36,6 +36,7 @@
 
           <ion-button color="primary" class="button-class"
                       *ngIf="!productSync() && order?.status === 'pending'"
+                      [disabled]="loadingActionButton"
                       (click)="setNotificationStatus('accepted', order?.id_integration)">
             <span>Aceptar</span>
             <!--            <span *ngIf="loadingButton"><ion-spinner name="crescent"></ion-spinner></span>-->
@@ -43,16 +44,19 @@
 
           <ion-button color="warning" class="button-class"
                       *ngIf="order?.status === 'accepted'"
+                      [disabled]="loadingActionButton"
                       (click)="setNotificationStatus('done', order?.id_integration)">Cerrar
           </ion-button>
 
           <ion-button color="warning" class="button-class"
                       *ngIf="order?.status === 'delivering'"
+                      [disabled]="loadingActionButton"
                       (click)="setNotificationStatus('done', order?.id_integration)">Cerrar
           </ion-button>
 
           <ion-button color="tertiary" class="button-class"
                       style="margin-left: auto;" *ngIf="order?.status === 'done' && isAndroid"
+                      [disabled]="loadingActionButton"
                       (click)="printOrderCommand(order)">
             Comanda
           </ion-button>
@@ -186,32 +190,39 @@
       <ion-icon name="ellipsis-vertical-outline"></ion-icon>
     </ion-button>
     <ion-fab-list class="list-order-button">
-      <ion-button color="success" style="margin-left: auto;" *ngIf="!payments" (click)="deliveryPayment()">
+      <ion-button color="success" style="margin-left: auto;" [disabled]="loadingActionButton"
+                  *ngIf="!payments" (click)="deliveryPayment()">
         Pagar
       </ion-button>
       <ion-button color="danger" style="margin-left: auto;" *ngIf="order?.status === 'pending'"
+                  [disabled]="loadingActionButton"
                   (click)="setNotificationStatus('rejected', order?.id_integration)">
         Rechazar
       </ion-button>
       <ion-button color="warning"
                   *ngIf="reprocess(order?.id_integration, order?.products)"
+                  [disabled]="loadingActionButton"
                   (click)="httpReprocess()">
         Reprocesar
       </ion-button>
       <ion-button color="dark" style="margin-left: auto;" *ngIf="order?.status === 'accepted'"
+                  [disabled]="loadingActionButton"
                   (click)="setNotificationStatus('delivering', order?.id_integration)">
         Entregar
       </ion-button>
       <ion-button color="primary" style="margin-left: auto;"
                   *ngIf="order?.status !== 'pending' && order?.update_pos_status === 0"
+                  [disabled]="loadingActionButton"
                   (click)="updatePosStatus(order)">
         Traspasar POS
       </ion-button>
       <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && !documents"
+                  [disabled]="loadingActionButton"
                   (click)="printOrderDocument(order)">
         Documento
       </ion-button>
       <ion-button color="tertiary" style="margin-left: auto;" *ngIf="isAndroid"
+                  [disabled]="loadingActionButton"
                   (click)="printOrderCommand(order)">
         Comanda
       </ion-button>

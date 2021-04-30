@@ -17,6 +17,11 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+<div>
+  <ion-searchbar #searchDelivery placeholder="Buscar..." animated class="production" showCancelButton="never" (ionClear)="clearSearch()"
+                 (ionInput)="searchInput($event.target.value)"></ion-searchbar>
+</div>
+
 <ion-content>
   <ion-card>
     <ion-card-content>
@@ -28,7 +33,7 @@
   </ion-card>
 
 
-  <ng-container *ngIf="itemsSelect && itemsSelect.length">
+  <ng-container *ngIf="itemsSelect && itemsSelect.length && !noResult">
     <ion-card *ngFor="let item of itemsSelectFilter(headerSelect)" class="item-card">
       <ion-item lines="none">
         <ion-thumbnail slot="start" (click)="changePhoto(item.id_par_items)" class="item-thumbnail">

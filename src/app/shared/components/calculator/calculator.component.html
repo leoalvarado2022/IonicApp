@@ -19,9 +19,10 @@
           </p>
           <div *ngIf="data?.value_discount; else noDiscount">
             <ion-item>
-              <span>Total Orden</span> <strong slot="end">
-              {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
-            </strong>
+              <span>Total Orden</span>
+              <strong slot="end">
+                {{data?.value_order | currency:' ':'symbol':'1.0-2'}}
+              </strong>
             </ion-item>
             <ion-item>
               <span>
@@ -33,6 +34,12 @@
             </ion-item>
           </div>
           <ng-template #noDiscount>
+            <ion-item>
+              <span>Por pagar</span>
+              <strong slot="end">
+                {{data?.paymentTotal | currency:' ':'symbol':'1.0-2'}}
+              </strong>
+            </ion-item>
             <ion-item>
               <span>Total</span>
               <strong slot="end">
@@ -91,7 +98,12 @@
                   <td class="tg-yw4l" (click)="editNumber(9)">9</td>
                 </tr>
                 <tr>
-                  <td class="tg-yw4l">
+                  <td class="tg-yw4l ion-text-center" style="position: relative" *ngIf="data?.paymentTotal === 0">
+                  </td>
+                  <td class="tg-yw4l ion-text-center" style="position: relative" (click)="equal()"
+                      *ngIf="data?.paymentTotal > 0">
+                    <ion-icon name="add-circle-outline"
+                              style="position: absolute;top: 20px;right: 40px;"></ion-icon>
                   </td>
                   <td class="tg-yw4l" (click)="editNumber(0)">0</td>
                   <td class="tg-yw4l ion-text-center" style="position: relative" (click)="deleteNumber()">

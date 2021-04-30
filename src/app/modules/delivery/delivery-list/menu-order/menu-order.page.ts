@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {StoreService} from '../../../../shared/services/store/store.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {DeliveryService} from '../../services/delivery.service';
@@ -8,7 +8,7 @@ import {Location} from '@angular/common';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {CameraService} from '../../../../shared/services/camera/camera.service';
-import {AlertController} from '@ionic/angular';
+import {AlertController, IonSearchbar} from '@ionic/angular';
 
 @Component({
   selector: 'app-accepted',
@@ -22,7 +22,11 @@ export class MenuOrderPage implements OnInit, OnDestroy {
   public headerSelect: any;
   public id_item: any;
   public menuTitle: string;
+  public noResult: boolean = false;
   public imagesItems: Array<any> = [];
+  public searchData: Array<any> = [];
+
+  @ViewChild('searchDelivery') searchDelivery: IonSearchbar;
 
   constructor(
     private storeService: StoreService,
@@ -102,6 +106,9 @@ export class MenuOrderPage implements OnInit, OnDestroy {
    * @param headerSelect
    */
   itemsSelectFilter(headerSelect) {
+    if (this.searchData && this.searchData.length) {
+      return this.searchData;
+    }
     if (this.items && this.items.length) {
       if (this.headerSelect === 'Todos') {
         return this.items;
@@ -119,6 +126,9 @@ export class MenuOrderPage implements OnInit, OnDestroy {
    */
   selectFilterItems(header) {
     this.headerSelect = header;
+    this.noResult = false;
+    this.searchData = [];
+    this.searchDelivery.value = null;
   }
 
   /**
@@ -336,5 +346,29 @@ export class MenuOrderPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
+  }
+
+  /**
+   * @description borrar busqueda
+   */
+  clearSearch() {
+    this.searchData = [];
+    this.noResult = false;
+  }
+
+  /**
+   * @description buscar productos
+   * @param value
+   */
+  searchInput(value: string) {
+    const valueUpper = value.toUpperCase();
+    this.headerSelect = 'Todos';
+    const items = this.items.filter(value => value.name_product.includes(valueUpper));
+    if(!items.length) {
+      this.noResult = true;
+    } else {
+      this.noResult = false;
+    }
+    this.searchData = items;
   }
 }

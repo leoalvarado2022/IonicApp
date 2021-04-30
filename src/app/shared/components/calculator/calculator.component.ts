@@ -24,6 +24,7 @@ export class CalculatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    // console.log(this.data);
   }
 
   /**
@@ -40,6 +41,16 @@ export class CalculatorComponent implements OnInit {
    * @param number
    */
   editNumber(number: number) {
+    // si el valor comienza en cero
+    if ((this.form.get('number').value).startsWith('0')) {
+      return false;
+    }
+
+    // si el primer valor es 0
+    if ((this.form.get('number').value).length === 0 && number === 0) {
+      return false;
+    }
+
     this.form.patchValue({
       number: this.form.get('number').value + number.toString(),
     });
@@ -52,6 +63,17 @@ export class CalculatorComponent implements OnInit {
     this.form.patchValue({
       number: (this.form.get('number').value).substring(0, (this.form.get('number').value).length - 1),
     });
+  }
+
+  /**
+   * @description boton para pasar el igual
+   */
+  equal() {
+    if (this.data.paymentTotal && this.data.paymentTotal > 0) {
+      this.form.patchValue({
+        number: this.data.paymentTotal,
+      });
+    }
   }
 
   /**

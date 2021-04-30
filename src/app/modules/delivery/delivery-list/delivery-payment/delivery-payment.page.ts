@@ -1,15 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { StoreService } from '../../../../shared/services/store/store.service';
-import { HttpService } from '../../../../shared/services/http/http.service';
-import { DeliveryService } from '../../services/delivery.service';
-import { LoaderService } from '../../../../shared/services/loader/loader.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { StorageSyncService } from '../../../../services/storage/storage-sync/storage-sync.service';
-import { ToastService } from '../../../../shared/services/toast/toast.service';
-import { CameraService } from '../../../../shared/services/camera/camera.service';
-import { AlertController, ModalController } from '@ionic/angular';
-import { CalculatorComponent } from '../../../../shared/components/calculator/calculator.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {StoreService} from '../../../../shared/services/store/store.service';
+import {HttpService} from '../../../../shared/services/http/http.service';
+import {DeliveryService} from '../../services/delivery.service';
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Location} from '@angular/common';
+import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
+import {ToastService} from '../../../../shared/services/toast/toast.service';
+import {CameraService} from '../../../../shared/services/camera/camera.service';
+import {AlertController, ModalController} from '@ionic/angular';
+import {CalculatorComponent} from '../../../../shared/components/calculator/calculator.component';
 
 @Component({
   selector: 'app-delivery-payment',
@@ -136,7 +136,7 @@ export class DeliveryPaymentPage implements OnInit, OnDestroy {
    * @param type
    */
   setTransaction(number: number, type: string, id: number, your_change: boolean) {
-    this.transactions.push({ value: number, type, id, your_change });
+    this.transactions.push({value: number, type, id, your_change});
   }
 
   /**
@@ -147,13 +147,13 @@ export class DeliveryPaymentPage implements OnInit, OnDestroy {
     this.order.type_payment = type;
     const modal = await this.modalController.create({
       componentProps: {
-        data: this.order,
+        data: {...this.order, paymentTotal: this.forPayFunction()},
       },
       component: CalculatorComponent,
     });
     await modal.present();
 
-    const { data } = await modal.onWillDismiss();
+    const {data} = await modal.onWillDismiss();
 
     if (data) {
       this.setTransaction(data, type, id, your_change);

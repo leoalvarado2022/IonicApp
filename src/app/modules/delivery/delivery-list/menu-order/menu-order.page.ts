@@ -18,6 +18,7 @@ import {AlertController, IonSearchbar} from '@ionic/angular';
 export class MenuOrderPage implements OnInit, OnDestroy {
   public menuHeader: Array<any> = [];
   public items: Array<any> = [];
+  public itemsTemp: Array<any> = [];
   public itemsSelect: any;
   public headerSelect: any;
   public id_item: any;
@@ -93,6 +94,7 @@ export class MenuOrderPage implements OnInit, OnDestroy {
 
           this.headerSelect = this.menuHeader[1];
           this.itemsSelect = this.items.filter(value => value.name_section === this.menuHeader[1]);
+          this.itemsTemp = this.items.filter(value => value.name_section === this.menuHeader[1]);
         }
 
       }
@@ -126,6 +128,12 @@ export class MenuOrderPage implements OnInit, OnDestroy {
    */
   selectFilterItems(header) {
     this.headerSelect = header;
+    if (this.headerSelect !== 'Todos') {
+      this.itemsTemp = this.items.filter(value => value.name_section === this.headerSelect);
+    } else {
+      const items = this.items;
+      this.itemsTemp = items;
+    }
     this.noResult = false;
     this.searchData = [];
     this.searchDelivery.value = null;
@@ -354,6 +362,8 @@ export class MenuOrderPage implements OnInit, OnDestroy {
   clearSearch() {
     this.searchData = [];
     this.noResult = false;
+    const items = this.items;
+    this.itemsTemp = items;
   }
 
   /**
@@ -361,14 +371,14 @@ export class MenuOrderPage implements OnInit, OnDestroy {
    * @param value
    */
   searchInput(value: string) {
-    const valueUpper = value.toUpperCase();
+    const valueUpper = value.toLocaleLowerCase();
     this.headerSelect = 'Todos';
-    const items = this.items.filter(value => value.name_product.includes(valueUpper));
-    if(!items.length) {
+    const items = this.items.filter(value => value.name_product.toLocaleLowerCase().includes(valueUpper));
+    if (!items.length) {
       this.noResult = true;
     } else {
       this.noResult = false;
     }
-    this.searchData = items;
+    this.itemsTemp = items;
   }
 }

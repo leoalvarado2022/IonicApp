@@ -124,7 +124,7 @@ export class DeliveryDetailPage implements OnInit, OnDestroy {
     this.loadingActionButton = true;
     setTimeout(() => {
       this.loadingActionButton = false;
-    }, 2000);
+    }, 5000);
   }
 
   /**

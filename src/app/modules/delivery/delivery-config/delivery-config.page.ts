@@ -28,6 +28,7 @@ export class DeliveryConfigPage implements OnInit {
   public configDelivery: any;
   public configActiveDelivery: any;
   public printConfig: any;
+  public configUrl: any;
 
   public configFormComanda: FormGroup;
   public configFormDocuments: FormGroup;
@@ -103,6 +104,7 @@ export class DeliveryConfigPage implements OnInit {
         this.configForm.patchValue({
           configId: this.configActiveDelivery.id
         });
+        this.configUrl = this.configActiveDelivery.url;
       } else {
         this._posService.connection = false;
       }
@@ -156,7 +158,8 @@ export class DeliveryConfigPage implements OnInit {
   submitForm() {
     const data = Object.assign({}, this.configForm.value);
     const config = this.configDelivery.find(value => value.id === data.configId);
-
+    console.log(config);
+    this.configUrl = config.url;
     this.storageSyncService.setActiveConfigDelivery(config);
     localStorage.setItem('modoPOS', '1');
     this.configActiveDelivery = config;
@@ -276,6 +279,7 @@ export class DeliveryConfigPage implements OnInit {
       configId: ''
     });
     localStorage.removeItem('modoPOS');
+    this.configUrl = undefined;
   }
 
   clearForm() {

@@ -28,6 +28,7 @@
           </ion-select>
         </ion-item>
         <br>
+        <p *ngIf="configUrl" class="ion-text-center"><strong>url activa:</strong> {{configUrl}}</p>
         <ion-button expand="block" [disabled]="configForm.invalid" (click)="submitForm()">Activar</ion-button>
       </form>
       <br>

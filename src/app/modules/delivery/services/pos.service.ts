@@ -222,6 +222,10 @@ export class PosService {
     } else {
       this._toastService.warningToast('no esta activada la sincronización debe activar una empresa FX10 POS');
     }
+
+    setTimeout(() => {
+      this.connection = false;
+    }, 10000);
   };
 
   /**

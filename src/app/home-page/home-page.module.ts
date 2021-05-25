@@ -109,32 +109,32 @@ const routes: Routes = [
         loadChildren: () => import('../modules/bluetooth-manager/bluetooth-manager.module').then(m => m.BluetoothManagerPageModule)
       },
       {
-        path: 'delivery',
-        loadChildren: () => import('../modules/delivery/delivery-list/delivery-list.module').then((module) => module.DeliveryListModule),
+        path: 'ordenes',
+        loadChildren: () => import('../modules/orders/orders-list/orders-list.module').then((module) => module.OrdersListModule),
       },
       {
         path: 'menu-order',
-        loadChildren: () => import('../modules/delivery/delivery-list/menu-order/menu-order.module').then((module) => module.MenuOrderModule),
+        loadChildren: () => import('../modules/orders/orders-list/menu-order/menu-order.module').then((module) => module.MenuOrderModule),
       },
       {
         path: 'menu-detail',
-        loadChildren: () => import('../modules/delivery/delivery-list/menu-detail/menu-detail.module').then((module) => module.MenuDetailModule),
+        loadChildren: () => import('../modules/orders/orders-list/menu-detail/menu-detail.module').then((module) => module.MenuDetailModule),
       },
       {
-        path: 'order-detail',
-        loadChildren: () => import('../modules/delivery/delivery-list/order-detail/order-detail.module').then((module) => module.OrderDetailModule),
+        path: 'menu-order-detail',
+        loadChildren: () => import('../modules/orders/orders-list/menu-order-detail/menu-order-detail.module').then((module) => module.MenuOrderDetailModule),
       },
       {
-        path: 'delivery-detail/:id',
-        loadChildren: () => import('../modules/delivery/delivery-list/delivery-detail/delivery-detail.module').then((module) => module.DeliveryDetailModule),
+        path: 'orders-detail/:id',
+        loadChildren: () => import('../modules/orders/orders-list/order-detail/order-detail.module').then((module) => module.OrderDetailModule),
       },
       {
-        path: 'delivery-payment/:id',
-        loadChildren: () => import('../modules/delivery/delivery-list/delivery-payment/delivery-payment.module').then((module) => module.DeliveryPaymentModule),
+        path: 'orders-payment/:id',
+        loadChildren: () => import('../modules/orders/orders-list/order-payment/order-payment.module').then((module) => module.OrderPaymentModule),
       },
       {
         path: 'config_delivery',
-        loadChildren: () => import('../modules/delivery/delivery-config/delivery-config.module').then((module) => module.DeliveryConfigModule),
+        loadChildren: () => import('../modules/orders/orders-config/orders-config.module').then((module) => module.OrdersConfigModule),
       },
       {
         path: 'registro_aplicacion',

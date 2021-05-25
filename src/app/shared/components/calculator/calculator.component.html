@@ -102,8 +102,10 @@
                   </td>
                   <td class="tg-yw4l ion-text-center" style="position: relative" (click)="equal()"
                       *ngIf="data?.paymentTotal > 0">
-                    <ion-icon name="add-circle-outline"
-                              style="position: absolute;top: 20px;right: 40px;"></ion-icon>
+                    <span class="ion-text-center">
+                      <p class="payment-p">Pago</p>
+                      <p class="payment-p" style="top: 40px !important;">Exacto</p>
+                    </span>
                   </td>
                   <td class="tg-yw4l" (click)="editNumber(0)">0</td>
                   <td class="tg-yw4l ion-text-center" style="position: relative" (click)="deleteNumber()">

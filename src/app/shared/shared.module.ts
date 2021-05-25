@@ -31,11 +31,11 @@ import {InfiniteScrollPaginatorService} from './services/inifite-scroll-paginato
 import {ToolbarButtonsComponent} from '../components/toolbar-buttons/toolbar-buttons.component';
 import {TallyFormMultipleComponent} from '../modules/tallies/forms/tally-form-multiple/tally-form-multiple.component';
 import {TallyFormComponent} from '../modules/tallies/forms/tally-form/tally-form.component';
-import {DeliveryService} from '../modules/delivery/services/delivery.service';
-import {DeliveryCardComponent} from '../modules/delivery/delivery-list/delivery-card/delivery-card.component';
-import {PosService} from '../modules/delivery/services/pos.service';
+import {DeliveryService} from '../modules/orders/services/delivery.service';
+import {OrderCardComponent} from '../modules/orders/orders-list/order-card/order-card.component';
+import {PosService} from '../modules/orders/services/pos.service';
 import {CalculatorComponent} from './components/calculator/calculator.component';
-import {DeliveryListSkeletonComponent as DeliveryListSkeletonComponent} from './components/skeleton/delivery-list-skeleton/delivery-list-skeleton.component';
+import {OrderListSkeletonComponent} from './components/skeleton/order-list-skeleton/order-list-skeleton.component';
 
 @NgModule({
   declarations: [
@@ -50,10 +50,10 @@ import {DeliveryListSkeletonComponent as DeliveryListSkeletonComponent} from './
     TicketCardComponent,
     NumericOrderPipe,
     ToolbarButtonsComponent,
-    DeliveryCardComponent,
+    OrderCardComponent,
     TallyFormComponent,
     TallyFormMultipleComponent,
-    DeliveryListSkeletonComponent
+    OrderListSkeletonComponent
   ],
   imports: [
     CommonModule,
@@ -96,13 +96,13 @@ import {DeliveryListSkeletonComponent as DeliveryListSkeletonComponent} from './
     CustomDatetimePipe,
     RutPipe,
     TicketCardComponent,
-    DeliveryCardComponent,
+    OrderCardComponent,
     NumericOrderPipe,
     ToolbarButtonsComponent,
     TallyFormComponent,
     TallyFormMultipleComponent,
     CalculatorComponent,
-    DeliveryListSkeletonComponent
+    OrderListSkeletonComponent
   ],
   entryComponents: [
     ImageViewerComponent,

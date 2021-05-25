@@ -7,7 +7,7 @@ import {NetworkService} from './shared/services/network/network.service';
 import {StoreService} from './shared/services/store/store.service';
 import {ToastService} from './shared/services/toast/toast.service';
 import {BackgroundMode} from '@ionic-native/background-mode/ngx';
-import {DeliveryService} from './modules/delivery/services/delivery.service';
+import {DeliveryService} from './modules/orders/services/delivery.service';
 
 @Component({
   selector: 'app-root',

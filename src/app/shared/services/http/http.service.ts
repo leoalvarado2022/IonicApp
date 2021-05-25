@@ -48,7 +48,7 @@ export class HttpService {
   }
 
   /**
-   * buildUrl para api delivery
+   * buildUrl para api orders
    * @param url
    * @param id
    */
@@ -57,7 +57,7 @@ export class HttpService {
   }
 
   /**
-   * buildUrl para api delivery
+   * buildUrl para api orders
    * @param url
    * @param id
    */

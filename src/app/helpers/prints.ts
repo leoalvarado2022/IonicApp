@@ -8,7 +8,7 @@ import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx'; // ocultar p
 import {ToastService} from '../shared/services/toast/toast.service';
 import {AlertController} from '@ionic/angular';
 import {AlertService} from '../shared/services/alert/alert.service';
-import {DeliveryService} from '../modules/delivery/services/delivery.service';
+import {DeliveryService} from '../modules/orders/services/delivery.service';
 import {StorageSyncService} from '../services/storage/storage-sync/storage-sync.service';
 import {BehaviorSubject} from 'rxjs';
 import {LoaderService} from '../shared/services/loader/loader.service';
@@ -51,11 +51,19 @@ export class Prints {
   }
 
   /**
-   * getBluetoothStatus
+   * getGenerateDocument
    */
   public getGenerateDocument = (): BehaviorSubject<boolean> => {
     return this.isGenerateDocument;
   };
+
+  /**
+   * getBluetoothStatus
+   */
+  public setGenerateDocument = (value: boolean) => {
+    this.isGenerateDocument.next(value);
+  };
+
 
   /**
    * getBluetoothStatus
@@ -241,11 +249,14 @@ export class Prints {
     result
       .align('left')
       .newline()
+      .line(`Cuenta: #${data?.id}`)
       .line(`Registro: ${data?.date_createdAt}`)
       .line(`Est. de despacho: ${data?.date_delivery}`)
       .line(`Comprador: ${data?.name_customer}`)
       .line(`Telefono: ${data?.phone_customer}`)
       .line(`Direccion: ${data?.address_customer}`)
+      .line(`${data?.type_order}`)
+      .line(`Sugerencia: ${data.comment ? data.comment : 'Sin Sugerencias'}`)
       .line('----------------------------------------')
       .line('CANT. DETALLE                   PRECIO  ')
       .line('----------------------------------------')
@@ -303,12 +314,14 @@ export class Prints {
           .line(`${data?.header?.province}, ${data?.header?.address}`)
           .line(`Correo: ${data?.header?.email}`)
           .line(`Telefono: ${data?.header?.phone}`)
+          .line(`Cuenta: #${data?.id}`)
           .line('----------------------------------------')
           .line(`Registro: ${data?.date_createdAt}`)
           .line(`Est. de despacho: ${data?.date_delivery}`)
           .line(`Comprador: ${data?.name_customer}`)
           .line(`Telefono: ${data?.phone_customer}`)
           .line(`Direccion: ${data?.address_customer}`)
+          .line(`${data?.type_order}`)
           .line('----------------------------------------')
           .line('CANT. DETALLE                   PRECIO  ')
           .line('----------------------------------------')
@@ -317,6 +330,8 @@ export class Prints {
           .line(`${this.totalOrderAndDiscount(data)}`)
           .line('----------------------------------------')
           .line(`${this.totalAndTip(data)}`)
+          .line('----------------------------------------')
+          .line(`${this.ivaLine(data)}`)
           .line('----------------------------------------')
           .newline()
           .image(pdf417, 496, 376, 'bayer')
@@ -342,15 +357,24 @@ export class Prints {
   }
 
   /**
+   * @description opcion para generar un documento
+   */
+  async questionGenerate(text: string = 'Desea Imprimir') {
+    const alert = await this.alertService.confirmAlert(text);
+
+    return alert;
+  }
+
+  /**
    * @description opciones de impresion y preguntar si desea o no preguntar
    */
-  async printQuestion() {
+  async printQuestion(text: string = 'Desea Imprimir') {
     if (this.getGeneralQuestion() === 'si') {
       return true;
     } else if (this.getGeneralQuestion() === 'no') {
       return false;
     } else if (this.getGeneralQuestion() === 'preguntar') {
-      const alert = await this.alertService.confirmAlert('Desea Imprimir');
+      const alert = await this.alertService.confirmAlert(text);
       return alert;
     }
 
@@ -362,8 +386,8 @@ export class Prints {
    * @param result
    * @param port
    */
-  printOptions(result: any, port: string = '9100') {
-    this.printQuestion().then((success: boolean) => {
+  printOptions(result: any, port: string = '9100', text: string = 'Desea Imprimir') {
+    this.printQuestion(text).then((success: boolean) => {
       if (success) {
         if (this.getPrintBluetooth()) {
           this.connectBT();
@@ -433,17 +457,36 @@ export class Prints {
       this.loaderService.stopLoader();
     }, 3000);
 
+    // variable para generar la boleta
+    let generate = false;
+
     // buscar si tiene documentos
     if (this.order.documents && this.order.documents.length) {
       // comprobar si ya existe el documento
       const documentAvailable = this.order.documents.find(value => value.type_document === document);
       if (!documentAvailable) {
-        await this.generateDocumentDB(data);
+        generate = await this.questionGenerate('Desea generar el Documento');
+        if (generate) {
+          await this.generateDocumentDB(data);
+        }
       }
     } else {
-      await this.generateDocumentDB(data);
+      generate = await this.questionGenerate('Desea generar el Documento');
+      if (generate) {
+        await this.generateDocumentDB(data);
+      }
     }
     this.loaderButton.next(false);
+    // si se genera la boleta
+    if (generate) {
+      this.printDocumentProcess(document, ip, port);
+    }
+  }
+
+  /**
+   * @description imprimir documento
+   */
+  printDocumentProcess(document, ip: string = '192.168.1.50', port: string = '9100') {
     // esperar el delay para cambiar de datos e imprimir
     setTimeout(() => {
       // buscar si tiene documentos
@@ -581,7 +624,7 @@ export class Prints {
   printCommand(data: any, ip: string = '192.168.1.50', port: string = '9100') {
     const dataProcess = this.addNameProducts(data);
     const result: any = this.commandFull(dataProcess, ip, port);
-    this.printOptions(result);
+    this.printOptions(result, '9100', 'Desea Imprimir la Comanda');
   }
 
   /**
@@ -724,11 +767,28 @@ export class Prints {
    * @param data
    */
   totalAndTip(data: any) {
+
+    if (data.origin === 'FX360') {
+      data.value_tip = data.payments.reduce((total, value) => total + (+value.tip_mp), 0);
+    }
+
     let txt = '';
     txt += `TOTAL                           ${this.calculateSpace(data.value_total.toString().length, 8, data.value_total.toString(), 0, true)}${data.value_tip ? '\n' : ''}`;
     if (data.value_tip) {
       txt += `PROPINA                         ${this.calculateSpace(data.value_tip.toString().length, 8, data.value_tip.toString(), 0, true)}`;
     }
+
+    return txt;
+  }
+
+  /**
+   * @description calculo de total y propina si tiene
+   * @param data
+   */
+  ivaLine(data: any) {
+    const valueIva = data.value_total * 0.19;
+    let txt = '';
+    txt += `El Iva de esta Boleta es:       ${this.calculateSpace(valueIva.toString().length, 8, valueIva.toString(), 0, true)}`;
 
     return txt;
   }

@@ -1,0 +1,51 @@
+<ion-card style="height: 245px;">
+
+  <ion-item-sliding>
+    <ion-item-options side="start" *ngIf="!order?.document && !order?.payment">
+      <ion-item-option color="danger" (click)="deleteOrder(order)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
+
+    <ion-item style="--border-color: transparent;height: 250px;" (click)="viewOrder(order)">
+      <div style="width: 100%;padding-bottom: 10px;height: 245px;">
+        <ion-item lines="full" style="width: 100%;">
+          <ion-badge slot="start" [ngClass]="{'error':order?.error}" style="position: absolute;left: 0;">
+            #{{ order?.id }}</ion-badge>
+          <div class="documents-payments">
+            <ion-icon name="document-attach-outline" style="color: #052a61;" *ngIf="order?.document"></ion-icon>
+            <ion-icon name="cash-outline" style="color: #0ec254;" *ngIf="order?.payment"></ion-icon>
+          </div>
+          <div slot="end" style="margin: 0;">
+            <img [src]="imageIntegration(order)" alt=""
+                 style="margin-right: 10px;width: 50px;vertical-align: top;">
+          </div>
+          <div slot="end" style="margin: 0;margin-top: 5px;">
+            <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'JUSTO'">
+            <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
+          </div>
+        </ion-item>
+        <p *ngIf="order?.name_integration"><strong>Local:</strong> {{ order?.name_integration}}</p>
+        <p *ngIf="order?.code"><strong>Código:</strong> {{ order?.code}}</p>
+        <p *ngIf="order?.date_createdAt"><strong>Registro:</strong> {{ order?.date_createdAt}}</p>
+        <!--    <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>-->
+        <p *ngIf="order?.date_delivery"><strong>Est. de despacho:</strong> {{ order?.date_delivery }}</p>
+        <p *ngIf="order?.date_timeText"><strong>Est. de entrega:</strong> {{ order?.date_timeText }}</p>
+        <p *ngIf="order?.value_total"><strong>Total:</strong> {{ order?.value_total | currency:' ':'symbol':'1.0-2' }}
+        </p>
+      </div>
+    </ion-item>
+
+    <!--<ion-item-options side="end">
+      <ion-item-option color="secondary" *ngIf="!order?.document && !order?.payment" (click)="updateOrder(order)">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-item-option>
+      &lt;!&ndash;<ion-item-option (click)="printDocumentPdf417(order)" color="secondary">
+        <ion-icon name="document-text-outline"></ion-icon>
+      </ion-item-option>
+      <ion-item-option (click)="printCommand(order)">
+        <ion-icon name="print-outline"></ion-icon>
+      </ion-item-option>&ndash;&gt;
+    </ion-item-options>-->
+  </ion-item-sliding>
+</ion-card>

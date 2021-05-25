@@ -71,7 +71,7 @@ export class CalculatorComponent implements OnInit {
   equal() {
     if (this.data.paymentTotal && this.data.paymentTotal > 0) {
       this.form.patchValue({
-        number: this.data.paymentTotal,
+        number: this.data.paymentTotal.toString(),
       });
     }
   }

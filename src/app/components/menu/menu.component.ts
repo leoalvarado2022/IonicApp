@@ -3,7 +3,7 @@ import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {Company, Connection} from '@primetec/primetec-angular';
 import {StoreService} from '../../shared/services/store/store.service';
-import {DeliveryService} from '../../modules/delivery/services/delivery.service';
+import {DeliveryService} from '../../modules/orders/services/delivery.service';
 
 @Component({
   selector: 'app-menu',

@@ -16,9 +16,10 @@
           "options": {
             "allowedCommonJsDependencies": [
               "lodash",
-              "@codewithdan/observable-store-extensions",              
+              "@codewithdan/observable-store-extensions",
               "@codewithdan/observable-store",
-              "echarts"
+              "echarts",
+              "esc-pos-encoder-ionic"
             ],
             "aot": true,
             "outputPath": "www",

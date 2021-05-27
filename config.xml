@@ -5,6 +5,8 @@
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
     <content src="index.html" />
     <access origin="*" />
+    <access origin="*" />
+    <access origin="sentry.io" />
     <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

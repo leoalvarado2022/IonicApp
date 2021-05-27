@@ -768,7 +768,7 @@ export class Prints {
    */
   totalAndTip(data: any) {
 
-    if (data.origin === 'FX360') {
+    if (data.origin === 'FX360' && data.payments.length) {
       data.value_tip = data.payments.reduce((total, value) => total + (+value.tip_mp), 0);
     }
 

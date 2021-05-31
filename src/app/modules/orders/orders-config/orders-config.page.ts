@@ -57,7 +57,7 @@ export class OrdersConfigPage implements OnInit {
     public prints: Prints,
   ) {
     this.platform.ready().then((data) => {
-      if (this.platform.is('android') || this.platform.is('electron') || this.platform.is('desktop') || this.platform.is('cordova')) {
+      if (this.platform.is('android') || this.platform.is('electron') || this.platform.is('desktop')) {
         this.android = true;
       }
     });

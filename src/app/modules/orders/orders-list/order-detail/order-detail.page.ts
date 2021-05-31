@@ -51,7 +51,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
     this.id = this._activatedRoute.snapshot.params.id;
 
     this.platform.ready().then(() => {
-      this.isAndroid = this.platform.is('android') || this.platform.is('electron') || this.platform.is('desktop') || this.platform.is('cordova');
+      this.isAndroid = this.platform.is('android') || this.platform.is('electron') || this.platform.is('desktop');
     });
 
     // si esta activado el modo pos
@@ -231,7 +231,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
     this._deliveryService.setNotificationHttpStatus(data).subscribe((success: any) => {
       if (status === 'accepted') {
         const user = this.storeService.getActiveCompany();
-        if (this.platform.is('android') || this.platform.is('cordova') || this.platform.is('desktop') || this.platform.is('electron')) {
+        if (this.platform.is('android') || this.platform.is('desktop') || this.platform.is('electron')) {
           this.printOrderCommand(this.order);
         }
         // agregar datos en el pos
@@ -500,7 +500,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
    */
   printOrderDocument(command: any, reprint = true) {
     this.loadingButtonFunction();
-    if (this.platform.is('android') || this.platform.is('cordova') ||
+    if (this.platform.is('android') ||
       this.platform.is('desktop') || this.platform.is('electron')) {
       this._storageSyncService.getPrintConfig().then(data => {
         this.prints.printConfigActive(data, 'documento');

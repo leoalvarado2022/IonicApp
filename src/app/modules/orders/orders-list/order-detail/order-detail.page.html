@@ -196,7 +196,7 @@
     </ion-button>
     <ion-fab-list class="list-order-button">
       <ion-button color="success" style="margin-left: auto;" [disabled]="loadingActionButton"
-                  *ngIf="order.origin === 'FX360' && ((!documents && !payments) || (documents && !payments) || (payments && !documents))"
+                  *ngIf="order.origin === 'FX360' && order.status !== 'rejected' && ((!documents && !payments) || (documents && !payments) || (payments && !documents))"
                   (click)="deliveryPayment()">
         Pago
       </ion-button>
@@ -227,7 +227,7 @@
                   (click)="printOrderDocument(order, false)">
         Documento
       </ion-button>
-      <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && documents"
+      <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && documents && order.status !== 'rejected'"
                   [disabled]="loadingActionButton"
                   (click)="printOrderDocument(order)">
         Reimprimir

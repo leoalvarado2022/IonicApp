@@ -821,6 +821,12 @@ export class Prints {
           txt += `${this.calculateSpace(0, 5, '')} ${this.calculateSpace(name.length, 50, name, 25)} ${this.calculateSpace(0, 8, '')}\n`;
           // console.log(txt, 'es mayor que 25 parte 2');
         }
+        if (name.length > 50) {
+          txt += `${this.calculateSpace(0, 5, '')} ${this.calculateSpace(name.length, 75, name, 50)} ${this.calculateSpace(0, 8, '')}\n`;
+        }
+        if (name.length > 75) {
+          txt += `${this.calculateSpace(0, 5, '')} ${this.calculateSpace(name.length, 100, name, 75)} ${this.calculateSpace(0, 8, '')}\n`;
+        }
       }
     }
     return txt;

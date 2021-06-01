@@ -237,7 +237,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
         // agregar datos en el pos
         this._posService.openTableNew(this.order, user.user);
       }
-      this._location.back();
+      this.goBack();
     }, error => {
       this.httpService.errorHandler(error);
     });

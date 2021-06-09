@@ -97,6 +97,22 @@ export class MenuOrderPage implements OnInit, OnDestroy {
           this.itemsTemp = this.items.filter(value => value.name_section === this.menuHeader[1]);
         }
 
+        const editOrder = JSON.parse(localStorage.getItem('OrderData'));
+
+        // si van editar una orden
+        if (editOrder && editOrder.products && editOrder.products.length && this.items && this.items.length) {
+
+
+          // recorrer los productos que pidio
+          for (const editOrderElement of editOrder.products) {
+            const item = this.items.find(value => value.id_par_items === editOrderElement.id_item_product);
+            // si hay un item que selecciono
+            if (item) {
+              this.addItems(item);
+            }
+          }
+        }
+
       }
     }, error => {
       this.httpService.errorHandler(error);

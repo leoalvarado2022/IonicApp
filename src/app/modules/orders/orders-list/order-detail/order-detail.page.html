@@ -99,6 +99,7 @@
       <p *ngIf="order?.reason_reject"><strong>Motivo de Rechazo:</strong> {{ order?.reason_reject }}</p>
       <p *ngIf="order?.lat"><strong>Latitud:</strong> {{ order?.lat }}</p>
       <p *ngIf="order?.lng"><strong>Longitud:</strong> {{ order?.lng }}</p>
+      <p *ngIf="order?.comment"><strong>Sugerencia:</strong> {{ order?.comment }}</p>
       <ng-container *ngIf="order?.products.length">
         <div style="margin-top: 10px;margin-bottom: 10px;"
              *ngFor="let product of orderProducts()">

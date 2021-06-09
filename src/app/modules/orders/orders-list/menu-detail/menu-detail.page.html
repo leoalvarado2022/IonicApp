@@ -21,7 +21,7 @@
 <div>
   <ion-searchbar #searchCustomer placeholder="Buscar..." animated class="production" showCancelButton="never"
                  (ionClear)="clearSearch()"
-                 (ionInput)="searchInput($event)"></ion-searchbar>
+                 (ionInput)="searchInput($event.target.value)"></ion-searchbar>
 </div>
 <ion-content>
   <ion-card class="card-form-delivery search-card onDisplay" *ngIf="searchData.length">

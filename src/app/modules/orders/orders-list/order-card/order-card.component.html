@@ -1,7 +1,7 @@
 <ion-card style="height: 245px;">
 
   <ion-item-sliding>
-    <ion-item-options side="start" *ngIf="!order?.document && !order?.payment">
+    <ion-item-options side="end" *ngIf="!order?.document && !order?.payment && order?.origin === 'FX360'">
       <ion-item-option color="danger" (click)="deleteOrder(order)">
         <ion-icon name="trash-outline"></ion-icon>
       </ion-item-option>
@@ -27,6 +27,7 @@
         </ion-item>
         <p *ngIf="order?.name_integration"><strong>Local:</strong> {{ order?.name_integration}}</p>
         <p *ngIf="order?.code"><strong>Código:</strong> {{ order?.code}}</p>
+        <p *ngIf="order?.type"><strong>Tipo de venta:</strong> {{ order?.type}}</p>
         <p *ngIf="order?.date_createdAt"><strong>Registro:</strong> {{ order?.date_createdAt}}</p>
         <!--    <p *ngIf="order?.full_code"><strong>Full Código:</strong> {{ order?.full_code}}</p>-->
         <p *ngIf="order?.date_delivery"><strong>Est. de despacho:</strong> {{ order?.date_delivery }}</p>
@@ -36,16 +37,10 @@
       </div>
     </ion-item>
 
-    <!--<ion-item-options side="end">
-      <ion-item-option color="secondary" *ngIf="!order?.document && !order?.payment" (click)="updateOrder(order)">
+    <ion-item-options side="start" *ngIf="!order?.document && !order?.payment && order?.origin === 'FX360'" >
+      <ion-item-option color="secondary" (click)="updateOrder(order)">
         <ion-icon name="pencil-outline"></ion-icon>
       </ion-item-option>
-      &lt;!&ndash;<ion-item-option (click)="printDocumentPdf417(order)" color="secondary">
-        <ion-icon name="document-text-outline"></ion-icon>
-      </ion-item-option>
-      <ion-item-option (click)="printCommand(order)">
-        <ion-icon name="print-outline"></ion-icon>
-      </ion-item-option>&ndash;&gt;
-    </ion-item-options>-->
+    </ion-item-options>
   </ion-item-sliding>
 </ion-card>

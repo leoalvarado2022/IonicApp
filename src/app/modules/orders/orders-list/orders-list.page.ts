@@ -111,6 +111,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
     };
     this.service = this._deliveryService.getNotificationHttp(data).subscribe((success: any) => {
       this.allOrder = success.resp;
+      localStorage.removeItem('OrderData');
       setTimeout(() => {
         this.skeleton = false;
       }, 1000);
@@ -281,27 +282,38 @@ export class OrdersListPage implements OnInit, OnDestroy {
     });
   }
 
-  // /**
-  //  * @description actualizar comanda
-  //  * @param command
-  //  */
-  // updateOrder(command: any) {
-  //   const user = this.storeService.getActiveCompany();
-  //
-  //   const data = {
-  //     user: user.user,
-  //     id: command.id
-  //   };
-  //
-  //   this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
-  //     console.log(success);
-  //     this.loaderService.stopLoader();
-  //   }, error => {
-  //     this.loaderService.stopLoader();
-  //     this.httpService.errorHandler(error);
-  //   });
-  //
-  //
-  // }
+  /**
+   * @description actualizar comanda
+   * @param command
+   */
+  updateOrder(command: any) {
+    const user = this.storeService.getActiveCompany();
+
+    const data = {
+      user: user.user,
+      id: command.id
+    };
+
+    this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
+      if (success.resp) {
+        localStorage.removeItem('orders');
+        localStorage.setItem('OrderData', JSON.stringify(success.resp));
+        if (success.resp?.type_order === 'Venta Directa') {
+          this._deliveryService.setTypeSaleDirect(true);
+          this.router.navigate(['/home-page/menu-order']);
+        }
+        if (success.resp?.type_order === 'Retiro en tienda' || success.resp?.type_order === 'Entrega domicilio') {
+          this._deliveryService.setTypeSaleDirect(false);
+          this.router.navigate(['/home-page/menu-detail']);
+        }
+      }
+      this.loaderService.stopLoader();
+    }, error => {
+      this.loaderService.stopLoader();
+      this.httpService.errorHandler(error);
+    });
+
+
+  }
 
 }

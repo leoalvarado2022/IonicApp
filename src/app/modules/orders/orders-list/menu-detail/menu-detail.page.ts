@@ -38,12 +38,6 @@ export class MenuDetailPage implements OnInit, OnDestroy {
     private _storageSyncService: StorageSyncService,
     private router: Router,
     private formBuilder: FormBuilder) {
-  }
-
-  ngOnDestroy(): void {
-  }
-
-  ngOnInit() {
     this._deliveryService.removeInfoTypeDeliveryForm();
     this.menuDetailForm = this.formBuilder.group({
       id: [0],
@@ -55,9 +49,61 @@ export class MenuDetailPage implements OnInit, OnDestroy {
       address: [''],
       dateDelivery: [moment().toISOString()],
     });
+  }
 
+  ngOnDestroy(): void {
+  }
 
-    this.validationForm();
+  ionViewDidEnter() {
+    this.load();
+  }
+
+  load() {
+    const editOrder: any = JSON.parse(localStorage.getItem('OrderData'));
+
+    // si van editar una orden
+    if (editOrder && editOrder.products && editOrder.products.length) {
+
+      this.subscribeSearch = this._deliveryService.getListCustomer({search: editOrder.email_customer}).subscribe((data: any) => {
+        if (data.resp && data.resp.length) {
+          editOrder.type_order === 'Entrega domicilio' ? this.typeDelivery = 'delivery' : this.typeDelivery = 'store';
+
+          this.customerSelect = data.resp[0];
+          this.menuDetailForm.patchValue({
+            id: this.customerSelect.id,
+            firstName: editOrder.name_customer,
+            phone: editOrder.phone_customer,
+            email: editOrder.email_customer,
+            address: editOrder.address_customer,
+            dateDelivery: moment(editOrder.date_delivery_format).toISOString(),
+            store: this.typeDelivery === 'store',
+            delivery: this.typeDelivery !== 'store',
+          });
+        }
+
+        this.validationForm();
+
+      }, error => {
+        this.httpService.errorHandler(error);
+      });
+    } else {
+      this.typeDelivery = 'delivery';
+      this.menuDetailForm.patchValue({
+        id: 0,
+        firstName: '',
+        store: this.typeDelivery === 'store',
+        delivery: this.typeDelivery !== 'store',
+        phone: '',
+        email: '',
+        address: '',
+        dateDelivery: moment().toISOString(),
+      });
+      this.validationForm();
+    }
+  }
+
+  ngOnInit() {
+
   }
 
   /**
@@ -89,7 +135,7 @@ export class MenuDetailPage implements OnInit, OnDestroy {
    * @description ir atras
    */
   goBack() {
-    this.router.navigate(['/home-page/orders']);
+    this.router.navigate(['/home-page/ordenes']);
   }
 
   /**
@@ -111,11 +157,11 @@ export class MenuDetailPage implements OnInit, OnDestroy {
 
   /**
    * @description buscar cliente
-   * @param event
+   * @param value
    */
-  searchInput(event: any) {
-    if (event.target.value.length) {
-      this.subscribeSearch = this._deliveryService.getListCustomer({search: event.target.value}).subscribe((data: any) => {
+  searchInput(value: any) {
+    if (value.length) {
+      this.subscribeSearch = this._deliveryService.getListCustomer({search: value}).subscribe((data: any) => {
         if (data.resp && data.resp.length) {
           this.searchData = [...data.resp];
         }

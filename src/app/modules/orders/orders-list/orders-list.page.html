@@ -72,7 +72,7 @@
                         [images]="integrationImages"
                         (orderSelected)="orderSelected($event)"
                         (deleteOrderSelected)="deleteOrder($event)"
-        >
+                        (updateOrderSelected)="updateOrder($event)">
         </app-order-card>
       </div>
     </ion-virtual-scroll>
@@ -82,7 +82,7 @@
   <app-order-list-skeleton *ngIf="skeleton"></app-order-list-skeleton>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="!skeleton">
   <ion-button expand="block" (click)="openOrder()">
     <ion-icon name="fast-food-outline"></ion-icon>
   </ion-button>

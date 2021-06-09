@@ -36,6 +36,11 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder
   ) {
+    this.form = this.formBuilder.group({
+      comment: '',
+      id: 0,
+      products: []
+    });
   }
 
   ngOnDestroy(): void {
@@ -44,10 +49,6 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadImages().then();
     this.loadOrders();
-
-    this.form = this.formBuilder.group({
-      comment: ''
-    });
   }
 
   async loadImages() {
@@ -77,6 +78,17 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
       }
       this.items = items;
     }
+
+    const editOrder = JSON.parse(localStorage.getItem('OrderData'));
+
+    // si van editar una orden
+    if (editOrder && editOrder.products && editOrder.products.length && this.items && this.items.length) {
+      this.form.patchValue({
+        comment: editOrder.comment,
+        id: editOrder.id,
+        products: editOrder.products
+      });
+    }
   }
 
   createOrder() {
@@ -102,13 +114,16 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
       entity,
       headerData,
       items,
-      comment: formData.comment
+      comment: formData.comment,
+      id: formData.id,
+      products: formData.products
     };
 
     this._deliveryService.createOrderManual(data).subscribe((data: any) => {
       if (data.resp && data.resp.length && data.resp[0] && data.resp[0].respuesta === 'ok') {
         this._deliveryService.removeInfoTypeDeliveryForm();
         localStorage.removeItem('orders');
+        localStorage.removeItem('OrderData');
         this.router.navigate(['/home-page/orders-payment', data.resp[0].id_orden]);
       }
     }, error => {

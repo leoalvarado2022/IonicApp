@@ -107,8 +107,10 @@ export class MenuOrderPage implements OnInit, OnDestroy {
           for (const editOrderElement of editOrder.products) {
             const item = this.items.find(value => value.id_par_items === editOrderElement.id_item_product);
             // si hay un item que selecciono
-            if (item) {
-              this.addItems(item);
+            for (let i = 0; i < editOrderElement.quantity; i++) {
+              if (item) {
+                this.addItems(item);
+              }
             }
           }
         }

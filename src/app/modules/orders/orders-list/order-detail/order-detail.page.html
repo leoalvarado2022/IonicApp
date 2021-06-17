@@ -38,7 +38,7 @@
           </ion-button>-->
 
           <ion-button color="primary" class="button-class"
-                      *ngIf="acceptedOrder(order)"
+                      *ngIf="acceptedOrder(order) || (order?.origin !== 'FX360' && order?.status === 'pending')"
                       [disabled]="loadingActionButton"
                       (click)="setNotificationStatus('accepted', order?.id_integration)">
             <span>Aceptar</span>

@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="cl.primetec.fx11" version="1.1.70" xmlns="http://www.w3.org/ns/widgets">
+<widget id="cl.primetec.fx11" version="1.1.69" xmlns="http://www.w3.org/ns/widgets">
     <name>FX360</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
     <content src="index.html" />
     <access origin="*" />
     <access origin="*" />
-    <access origin="sentry.io" />
     <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

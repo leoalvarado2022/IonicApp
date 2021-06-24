@@ -73,8 +73,10 @@ export class OrderCardComponent implements OnInit {
           }
         } else {
           const imgData = this.images.find(value => value.id_integration === +id_integration);
-          img = imgData.integration_image;
-          localStorage.setItem(id_integration, img);
+          if (imgData) {
+            img = imgData.integration_image;
+            localStorage.setItem(id_integration, img);
+          }
         }
 
 

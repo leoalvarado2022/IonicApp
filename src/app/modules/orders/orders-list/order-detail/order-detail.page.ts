@@ -150,9 +150,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
   setNotificationStatus(status: string, id_integration: any) {
     this.loadingButtonFunction();
     if (this.id) {
-
       this.id_integration = id_integration;
-
       const user = this.storeService.getActiveCompany();
 
       const data = {
@@ -162,20 +160,32 @@ export class OrderDetailPage implements OnInit, OnDestroy {
       };
       // console.log(data);
       // this._posService.openTableNew(this.order, user.user);
-      this.setHttpNotificationStatus(status, data);
+      // this.setHttpNotificationStatus(status, data);
       // this.printOrderDocument(this.order);
 
       // si el origin es una app externa
       if (this.order.origin === 'JUSTO') {
-        // this.updateStatusAppOrigin(status, data).then();
+        this._storageSyncService.getIntegrationDelivery().then((integrations: any) => {
+          if (integrations && integrations.length) {
+            // buscar integracion
+            const int = integrations.find(value => value.id === this.id_integration);
+            // revisar si es produccion
+            if (int && int.environment && int.environment === 'P') {
+              this.updateStatusAppOrigin(status, data).then();
+            } else {
+              this.setHttpNotificationStatus(status, data);
+            }
+          }
+        });
       }
 
       // si la app es interna
       if (this.order.origin === 'FX360') {
-        // this.setHttpNotificationStatus(status, data);
+        this.setHttpNotificationStatus(status, data);
       }
-
     }
+
+
   }
 
   /**
@@ -316,8 +326,10 @@ export class OrderDetailPage implements OnInit, OnDestroy {
           }
         } else {
           const imgData = this.images.find(value => value.id_integration === +id_integration);
-          img = imgData.integration_image;
-          localStorage.setItem(id_integration, img);
+          if (imgData) {
+            img = imgData.integration_image;
+            localStorage.setItem(id_integration, img);
+          }
         }
 
 

@@ -24,6 +24,7 @@
           <!--          <ion-label>{{ order?.origin }}</ion-label>-->
           <img src="assets/imgs/justo.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'JUSTO'">
           <img src="assets/imgs/fx360.jpg" alt="FX360" class="icon-delivery" *ngIf="order?.origin === 'FX360'">
+          <img src="assets/imgs/centry.png" alt="JUSTO" class="icon-delivery" *ngIf="order?.origin === 'CENTRY'">
           <img [src]="imageIntegration(order)" alt="" *ngIf="order?.id_integration || order?.origin === 'FX360'"
                class="integration-img">
           <div class="documents-payments">
@@ -207,7 +208,7 @@
         Rechazar
       </ion-button>
       <ion-button color="warning"
-                  *ngIf="reprocess(order?.id_integration, order?.products)"
+                  *ngIf="reprocess(order?.id_integration, order?.products) && order?.origin === 'JUSTO'"
                   [disabled]="loadingActionButton"
                   (click)="httpReprocess()">
         Reprocesar

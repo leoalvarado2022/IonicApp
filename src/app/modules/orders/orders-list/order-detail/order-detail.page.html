@@ -119,7 +119,10 @@
             <ion-col size="2">
               <strong>CANT.</strong>
             </ion-col>
-            <ion-col size="7">
+            <ion-col size="2">
+              <strong>COD</strong>
+            </ion-col>
+            <ion-col size="5">
               <strong>PRODUCTO</strong>
             </ion-col>
             <ion-col size="3" class="ion-text-right">
@@ -131,7 +134,10 @@
               <ion-col size="2">
                 <p class="ion-text-center">{{ product?.quantity}}</p>
               </ion-col>
-              <ion-col size="7">
+              <ion-col size="2">
+                <p class="ion-text-left"> {{product?.code_product}}</p>
+              </ion-col>
+              <ion-col size="5">
                 <p *ngIf="product.type === 'ITEM'">
                 <span *ngIf="!product.name_product"
                       style="color: rgba(255,0,0,0.63);font-style: italic;">{{product?.name_item}}</span>
@@ -150,7 +156,10 @@
                 <ion-col size="2">
                   <p class="ion-text-center"> {{product?.quantity * modifier?.quantity}}</p>
                 </ion-col>
-                <ion-col size="7">
+                <ion-col size="2">
+                  <p class="ion-text-left"> {{modifier?.code_product}}</p>
+                </ion-col>
+                <ion-col size="5">
                   <p style="padding-left: 30px;">
                     <span *ngIf="!modifier.name_product && modifier.type === 'ITEM'"
                           style="color: rgba(255,0,0,0.63);font-style: italic;">{{modifier?.name_item}}</span>

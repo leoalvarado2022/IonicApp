@@ -391,7 +391,7 @@ export class MenuOrderPage implements OnInit, OnDestroy {
   searchInput(value: string) {
     const valueUpper = value.toLocaleLowerCase();
     this.headerSelect = 'Todos';
-    const items = this.items.filter(value => value.name_product.toLocaleLowerCase().includes(valueUpper));
+    const items = this.items.filter(value => value.name_code.toLocaleLowerCase().includes(valueUpper));
     if (!items.length) {
       this.noResult = true;
     } else {

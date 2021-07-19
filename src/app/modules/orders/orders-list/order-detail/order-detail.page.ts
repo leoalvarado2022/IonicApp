@@ -12,6 +12,7 @@ import {StorageSyncService} from '../../../../services/storage/storage-sync/stor
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {Prints} from '../../../../helpers/prints';
 import {DeviceService} from '../../../../services/device/device.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-order-detail',
@@ -122,6 +123,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
             this.payments = true;
           }
           this.prints.setOrder(success.resp);
+          // this.printTicketChange();
           resolve(true);
           this.loaderService.stopLoader();
         }, error => {

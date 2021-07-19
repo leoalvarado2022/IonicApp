@@ -12,6 +12,7 @@ import {DeliveryService} from '../modules/orders/services/delivery.service';
 import {StorageSyncService} from '../services/storage/storage-sync/storage-sync.service';
 import {BehaviorSubject} from 'rxjs';
 import {LoaderService} from '../shared/services/loader/loader.service';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class Prints {
   public printBluetooth;
   public printIP;
   public valueBP;
+  public ticketChangeBP;
   public generalQuestion;
   public copy;
   public isConnected = false;
@@ -176,6 +178,22 @@ export class Prints {
    */
   getValueBP() {
     return this.valueBP;
+  }
+
+  /**
+   * @description guardar el valor de impresion
+   * @param value
+   */
+  setTicketChangeBP(value: string) {
+    this.ticketChangeBP = value;
+  }
+
+  /**
+   * @description optener valor de impresion
+   * @param value
+   */
+  getTicketChangeBP() {
+    return this.ticketChangeBP;
   }
 
   /**
@@ -388,6 +406,8 @@ export class Prints {
    */
   printOptions(result: any, port: string = '9100', text: string = 'Desea Imprimir') {
     this.printQuestion(text).then((success: boolean) => {
+      //console.log(this.getTicketChangeBP());// ticket de cambio aqui va
+      this.printTicketChange();
       if (success) {
         if (this.getPrintBluetooth()) {
           this.connectBT();
@@ -413,6 +433,19 @@ export class Prints {
         }
       }
     });
+  }
+
+
+  /**
+   * @description imprimir ticket de cambio
+   */
+  printTicketChange() {
+    const order = this.order;
+    const entity = this.storeService.getActiveCompany();
+    const date = moment().format('DD-mm-yyyy');
+    const hour = moment().format('HH:mm:ss');
+
+    console.log(order, entity, date, hour);
   }
 
   /**
@@ -740,6 +773,10 @@ export class Prints {
           } else if (print.app === 'impresion_documentos' && print.param === 'copias') {
             if (valueIp) {
               this.setCopy(print.value);
+            }
+          } else if (print.app === 'impresion_documentos' && print.param === 'ticket_cambio') {
+            if (valueIp) {
+              this.setTicketChangeBP(print.value);
             }
           }
         }

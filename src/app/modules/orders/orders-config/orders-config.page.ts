@@ -410,6 +410,10 @@ export class OrdersConfigPage implements OnInit {
         return 'Codigo de Barra';
         break;
       }
+      case 'ticket_cambio': {
+        return 'Ticket de Cambio';
+        break;
+      }
       default: {
         return label;
         break;
@@ -454,6 +458,14 @@ export class OrdersConfigPage implements OnInit {
         'app': 'impresion_documentos',
         'param': 'copias',
         'value': '1',
+        'entity_id': null
+      },
+      {
+        'id': 10,
+        'nc': null,
+        'app': 'impresion_documentos',
+        'param': 'ticket_cambio',
+        'value': 'no',
         'entity_id': null
       }
     ];

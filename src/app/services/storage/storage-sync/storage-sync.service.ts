@@ -46,7 +46,8 @@ export class StorageSyncService {
       integrationImages,
       printConfig,
       foliosConfig,
-      typePayment
+      typePayment,
+      typeDiscount
     } = data;
 
     return Promise.all([
@@ -75,7 +76,8 @@ export class StorageSyncService {
       this.setIntegrationImages(integrationImages),
       this.setPrintConfig(printConfig),
       this.setFoliosConfig(foliosConfig),
-      this.setTypePayment(typePayment)
+      this.setTypePayment(typePayment),
+      this.setTypeDiscount(typeDiscount)
     ]);
   };
 
@@ -300,6 +302,23 @@ export class StorageSyncService {
    */
   public getTypePayment = (): Promise<Array<any>> => {
     return this.storage.get(StorageKeys.TypePayment).then((payment: Array<any>) => {
+      return payment ? payment : [];
+    });
+  };
+
+  /**
+   * setTypeDiscount
+   */
+  public setTypeDiscount = (payment: Array<any>): Promise<Array<any>> => {
+    return this.storage.set(StorageKeys.TypeDiscount, payment);
+  };
+
+
+  /**
+   * getTypeDiscount
+   */
+  public getTypeDiscount = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.TypeDiscount).then((payment: Array<any>) => {
       return payment ? payment : [];
     });
   };

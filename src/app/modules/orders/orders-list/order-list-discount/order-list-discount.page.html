@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start" (click)="back()">
+      <ion-icon name="chevron-back-outline" class="back" style="color:white;"></ion-icon>
+    </ion-buttons>
+    <ion-title>Descuentos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!--<ion-searchbar [placeholder]="'Buscar descuento'"
+                 (ionChange)="searchItem($event.target.value)"
+                 (ionClear)="searchCancel()"
+                 animated class="production" showCancelButton="never"></ion-searchbar>
+  <br>-->
+<!--  <ion-virtual-scroll [items]="data">-->
+<!--    <div *virtualItem="let item">-->
+      <div *ngFor="let item of data">
+        <ion-item class="item-orders" (click)="back(item)">
+          <div class="item-orders_parent">
+            <div class="item-orders_line-1">
+              <span class="ion-float-left">{{item?.name}}</span>
+            </div>
+            <!--<p class="item-orders_line-2">
+              {{item?.current_license_plate}}
+            </p>-->
+          </div>
+        </ion-item>
+      </div>
+<!--    </div>-->
+<!--  </ion-virtual-scroll>-->
+</ion-content>

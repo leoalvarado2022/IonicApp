@@ -370,8 +370,47 @@ export class Prints {
         resolve(result.encode());
       });
     });
+  }
 
+  /**
+   * @description imprimir ticket de cambio full
+   * @param data
+   * @param ip
+   * @param port
+   */
+  ticketChangeFull(data: any) {
+    // console.log(data);
+    const encoder = new EscPosEncoder();
+    const result = encoder.initialize();
 
+    result
+      .align('center')
+      .newline()
+      .bold(true)
+      .line(this.noSpecialChars(`Ticket de Cambio de Mercadería`))
+      .bold(false)
+      .newline()
+      .align('left')
+      .line(`Rut: ${data.entity?.rut}`)
+      .line(`Nombre de empresa: ${this.noSpecialChars(data.order.entity)}`)
+      .line(`Fecha: ${data.date}   Hora: ${data.hour}`)
+      .newline()
+      .line(`SUCURSAL: ${this.noSpecialChars(data.entity.name)}`)
+      .line(`NRO. INTERNO: ${data.order?.id}`)
+      .line(`BOL. ELECTRONICA: ${data.order?.documents[0]?.number_document}`)
+      .line(`VENDEDOR: ${data.user?.name}`)
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline();
+
+    result.cut();
+
+    return result.encode();
   }
 
   /**
@@ -404,10 +443,8 @@ export class Prints {
    * @param result
    * @param port
    */
-  printOptions(result: any, port: string = '9100', text: string = 'Desea Imprimir') {
+  printOptions(result: any, port: string = '9100', text: string = 'Desea Imprimir', ticket = false) {
     this.printQuestion(text).then((success: boolean) => {
-      //console.log(this.getTicketChangeBP());// ticket de cambio aqui va
-      this.printTicketChange();
       if (success) {
         if (this.getPrintBluetooth()) {
           this.connectBT();
@@ -416,14 +453,22 @@ export class Prints {
               this.printBT(result, this.getValueBP());
             }
           }, 3000);
+          setTimeout(() => {
+            if (this.isConnected) {
+              this.printTicketChange(port, true);
+            }
+          }, 5000);
         } else if (this.getPrintIP()) {
           for (let i = 0; i < this.getCopy(); ++i) {
             this.loaderService.startLoader(`Imprimiendo...`);
             setTimeout(() => {
               this.loaderService.stopLoader();
             }, 1500);
-            if (i = 0) {
+            if (i === 0) {
               this.sockets.write(result, this.getValueBP(), port);
+              if (this.getTicketChangeBP() === 'si' && ticket) {
+                this.printTicketChange(port);
+              }
             } else {
               setTimeout(() => {
                 this.sockets.write(result, this.getValueBP(), port);
@@ -439,13 +484,31 @@ export class Prints {
   /**
    * @description imprimir ticket de cambio
    */
-  printTicketChange() {
+  printTicketChange(port = '9100', bluetooth = false) {
     const order = this.order;
     const entity = this.storeService.getActiveCompany();
     const date = moment().format('DD-mm-yyyy');
     const hour = moment().format('HH:mm:ss');
+    const user = this.storeService.getUser();
 
-    console.log(order, entity, date, hour);
+    const data = {
+      order,
+      entity,
+      date,
+      hour,
+      user
+    };
+
+    // construir para imprimir
+    const result = this.ticketChangeFull(data);
+
+    setTimeout(() => {
+      if (!bluetooth) {
+        this.sockets.write(result, this.getValueBP(), port);
+      } else {
+        this.printBT(result, this.getValueBP());
+      }
+    }, 3000)
   }
 
   /**
@@ -468,7 +531,7 @@ export class Prints {
     this.getHttpPDF417(dataHttp).subscribe((success: any) => {
       const imgBase64PDF417 = success.response.xml;
       this.commandLegal(data, imgBase64PDF417, ip, port).then((commandResolve: any) => {
-        this.printOptions(commandResolve);
+        this.printOptions(commandResolve, '9100', 'Desea Imprimir', true);
       });
     });
   }

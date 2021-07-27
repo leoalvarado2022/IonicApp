@@ -30,6 +30,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
   public loadingButton = false;
   public documents = false;
   public payments = false;
+  public ticket = false;
   public skeleton = true;
   public loadingActionButton = false;
   public modoPos;
@@ -102,6 +103,14 @@ export class OrderDetailPage implements OnInit, OnDestroy {
     return new Promise(resolve => {
       this._storageSyncService.getIntegrationImages().then((data) => {
         this.images = data;
+      });
+
+      // ver configuracion de impresion
+      this._storageSyncService.getPrintConfig().then((data) => {
+        this.prints.printConfigActive(data, 'documento');
+        if (this.prints.getTicketChangeBP() === 'si') {
+          this.ticket = true;
+        }
       });
 
       if (this.id) {
@@ -506,6 +515,21 @@ export class OrderDetailPage implements OnInit, OnDestroy {
       this.prints.printConfigActive(data, 'comanda');
       this.prints.printCommand(command);
     });
+  }
+
+  /**
+   * @description generar ticket de cambio
+   * @param order
+   */
+  printTicket() {
+    this.loadingButtonFunction();
+    if (this.platform.is('android') ||
+      this.platform.is('desktop') || this.platform.is('electron')) {
+      this._storageSyncService.getPrintConfig().then(data => {
+        this.prints.printConfigActive(data, 'documento');
+        this.prints.printTicketChange('9100');
+      });
+    }
   }
 
   /**

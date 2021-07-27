@@ -7,6 +7,7 @@ export enum StorageKeys {
   PrintConfig = 'PrintConfig',
   FoliosConfig = 'FoliosConfig',
   TypePayment = 'TypePayment',
+  TypeDiscount = 'TypeDiscount',
   Tallies = 'tallies',
   CostCentersCustom = 'costCentersCustom',
   Labors = 'labors',

@@ -12,6 +12,7 @@ import {AlertController, ModalController} from '@ionic/angular';
 import {CalculatorComponent} from '../../../../shared/components/calculator/calculator.component';
 import {Prints} from '../../../../helpers/prints';
 import {Subscription} from 'rxjs';
+import {OrderListDiscountPage} from '../order-list-discount/order-list-discount.page';
 
 @Component({
   selector: 'app-order-payment',
@@ -25,8 +26,10 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
   public menuTitle: string;
   public imagesItems: Array<any> = [];
   public id: any;
+  public discount: any;
   public order: any;
   public payments: any = [];
+  public discounts: any = [];
   public transactions: any = [];
   public pay: number = 0;
   public forPay: number = 0;
@@ -82,10 +85,16 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
       user: user.user
     };
 
+    // obtener los descuentos
+    this._storageSyncService.getTypeDiscount().then((data) => {
+      this.discounts = data;
+    });
+
     // tipos de pagos
     this._storageSyncService.getTypePayment().then((data) => {
       this.payments = data.sort((a, b) => a.order - b.order);
     });
+
     this.loadImages().then();
 
     this._deliveryService.httpGetMenuOrderUrl(data).subscribe((success: any) => {
@@ -100,6 +109,10 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
       data.id = this.id;
       this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
         this.order = success.resp;
+
+        if (this.order.discounts && this.order.discounts.length) {
+          this.discount = this.order.discounts[0];
+        }
         // si tienes pagos ya se agregan de cero
         if (this.order.payments && this.order.payments.length) {
           for (const OrderPayments of this.order.payments) {
@@ -406,5 +419,144 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
       this.prints.printConfigActive(data, 'documento');
       this.prints.printDocumentPdf417(this.order).then();
     });
+  }
+
+  /**
+   * @description abrir modal para descuentos
+   */
+  async openModalDiscount() {
+    if (this.discount) {
+      this._toastService.warningToast('Tiene que eliminar el descuento antes de agregar otro');
+      return;
+    }
+
+    const modal = await this.modalController.create({
+      componentProps: {
+        data: this.discounts,
+      },
+      component: OrderListDiscountPage,
+    });
+    await modal.present();
+
+    const {data} = await modal.onWillDismiss();
+
+    if (data && data.row) {
+      this.transactions = [];
+      let row: any = {};
+      row = {...data.row};
+
+      let obj: any = {};
+      if (row.type.toUpperCase() === 'PORCENTUAL') {
+        obj.porcentaje = row.value;
+        obj.value = this.order.value_total * row.value / 100;
+      }
+
+      if (row.type.toUpperCase() === 'MONETARIO') {
+        obj.porcentaje = row.value * 100 / this.order.value_total;
+        obj.value = row.value;
+      }
+
+      if (row.type.toUpperCase() === 'MONETARIO LIBRE') {
+        const value: any = await this.getValueDiscount();
+
+        if (value && parseInt(value.value) > 0) {
+          obj.porcentaje = parseInt(value.value) * 100 / this.order.value_total;
+          obj.value = parseInt(value.value);
+        }
+
+      }
+
+      // el valor total no puede ser mayor al valor del descuento
+      if (this.order.value_total < obj.value) {
+        this._toastService.warningToast('El descuento no puede ser mayor a total de la orden');
+        return;
+      }
+
+      // si el valor del descuento es 0
+      if (obj.value === 0) {
+        this._toastService.warningToast('El valor del descuento tiene que ser mayor a 0');
+        return;
+      }
+
+      // asignar el descuento
+      this.discount = obj;
+      this.order.value_discount = obj.value;
+
+      // setear vareables
+      this.discount.id = 0;
+      this.discount.discount = row;
+      this.order.discounts.push(this.discount);
+      this.order.value_total -= this.discount.value;
+      this.order.value_pay -= this.discount.value;
+      this.forPay = this.order.value_pay;
+      // console.log(this.order);
+    }
+  }
+
+  /**
+   * @description nombre del descuento
+   */
+  nameDiscount() {
+    if (this.discounts && this.discounts.length && this.discount) {
+      const discount = this.discounts.find(value => value.id === this.discount.discount.id);
+      return discount.name;
+    }
+
+    return '';
+  }
+
+  /**
+   * obtener el valor del descuento
+   * @param message
+   */
+  public getValueDiscount = (): Promise<boolean> => {
+    return new Promise(resolve => {
+      this.alertController.create({
+        message: 'Agregar el valor del descuento',
+        inputs: [
+          {
+            name: 'value',
+            type: 'number',
+            placeholder: 'Valor del descuento'
+          },
+        ],
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => resolve(null)
+          },
+          {
+            text: 'Aceptar',
+            handler: (data) => resolve(data)
+          }
+        ]
+      }).then(alert => {
+        alert.present();
+      });
+    });
+  };
+
+  /**
+   * @description eliminar descuento
+   */
+  deleteDiscount() {
+    const discounts = this.order.discounts.map(value => {
+      if (value.id > 0) {
+        value.id = value.id * -1;
+      }
+      return value;
+    }).filter(value => value.id !== 0);
+
+    this.discount = undefined;
+    this.order.value_total += this.order.value_discount;
+    this.order.value_pay += this.order.value_discount;
+    this.forPay = this.order.value_pay;
+    this.pay = this.order.value_pay;
+    this.order.value_discount = 0;
+    this.order.discounts = discounts;
+    this.transactions = [];
+    console.log(this.order);
   }
 }

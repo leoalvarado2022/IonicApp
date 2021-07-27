@@ -243,6 +243,11 @@
                   (click)="printOrderDocument(order)">
         Reimprimir
       </ion-button>
+      <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && ticket && documents && order.status !== 'rejected'"
+                  [disabled]="loadingActionButton"
+                  (click)="printTicket()">
+        Ticket
+      </ion-button>
       <ion-button color="tertiary" style="margin-left: auto;" *ngIf="isAndroid && order?.status !== 'done'"
                   [disabled]="loadingActionButton"
                   (click)="printOrderCommand(order)">

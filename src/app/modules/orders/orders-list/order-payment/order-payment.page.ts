@@ -464,6 +464,11 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
           obj.value = parseInt(value.value);
         }
 
+        if(value && parseInt(value.value) <= 0) {
+          this._toastService.warningToast('El valor del descuento tiene que ser mayor a 0');
+          return;
+        }
+
       }
 
       // el valor total no puede ser mayor al valor del descuento
@@ -557,6 +562,6 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
     this.order.value_discount = 0;
     this.order.discounts = discounts;
     this.transactions = [];
-    console.log(this.order);
+    // console.log(this.order);
   }
 }

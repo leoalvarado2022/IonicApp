@@ -192,6 +192,9 @@
             style="float: right;">- {{ order?.value_discount | currency:' ':'symbol':'1.0-2'}}</span></p>
       </div>
       <p *ngIf="order?.value_total" style="margin-top: 5px;">
+      <strong>IVA</strong> <span
+        style="float: right;">{{ order?.value_total * 0.19 | currency:' ':'symbol':'1.0-2' }}</span></p>
+      <p *ngIf="order?.value_total" style="margin-top: 5px;">
         <strong>TOTAL</strong> <span
           style="float: right;">{{ order?.value_total | currency:' ':'symbol':'1.0-2' }}</span></p>
       <p *ngIf="order?.value_tip || tip_mp() > 0"><strong>PROPINA</strong> <span

@@ -478,7 +478,7 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
       }
 
       // si el valor del descuento es 0
-      if (obj.value === 0) {
+      if (obj.value === 0 || !obj.value) {
         this._toastService.warningToast('El valor del descuento tiene que ser mayor a 0');
         return;
       }

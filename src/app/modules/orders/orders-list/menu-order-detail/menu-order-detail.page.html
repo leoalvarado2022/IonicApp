@@ -16,20 +16,44 @@
     <ion-card-content>
       <h2 class="ion-text-center"><strong>ITEMS</strong></h2>
       <ng-container *ngIf="items && items.length">
-        <div class="card-item" *ngFor="let item of items">
-          <div>
-            <img [src]="attachment(item.id_par_items)" class="img-card">
-          </div>
-          <div class="description">
-            <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
-            <p><span>{{item.price * quantityOrder(item) | currency:' ':'symbol':'1.0-2' }}</span></p>
-            <div class="button-footer">
-              <div class="button-add" (click)="addItems(item)">+</div>
-              <div class="number-add">{{quantityOrder(item)}}</div>
-              <div class="button-add" (click)="removeItems(item)">-</div>
-            </div>
-          </div>
-        </div>
+       <ng-container *ngFor="let item of items">
+         <ion-item-sliding style="margin-top: 10px;" #itemSlidingDiscount>
+           <ion-item-options side="end">
+             <ion-item-option color="danger" (click)="removeDiscount(item, itemSlidingDiscount)">
+               <ion-icon name="trash-outline"></ion-icon>
+             </ion-item-option>
+           </ion-item-options>
+           <ion-item-options side="start">
+             <ion-item-option color="primary" (click)="percentage(item, itemSlidingDiscount)">
+               <ion-icon name="cellular-outline"></ion-icon>
+             </ion-item-option>
+             <ion-item-option color="secondary" (click)="money(item, itemSlidingDiscount)">
+               <ion-icon name="cash-outline"></ion-icon>
+             </ion-item-option>
+           </ion-item-options>
+           <ion-item class="card-item">
+             <div>
+               <img [src]="attachment(item.id_par_items)" class="img-card">
+             </div>
+             <div class="description">
+               <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
+               <p *ngIf="item.discount && item.discount > 0 && item.type_discount === 'Porcentaje'">{{int((item.discount / item.price) * 100)}} % Desc.</p>
+               <p *ngIf="item.discount && item.discount > 0 && item.type_discount === 'Monetario'">{{item.discount * quantityOrder(item)}} CLP Desc.</p>
+               <p>
+                <span *ngIf="item.discount && item.discount > 0"
+                      style="margin-right: 10px;">{{(item.price - item.discount) * quantityOrder(item) | currency:' ':'symbol':'1.0-2' }}</span>
+                 <span
+                     [ngStyle]="{textDecoration: item.discount && item.discount > 0 ? 'line-through' : ''}">{{item.price * quantityOrder(item) | currency:' ':'symbol':'1.0-2' }}</span>
+               </p>
+               <div class="button-footer">
+                 <div class="button-add" (click)="addItems(item)">+</div>
+                 <div class="number-add">{{quantityOrder(item)}}</div>
+                 <div class="button-add" (click)="removeItems(item)">-</div>
+               </div>
+             </div>
+           </ion-item>
+         </ion-item-sliding>
+       </ng-container>
       </ng-container>
       <div class="card-item">
         <form [formGroup]="form">

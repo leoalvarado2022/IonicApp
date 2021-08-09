@@ -17,15 +17,17 @@ ion-content {
 
 .description {
   position: absolute;
-  right: 0px;
+  right: 0;
   width: 73%;
-  top: 24px;
+  top: 10px;
 }
 
 .card-item {
   position: relative;
-  padding-top: 10px;
+  //padding-top: 10px;
   border-top: 1px solid rgb(0 0 0 / 8%);
+  --border-color: transparent;
+  margin: 0;
 }
 
 .button-footer {

@@ -23,20 +23,6 @@ import {AgmCoreModule} from '@agm/core';
 import {environment} from 'src/environments/environment';
 import {BluetoothSerial} from '@ionic-native/bluetooth-serial/ngx';
 import {ErrorHandler} from '@angular/core';
-import * as Sentry from 'sentry-cordova';
-
-Sentry.init({dsn: 'https://642edfc60058450ca38ed2fbefb96889@o566132.ingest.sentry.io/5784862'});
-
-export class SentryIonicErrorHandler extends ErrorHandler {
-  handleError(error) {
-    super.handleError(error);
-    try {
-      Sentry.captureException(error.originalError || error);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-}
 
 const ngxMaskOptions: Partial<IConfig> | (() => Partial<IConfig>) = {
   thousandSeparator: '.',
@@ -64,7 +50,6 @@ registerLocaleData(localeCL, 'es-CL', localeCLExtra);
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-    {provide: ErrorHandler, useClass: SentryIonicErrorHandler},
     StatusBar,
     SplashScreen,
     AppVersion,

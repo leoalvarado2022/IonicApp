@@ -430,6 +430,11 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
       return;
     }
 
+    if(this.order.value_discount > 0 && !this.discount) {
+      this._toastService.warningToast('Tiene que eliminar el descuento antes de agregar otro');
+      return;
+    }
+
     const modal = await this.modalController.create({
       componentProps: {
         data: this.discounts,

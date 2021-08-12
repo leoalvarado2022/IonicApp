@@ -432,6 +432,7 @@ export class Prints {
       return false;
     } else if (this.getGeneralQuestion() === 'preguntar') {
       const alert = await this.alertService.confirmAlert(text);
+      console.log(alert);
       return alert;
     }
 
@@ -463,16 +464,18 @@ export class Prints {
             this.loaderService.startLoader(`Imprimiendo...`);
             setTimeout(() => {
               this.loaderService.stopLoader();
-            }, 1500);
+            }, 2500);
             if (i === 0) {
-              this.sockets.write(result, this.getValueBP(), port);
-              if (this.getTicketChangeBP() === 'si' && ticket) {
-                this.printTicketChange(port);
-              }
+              setTimeout(() => {
+                this.sockets.write(result, this.getValueBP(), port);
+                if (this.getTicketChangeBP() === 'si' && ticket) {
+                  this.printTicketChange(port);
+                }
+              }, 2000);
             } else {
               setTimeout(() => {
                 this.sockets.write(result, this.getValueBP(), port);
-              }, 2000 * i);
+              }, 4000 * i);
             }
           }
         }
@@ -508,7 +511,7 @@ export class Prints {
       } else {
         this.printBT(result, this.getValueBP());
       }
-    }, 3000)
+    }, 3000);
   }
 
   /**

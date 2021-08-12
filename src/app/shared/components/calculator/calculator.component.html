@@ -32,6 +32,12 @@
                 -{{data?.value_discount | currency:' ':'symbol':'1.0-2'}}
               </strong>
             </ion-item>
+            <ion-item>
+              <span>Total</span>
+              <strong slot="end">
+                {{data?.value_order - data?.value_discount | currency:' ':'symbol':'1.0-2'}}
+              </strong>
+            </ion-item>
           </div>
           <ng-template #noDiscount>
             <ion-item>

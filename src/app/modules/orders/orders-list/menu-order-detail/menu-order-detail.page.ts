@@ -288,13 +288,13 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
    * @param value
    */
   getValidation(value, item, type: string, quantity = 1) {
-    if (this.items && item && this.items.length) {
-      const discount = this.items.find(value => value.discount);
-      if (discount && item.id !== discount.id) {
-        this._toastService.warningToast('Solo a un item se le puede hacer el descuento');
-        return false;
-      }
-    }
+    // if (this.items && item && this.items.length) {
+    //   const discount = this.items.find(value => value.discount);
+    //   if (discount && item.id !== discount.id) {
+    //     this._toastService.warningToast('Solo a un item se le puede hacer el descuento');
+    //     return false;
+    //   }
+    // }
 
     if (type === 'Monetario' && value && parseInt(value.value) > (item.price * quantity)) {
       this._toastService.warningToast('El valor del descuento tiene que ser menor al precio del item');

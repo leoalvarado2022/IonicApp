@@ -1,124 +1,137 @@
-<ion-content>
+<ion-content class="background-color-home" scrollX="false" scrollY="true">
+  <div class="home-container">
+    <div *ngIf="showCordovaFeatures">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button color="default" class="button-text-color" fill="clear" (click)="connectionsActionSheet()">
+            {{ appService.getAppVersion() }} {{ showQa() }}
+          </ion-button>
+        </ion-buttons>
+        <ion-title>&nbsp;</ion-title>
+        <ion-buttons slot="end">
+          <ng-container *ngIf="deviceService.getUUIDLast8()">
+            <ion-button color="default" (click)="deviceService.showFullUUID()" class="button-text-color" fill="clear"
+                        slot="end">
+              NC: {{ deviceService.getUUIDLast8() }}
+            </ion-button>
+          </ng-container>
 
-  <ng-container *ngIf="device.cordova">
-    <div>
-      <ion-avatar class="ion-no-margin" style="margin: 0 auto !important">
-        <img [src]="avatarPreview || 'assets/imgs/user.png'">
-      </ion-avatar>
+          <ion-button color="default" slot="end" fill="clear" class="button-text-color"
+                      (click)="deviceService.showDeviceData()">
+            <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
     </div>
-  
-    <br><br><br>    
-    <ion-item>
-      <ion-button (click)="openCamera()" slot="start">
-        <ion-icon name="camera" slot="icon-only"></ion-icon>
-      </ion-button>
-      <ion-label>&nbsp;</ion-label>
-      <ion-button (click)="openGallery()" slot="end">
-        <ion-icon name="image" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ng-container> 
+    <div class="auth-content">
+      <div class="logo-home">
+        <img alt="Primetec" src="assets/icon/favicon.png">
+        <p>{{ appService.getAppName() }}</p>
+      </div>
+      <div class="home-buttons-content">
+        <div class="buttons-home">
+          <ion-row class="ion-justify-content-center">
+            <ion-col size="10">
+              <div class="welcome-tittle">Registrate</div>
+            </ion-col>
+          </ion-row>
+          <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+            <ion-row class="row-form">
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Rut</ion-label>
+                <ion-input class="input-fx360" (keyup)="formatIdentifier($event.target.value)" formControlName="rut" tabindex="0"></ion-input>
+                <ng-container *ngIf="registerForm.get('rut').dirty && registerForm.get('rut').errors">
+                  <span *ngIf="registerForm.get('rut').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El rut es requerido.</span>
+                  <span *ngIf="registerForm.get('rut').hasError('validRut')" style="color: #f25c5c; padding-left: 10px;">El rut es inválido.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Nombres</ion-label>
+                <ion-input class="input-fx360" formControlName="names" tabindex="1"></ion-input>
+                <ng-container *ngIf="registerForm.get('names').dirty && registerForm.get('names').errors">
+                  <span *ngIf="registerForm.get('names').hasError('required')" style="color: #f25c5c; padding-left: 10px;">Los nombres son requeridos.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Apellido Paterno</ion-label>
+                <ion-input class="input-fx360" formControlName="lastName" tabindex="2"></ion-input>
+                <ng-container *ngIf="registerForm.get('lastName').dirty && registerForm.get('lastName').errors">
+                  <span *ngIf="registerForm.get('lastName').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El apellido parterno es requerido.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Apellido Materno</ion-label>
+                <ion-input class="input-fx360" formControlName="surName" tabindex="3"></ion-input>
+                <ng-container *ngIf="registerForm.get('surName').dirty && registerForm.get('surName').errors">
+                  <span *ngIf="registerForm.get('surName').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El apellido materno es requerido.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Email</ion-label>
+                <ion-input class="input-fx360" formControlName="email" tabindex="4" type="email"></ion-input>
+                <ng-container *ngIf="registerForm.get('email').dirty && registerForm.get('email').errors">
+                  <span *ngIf="registerForm.get('email').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El correo es requerido.</span>
+                  <span *ngIf="registerForm.get('email').hasError('email')" style="color: #f25c5c; padding-left: 10px;">Ingrese un email valido.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Telefono</ion-label>
+                <ion-input class="input-fx360" formControlName="phone" tabindex="5" type="tel"></ion-input>
+                <ng-container *ngIf="registerForm.get('phone').dirty && registerForm.get('phone').errors">
+                  <span *ngIf="registerForm.get('phone').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El telefono es requerido.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Contraseña</ion-label>
+                <ion-input class="input-fx360" formControlName="password" type="password"></ion-input>
+                <ng-container *ngIf="registerForm.get('password').dirty && registerForm.get('password').errors">
+                  <span *ngIf="registerForm.get('password').hasError('required')" style="color: #f25c5c; padding-left: 10px;">La contraseña es requerida.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12" size-md="6">
+                <ion-label class="label-fx360">Confirmar Contraseña</ion-label>
+                <ion-input class="input-fx360" formControlName="confirm" tabindex="7" type="password"></ion-input>
+                <ng-container *ngIf="registerForm.get('confirm').dirty && registerForm.get('confirm').errors">
+                  <span *ngIf="registerForm.get('confirm').hasError('required')" style="color: #f25c5c; padding-left: 10px;">Debe confirmar la contraseña.</span>
+                  <span *ngIf="registerForm.get('confirm').hasError('notSame')" style="color: #f25c5c; padding-left: 10px;">Las contraseñas no son iguales.</span>
+                </ng-container>
+              </ion-col>
+              <ion-col size="12">
+                <ion-label class="label-fx360">Tipo de Acceso</ion-label>
+                <ion-radio-group formControlName="access">
 
-  <div>
-    <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
-      <ion-item>
-        <ion-label position="floating">Rut</ion-label>
-        <ion-input (keyup)="formatIdentifier($event.target.value)" formControlName="rut" tabindex="0"></ion-input>
-        <ng-container *ngIf="registerForm.get('rut').dirty && registerForm.get('rut').errors">
-          <span *ngIf="registerForm.get('rut').hasError('required')" style="color: red">El rut es requerido.</span>
-          <span *ngIf="registerForm.get('rut').hasError('validRut')" style="color: red">El rut es inválido.</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Nombres</ion-label>
-        <ion-input formControlName="names" tabindex="1"></ion-input>
-        <ng-container *ngIf="registerForm.get('names').dirty && registerForm.get('names').errors">
-          <span *ngIf="registerForm.get('names').hasError('required')" style="color: red">Los nombres son requeridos.</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Apellido Paterno</ion-label>
-        <ion-input formControlName="lastName" tabindex="2"></ion-input>
-        <ng-container *ngIf="registerForm.get('lastName').dirty && registerForm.get('lastName').errors">
-          <span *ngIf="registerForm.get('lastName').hasError('required')" style="color: red">El apellido parterno es requerido.</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Apellido Materno</ion-label>
-        <ion-input class="input-text" formControlName="surName" tabindex="3"></ion-input>
-        <ng-container *ngIf="registerForm.get('surName').dirty && registerForm.get('surName').errors">
-          <span *ngIf="registerForm.get('surName').hasError('required')" style="color: red">El apellido materno es requerido.</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Email</ion-label>
-        <ion-input formControlName="email" tabindex="4" type="email"></ion-input>
-        <ng-container *ngIf="registerForm.get('email').dirty && registerForm.get('email').errors">
-          <span *ngIf="registerForm.get('email').hasError('required')" style="color: red">El correo es requerido.</span>
-          <span *ngIf="registerForm.get('email').hasError('email')" style="color: red">Ingrese un email valido.</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Telefono</ion-label>
-        <ion-input formControlName="phone" tabindex="5" type="tel"></ion-input>
-        <ng-container *ngIf="registerForm.get('phone').dirty && registerForm.get('phone').errors">
-          <span *ngIf="registerForm.get('phone').hasError('required')" style="color: red">El telefono es requerido.</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Contraseña</ion-label>
-        <ion-input formControlName="password" type="password"></ion-input>
-        <ng-container *ngIf="registerForm.get('password').dirty && registerForm.get('password').errors">
-          <span *ngIf="registerForm.get('password').hasError('required')" style="color: red">La contraseña es requerida.</span>
-        </ng-container>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Confirmar Contraseña</ion-label>
-        <ion-input formControlName="confirm" tabindex="7" type="password"></ion-input>
-        <ng-container *ngIf="registerForm.get('confirm').dirty && registerForm.get('confirm').errors">
-          <span *ngIf="registerForm.get('confirm').hasError('required')" style="color: red">Debe confirmar la contraseña.</span>
-          <span *ngIf="registerForm.get('confirm').hasError('notSame')" style="color: red">Las contraseñas no son iguales.</span>
-        </ng-container>
-      </ion-item>
-
-      <br>
-      <ion-radio-group formControlName="access">
-        <ion-list-header>
-          Tipo de Acceso
-        </ion-list-header>
-
-        <ion-item>
-          <ion-label>Rut</ion-label>
-          <ion-radio value="1"></ion-radio>
-        </ion-item>
-
-        <ion-item>
-          <ion-label>Correo</ion-label>
-          <ion-radio value="2"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-
-      <ng-container *ngIf="registerForm.get('access').errors">
-        <span *ngIf="registerForm.get('access').hasError('required')" style="color: red">Debe seleccionar una opción.</span>
-      </ng-container>           
-    </form>
+                  <ion-row>
+                    <ion-col size="6">
+                      <ion-item class="input-radio-fx360">
+                        <ion-label class="label-fx360">Rut</ion-label>
+                        <ion-radio value="1"></ion-radio>
+                      </ion-item>
+                    </ion-col>
+                    <ion-col size="6">
+                      <ion-item class="input-radio-fx360">
+                        <ion-label class="label-fx360">Correo</ion-label>
+                        <ion-radio value="2"></ion-radio>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                </ion-radio-group>
+              </ion-col>
+              <ion-col size="12" class="ion-justify-content-center">
+                <ion-button [disabled]="registerForm.invalid" class="button-register" expand="block" (click)="onSubmit()">
+                  Registrar
+                </ion-button>
+              </ion-col>
+              <ion-col size="12" style="text-align: center;">
+                <ion-label
+                  class="account"
+                  routerLink="/auth/login">
+                  ¿Ya tienes cuenta?
+                </ion-label>
+              </ion-col>
+            </ion-row>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-
 </ion-content>
-
-<ion-footer>
-  <ion-button
-    [disabled]="registerForm.invalid"
-    color="danger"
-    expand="block"
-    (click)="onSubmit()">
-    Registrar
-  </ion-button>
-</ion-footer>

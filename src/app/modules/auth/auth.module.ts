@@ -4,9 +4,17 @@ import {AuthPage} from './auth.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
+  // {
+  //   path: 'auth',
+  //   loadChildren: () => import('./pages/welcome/welcome.module').then(module => module.WelcomePageModule)
+  // },
   {
-    path: 'auth',
-    loadChildren: () => import('./pages/welcome/welcome.module').then(module => module.WelcomePageModule)
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then(module => module.LoginPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then(module => module.RegisterPageModule)
   },
   {
     path: 'password-recovery',
@@ -22,7 +30,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'auth'
+    redirectTo: 'login'
   }
 ];
 

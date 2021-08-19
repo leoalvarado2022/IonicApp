@@ -144,7 +144,7 @@ ion-button {
   --background-activated: var(--color-home);
 }
 
-.background-color-home {
+/* .background-color-home {
   --background: rgba(34, 24, 123, 1);
   --background: -moz-linear-gradient(left, rgba(34, 24, 123, 1) 0%, rgba(25, 18, 91, 1) 38%, rgba(12, 9, 45, 1) 76%, rgba(1, 0, 4, 1) 100%);
   --background: -webkit-gradient(left top, right top, color-stop(0%, rgba(34, 24, 123, 1)), color-stop(38%, rgba(25, 18, 91, 1)), color-stop(76%, rgba(12, 9, 45, 1)), color-stop(100%, rgba(1, 0, 4, 1)));
@@ -153,17 +153,22 @@ ion-button {
   --background: -ms-linear-gradient(left, rgba(34, 24, 123, 1) 0%, rgba(25, 18, 91, 1) 38%, rgba(12, 9, 45, 1) 76%, rgba(1, 0, 4, 1) 100%);
   --background: linear-gradient(to right, rgba(34, 24, 123, 1) 0%, rgba(25, 18, 91, 1) 38%, rgba(12, 9, 45, 1) 76%, rgba(1, 0, 4, 1) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#22187b', endColorstr='#010004', GradientType=1);
+} */
+
+.background-color-home {
+  --background: var(--ion-color-primary);
 }
 
 .background-color-header {
-  --background: rgba(39, 127, 249, 1);
+  /*   --background: rgba(39, 127, 249, 1);
   --background: -moz-linear-gradient(left, rgba(39, 127, 249, 1) 0%, rgba(32, 120, 243, 1) 34%, rgba(29, 111, 232, 1) 72%, rgba(23, 104, 225, 1) 100%);
   --background: -webkit-gradient(left top, right top, color-stop(0%, rgba(39, 127, 249, 1)), color-stop(34%, rgba(32, 120, 243, 1)), color-stop(72%, rgba(29, 111, 232, 1)), color-stop(100%, rgba(23, 104, 225, 1)));
   --background: -webkit-linear-gradient(left, rgba(39, 127, 249, 1) 0%, rgba(32, 120, 243, 1) 34%, rgba(29, 111, 232, 1) 72%, rgba(23, 104, 225, 1) 100%);
   --background: -o-linear-gradient(left, rgba(39, 127, 249, 1) 0%, rgba(32, 120, 243, 1) 34%, rgba(29, 111, 232, 1) 72%, rgba(23, 104, 225, 1) 100%);
   --background: -ms-linear-gradient(left, rgba(39, 127, 249, 1) 0%, rgba(32, 120, 243, 1) 34%, rgba(29, 111, 232, 1) 72%, rgba(23, 104, 225, 1) 100%);
   --background: linear-gradient(to right, rgba(39, 127, 249, 1) 0%, rgba(32, 120, 243, 1) 34%, rgba(29, 111, 232, 1) 72%, rgba(23, 104, 225, 1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#277ff9', endColorstr='#1768e1', GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#277ff9', endColorstr='#1768e1', GradientType=1); */
+  --background: var(--ion-color-primary);
 }
 
 .background-color--header {
@@ -329,3 +334,57 @@ ion-action-sheet {
   left: -77px;
   top: -5px;
 }
+
+/* AUTH MODULE */
+
+.home-container {
+  padding-top: env(safe-area-inset-bottom);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  ion-toolbar {
+    --background: transparent !important;
+  }
+
+  .auth-content {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .button-text-color {
+    color: white !important;
+  }
+
+  .logo-home {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      height: 100px;
+    }
+
+    p {
+      color: white;
+      text-transform: uppercase;
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+
+  .buttons-home {
+    background: #f4f4f4;
+    text-align: left;
+    width: 100%;
+    border-radius: 4em 4em 0 0;
+  }
+}
+
+/* END AUTH MODULE */

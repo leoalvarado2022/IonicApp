@@ -1,24 +1,76 @@
-ion-toolbar {
-  --background: var(--color-login-header);
-}
-
-ion-header {
-  --background: var(--color-login-header);
-  background: var(--color-login-header);
-  --color: white;
-  color: white;
-
-  /*
-  .title-header {
-    background: var(--color-login-header);
-
-    h3 {
-      padding-left: 5%;
-      @media (min-width: 360px) {
-        padding-bottom: 10px;
-        padding-top: 20px;
-      }
-    }
+ion-content {
+  .version {
+    font-size: 1em;
+    color: white;
   }
-  */
+
+  .input-fx360{
+    margin-top: 5px;
+    /* border: 0.5px solid var(--color-home); */
+    background: #e7e7eb;
+    border-radius: 20px;
+    height: 40px !important;
+  }
+
+  .input-fx360:hover{
+    background: #ffffff;
+    transition: 500ms;
+  }
+
+  .welcome-tittle{
+    font-size: 20px;
+    color: #19284c;
+    font-weight: 600;
+    padding-top: 0.5rem;
+    text-align: center;
+  }
+
+  .label-fx360{
+    font-weight: 500;
+    color: #b5b4b4;
+    display: block;
+    text-align: center;
+  }
+
+  .label-fx360-checkbox{
+    font-weight: 500;
+    color: #b5b4b4;
+    padding-left: 5px;
+  }
+
+  .forward{
+    text-align: center;
+    color: #f25c5c;
+    font-size: 13px;
+  }
+
+  .button-login{
+    --background: #19284c;
+    --border-radius: 20px;
+    --box-shadow: none;
+    height: 40px;
+    --background-activated: #04042B;
+  }
+
+  .account{
+    color: #19284c;
+    font-size: 15px;
+  }
+
+  .button-login-register-outlet{
+    --background: #f4f4f4;
+    --border-radius: 20px;
+    color:  var(--color-home);
+    height: 40px;
+    border: 2px solid var(--color-home);
+    border-radius: 25px;
+    --background-activated: #04042B;
+    --color-activated: #f4f4f4;
+  }
+
+  .row-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+  }
 }

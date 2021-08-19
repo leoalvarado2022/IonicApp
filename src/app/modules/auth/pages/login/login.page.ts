@@ -17,6 +17,7 @@ import { DeviceService } from 'src/app/services/device/device.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit, OnDestroy {
+  public showCordovaFeatures = false;
 
   public loginForm: FormGroup;
   public innerWidth: number;
@@ -33,11 +34,14 @@ export class LoginPage implements OnInit, OnDestroy {
     private toastService: ToastService,
     private httpService: HttpService,
     private storeService: StoreService,
-    private appService: AppService,
-    private deviceService: DeviceService,
-    private platform: Platform
+    public appService: AppService,
+    public deviceService: DeviceService,
+    private platform: Platform,
+    public actionSheetController: ActionSheetController,
   ) {
-
+    this.platform.ready().then(() => {
+      this.showCordovaFeatures = this.platform.is('cordova');
+    });
   }
 
   ngOnInit() {
@@ -199,6 +203,42 @@ export class LoginPage implements OnInit, OnDestroy {
     latitude: 0,
     longitude: 0,
     version: this.appService.getAppVersion()
-  });
+  })
 
+  public connectionsActionSheet = async () => {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Seleccione Conexion',
+      buttons: [
+        {
+          text: 'Conexion QA',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'qa');
+            this.toastService.successToast('Conexión cambiada a QA');
+          }
+        },
+        {
+          text: 'Conexion Producción',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'prod');
+            this.toastService.successToast('Conexión cambiada a PROD');
+          }
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+
+          }
+        }]
+    });
+
+    await actionSheet.present();
+  }
+
+  public showQa = (): string => {
+    return localStorage.getItem('connectionEnvironment') === 'qa' ? 'QA' : '';
+  }
 }

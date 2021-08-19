@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {AuthService} from '../../../../shared/services/auth/auth.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
+import {AppService} from '../../../../services/app/app.service';
 
 @Component({
   selector: 'app-recovery',
@@ -21,7 +22,8 @@ export class RecoveryPage implements OnInit {
     private router: Router,
     private toastService: ToastService,
     private authService: AuthService,
-    private httpService: HttpService
+    private httpService: HttpService,
+    public appService: AppService,
   ) {
   }
 

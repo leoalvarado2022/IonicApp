@@ -1,12 +1,73 @@
-.cameras {
-  font-size: 40px;
-  text-align: center;
-}
+ion-content {
+  .version {
+    font-size: 1em;
+    color: white;
+  }
 
-ion-avatar {
-  width: 100px;
+  .welcome-tittle{
+    font-size: 30px;
+    color: var(--color-home);
+    font-weight: 600;
+    text-align: center;
+  }
 
-  img {
-    height: 100px;
+  .input-fx360{
+    margin-top: 5px;
+    background: #e7e7eb;
+    padding-left: 15px !important;
+    border-radius: 20px;
+    height: 40px !important;
+  }
+
+  .input-fx360:hover{
+    background: #ffffff;
+    transition: 500ms;
+  }
+
+  .input-radio-fx360{
+    margin-top: 5px;
+    background: #e7e7eb;
+    border-radius: 20px;
+  }
+
+  .input-radio-fx360:hover{
+    background: #ffffff;
+    transition: 500ms;
+  }
+
+  .label-fx360{
+    font-weight: 500;
+    /* color: #b5b4b4; */
+    text-align: left !important;
+  }
+
+  .button-register{
+    --background: #19284c;
+    --border-radius: 20px;
+    --box-shadow: none;
+    height: 40px;
+    --background-activated: #04042B;
+  }
+
+  .account{
+    color: #19284c;
+    font-size: 15px;
+  }
+
+  .button-register-login-outlet{
+    --background: #f4f4f4;
+    --border-radius: 20px;
+    color:  var(--color-home);
+    height: 40px;
+    border: 2px solid var(--color-home);
+    border-radius: 25px;
+    --background-activated: #04042B;
+    --color-activated: #f4f4f4;
+  }
+
+  .row-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
   }
 }

@@ -1,29 +1,82 @@
-ion-card {
-  margin: 5px;
-  padding: 0;
-  border-radius: 10px;
-  box-shadow: none;
+ion-content {
+  .version {
+    font-size: 1em;
+    color: white;
+  }
 
-  ion-card-content {
-    padding-left: 15px;
-    padding-right: 5px;
+
+  .input-fx360{
+    margin-top: 5px;
+    padding-left: 15px !important;
+    background: #e7e7eb;
+    border-radius: 20px;
+    height: 40px !important;
+  }
+
+  /*  .sc-ion-input-md {
+     padding-top: 5px !important;
+     padding-bottom: 0px !important;
+   } */
+
+  .input-fx360:hover{
+    background: #ffffff;
+    transition: 500ms;
+  }
+
+  .welcome-tittle{
+    font-size: 30px;
+    color: var(--color-home);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .label-fx360{
+    font-weight: 500;
+    color: #b5b4b4;
+  }
+
+  .label-fx360-checkbox{
+    font-weight: 500;
+    color: #19284c;
+    padding-left: 5px;
+  }
+
+  .forward{
+    text-align: center;
+    color: #f25c5c;
+    font-size: 13px;
+  }
+
+  .button-login{
+    --background: #19284c;
+    --border-radius: 20px;
+    --box-shadow: none;
+    height: 40px;
+    --background-activated: #04042B;
+  }
+
+  .account{
+    color: #19284c;
+    font-size: 15px;
+  }
+
+  .button-login-register-outlet{
+    --background: #f4f4f4;
+    --border-radius: 20px;
+    color:  var(--color-home);
+    height: 40px;
+    border: 2px solid #19284c;
+    border-radius: 25px;
+    --background-activated: #04042B;
+    --color-activated: #f4f4f4;
+  }
+
+  .row-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
   }
 }
 
 
-.recordarme {
-  position: absolute;
-  padding: 11px 5px;
-
-  span {
-    padding: 10px;
-    position: relative;
-    top: -5px;
-  }
-}
-
-.bottom {
-  position: absolute;
-  width: 90%;
-  bottom: 0;
-}

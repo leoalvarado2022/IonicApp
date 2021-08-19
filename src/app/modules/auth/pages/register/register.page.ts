@@ -9,6 +9,9 @@ import { cleanRut, formatRut, ValidateRut } from '@primetec/primetec-angular';
 import { HttpService } from '../../../../shared/services/http/http.service';
 import { Device } from '@ionic-native/device/ngx';
 import { CameraService } from '../../../../shared/services/camera/camera.service';
+import {AppService} from '../../../../services/app/app.service';
+import {DeviceService} from '../../../../services/device/device.service';
+import {ActionSheetController, Platform} from '@ionic/angular';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +19,7 @@ import { CameraService } from '../../../../shared/services/camera/camera.service
   styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage implements OnInit {
+  public showCordovaFeatures = false;
 
   public registerForm: FormGroup;
   public avatarPreview: any = null;
@@ -27,10 +31,16 @@ export class RegisterPage implements OnInit {
     private toastService: ToastService,
     private router: Router,
     private httpService: HttpService,
+    public appService: AppService,
     public device: Device,
-    private cameraService: CameraService
+    private cameraService: CameraService,
+    public deviceService: DeviceService,
+    private platform: Platform,
+    public actionSheetController: ActionSheetController,
   ) {
-
+    this.platform.ready().then(() => {
+      this.showCordovaFeatures = this.platform.is('cordova');
+    });
   }
 
   ngOnInit(): void {
@@ -139,4 +149,40 @@ export class RegisterPage implements OnInit {
     this.registerForm.updateValueAndValidity();
   }
 
+  public connectionsActionSheet = async () => {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Seleccione Conexion',
+      buttons: [
+        {
+          text: 'Conexion QA',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'qa');
+            this.toastService.successToast('Conexión cambiada a QA');
+          }
+        },
+        {
+          text: 'Conexion Producción',
+          icon: 'cloud',
+          handler: () => {
+            localStorage.setItem('connectionEnvironment', 'prod');
+            this.toastService.successToast('Conexión cambiada a PROD');
+          }
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+
+          }
+        }]
+    });
+
+    await actionSheet.present();
+  }
+
+  public showQa = (): string => {
+    return localStorage.getItem('connectionEnvironment') === 'qa' ? 'QA' : '';
+  }
 }

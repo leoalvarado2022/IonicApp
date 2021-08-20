@@ -1,28 +1,5 @@
-<ion-content class="background-color-home" scrollX="false" scrollY="true">
+<ion-content class="background-color-home" scrollX="false" scrollY="false">
   <div class="home-container">
-    <div *ngIf="showCordovaFeatures">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button color="default" class="button-text-color" fill="clear" (click)="connectionsActionSheet()">
-            {{ appService.getAppVersion() }} {{ showQa() }}
-          </ion-button>
-        </ion-buttons>
-        <ion-title>&nbsp;</ion-title>
-        <ion-buttons slot="end">
-          <ng-container *ngIf="deviceService.getUUIDLast8()">
-            <ion-button color="default" (click)="deviceService.showFullUUID()" class="button-text-color" fill="clear"
-                        slot="end">
-              NC: {{ deviceService.getUUIDLast8() }}
-            </ion-button>
-          </ng-container>
-
-          <ion-button color="default" slot="end" fill="clear" class="button-text-color"
-                      (click)="deviceService.showDeviceData()">
-            <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </div>
     <div class="auth-content">
       <div class="logo-home">
         <img alt="Primetec" src="assets/icon/favicon.png">
@@ -35,65 +12,65 @@
               <div class="welcome-tittle">Registrate</div>
             </ion-col>
           </ion-row>
-          <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+          <form class="register-form" [formGroup]="registerForm">
             <ion-row class="row-form">
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Rut</ion-label>
                 <ion-input class="input-fx360" (keyup)="formatIdentifier($event.target.value)" formControlName="rut" tabindex="0"></ion-input>
                 <ng-container *ngIf="registerForm.get('rut').dirty && registerForm.get('rut').errors">
-                  <span *ngIf="registerForm.get('rut').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El rut es requerido.</span>
-                  <span *ngIf="registerForm.get('rut').hasError('validRut')" style="color: #f25c5c; padding-left: 10px;">El rut es inválido.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('rut').hasError('required')">El rut es requerido.</ion-text>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('rut').hasError('validRut')">El rut es inválido.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Nombres</ion-label>
                 <ion-input class="input-fx360" formControlName="names" tabindex="1"></ion-input>
                 <ng-container *ngIf="registerForm.get('names').dirty && registerForm.get('names').errors">
-                  <span *ngIf="registerForm.get('names').hasError('required')" style="color: #f25c5c; padding-left: 10px;">Los nombres son requeridos.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('names').hasError('required')">Los nombres son requeridos.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Apellido Paterno</ion-label>
                 <ion-input class="input-fx360" formControlName="lastName" tabindex="2"></ion-input>
                 <ng-container *ngIf="registerForm.get('lastName').dirty && registerForm.get('lastName').errors">
-                  <span *ngIf="registerForm.get('lastName').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El apellido parterno es requerido.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('lastName').hasError('required')">El apellido parterno es requerido.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Apellido Materno</ion-label>
                 <ion-input class="input-fx360" formControlName="surName" tabindex="3"></ion-input>
                 <ng-container *ngIf="registerForm.get('surName').dirty && registerForm.get('surName').errors">
-                  <span *ngIf="registerForm.get('surName').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El apellido materno es requerido.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('surName').hasError('required')">El apellido materno es requerido.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Email</ion-label>
                 <ion-input class="input-fx360" formControlName="email" tabindex="4" type="email"></ion-input>
                 <ng-container *ngIf="registerForm.get('email').dirty && registerForm.get('email').errors">
-                  <span *ngIf="registerForm.get('email').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El correo es requerido.</span>
-                  <span *ngIf="registerForm.get('email').hasError('email')" style="color: #f25c5c; padding-left: 10px;">Ingrese un email valido.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('email').hasError('required')">El correo es requerido.</ion-text>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('email').hasError('email')">Ingrese un email valido.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Telefono</ion-label>
                 <ion-input class="input-fx360" formControlName="phone" tabindex="5" type="tel"></ion-input>
                 <ng-container *ngIf="registerForm.get('phone').dirty && registerForm.get('phone').errors">
-                  <span *ngIf="registerForm.get('phone').hasError('required')" style="color: #f25c5c; padding-left: 10px;">El telefono es requerido.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('phone').hasError('required')">El telefono es requerido.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Contraseña</ion-label>
                 <ion-input class="input-fx360" formControlName="password" type="password"></ion-input>
                 <ng-container *ngIf="registerForm.get('password').dirty && registerForm.get('password').errors">
-                  <span *ngIf="registerForm.get('password').hasError('required')" style="color: #f25c5c; padding-left: 10px;">La contraseña es requerida.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('password').hasError('required')">La contraseña es requerida.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12" size-md="6">
                 <ion-label class="label-fx360">Confirmar Contraseña</ion-label>
                 <ion-input class="input-fx360" formControlName="confirm" tabindex="7" type="password"></ion-input>
                 <ng-container *ngIf="registerForm.get('confirm').dirty && registerForm.get('confirm').errors">
-                  <span *ngIf="registerForm.get('confirm').hasError('required')" style="color: #f25c5c; padding-left: 10px;">Debe confirmar la contraseña.</span>
-                  <span *ngIf="registerForm.get('confirm').hasError('notSame')" style="color: #f25c5c; padding-left: 10px;">Las contraseñas no son iguales.</span>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('confirm').hasError('required')">Debe confirmar la contraseña.</ion-text>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="registerForm.get('confirm').hasError('notSame')">Las contraseñas no son iguales.</ion-text>
                 </ng-container>
               </ion-col>
               <ion-col size="12">

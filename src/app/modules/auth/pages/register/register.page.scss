@@ -11,19 +11,6 @@ ion-content {
     text-align: center;
   }
 
-  .input-fx360{
-    margin-top: 5px;
-    background: #e7e7eb;
-    padding-left: 15px !important;
-    border-radius: 20px;
-    height: 40px !important;
-  }
-
-  .input-fx360:hover{
-    background: #ffffff;
-    transition: 500ms;
-  }
-
   .input-radio-fx360{
     margin-top: 5px;
     background: #e7e7eb;
@@ -69,5 +56,22 @@ ion-content {
     padding-left: 1rem;
     padding-right: 1rem;
     padding-bottom: 1rem;
+  }
+
+  .register-form {
+    @media (max-width: 320px) {
+      height: 250px;
+      overflow: auto;
+    }
+
+    @media (min-width: 321px) and (max-width: 480px) {
+      height: 450px;
+      overflow: auto;
+    }
+
+    @media (min-width: 481px) and (max-width: 640px) {
+      height: 550px;
+      overflow: auto;
+    }
   }
 }

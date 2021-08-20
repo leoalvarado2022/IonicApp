@@ -42,6 +42,10 @@ ion-content {
   --background: #f4f4f4;
 }
 
+ion-button {
+  outline: none !important;
+}
+
 /** INPUT NUMBER TEXT ALIGN */
 .input-number {
   text-align: right;
@@ -338,7 +342,7 @@ ion-action-sheet {
 /* AUTH MODULE */
 
 .home-container {
-  padding-top: env(safe-area-inset-bottom);
+  padding-top: env(safe-area-inset-top);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -384,7 +388,33 @@ ion-action-sheet {
     text-align: left;
     width: 100%;
     border-radius: 4em 4em 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
 /* END AUTH MODULE */
+
+.input-fx360 {
+  margin-top: 5px;
+  //padding-left: 15px !important;
+  --padding-start: 15px !important;
+  --background: #e7e7eb;
+  border-radius: 20px;
+  height: 40px !important;
+
+  /*&:focus-visible {
+    --background: #ffffff;
+    transition: 500ms;
+  }*/
+}
+
+.error--message {
+  display: block;
+  margin-left: 10px;
+  margin-top: -10px;
+  font-size: 85%;
+
+  &.no-margin-t {
+    margin-top: 0;
+  }
+}

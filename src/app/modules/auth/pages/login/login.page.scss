@@ -1,26 +1,11 @@
 ion-content {
+  .logo-home {
+    flex: 1;
+  }
+
   .version {
     font-size: 1em;
     color: white;
-  }
-
-
-  .input-fx360{
-    margin-top: 5px;
-    padding-left: 15px !important;
-    background: #e7e7eb;
-    border-radius: 20px;
-    height: 40px !important;
-  }
-
-  /*  .sc-ion-input-md {
-     padding-top: 5px !important;
-     padding-bottom: 0px !important;
-   } */
-
-  .input-fx360:hover{
-    background: #ffffff;
-    transition: 500ms;
   }
 
   .welcome-tittle{
@@ -61,21 +46,15 @@ ion-content {
     font-size: 15px;
   }
 
-  .button-login-register-outlet{
-    --background: #f4f4f4;
-    --border-radius: 20px;
-    color:  var(--color-home);
-    height: 40px;
-    border: 2px solid #19284c;
-    border-radius: 25px;
-    --background-activated: #04042B;
-    --color-activated: #f4f4f4;
-  }
-
   .row-form {
     padding-left: 1rem;
     padding-right: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .col-checkbox {
+    display: flex;
+    align-items: center;
   }
 }
 

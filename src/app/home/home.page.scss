@@ -1,27 +1,48 @@
 ion-content {
-  .home-buttons-content {
-    padding: 20px 0px 50px 0px;
+  .buttons-home {
+    padding: 20px 0;
   }
 
   .button-primary-home {
-    /* --background: var(--color-home); */
-    --background: #19284c;
+    --background: var(--ion-color-primary);
+    --color: #f4f4f4;
     --border-radius: 20px;
-    --box-shadow: none;
+
+    --border-color: var(--ion-color-primary);
+    --border-width: 2px;
+    --border-style: solid;
+
     height: 50px;
-    --background-activated: #04042B;
-    --color-activated: white;
+    --background-activated: #f4f4f4;
+    --color-activated: var(--ion-color-primary);
+    outline: none !important;
+    border: none !important;
+
+    &:active {
+      --background: #f4f4f4;
+      --color-activated: var(--ion-color-primary);
+    }
   }
 
   .button-primary-home-outlet {
     --background: #f4f4f4;
+    --color:  var(--ion-color-primary);
     --border-radius: 20px;
-    color:  var(--color-home);
+
+    --border-color: var(--ion-color-primary);
+    --border-width: 2px;
+    --border-style: solid;
+
     height: 50px;
-    border: 2px solid #19284c;
-    border-radius: 20px;
-    --background-activated: #04042B;
+    --background-activated: var(--ion-color-primary);
     --color-activated: #f4f4f4;
+    outline: none !important;
+    border: none !important;
+
+    &:active {
+      --background: var(--ion-color-primary);
+      --color-activated: #f4f4f4;
+    }
   }
 
   .version {
@@ -29,9 +50,4 @@ ion-content {
     color: white;
   }
 
-}
-
-.border-footer-home {
-  background: var(--ion-color-primary);
-  color: white;
 }

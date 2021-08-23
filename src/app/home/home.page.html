@@ -6,8 +6,8 @@
         <p>{{ appService.getAppName() }}</p>
         <p class="version">{{ appService.getAppVersion() }}</p>
       </div>
-      <div class="buttons-home">
-        <div class="home-buttons-content">
+      <div class="home-buttons-container no-flex-grow">
+        <div class="buttons-home">
           <ion-row class="ion-justify-content-center">
             <ion-col size="10">
               <ion-button [routerLink]="['/auth/login']" expand="block" class="button-primary-home">Iniciar Sesión</ion-button>
@@ -20,6 +20,7 @@
           </ion-row>
         </div>
       </div>
+
     </div>
   </div>
 </ion-content>

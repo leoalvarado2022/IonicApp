@@ -1,4 +1,8 @@
 ion-content {
+  .logo-home {
+    flex: 1;
+  }
+
   .buttons-home {
     padding: 20px 0;
   }
@@ -12,6 +16,7 @@ ion-content {
     --border-width: 2px;
     --border-style: solid;
 
+    --box-shadow: none;
     height: 50px;
     --background-activated: #f4f4f4;
     --color-activated: var(--ion-color-primary);
@@ -33,6 +38,7 @@ ion-content {
     --border-width: 2px;
     --border-style: solid;
 
+    --box-shadow: none;
     height: 50px;
     --background-activated: var(--ion-color-primary);
     --color-activated: #f4f4f4;

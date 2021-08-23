@@ -22,12 +22,6 @@ ion-content {
     transition: 500ms;
   }
 
-  .label-fx360{
-    font-weight: 500;
-    /* color: #b5b4b4; */
-    text-align: left !important;
-  }
-
   .button-register{
     --background: #19284c;
     --border-radius: 20px;
@@ -41,37 +35,9 @@ ion-content {
     font-size: 15px;
   }
 
-  .button-register-login-outlet{
-    --background: #f4f4f4;
-    --border-radius: 20px;
-    color:  var(--color-home);
-    height: 40px;
-    border: 2px solid var(--color-home);
-    border-radius: 25px;
-    --background-activated: #04042B;
-    --color-activated: #f4f4f4;
-  }
-
   .row-form {
     padding-left: 1rem;
     padding-right: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  .register-form {
-    @media (max-width: 320px) {
-      height: 250px;
-      overflow: auto;
-    }
-
-    @media (min-width: 321px) and (max-width: 480px) {
-      height: 450px;
-      overflow: auto;
-    }
-
-    @media (min-width: 481px) and (max-width: 640px) {
-      height: 550px;
-      overflow: auto;
-    }
+    padding-bottom: 2rem;
   }
 }

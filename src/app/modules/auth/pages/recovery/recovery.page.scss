@@ -1,4 +1,8 @@
 ion-content {
+  .logo-home {
+    flex: 1;
+  }
+
   .version {
     font-size: 1em;
     color: white;
@@ -9,13 +13,6 @@ ion-content {
     color: #19284c;
     font-weight: 600;
     padding-top: 0.5rem;
-    text-align: center;
-  }
-
-  .label-fx360{
-    font-weight: 500;
-    color: #b5b4b4;
-    display: block;
     text-align: center;
   }
 
@@ -44,20 +41,9 @@ ion-content {
     font-size: 15px;
   }
 
-  .button-login-register-outlet{
-    --background: #f4f4f4;
-    --border-radius: 20px;
-    color:  var(--color-home);
-    height: 40px;
-    border: 2px solid var(--color-home);
-    border-radius: 25px;
-    --background-activated: #04042B;
-    --color-activated: #f4f4f4;
-  }
-
   .row-form {
     padding-left: 1rem;
     padding-right: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
   }
 }

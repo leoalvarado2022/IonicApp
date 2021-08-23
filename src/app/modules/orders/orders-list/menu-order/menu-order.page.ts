@@ -110,14 +110,14 @@ export class MenuOrderPage implements OnInit, OnDestroy {
             for (let i = 0; i < editOrderElement.quantity; i++) {
               if (item) {
                 // console.log(editOrderElement);
-                if (editOrderElement.discount > 0 && editOrderElement.type_discount === 'Monetario') {
+                // if (editOrderElement.discount > 0 && editOrderElement.type_discount === 'Monetario') {
                   item.discount = editOrderElement.discount / editOrderElement.quantity;
                   item.type_discount = editOrderElement.type_discount;
-                }
-                if (editOrderElement.discount > 0 && editOrderElement.type_discount === 'Porcentaje') {
-                  item.discount = editOrderElement.discount;
-                  item.type_discount = editOrderElement.type_discount;
-                }
+                // }
+                // if (editOrderElement.discount > 0 && editOrderElement.type_discount === 'Porcentaje') {
+                //   item.discount = editOrderElement.discount;
+                //   item.type_discount = editOrderElement.type_discount;
+                // }
                 this.addItems(item);
               }
             }

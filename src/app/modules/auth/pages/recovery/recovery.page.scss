@@ -10,7 +10,7 @@ ion-content {
 
   .welcome-tittle{
     font-size: 20px;
-    color: #19284c;
+    color: var(--ion-color-primary);
     font-weight: 600;
     padding-top: 0.5rem;
     text-align: center;
@@ -29,21 +29,20 @@ ion-content {
   }
 
   .button-login{
-    --background: #19284c;
+    --background: var(--ion-color-primary);
     --border-radius: 20px;
     --box-shadow: none;
     height: 40px;
-    --background-activated: #04042B;
   }
 
   .account{
-    color: #19284c;
+    color: var(--ion-color-primary);
     font-size: 15px;
   }
 
   .row-form {
     padding-left: 1rem;
     padding-right: 1rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
   }
 }

@@ -11,27 +11,15 @@ ion-content {
     --background: var(--ion-color-primary);
     --color: #f4f4f4;
     --border-radius: 20px;
-
-    --border-color: var(--ion-color-primary);
-    --border-width: 2px;
-    --border-style: solid;
-
     --box-shadow: none;
     height: 50px;
-    --background-activated: #f4f4f4;
-    --color-activated: var(--ion-color-primary);
     outline: none !important;
     border: none !important;
-
-    &:active {
-      --background: #f4f4f4;
-      --color-activated: var(--ion-color-primary);
-    }
   }
 
   .button-primary-home-outlet {
     --background: #f4f4f4;
-    --color:  var(--ion-color-primary);
+    --color: var(--ion-color-primary);
     --border-radius: 20px;
 
     --border-color: var(--ion-color-primary);

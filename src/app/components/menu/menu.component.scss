@@ -1,7 +1,29 @@
-.profile {
-  padding: 20px 20px 0 20px !important;
+ion-content {
+  --background: white;
+
+  ion-card {
+    box-shadow: none !important;
+  }
+
+  ion-icon {
+    color: var(--ion-color-medium);
+  }
+
+  ion-label{
+    --color: var(--ion-color-dark);
+  }
+
+  ion-item {
+    --border-color: var(--ion-color-light);
+  }
+
+  .profile {
+    padding: 20px 20px 0 20px !important;
+  }
+
+  .nameProfile {
+    margin-bottom: 0;
+    color: var(--ion-color-dark);
+  }
 }
 
-.nameProfile {
-  margin-bottom: 0;
-}

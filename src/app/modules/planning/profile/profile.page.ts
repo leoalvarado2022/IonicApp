@@ -115,7 +115,8 @@ export class ProfilePage implements OnInit {
    */
   private loadUserData = (): void => {
     this.profile = this.storeService.getUser();
-    this.avatarPreview = `data:image/jpeg;base64,${this.profile.avatar}`;
+    console.log('this.profile ::: ', this.profile);
+    this.avatarPreview = this.profile.avatar ? `data:image/jpeg;base64,${this.profile.avatar}` : null;
     this.rutValue = this.profile.rut;
   }
 

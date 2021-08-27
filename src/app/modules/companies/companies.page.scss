@@ -1,20 +1,22 @@
-ion-menu-button {
-  --color: white;
+ion-card {
+  box-shadow: none !important;
 }
 
-ion-title {
-  color: white;
+ion-item {
+  --border-style: unset !important;
+  --border-width: 0 !important;
 }
 
 .title-menu {
   margin-top: 0;
 }
 
-
 .company-active {
-  --color: black;
+  --color: white;
+  --background: var(--ion-color-primary) !important;
 }
 
 .company-inactive {
   --color: gray;
+  --background: white !important;
 }

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="background-color-header">
     <ion-buttons slot="start">
-      <ion-back-button class="header-back-button" text=""></ion-back-button>
+      <ion-back-button class="header-back-button" defaultHref="home-page" text=""></ion-back-button>
     </ion-buttons>
     <ion-title class="ion-text-center">
       <strong>Conexiones</strong>
@@ -14,7 +14,7 @@
 
 <ion-content>
   <ng-container *ngIf="connections">
-    <ion-list>
+    <ion-card>
       <ion-item
         (click)="selectConnection(connection)"
         *ngFor="let connection of connections"
@@ -24,6 +24,6 @@
           {{ connection.name }}
         </ion-label>
       </ion-item>
-    </ion-list>
+    </ion-card>
   </ng-container>
 </ion-content>

@@ -42,8 +42,23 @@ ion-content {
   --background: #f4f4f4;
 }
 
+ion-item {
+  --highlight-height: 0 !important;
+}
+
 ion-button, ion-label {
   outline: none !important;
+
+  &.btn-app {
+    --background: var(--ion-color-primary);
+    --border-radius: 20px;
+    --box-shadow: none;
+    height: 40px;
+  }
+
+  &.no-ripple {
+    --ripple-color: transparent !important;
+  }
 }
 
 /** INPUT NUMBER TEXT ALIGN */
@@ -67,6 +82,10 @@ ion-button, ion-label {
     margin: 5px;
     padding: 0;
     width: 100%;
+
+    &.no-shadow {
+      box-shadow: none !important;
+    }
 
     ion-card-content {
       padding-left: 15px;
@@ -162,6 +181,10 @@ ion-header {
 
 ion-toolbar {
   --border-width: 0 !important;
+  --padding-bottom: 10px;
+  --padding-top: 10px;
+  --padding-start: 10px;
+  --padding-end: 10px;
 }
 
 .pd-default {
@@ -236,21 +259,11 @@ ion-menu-button {
 }
 
 .change-modal-password .modal-wrapper {
-  height: 45%;
+  height: 360px;
   width: 90%;
   display: block;
-  padding: 40px;
   overflow: hidden;
-}
-
-.closeModal {
-  position: absolute;
-  right: 0;
-  color: white;
-  background: var(--ion-color-danger);
-  padding: 10px 16px;
-  border-radius: 50px;
-  top: 0;
+  border-radius: 10px;
 }
 
 .card-sli {
@@ -406,9 +419,12 @@ ion-action-sheet {
 
 /* END AUTH MODULE */
 
+/* INPUTS */
+
 .label-fx360 {
+  color: var(--ion-color-primary);
   font-weight: 500;
-  display: block;
+  //display: block;
   margin-left: 10px;
 
   &.recovery-label {
@@ -419,11 +435,51 @@ ion-action-sheet {
 
 .input-fx360 {
   margin-top: 5px;
-  //padding-left: 15px !important;
   --padding-start: 15px !important;
   --background: #e7e7eb;
   border-radius: 20px;
-  height: 40px !important;
+  --border-style: none !important;
+}
+
+.input-fx360-down {
+  --background: #fff;
+  --border-radius: 10px;
+  margin: 5px 5px 10px;
+  --border-style: none !important;
+
+  ion-searchbar {
+    padding: 0 !important;
+    height: unset !important;
+    --background: transparent !important;
+  }
+}
+
+.input-fx360-area {
+  background: #fff;
+  border-radius: 10px;
+  margin: 5px 5px 10px;
+}
+
+.input-fx360-select {
+  background: #fff;
+  border-radius: 10px;
+  margin: 5px 5px 10px;
+}
+
+.input-radio-fx360 {
+  margin-top: 5px;
+  --border-radius: 20px;
+  --border-style: none !important;
+  --ripple-color: transparent !important;
+
+  ion-radio {
+    --color-checked: white;
+  }
+
+  &.item-radio-checked {
+    --background: var(--ion-color-primary);
+    --color: white;
+  }
 }
 
 .error--message {
@@ -436,3 +492,5 @@ ion-action-sheet {
     margin-top: 0;
   }
 }
+
+/* END INPUTS */

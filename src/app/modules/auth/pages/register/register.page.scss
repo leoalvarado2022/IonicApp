@@ -5,21 +5,18 @@ ion-content {
   }
 
   .welcome-tittle{
-    font-size: 30px;
+    font-size: 20px;
     color: var(--ion-color-primary);
     font-weight: 600;
     text-align: center;
+    margin-top: 10px;
   }
 
-  .input-radio-fx360{
+  .input-radio-fx360 {
     margin-top: 5px;
     background: #e7e7eb;
     border-radius: 20px;
-  }
-
-  .input-radio-fx360:hover{
-    background: #ffffff;
-    transition: 500ms;
+    --ripple-color: transparent !important;
   }
 
   .button-register{

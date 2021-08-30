@@ -3,20 +3,20 @@
     <div *ngIf="showCordovaFeatures">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button color="default" class="button-text-color" fill="clear" (click)="connectionsActionSheet()">
+          <ion-button color="light" class="button-text-color" fill="clear" (click)="connectionsActionSheet()">
             {{ appService.getAppVersion() }} {{ showQa() }}
           </ion-button>
         </ion-buttons>
         <ion-title>&nbsp;</ion-title>
         <ion-buttons slot="end">
           <ng-container *ngIf="deviceService.getUUIDLast8()">
-            <ion-button color="default" (click)="deviceService.showFullUUID()" class="button-text-color" fill="clear"
+            <ion-button color="light" (click)="deviceService.showFullUUID()" class="button-text-color" fill="clear"
                         slot="end">
               NC: {{ deviceService.getUUIDLast8() }}
             </ion-button>
           </ng-container>
 
-          <ion-button color="default" slot="end" fill="clear" class="button-text-color"
+          <ion-button color="light" slot="end" fill="clear" class="button-text-color"
                       (click)="deviceService.showDeviceData()">
             <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
           </ion-button>

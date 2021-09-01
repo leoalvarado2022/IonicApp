@@ -18,11 +18,16 @@
   </ion-toolbar>
 </ion-header>
 
-<div>
-  <ion-searchbar #searchCustomer placeholder="Buscar..." animated class="production" showCancelButton="never"
-                 (ionClear)="clearSearch()"
-                 (ionInput)="searchInput($event.target.value)"></ion-searchbar>
-</div>
+<ion-toolbar class="toolbar-search">
+  <ion-searchbar
+    #searchCustomer
+    placeholder="Buscar..."
+    animated
+    class="production"
+    showCancelButton="never"
+    (ionClear)="clearSearch()"
+    (ionInput)="searchInput($event.target.value)"></ion-searchbar>
+</ion-toolbar>
 <ion-content>
   <ion-card class="card-form-delivery search-card onDisplay" *ngIf="searchData.length">
     <ion-list>
@@ -36,48 +41,57 @@
     <ion-grid>
       <ion-row>
         <ion-col size="6">
-          <ion-card class="store">
-            <ion-checkbox color="primary"  (click)="checkOption('store')" [checked]="typeDelivery === 'store'" [disabled]="typeDelivery === 'store'"></ion-checkbox>
-            <span class="store__span">Retiro en Tienda</span>
-          </ion-card>
+          <ion-item class="input-checkbox-fx360">
+            <ion-label>Retiro en Tienda</ion-label>
+            <ion-checkbox slot="start" color="primary" (click)="checkOption('store')" [checked]="typeDelivery === 'store'" [disabled]="typeDelivery === 'store'"></ion-checkbox>
+          </ion-item>
         </ion-col>
         <ion-col size="6">
-          <ion-card class="delivery">
-            <ion-checkbox color="primary"  (click)="checkOption()" [checked]="typeDelivery !== 'store'" [disabled]="typeDelivery !== 'store'"></ion-checkbox>
-            <span class="store__span">Entrega a Domicilio</span>
-          </ion-card>
+          <ion-item class="input-checkbox-fx360">
+            <ion-label>Entrega a Domicilio</ion-label>
+            <ion-checkbox slot="start" color="primary" (click)="checkOption()" [checked]="typeDelivery !== 'store'" [disabled]="typeDelivery !== 'store'"></ion-checkbox>
+          </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
-    <ion-card class="card-form-delivery">
-      <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-input formControlName="firstName"></ion-input>
-      </ion-item>
-      <ion-item >
-        <ion-label position="floating">Teléfono</ion-label>
-        <ion-input formControlName="phone"></ion-input>
-      </ion-item>
-      <ion-item >
-        <ion-label position="floating">Correo</ion-label>
-        <ion-input formControlName="email"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="typeDelivery !== 'store'">
-        <ion-label position="floating">Dirección</ion-label>
-        <ion-input formControlName="address"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="typeDelivery !== 'store'">
-        <ion-label position="floating">Fecha de Entrega</ion-label>
-        <ion-datetime displayFormat="DD-MM-YYYY HH:mm" formControlName="dateDelivery" [cancelText]="'Cancelar'"
-                      [doneText]="'Ok'"></ion-datetime>
-      </ion-item>
-    </ion-card>
+    <ion-row>
+      <ion-col size-xs="12" size-md="6">
+        <ion-label class="label-fx360" position="floating">Nombre</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-input formControlName="firstName"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12" size-md="6">
+        <ion-label class="label-fx360" position="floating">Teléfono</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-input formControlName="phone"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12" size-md="6">
+        <ion-label class="label-fx360" position="floating">Correo</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-input formControlName="email"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12" size-md="6" *ngIf="typeDelivery !== 'store'">
+        <ion-label class="label-fx360" position="floating">Dirección</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-input formControlName="address"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12" size-md="6" *ngIf="typeDelivery !== 'store'">
+        <ion-label class="label-fx360" position="floating">Fecha de Entrega</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <li-ionic4-datepicker formControlName="dateDelivery" [inputDateConfig]="datePickerObj"></li-ionic4-datepicker>
+        </ion-item>
+      </ion-col>
+    </ion-row>
   </form>
 </ion-content>
 
 <ion-footer>
   <div>
-    <ion-button [disabled]="menuDetailForm.invalid" color="warning" style="width: 99%;" (click)="menuOrder()"
+    <ion-button class="btn-app" [disabled]="menuDetailForm.invalid" color="primary" style="width: 99%;" (click)="menuOrder()"
                 *ngIf="!customerSelect">
       Siguiente
     </ion-button>

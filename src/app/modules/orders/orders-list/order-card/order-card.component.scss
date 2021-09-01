@@ -104,10 +104,6 @@ ion-card-header {
   padding: 2px 23px;
 }
 
-ion-card-content {
-  padding-bottom: 6px;
-}
-
 p {
   margin: 2px;
 }
@@ -117,4 +113,8 @@ p {
   position: relative;
   top: 3px;
   margin-left: 20px;
+}
+
+ion-item {
+  --background: transparent;
 }

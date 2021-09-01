@@ -33,7 +33,6 @@ export class OrdersListPage implements OnInit, OnDestroy {
   public integrationImages: Array<any> = [];
   public printIP = true;
   public printBluetooth = false;
-  public skeleton = true;
 
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
@@ -47,8 +46,8 @@ export class OrdersListPage implements OnInit, OnDestroy {
     private backgroundMode: BackgroundMode,
     public _posService: PosService,
     public actionSheetController: ActionSheetController,
-    public prints: Prints) {
-  }
+    public prints: Prints,
+  ) {}
 
   ionViewDidEnter() {
     // if (this._deliveryService.getAutomatic()) {
@@ -66,7 +65,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
       this.httpService.errorHandler(error);
     });
     this.allOrder = [];
-    this.skeleton = true;
+    this.loaderService.startLoader('Cargando ordenes...');
     this.loadNotifications(this.selected);
     this.refreshOrder(true);
   }
@@ -113,7 +112,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
       this.allOrder = success.resp;
       localStorage.removeItem('OrderData');
       setTimeout(() => {
-        this.skeleton = false;
+        this.loaderService.stopLoader();
       }, 1000);
     }, error => {
       this.httpService.errorHandler(error);
@@ -123,7 +122,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
   changeStatus(status: string) {
     this.selected = status;
     this.allOrder = [];
-    this.skeleton = true;
+    this.loaderService.startLoader('Cargando ordenes...');
     this.loadNotifications(status);
   }
 
@@ -273,7 +272,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
 
     this._deliveryService.deleteOrder(data).subscribe((success: any) => {
       this.allOrder = [];
-      this.skeleton = true;
+      this.loaderService.startLoader('Cargando ordenes...');
       this.loadNotifications(this.selected);
       this.loaderService.stopLoader();
     }, error => {

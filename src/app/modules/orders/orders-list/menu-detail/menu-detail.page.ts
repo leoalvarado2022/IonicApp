@@ -27,6 +27,19 @@ export class MenuDetailPage implements OnInit, OnDestroy {
 
   @ViewChild('searchCustomer') searchCustomer: IonSearchbar;
 
+  datePickerObj: any = {
+    fromDate: moment(), // default null
+    mondayFirst: true, // default false
+    setLabel: 'Ok',  // default 'Set'
+    todayLabel: 'Hoy', // default 'Today'
+    closeLabel: 'Cancelar', // default 'Close'
+    titleLabel: 'Fecha de entrega', // default null
+    monthsList: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    weeksList: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+    dateFormat: 'DD-MM-YYYY', // default DD MMM YYYY
+    clearButton : false , // default true
+  };
+
   constructor(
     private storeService: StoreService,
     private httpService: HttpService,
@@ -47,7 +60,7 @@ export class MenuDetailPage implements OnInit, OnDestroy {
       phone: [''],
       email: [''],
       address: [''],
-      dateDelivery: [moment().toISOString()],
+      dateDelivery: [moment().format('DD-MM-YYYY')],
     });
   }
 
@@ -75,7 +88,7 @@ export class MenuDetailPage implements OnInit, OnDestroy {
             phone: editOrder.phone_customer,
             email: editOrder.email_customer,
             address: editOrder.address_customer,
-            dateDelivery: moment(editOrder.date_delivery_format).toISOString(),
+            dateDelivery: moment(editOrder.date_delivery_format).format('DD-MM-YYYY'),
             store: this.typeDelivery === 'store',
             delivery: this.typeDelivery !== 'store',
           });
@@ -96,7 +109,7 @@ export class MenuDetailPage implements OnInit, OnDestroy {
         phone: '',
         email: '',
         address: '',
-        dateDelivery: moment().toISOString(),
+        dateDelivery: moment().format('DD-MM-YYYY'),
       });
       this.validationForm();
     }
@@ -187,7 +200,7 @@ export class MenuDetailPage implements OnInit, OnDestroy {
       phone: this.customerSelect.phone,
       email: this.customerSelect.email,
       address: this.customerSelect.address,
-      dateDelivery: moment().toISOString(),
+      dateDelivery: moment().format('DD-MM-YYYY'),
       store: this.menuDetailForm.controls.store.value,
       delivery: this.menuDetailForm.controls.delivery.value,
     });

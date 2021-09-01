@@ -3,7 +3,6 @@ ion-card {
 }
 
 .error {
-  //border: 1px solid red !important;
   --background: red;
 }
 
@@ -69,7 +68,6 @@ ion-card {
 }
 
 .img-card {
-  //height: 79px;
   width: 93px;
   position: relative;
   top: 2px;
@@ -80,17 +78,6 @@ ion-card {
   background: rgb(0 128 0 / 68%);
   color: white;
 }
-
-/*
-.icon-cam-fixed {
-  position: absolute;
-  left: 0;
-  color: white;
-  padding: 5px;
-  font-size: 15px;
-  z-index: 100;
-}
-*/
 
 .icon-cam-fixed {
   position: absolute;
@@ -103,28 +90,22 @@ ion-card {
 .item-thumbnail {
   height: 64px;
   width: 70px;
-  margin: 0 5px 0 -16px;
-  //position: absolute;
-  //top:0;
-  //bottom: 0;
-}
-
-.item-card {
-  height: 60px;
-}
-
-.description-label {
-  margin: 0;
-  position: absolute;
-  width: 120px;
-  overflow: hidden;
-  top: 0;
-  //height: 60px;
+  margin: 0 5px 0 -10px;
 }
 
 .overflow {
-  height: 230px;
+  //height: 230px;
   overflow: auto;
+}
+
+textarea {
+  width: 100%;
+  border: none;
+  padding: 10px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .total-order {
@@ -134,21 +115,21 @@ ion-card {
 
 .quantity {
   width: 58px;
-  //height: 34px;
   text-align: center;
   margin-left: 120px;
 }
 
 .total {
-  width: 128px;
-  //height: 34px;
-  text-align: right;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }
 
 ion-item {
   --border-color: transparent !important;
   --border-width: 0px !important;
   --min-height: 5px;
+  --background: transparent !important;
 }
 
 .title-transactions {
@@ -173,4 +154,14 @@ ion-item {
 .lineT {
   text-decoration: line-through;
   color: lightslategrey;
+}
+
+.worker-title {
+  span {
+    font-size: 85%;
+
+    &.title {
+      display: block;
+    }
+  }
 }

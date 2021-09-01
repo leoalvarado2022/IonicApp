@@ -87,9 +87,14 @@ ion-button, ion-label {
       box-shadow: none !important;
     }
 
+    ion-item {
+      border-bottom: 1px solid var(--ion-color-light);
+    }
+
     ion-card-content {
-      padding-left: 15px;
-      padding-right: 5px;
+      padding: 10px !important;
+      //padding-left: 15px;
+      //padding-right: 5px;
     }
   }
 }
@@ -112,9 +117,9 @@ ion-button, ion-label {
   margin: 0;
 
   ion-searchbar {
-    padding: 0;
-    margin: 0;
-    --background: var(--ion-color-primary);
+    padding: 0 !important;
+    margin: 0 !important;
+    --background: var(--color-home);
     --border-radius: 50px;
     --box-shadow: none;
     --clear-button-color: white;
@@ -122,6 +127,7 @@ ion-button, ion-label {
     --placeholder-color: white;
     --color: white;
     --placeholder-font-weight: bold;
+    //height: unset !important;
   }
 }
 
@@ -207,11 +213,9 @@ ion-toolbar {
 }
 
 .production {
-  background: var(--color-searchbar-menu);
-
   .searchbar-input {
     box-shadow: none !important;
-    background: var(--color-searchbar-menu);
+    background: var(--ion-color-primary);
     color: white;
   }
 
@@ -482,6 +486,32 @@ ion-action-sheet {
   }
 }
 
+.input-checkbox-fx360 {
+  margin-top: 5px;
+  --border-radius: 20px;
+  --border-style: none !important;
+  --ripple-color: transparent !important;
+  --background-activated: transparent !important;
+
+  ion-checkbox {
+    margin-right: 0.5rem;
+    --color-checked: white;
+    --size: 1.5rem;
+  }
+
+  ion-label {
+    margin-left: 0;
+    margin-right: 0;
+    font-size: 90% !important;
+    white-space: normal !important;
+  }
+
+  &.item-radio-checked {
+    --background: var(--ion-color-primary);
+    --color: white;
+  }
+}
+
 .error--message {
   display: block;
   margin-left: 10px;
@@ -503,5 +533,59 @@ ion-action-sheet {
   ion-avatar {
     width: 100%;
     height: 100%;
+  }
+}
+
+li-ionic4-datepicker {
+  input.li-dp-input {
+    margin: 0 !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+}
+
+li-ionic4-datepicker-modal {
+  margin-top: env(safe-area-inset-bottom);
+
+  ion-header {
+    ion-toolbar {
+      padding-top: unset !important;
+    }
+  }
+
+  ion-row {
+    &.dp-days-list {
+      ion-col {
+        &:not(.dp-selecteddate) {
+          .days {
+            color: var(--ion-color-primary) !important;
+          }
+        }
+
+        &.disabled {
+          .days {
+            color: #aaa !important;
+          }
+        }
+      }
+    }
+  }
+
+  .weeks {
+    color: var(--ion-color-primary) !important;
+  }
+
+  .dp-weeks-name {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(25, 40, 76, 0.5);
+    margin-bottom: 1rem;
+  }
+
+  .dp-selected {
+    background: var(--ion-color-primary) !important;
+    color: white !important;
+    padding: 0.5rem 0;
+    //margin: 0 5rem !important;
+    //border-radius: 4px;
   }
 }

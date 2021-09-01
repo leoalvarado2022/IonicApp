@@ -12,7 +12,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-row>
+  <ion-row class="ion-align-items-center">
     <ion-col [size]="order?.origin === 'FX360' ? '8' : '12'">
       <ion-card>
         <ion-card-content style="color: black;">
@@ -21,7 +21,7 @@
       </ion-card>
     </ion-col>
     <ion-col size="4" *ngIf="order?.origin === 'FX360'">
-      <ion-button color="primary" (click)="openModalDiscount()">
+      <ion-button size="small" color="primary" expand="block" (click)="openModalDiscount()">
         Descuentos
       </ion-button>
     </ion-col>
@@ -30,32 +30,37 @@
   <ng-container *ngIf="order && order.products.length">
     <div class="overflow">
       <ion-card *ngFor="let item of order.products" class="item-card">
-        <ion-item lines="none" style="height: 60px;">
+        <ion-item lines="none" >
           <ion-thumbnail slot="start" class="item-thumbnail">
             <ion-img [src]="attachment(item?.id_item_product)"></ion-img>
           </ion-thumbnail>
           <div class="description-label">
-            <div class="description">
-              <p style="font-size: 12px;" *ngIf="item.type === 'ITEM'"><strong
-                  style="text-transform: uppercase;">{{item?.name_item}}</strong></p>
-              <p style="font-size: 12px;" *ngIf="item.type === 'TEXTO'">
-                <strong style="text-transform: uppercase;" *ngIf="item?.header_item; else noHeader;">{{item?.name_item}}
-                  - {{item?.header_item}}
-                </strong>
-                <ng-template #noHeader>
-                  <strong style="text-transform: uppercase;">{{item?.name_item}}
+            <div class="worker-title">
+              <p *ngIf="item.type === 'ITEM'">
+                <span class="title"><strong>{{ item?.name_item | titlecase }}</strong></span>
+                <span>Cantidad: {{item?.quantity}}</span>
+              </p>
+              <p  *ngIf="item.type === 'TEXTO'">
+                <span class="title">
+                  <strong style="text-transform: uppercase;" *ngIf="item?.header_item; else noHeader;">{{item?.name_item}}
+                    - {{item?.header_item}}
                   </strong>
+                </span>
+                <ng-template #noHeader>
+                  <strong style="text-transform: uppercase;">{{item?.name_item}}</strong>
                 </ng-template>
               </p>
             </div>
           </div>
-          <div class="quantity">
-            {{item?.quantity}}
-          </div>
+
           <div class="total">
             {{item?.total | currency:' ':'symbol':'1.0-2'}}
           </div>
         </ion-item>
+      </ion-card>
+
+      <ion-card>
+        <textarea name="" id="" rows="5" placeholder="Escribe un comentario / sugerencias" [(ngModel)]="order.comment">{{order?.comment}}</textarea>
       </ion-card>
     </div>
   </ng-container>
@@ -139,7 +144,7 @@
   </ion-card>
 </ion-content>
 <ion-footer>
-  <ion-button color="success" expand="block"
+  <ion-button class="btn-app" color="primary" expand="block"
               [disabled]="transactions.length === 0 || !paymentCorrect() || isPaymentOnProcess"
               (click)="paymentSubmit()">
     <span style="text-align: center;">Pagar $ {{pay | currency:' ':'symbol':'1.0-2'}}</span>

@@ -10,6 +10,7 @@ import {StorageSyncService} from '../../../../services/storage/storage-sync/stor
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AlertController, IonItemSliding} from '@ionic/angular';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-menu-order-detail',
@@ -109,6 +110,10 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
         email: '',
         address: '',
       };
+    } else {
+      if (headerData.dateDelivery) {
+        headerData.dateDelivery = moment(headerData.dateDelivery, ['DD-MM-YYYY']).format('YYYY-MM-DD');
+      }
     }
 
     const formData = Object.assign({}, this.form.value);

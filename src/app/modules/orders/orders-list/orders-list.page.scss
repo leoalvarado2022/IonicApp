@@ -1,3 +1,18 @@
+.order-tab-button {
+  --background: var(--ion-color-primary);
+
+  ion-label {
+    font-size: 90% !important;
+  }
+
+  &.backgroundSelected {
+    background: var(--ion-color-primary-shade);
+  }
+}
+
+
+
+
 ion-menu-button {
   --color: white;
 }
@@ -36,10 +51,6 @@ ion-tab-button {
   --color: white;
 }
 
-.tab-selected {
-  border-bottom: 1px solid white !important;
-}
-
 ion-tab-bar {
   --background: var(--color-home-header-menu);
   --color: white;
@@ -61,14 +72,6 @@ ion-tab-bar {
   right: 0;
   top: 9px;
   z-index: 999999;
-}
-
-.backgroundSelected {
-  background: #1961c9;
-}
-
-ion-label {
-  font-size: 12px !important;
 }
 
 ion-card {

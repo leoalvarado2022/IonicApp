@@ -15,25 +15,10 @@ ion-content {
   --background: red;
 }
 
-.description {
-  position: absolute;
-  right: 0;
-  width: 73%;
-  top: 10px;
-}
-
 .card-item {
   position: relative;
-  //padding-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid rgb(0 0 0 / 8%);
-  --border-color: transparent;
-  margin: 0;
-}
-
-.button-footer {
-  position: absolute;
-  right: 0;
-  top: 24px;
 }
 
 .button-add {
@@ -71,4 +56,52 @@ ion-content {
   resize: none;
   border: none;
   outline: none;
+}
+
+.card-item-alt {
+  display: flex;
+  flex-direction: row;
+  --background: white !important;
+  --padding-start: 0 !important;
+  --border-color: transparent !important;
+
+  img {
+    object-fit: cover;
+    height: auto;
+  }
+
+  .description {
+    padding-top: 5px;
+    padding-left: 5px;
+    flex: 1;
+
+    .code {
+      font-size: 90%;
+      font-weight: bold;
+      color: var(--ion-color-medium);
+    }
+
+    .button-footer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+
+      .button-add {
+        padding: 5px 15px 5px 15px;
+        text-align: center;
+        margin-left: 5px;
+        margin-right: 5px;
+        border: 1px solid rgb(0 0 0 / 13%);
+        border-radius: 4px;
+      }
+
+      .number-add {
+        padding: 5px 10px 5px 10px;
+        text-align: center;
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+    }
+  }
 }

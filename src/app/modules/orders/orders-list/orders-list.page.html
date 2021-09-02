@@ -80,10 +80,10 @@
 </ion-header>
 
 <ion-content>
-  <ng-container>
-    <ion-virtual-scroll [items]="allOrder">
-      <div *virtualItem="let order">
-        <app-order-card [order]="order"
+  <ng-container *ngIf="!skeleton">
+    <ion-virtual-scroll [items]="allOrder" approxItemHeight="150px">
+      <div *virtualItem="let order" style="min-height: 150px;">
+        <app-order-card [order]="order" [skeleton]="skeleton"
                         [images]="integrationImages"
                         (orderSelected)="orderSelected($event)"
                         (deleteOrderSelected)="deleteOrder($event)"
@@ -94,7 +94,7 @@
   </ng-container>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="!skeleton">
   <ion-button class="btn-app" expand="block" (click)="openOrder()">
     <ion-icon name="fast-food-outline"></ion-icon>
   </ion-button>

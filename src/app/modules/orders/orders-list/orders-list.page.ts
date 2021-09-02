@@ -9,7 +9,7 @@ import {BackgroundMode} from '@ionic-native/background-mode/ngx';
 import {environment} from '../../../../environments/environment';
 import {PosService} from '../services/pos.service';
 import {StorageSyncService} from '../../../services/storage/storage-sync/storage-sync.service';
-import {ActionSheetController, IonInfiniteScroll} from '@ionic/angular';
+import {ActionSheetController, IonInfiniteScroll, IonVirtualScroll} from '@ionic/angular';
 import {Prints} from '../../../helpers/prints';
 import {InfiniteScrollPaginatorService} from '../../../shared/services/inifite-scroll-paginator/infinite-scroll-paginator.service';
 
@@ -33,8 +33,10 @@ export class OrdersListPage implements OnInit, OnDestroy {
   public integrationImages: Array<any> = [];
   public printIP = true;
   public printBluetooth = false;
+  public skeleton = true;
 
-  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  // @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+  @ViewChild('virtualScroll') virtualScroll: IonVirtualScroll;
 
   constructor(
     private storeService: StoreService,
@@ -46,8 +48,8 @@ export class OrdersListPage implements OnInit, OnDestroy {
     private backgroundMode: BackgroundMode,
     public _posService: PosService,
     public actionSheetController: ActionSheetController,
-    public prints: Prints,
-  ) {}
+    public prints: Prints) {
+  }
 
   ionViewDidEnter() {
     // if (this._deliveryService.getAutomatic()) {
@@ -65,6 +67,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
       this.httpService.errorHandler(error);
     });
     this.allOrder = [];
+    this.skeleton = true;
     this.loaderService.startLoader('Cargando ordenes...');
     this.loadNotifications(this.selected);
     this.refreshOrder(true);
@@ -112,6 +115,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
       this.allOrder = success.resp;
       localStorage.removeItem('OrderData');
       setTimeout(() => {
+        this.skeleton = false;
         this.loaderService.stopLoader();
       }, 1000);
     }, error => {
@@ -122,6 +126,7 @@ export class OrdersListPage implements OnInit, OnDestroy {
   changeStatus(status: string) {
     this.selected = status;
     this.allOrder = [];
+    this.skeleton = true;
     this.loaderService.startLoader('Cargando ordenes...');
     this.loadNotifications(status);
   }
@@ -272,7 +277,8 @@ export class OrdersListPage implements OnInit, OnDestroy {
 
     this._deliveryService.deleteOrder(data).subscribe((success: any) => {
       this.allOrder = [];
-      this.loaderService.startLoader('Cargando ordenes...');
+      this.skeleton = true;
+      this.loaderService.startLoader('Eliminando...');
       this.loadNotifications(this.selected);
       this.loaderService.stopLoader();
     }, error => {

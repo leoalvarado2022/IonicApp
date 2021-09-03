@@ -26,13 +26,10 @@ ion-content {
 
       .profile {
         padding: 20px !important;
-        //padding-top: env(safe-area-inset-top) !important;
-        //margin-top: env(safe-area-inset-top) !important;
         background: var(--ion-color-primary);
         display: flex;
         flex-direction: row;
-        //align-items: center;
-        border-bottom-left-radius: 25px 20px;
+        border-bottom-left-radius: 25px 20px !important;
 
         button {
           margin: 1rem 0;
@@ -53,7 +50,6 @@ ion-content {
 
           .name-profile {
             text-align: left;
-            //margin: 0;
             color: var(--ion-color-light);
           }
         }
@@ -68,8 +64,8 @@ ion-content {
     ion-card {
       margin: 0;
       padding: 24px 16px;
-      border-radius: 0;
-      border-top-right-radius: 25px 20px;
+      border-radius: 0 !important;
+      border-top-right-radius: 25px 20px !important;
     }
   }
 }

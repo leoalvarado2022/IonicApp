@@ -7,6 +7,12 @@ ion-card {
   --background: red;
 }
 
+.menu-header-card {
+  --background: transparent !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--ion-color-medium);
+}
+
 .scrollmenu {
   overflow: auto;
   white-space: nowrap;
@@ -17,8 +23,9 @@ ion-card {
   }
 
   span {
-    background: #d0ebff;
-    border-radius: 4px;
+    background: var(--ion-color-light);
+    color: var(--ion-color-medium);
+    border-radius: 12px;
     display: inline-block;
     text-align: center;
     padding: 5px 7px;

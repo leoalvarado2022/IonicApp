@@ -56,9 +56,9 @@
                   <!--<span>{{item.price | currency:' ':'symbol':'1.0-2' }}</span>-->
 
                   <div class="button-footer">
-                    <ion-button color="success" strong="true" class="button-add" (click)="addItems(item)">+</ion-button>
-                    <div class="number-add">{{quantityOrder(item)}}</div>
                     <ion-button color="warning" strong="true" class="button-add" (click)="removeItems(item)">-</ion-button>
+                    <div class="number-add">{{quantityOrder(item)}}</div>
+                    <ion-button color="success" strong="true" class="button-add" (click)="addItems(item)">+</ion-button>
                   </div>
                 </div>
               </ion-label>

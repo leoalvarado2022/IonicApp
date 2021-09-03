@@ -40,46 +40,31 @@
 
 
   <ng-container *ngIf="itemsSelect && itemsSelect.length && !noResult">
-    <ion-virtual-scroll [items]="itemsTemp" approxItemHeight="205px">
+    <ion-virtual-scroll [items]="itemsTemp" approxItemHeight="150px">
       <ion-card *virtualItem="let item" class="item-card">
         <ion-item lines="none">
           <ion-thumbnail slot="start" (click)="changePhoto(item.id_par_items)" class="item-thumbnail">
             <ion-img [src]="attachment(item.id_par_items)"></ion-img>
             <ion-icon name="camera" class="icon-cam-fixed"></ion-icon>
           </ion-thumbnail>
-          <ion-label style="height: 60px;">
+          <ion-label>
             <div class="description">
-              <p style="font-size: 16px;"><span class="code">{{item.code_product}}</span> - <strong>{{item.name_product}}</strong></p>
-              <p><span>{{item.price | currency:' ':'symbol':'1.0-2' }}</span></p>
+              <p>
+                <span class="code">{{item.code_product}}</span> - <strong>{{item.name_product}}</strong>
+              </p>
+            </div>
+            <div class="quantity">
+              <span>{{item.price | currency:' ':'symbol':'1.0-2' }}</span>
               <div class="button-footer">
-                <div class="button-add" (click)="addItems(item)">+</div>
+                <ion-button color="success" strong="true" class="button-add" (click)="addItems(item)">+</ion-button>
                 <div class="number-add">{{quantityOrder(item)}}</div>
-                <div class="button-add" (click)="removeItems(item)">-</div>
+                <ion-button color="warning" strong="true" class="button-add" (click)="removeItems(item)">-</ion-button>
               </div>
             </div>
           </ion-label>
         </ion-item>
       </ion-card>
     </ion-virtual-scroll>
-    <!--<ion-card *ngFor="let item of itemsSelectFilter(headerSelect)" class="item-card">
-      <ion-item lines="none">
-        <ion-thumbnail slot="start" (click)="changePhoto(item.id_par_items)" class="item-thumbnail">
-          <ion-img [src]="attachment(item.id_par_items)"></ion-img>
-          <ion-icon name="camera" class="icon-cam-fixed"></ion-icon>
-        </ion-thumbnail>
-        <ion-label style="height: 60px;">
-          <div class="description">
-            <p style="font-size: 16px;"><strong>{{item.name_product}}</strong></p>
-            <p><span>{{item.price | currency:' ':'symbol':'1.0-2' }}</span></p>
-            <div class="button-footer">
-              <div class="button-add" (click)="addItems(item)">+</div>
-              <div class="number-add">{{quantityOrder(item)}}</div>
-              <div class="button-add" (click)="removeItems(item)">-</div>
-            </div>
-          </div>
-        </ion-label>
-      </ion-item>
-    </ion-card>-->
   </ng-container>
 </ion-content>
 

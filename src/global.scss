@@ -61,6 +61,10 @@ ion-button, ion-label {
   }
 }
 
+ion-card {
+  border-radius: 12px !important;
+}
+
 /** INPUT NUMBER TEXT ALIGN */
 .input-number {
   text-align: right;
@@ -89,6 +93,7 @@ ion-button, ion-label {
 
     ion-item {
       border-bottom: 1px solid var(--ion-color-light);
+      --background: var(--ion-color-light);
     }
 
     ion-card-content {

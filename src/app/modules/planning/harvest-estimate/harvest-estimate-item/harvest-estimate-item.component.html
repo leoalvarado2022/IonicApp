@@ -1,33 +1,29 @@
 <ng-container *ngIf="item; else empty">
-  <ion-item-sliding [disabled]="slideDisabled">
-    <ion-item (click)="clickHarvest(item)" [ngClass]="{ 'old': isOld}" class="harvest" lines="none">
-      <ion-icon class="icon" color="warning" name="cart"></ion-icon>
-      <ion-label>
-        <div class="name">{{ item.userName }}</div>
-        <ion-row class="highlight">
-          <ion-col size="6">
-            <div class="title">Fecha Inicio</div>
-          </ion-col>
-          <ion-col size="6">
-            <div class="title">{{ showUnitCode() | uppercase }} Totales</div>
-          </ion-col>
-        </ion-row>
-        <ion-row class="highlight">
-          <ion-col class="ion-no-padding" size="6">
-            <div class="value totales">{{ item.startDate | customDate }}</div>
-          </ion-col>
-          <ion-col class="ion-no-padding" size="6">
-            <div class="value">
-              <ion-icon [color]="item.color" [name]="item.arrow" size="large"></ion-icon>&nbsp;
-              <span class="totales">{{ item.quantity | number:'1.0-0':'es-CL' }} {{ showUnitCode() | uppercase }}</span>
-            </div>
-          </ion-col>
-        </ion-row>
-        <div class="date">Ult. Act. {{ item.registrationDate | customDatetime }}</div>
-      </ion-label>
+  <ion-item-sliding [disabled]="slideDisabled" [ngClass]="{ 'old': isOld}">
+    <ion-item (click)="clickHarvest(item)" class="harvest" lines="none">
+      <div class="content">
+        <ion-icon class="icon" color="warning" name="cart"></ion-icon>
+        <div class="flex-1">
+          <div class="name">{{ item.userName }}</div>
+          <ion-row class="highlight">
+            <ion-col size="6">
+              <div class="title">Fecha Inicio</div>
+              <div class="value totales">{{ item.startDate | customDate }}</div>
+            </ion-col>
+            <ion-col size="6">
+              <div class="title">{{ showUnitCode() | uppercase }} Totales</div>
+              <div class="total-values">
+                <ion-icon class="total-icon" [color]="item.color" [name]="item.arrow"></ion-icon>&nbsp;
+                <span class="totales">{{ item.quantity | number:'1.0-0':'es-CL' }} {{ showUnitCode() | uppercase }}</span>
+              </div>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
     </ion-item>
+    <div class="date">Ult. Act. {{ item.registrationDate | customDatetime }}</div>
 
-    <ion-item-options side="end">      
+    <ion-item-options side="end">
       <ion-item-option (click)="deleteItem(item)" color="danger">
         <ion-icon name="trash"></ion-icon>
       </ion-item-option>
@@ -37,28 +33,24 @@
 
 <ng-template #empty>
   <ion-item (click)="clickHarvest()" [ngClass]="{ 'old': isOld}" class="harvest" lines="none">
-    <ion-icon class="icon" color="warning" name="cart"></ion-icon>
-    <ion-label>
-      <div class="name">N/A</div>
-      <ion-row class="highlight">
-        <ion-col size="6">
-          <div class="title">Fecha Inicio</div>
-        </ion-col>
-        <ion-col size="6">
-          <div class="title">Totales</div>
-        </ion-col>
-      </ion-row>
-      <ion-row class="highlight">
-        <ion-col size="6">
-          <div class="value">00/00/0000</div>
-        </ion-col>
-        <ion-col size="6">
-          <div class="value">
-            <span>0</span>
-          </div>
-        </ion-col>
-      </ion-row>
-      <div class="date">Ult. Act. 00/00/0000</div>
-    </ion-label>
+    <div class="content">
+      <ion-icon class="icon" color="warning" name="cart"></ion-icon>
+      <div class="flex-1">
+        <div class="name">N/A</div>
+        <ion-row class="highlight">
+          <ion-col size="6">
+            <div class="title">Fecha Inicio</div>
+            <div class="value">00/00/0000</div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="title">Totales</div>
+            <div class="total-values">
+              <span>0</span>
+            </div>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
   </ion-item>
+  <div class="date">Ult. Act. 00/00/0000</div>
 </ng-template>

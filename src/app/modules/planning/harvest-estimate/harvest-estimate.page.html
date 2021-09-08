@@ -10,16 +10,17 @@
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar class="toolbar-search">
-    <ion-searchbar
-      animated
-      placeholder="Buscar..."
-      showCancelButton="never"
-      (ionChange)="searchHarvest($event.target.value)"
-      (ionClear)="cancelSearch()">
-    </ion-searchbar>
-  </ion-toolbar>
 </ion-header>
+<ion-toolbar class="toolbar-search">
+  <ion-searchbar
+    animated
+    class="production"
+    placeholder="Buscar..."
+    showCancelButton="never"
+    (ionChange)="searchHarvest($event.target.value)"
+    (ionClear)="cancelSearch()">
+  </ion-searchbar>
+</ion-toolbar>
 
 <ion-content class="content">
   <ng-container *ngIf="filteredHarvestEstimate.length > 0; else noResults">
@@ -28,7 +29,7 @@
         <div class="card-sli-back">
           <app-harvest-estimate-item
             (deleteHarvest)="deleteHarvest($event)"
-            (harvestSelected)="processSelectedHarvest($event)"                
+            (harvestSelected)="processSelectedHarvest($event)"
             [units]="units"
             [isOld]="!harvest.active"
             [item]="harvest"
@@ -45,12 +46,12 @@
       <ion-label>
         Sin estimaciones
       </ion-label>
-    </ion-item>    
+    </ion-item>
   </ng-template>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="newHarvestEstimate()" [disabled]="!costCenter || !isOnline" color="warning"> 
+  <ion-button expand="block" (click)="newHarvestEstimate()" [disabled]="!costCenter || !isOnline" color="primary" class="btn-app">
     Crear
   </ion-button>
 </ion-footer>

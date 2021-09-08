@@ -4,6 +4,7 @@ import {HarvestEstimatePage} from './harvest-estimate.page';
 import {SharedModule} from '../../../shared/shared.module';
 import {HarvestEstimateFormComponent} from './harvest-estimate-form/harvest-estimate-form.component';
 import {NgxMaskModule} from 'ngx-mask';
+import {Ionic4DatepickerModule} from '@logisticinfotech/ionic4-datepicker';
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
   imports: [
     SharedModule,
     RouterModule.forChild(routes),
-    NgxMaskModule
+    NgxMaskModule,
+    Ionic4DatepickerModule,
   ],
   declarations: [
     HarvestEstimatePage,

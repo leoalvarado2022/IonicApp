@@ -1,32 +1,28 @@
 <ng-container *ngIf="item; else empty">
 
-  <ion-item-sliding [disabled]="slideDisabled">
-    <ion-item (click)="clickItem(item)" [ngClass]="{ 'old': isOld}" class="quality" lines="none">
-      <ion-icon class="icon" color="success" name="card"></ion-icon>
-      <ion-label>
-        <div class="name">{{ item.userName }}</div>
-        <ion-row class="highlight">
-          <ion-col size="6">
-            <div class="title">Calidad</div>
-          </ion-col>
-          <ion-col size="6">
-            <div class="title">% Exportación</div>
-          </ion-col>
-        </ion-row>
-        <ion-row class="highlight">
-          <ion-col class="ion-no-padding" size="6">
-            <div class="value totales">{{ item.qualityName }}</div>
-          </ion-col>
-          <ion-col class="ion-no-padding" size="6">
-            <div class="value">
-              <ion-icon [color]="item.color" [name]="item.arrow" size="large"></ion-icon>&nbsp;
-              <span class="totales">{{ item.exportPercentage }} %</span>
-            </div>
-          </ion-col>
-        </ion-row>
-        <div class="date">Ult. Act. {{ item.registrationDate | customDatetime }}</div>
-      </ion-label>
+  <ion-item-sliding [disabled]="slideDisabled" [ngClass]="{ 'old': isOld}">
+    <ion-item (click)="clickItem(item)" class="quality" lines="none">
+      <div class="content">
+        <ion-icon class="icon" color="success" name="card"></ion-icon>
+        <div class="flex-1">
+          <div class="name">{{ item.userName }}</div>
+          <ion-row class="highlight">
+            <ion-col size="6">
+              <div class="title">Calidad</div>
+              <div class="value totales">{{ item.qualityName }}</div>
+            </ion-col>
+            <ion-col size="6">
+              <div class="title">% Exportación</div>
+              <div class="total-values">
+                <ion-icon [color]="item.color" [name]="item.arrow" size="large"></ion-icon>&nbsp;
+                <span class="totales">{{ item.exportPercentage }} %</span>
+              </div>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
     </ion-item>
+    <div class="date">Ult. Act. {{ item.registrationDate | customDatetime }}</div>
 
     <ng-container *ngIf="!showChart">
       <div (click)="openChart()" [ngClass]="{ 'old': isOld}" class="chart-button">
@@ -56,28 +52,24 @@
 
 <ng-template #empty>
   <ion-item (click)="clickItem()" [ngClass]="{ 'old': isOld}" class="quality" lines="none">
-    <ion-icon class="icon" color="success" name="card"></ion-icon>
-    <ion-label>
-      <div class="name">N/A</div>
-      <ion-row class="highlight">
-        <ion-col size="6">
-          <div class="title">Calidad</div>
-        </ion-col>
-        <ion-col size="6">
-          <div class="title">% Exportación</div>
-        </ion-col>
-      </ion-row>
-      <ion-row class="highlight">
-        <ion-col size="6">
-          <div class="value">N/A</div>
-        </ion-col>
-        <ion-col size="6">
-          <div class="value">
-            <span>0 %</span>
-          </div>
-        </ion-col>
-      </ion-row>
-      <div class="date">Ult. Act. 00/00/0000</div>
-    </ion-label>
+    <div class="content">
+      <ion-icon class="icon" color="success" name="card"></ion-icon>
+      <div class="flex-1">
+        <div class="name">N/A</div>
+        <ion-row class="highlight">
+          <ion-col size="6">
+            <div class="title">Calidad</div>
+            <div class="value">N/A</div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="title">% Exportación</div>
+            <div class="total-values">
+              <span>0 %</span>
+            </div>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
   </ion-item>
+  <div class="date">Ult. Act. 00/00/0000</div>
 </ng-template>

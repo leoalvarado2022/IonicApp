@@ -1,7 +1,8 @@
 <ion-content scrollX="false" scrollY="false">
-
-  <ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()"
-    animated class="production" showCancelButton="never"></ion-searchbar>
+  <ion-toolbar class="toolbar-search">
+    <ion-searchbar placeholder="Buscar..." (ionChange)="searchCostCenter($event.target.value)" (ionClear)="cancelSearch()"
+      animated class="production" showCancelButton="never"></ion-searchbar>
+  </ion-toolbar>
 
   <div class="map-size">
 

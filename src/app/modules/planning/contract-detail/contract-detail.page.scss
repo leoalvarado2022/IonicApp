@@ -1,20 +1,34 @@
-ion-back-button {
-  --color: white;
+.header-content {
+  padding: 0 1rem;
+
+  &.selected {
+    .scroll-card {
+      max-height: 500px;
+      transition: max-height 0.25s ease-in;
+    }
+  }
 }
 
-ion-title {
-  color: white;
+.background-color--header {
+  background: var(--ion-color-primary);
 }
 
-ion-content {
-  --background: var(--color-background-tabs);
-  background: var(--color-background-tabs);
+ion-row {
+  &.basic-data {
+    ion-col {
+      .names {
+        margin-bottom: 0.7rem;
+      }
+
+      .details {
+        margin-bottom: 0.7rem;
+      }
+    }
+  }
 }
 
 .white {
   color: white;
-  padding-left: 1em;
-  padding-right: 1em;
 }
 
 .card {
@@ -25,7 +39,7 @@ ion-content {
   .card-text-one, .card-text-two {
     width: 50%;
     display: table-cell;
-    color: white;
+    color: var(--ion-color-primary);
   }
 
   .card-text-two {
@@ -36,23 +50,23 @@ ion-content {
 .card-text {
   display: table;
   width: 100%;
-  padding: 0 25px 0 25px;
+  padding: 0 1.1rem;
   position: relative;
 
   .card-text-one, .card-text-two {
     width: 100%;
     display: table-cell;
-    color: white;
+    color: var(--ion-color-dark);
+    font-size: 90%;
 
     p:nth-child(1) {
       position: absolute;
-      top: 0;
-      right: 0;
-      margin-top: 15px !important;
-      margin-right: 15px;
-      padding: 10px;
+      top: 5px;
+      right: 5px;
+      padding: 5px 10px;
       background: var(--color-light-card-hard);
-      border-radius: 20px;
+      border-radius: 10px;
+      color: white;
     }
   }
 
@@ -85,15 +99,15 @@ ion-content {
 }
 
 .scroll-card-custom {
-  padding: 3px 5px 3px 5px;
+  padding: 5px 0;
 
   .card-text {
-    background-color: var(--color-searchbar-menu);
+    background-color: var(--ion-color-light);
     border-radius: 10px;
     border: none !important;
 
     .card-text-one {
-      padding: 12px 0;
+      padding: 0.8rem 0;
     }
 
     p {
@@ -102,29 +116,28 @@ ion-content {
   }
 }
 
-.header-content.selected .scroll-card {
-  max-height: 500px;
-  transition: max-height 0.25s ease-in;
-}
-
 .estimates-card {
-  display: table;
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   text-align: center;
   background: white;
   padding: 10px 0;
   margin-bottom: 5px;
-  border-radius: 0 0 12px 12px;
-  //box-shadow: 0 4px 16px rgba(0,0,0,.12);
-  div {
-    display: table-cell;
+  border-radius: 0 0 10px 10px;
 
+  .flex-1 {
+    flex: 1;
+  }
+
+  .separator {
+    width: 1px;
+    background: var(--ion-color-light);
+  }
+
+  div {
     p {
       margin: 5px 0;
-    }
-
-    &:nth-child(1) {
-      border-right: 1px solid var(--ion-color-light-shade);
     }
   }
 }
@@ -147,16 +160,22 @@ ion-content {
 
 
 .item-list {
-  margin: 0 5px 5px;
+  margin: 0 5px 10px;
   border-radius: 10px;
+  padding-top: 0;
   padding-bottom: 5px;
-  //box-shadow: 0 4px 16px rgba(0,0,0,.12)
-}
 
-ion-list-header {
-  min-height: 25px;
-}
+  ion-list-header {
+    padding: 0 1rem !important;
+    --background: var(--ion-color-light);
 
+    ion-label {
+      margin: 10px 0;
+      padding: 0;
+      font-size: 1rem;
+    }
+  }
+}
 
 .geolocation {
   color: #2fff2f !important;

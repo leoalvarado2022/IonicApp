@@ -1,6 +1,11 @@
-ion-searchbar {
-  background: var(--color-searchbar-menu);
-  color: white;
+ion-card {
+  margin: 10px;
+}
+
+ion-chip {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .bottom__date {

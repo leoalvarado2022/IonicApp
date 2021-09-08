@@ -11,7 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+    <ion-searchbar animated placeholder="Buscar..." class="production" showCancelButton="never"
       (ionChange)="searchQuality($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
@@ -31,7 +31,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="openForm()" [disabled]="!costCenter || !isOnline" color="success">
+  <ion-button expand="block" (click)="openForm()" [disabled]="!costCenter || !isOnline" color="primary" class="btn-app">
     Crear
   </ion-button>
 </ion-footer>

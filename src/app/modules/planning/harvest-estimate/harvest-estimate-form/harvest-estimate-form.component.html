@@ -12,8 +12,88 @@
 <ion-content>
   <form [formGroup]="harvestForm">
 
+    <ion-row>
+      <!-- CANTIDAD -->
+      <ion-col size="12" size-md="6">
+        <ion-label class="label-fx360" position="floating">Cantidad {{ showUnitName() | uppercase }}</ion-label>
+        <ion-item class="input-fx360-down">
+          <ion-input class="input-number" clearInput placeholder="Ingresar Cantidad"
+                     (ionBlur)="inputQuantity($event.target.value)" [value]="showQuantity | mask: 'separator'" inputmode="numeric"
+                     [disabled]="isView"></ion-input>
+        </ion-item>
+        <!--<ng-container *ngIf="harvestForm.get('quantity').dirty">-->
+          <ion-text color="danger" class="error--message" *ngIf="harvestForm.get('quantity').hasError('required')">Ingrese la cantidad. Utilice punto en vez de coma.</ion-text>
+          <ion-text color="danger" class="error--message" *ngIf="harvestForm.get('quantity').hasError('min')">El valor minimo es 1.</ion-text>
+          <ion-text color="danger" class="error--message" *ngIf="harvestForm.get('quantity').hasError('pattern')">Maximo 3 decimales.</ion-text>
+        <!--</ng-container>-->
+      </ion-col>
+      <!-- CANTIDAD DIARIA -->
+      <ion-col size="12" size-md="6">
+        <ion-label class="label-fx360" position="floating">Cantidad Diaria {{ showUnitName() | uppercase }}</ion-label>
+        <ion-item class="input-fx360-down">
+          <ion-input class="input-number" clearInput placeholder="Ingresar Cantidad"
+                     (ionBlur)="inputDailyAmount($event.target.value)" [value]="showDailyAmount | mask: 'separator'"
+                     inputmode="numeric" [disabled]="isView"></ion-input>
+        </ion-item>
+        <!--<ng-container *ngIf="harvestForm.get('dailyAmount').dirty">-->
+          <ion-text color="danger" class="error--message" *ngIf="harvestForm.get('dailyAmount').hasError('required')">Ingrese la cantidad. Utilice punto en vez de coma.</ion-text>
+          <ion-text color="danger" class="error--message" *ngIf="harvestForm.get('dailyAmount').hasError('min')">El valor minimo es 1.</ion-text>
+          <ion-text color="danger" class="error--message" *ngIf="harvestForm.get('dailyAmount').hasError('pattern')">Maximo 3 decimales.</ion-text>
+          <ion-text color="danger" class="error--message" *ngIf="harvestForm.hasError('greather')">La cantidad diaria no debe ser mayor a la cantidad.</ion-text>
+        <!--</ng-container>-->
+      </ion-col>
+      <ion-col size="12">
+        <ion-label class="label-fx360">¿Trabaja feriados?</ion-label>
+        <ion-radio-group [value]="harvestForm.get('workHolidays').value" (ionChange)="workHolidaysEvent($event.detail.value)">
+          <ion-row>
+            <ion-col size="6">
+              <ion-item class="input-radio-fx360">
+                <ion-label class="label-fx360">Si</ion-label>
+                <ion-radio [disabled]="isView" slot="start" value="1"></ion-radio>
+              </ion-item>
+            </ion-col>
+            <ion-col size="6">
+              <ion-item class="input-radio-fx360">
+                <ion-label class="label-fx360">No</ion-label>
+                <ion-radio [disabled]="isView" slot="start" value="0"></ion-radio>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-radio-group>
+        <ion-text color="danger" class="error--message no-margin-t" *ngIf="harvestForm.get('workHolidays').dirty && harvestForm.get('workHolidays').hasError('required')">
+          Indique si trabaja los feriados.
+        </ion-text>
+      </ion-col>
+      <ion-col size-xs="12" size-md="6">
+        <ion-label class="label-fx360" position="floating">Fecha Inicio</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <li-ionic4-datepicker formControlName="startDate" [inputDateConfig]="datePickerObj"></li-ionic4-datepicker>
+        </ion-item>
+        <ion-text color="danger" class="error--message no-margin-t" *ngIf="harvestForm.get('startDate').dirty && harvestForm.get('startDate').hasError('required')">
+          Ingrese fecha inicio.
+        </ion-text>
+      </ion-col>
+      <ion-col size-xs="12" size-md="6">
+        <ion-label class="label-fx360" position="floating">Fecha Fin</ion-label>
+        <ion-item class="input-fx360-down">
+          <ion-input [value]="harvestForm.get('endDate').value" disabled="true"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="6" (click)="processPlantActionSheet()">
+        <ion-label class="label-fx360" position="floating">Plantas de Proceso</ion-label>
+        <ion-item class="input-fx360-down">
+          <ion-input [value]="getSelectedProcessPlant()"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12" size-md="6" (click)="destinationsActionSheet()">
+        <ion-label class="label-fx360" position="floating">Destino</ion-label>
+        <ion-item class="input-fx360-down">
+          <ion-input [value]="getSelectedDestination()"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
     <!-- CANTIDAD -->
-    <ion-item>
+    <!--<ion-item>
       <ion-label position="fixed">
         Cantidad {{ showUnitName() | uppercase }}
       </ion-label>
@@ -26,10 +106,10 @@
         punto en vez de coma.</ion-text>
       <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('min')">El valor minimo es 1.</ion-text>
       <ion-text color="danger" *ngIf="harvestForm.get('quantity').hasError('pattern')">Maximo 3 decimales</ion-text>
-    </ng-container>
+    </ng-container>-->
 
     <!-- CANTIDAD DIARIA -->
-    <ion-item>
+    <!--<ion-item>
       <ion-label position="fixed">
         Cantidad Diaria {{ showUnitName() | uppercase }}
       </ion-label>
@@ -45,10 +125,10 @@
     </ng-container>
     <ng-container *ngIf="harvestForm.hasError('greather')">
       <ion-text color="danger">La cantidad diaria no debe ser mayor a la cantidad</ion-text>
-    </ng-container>
+    </ng-container>-->
 
     <!-- Trabaja festivos -->
-    <ion-list>
+    <!--<ion-list>
       <ion-radio-group [value]="harvestForm.get('workHolidays').value"
         (ionChange)="workHolidaysEvent($event.detail.value)">
         <ion-list-header>
@@ -73,10 +153,10 @@
     <ion-text color="danger"
       *ngIf="harvestForm.get('workHolidays').dirty && harvestForm.get('workHolidays').hasError('required')">
       <p>Indique si trabaja los feriados</p>
-    </ion-text>
+    </ion-text>-->
 
     <!-- Fecha Inicio -->
-    <ion-item>
+    <!--<ion-item>
       <ion-label position="floating">Fecha Inicio</ion-label>
       <ion-datetime [displayFormat]="dateFormat" [max]="maxDate" [pickerFormat]="dateFormat" formControlName="startDate"
         placeholder="Ingresar Fecha Inicio"></ion-datetime>
@@ -84,31 +164,31 @@
     <ion-text color="danger"
       *ngIf="harvestForm.get('startDate').dirty && harvestForm.get('startDate').hasError('required')">
       <p>Ingrese fecha inicio</p>
-    </ion-text>
+    </ion-text>-->
 
     <!-- Fecha fin -->
-    <ion-item>
+    <!--<ion-item>
       <ion-label position="floating">Fecha Fin</ion-label>
       <ion-input [value]="harvestForm.get('endDate').value" disabled="true"></ion-input>
-    </ion-item>
+    </ion-item>-->
 
     <!-- Plantas de proceso -->
-    <ion-item (click)="processPlantActionSheet()">
+    <!--<ion-item (click)="processPlantActionSheet()">
       <ion-label position="fixed">Plantas de Proceso</ion-label>
       <ion-input [value]="getSelectedProcessPlant()"></ion-input>
-    </ion-item>
+    </ion-item>-->
 
     <!-- Destino -->
-    <ion-item (click)="destinationsActionSheet()">
+    <!--<ion-item (click)="destinationsActionSheet()">
       <ion-label position="fixed">Destino</ion-label>
       <ion-input [value]="getSelectedDestination()"></ion-input>
-    </ion-item>
+    </ion-item>-->
   </form>
 </ion-content>
 
 <ion-footer>
   <ng-container *ngIf="!harvestEstimate">
-    <ion-button (click)="submit()" [disabled]="harvestForm.invalid || isSaving" color="primary" expand="block">
+    <ion-button (click)="submit()" [disabled]="harvestForm.invalid || isSaving" class="btn-app" color="primary" expand="block">
       Guardar
     </ion-button>
   </ng-container>

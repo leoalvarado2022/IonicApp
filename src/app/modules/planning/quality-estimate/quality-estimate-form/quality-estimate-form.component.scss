@@ -3,7 +3,7 @@
   padding-left: 15px;
 }
 
-ion-item {
+/*ion-item {
   ion-label {
     min-width: 50%;
   }
@@ -15,8 +15,14 @@ ion-item {
   ion-select {
     text-align: right;
   }
-}
+}*/
 
 .total-padding {
   --padding-end: 37px;
+}
+
+.caliber-title {
+  margin-left: 1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
 }

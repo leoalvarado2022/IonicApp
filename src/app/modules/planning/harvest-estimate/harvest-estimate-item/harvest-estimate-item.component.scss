@@ -1,29 +1,43 @@
 .harvest {
-  //margin-bottom: 5px;
+  --background: transparent;
+
+  .content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .total-values {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .total-icon {
+        font-size: 1.2rem !important;
+      }
+
+      .totales {
+        font-size: 14px;
+      }
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+  }
 }
 
 .name {
   text-align: right;
   font-size: 10px;
-  //padding-left: 10px;
   color: var(--ion-color-medium-shade);
-  //padding-bottom: 10px;
   padding: 0;
 }
 
 .date {
   text-align: right;
   font-size: 10px;
-  //padding-left: 10px;
   color: var(--ion-color-medium-shade);
-  //padding-top: 10px;
-  padding: 0;
-}
-
-.totales {
-  vertical-align: top;
-  top: 5px;
-  position: relative;
+  padding: 0 1rem;
 }
 
 .title {
@@ -42,13 +56,6 @@
   font-size: 40px;
 }
 
-.highlight {
-  // background: var(--color-light-box);
-}
-
-.old {
-  --background: var(--color-box-light) !important;
-}
 
 ion-label {
   margin: 0;
@@ -57,4 +64,9 @@ ion-label {
 
 ion-item-sliding {
   border-radius: 10px !important;
+  padding: 10px 0;
+
+  &.old {
+    background: var(--ion-color-light);
+  }
 }

@@ -1,3 +1,7 @@
+ion-item {
+  --border-style: none !important;
+}
+
 ion-textarea {
   textarea {
     min-height: 50px;
@@ -9,4 +13,19 @@ ion-textarea {
   font-size: 1em;
   padding-top: 2em;
   padding-bottom: 2em;
+}
+
+.media-container {
+  //border-bottom: 1px solid var(--ion-color-medium);
+
+  .media-content {
+    --min-height: 50px;
+    --highlight-height: 0 !important;
+    --background: transparent !important;
+    --border-style: none !important;
+
+    ion-button {
+      --box-shadow: none !important;
+    }
+  }
 }

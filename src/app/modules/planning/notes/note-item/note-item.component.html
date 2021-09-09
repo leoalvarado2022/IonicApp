@@ -12,7 +12,7 @@
       </ng-container>
       <ion-label (click)="itemClicked(item)">
         <h6 class="name">{{ item.responsibleName }}</h6>
-        <div class="note">{{ item.note || 'Sin mensaje' }}</div>
+        <span class="note">{{ item.note || 'Sin mensaje' }}</span>
         <div class="date">Ult. Act. {{ item.registrationDate | customDate }}</div>
       </ion-label>
     </ion-item>
@@ -35,7 +35,7 @@
     <ng-container *ngIf="!getPhotoPath()" slot="start">
       <ion-icon class="icon" color="danger" name="mail"></ion-icon>
     </ng-container>
-    <ion-label>
+    <ion-label class="flex-1">
       <h6 class="name">N/A</h6>
       <div class="note">N/A</div>
       <div class="date">Ult. Act. 00/00/0000</div>

@@ -44,6 +44,19 @@ export class HarvestEstimateFormComponent implements OnInit, OnDestroy {
   private valueChanges$: Subscription;
   private readonly decimalRegex = /^\d*(.\d{1,3})?$/;
 
+  datePickerObj: any = {
+    fromDate: moment(), // default null
+    mondayFirst: true, // default false
+    setLabel: 'Ok',  // default 'Set'
+    todayLabel: 'Hoy', // default 'Today'
+    closeLabel: 'Cancelar', // default 'Close'
+    titleLabel: 'Fecha de entrega', // default null
+    monthsList: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    weeksList: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+    dateFormat: 'DD-MM-YYYY', // default DD MMM YYYY
+    clearButton : false , // default true
+  };
+
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,

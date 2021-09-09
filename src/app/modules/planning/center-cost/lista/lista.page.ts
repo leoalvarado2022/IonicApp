@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CostCenterList} from '@primetec/primetec-angular';
 import {Router} from '@angular/router';
 import {StoreService} from '../../../../shared/services/store/store.service';
+import {LoaderService} from '../../../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-lista',
@@ -17,7 +18,8 @@ export class ListaPage implements OnInit {
 
   constructor(
     private router: Router,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private loaderService: LoaderService,
   ) {
 
   }
@@ -35,6 +37,7 @@ export class ListaPage implements OnInit {
    */
   private loadCostCenters = (): void => {
     this.isLoading = true;
+    this.loaderService.startLoader('Cargando...');
     const costCenters = this.storeService.getCostCenters();
 
     setTimeout(() => {
@@ -42,6 +45,7 @@ export class ListaPage implements OnInit {
       this.filteredCostCenters = [...costCenters];
 
       this.isLoading = false;
+      this.loaderService.stopLoader();
     }, 1000);
   }
 

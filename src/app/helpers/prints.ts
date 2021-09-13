@@ -578,7 +578,6 @@ export class Prints {
     this.loaderButton.next(false);
     // si se genera la boleta
     if (generate) {
-      console.log('******* generate ::: ', generate);
       this.printDocumentProcess(document, ip, port);
     }
   }

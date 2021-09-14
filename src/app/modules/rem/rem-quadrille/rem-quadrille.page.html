@@ -15,6 +15,7 @@
       placeholder="Buscar..."
       animated
       showCancelButton="never"
+      class="production"
       (ionChange)="searchQuadrille($event.target.value)"
       (ionClear)="cancelSearch()">
     </ion-searchbar>
@@ -40,7 +41,7 @@
   <ng-container *ngIf="!isLoading">
     <ion-virtual-scroll [items]="filteredQuadrilles">
       <ion-card *virtualItem="let quadrille" (click)="goToWorkers(quadrille)" class="card-item">
-        <ion-item lines="full">
+        <ion-item lines="full" class="header-item">
           <ion-badge slot="start">{{ quadrille.code | uppercase }}</ion-badge>
           <ion-label>{{ quadrille.name | titlecase }}</ion-label>
           <ion-badge  *ngIf="showBadge(quadrille.id) > 0" color="warning" slot="end">{{ showBadge(quadrille.id) }}</ion-badge>
@@ -51,10 +52,12 @@
             <strong>Responsable</strong>: {{ quadrille.responsibleName | titlecase }}
           </p>
 
-          <ion-chip class="ion-float-end">
-            <ion-icon name="people" color="success"></ion-icon>
-            <ion-label>{{ getQuadrilleWorkers(quadrille.id) }}</ion-label>
-          </ion-chip>
+          <div class="ion-text-right">
+            <ion-chip>
+              <ion-icon name="people" color="primary"></ion-icon>
+              <ion-label>{{ getQuadrilleWorkers(quadrille.id) }}</ion-label>
+            </ion-chip>
+          </div>
         </ion-card-content>
       </ion-card>
     </ion-virtual-scroll>

@@ -17,6 +17,7 @@
       animated
       showCancelButton="never"
       placeholder="Buscar..."
+      class="production"
       (ionChange)="searchWorker($event.target.value)"
       (ionClear)="cancelSearch()">
     </ion-searchbar>
@@ -94,13 +95,13 @@
   <ng-container *ngIf="selectedWorkers.length > 0">
     <ion-row *ngIf="selectedWorkers[0].quadrilleToApprove === 0">
       <ion-col *ngIf="selectedWorkers[0].quadrilleStatus === ''">
-        <ion-button (click)="selectQuadrille();" color="warning" expand="block">
+        <ion-button (click)="selectQuadrille();" color="warning" expand="block" class="btn-app">
           Traspasar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
         </ion-button>
       </ion-col>
 
       <ion-col *ngIf="selectedWorkers[0].quadrilleStatus.toLowerCase() === getTransferNames().Rechazado">
-        <ion-button (click)="cancelTransfer()" color="success" expand="block">
+        <ion-button (click)="cancelTransfer()" color="success" expand="block" class="btn-app">
           Aprobar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
         </ion-button>
       </ion-col>
@@ -108,20 +109,20 @@
 
     <ion-row *ngIf="selectedWorkers[0].quadrilleToApprove > 0">
       <ion-col *ngIf="selectedWorkers[0].quadrille === quadrille.id">
-        <ion-button (click)="cancelTransfer()" color="danger" expand="block">
+        <ion-button (click)="cancelTransfer()" color="danger" expand="block" class="btn-app">
           Cancelar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
         </ion-button>
       </ion-col>
 
       <ng-container *ngIf="selectedWorkers[0].quadrille !== quadrille.id && !selectedWorkers[0].memory">
         <ion-col size="6">
-          <ion-button (click)="acceptWorkers();" color="success" expand="block">
+          <ion-button (click)="acceptWorkers();" color="success" expand="block" class="btn-app">
             Aprobar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
           </ion-button>
         </ion-col>
 
         <ion-col size="6">
-          <ion-button (click)="rejectWorkers();" color="danger" expand="block">
+          <ion-button (click)="rejectWorkers();" color="danger" expand="block" class="btn-app">
             Rechazar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
           </ion-button>
         </ion-col>

@@ -5,3 +5,15 @@ ion-menu-button {
 ion-title {
   color: white;
 }
+
+ion-chip {
+  margin: 0 !important;
+}
+
+.card-item {
+  margin: 10px;
+
+  p {
+    margin-bottom: 0.5rem;
+  }
+}

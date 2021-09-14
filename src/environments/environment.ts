@@ -20,5 +20,5 @@ export const environment = {
   syncTimerMinutes: 10,
   searchDeliveryListMSec: 20000,
   searchDeliveryListAcceptedMSec: 18000,
-  googleMapsApiKey: 'AIzaSyA9T2KTzXZkhW4HVaiA6U-TsXo0jL6asRs'
+  googleMapsApiKey: 'AIzaSyCljnScMZM4NcOeqfo2R35FumzhvBbSZp0'
 };

@@ -39,6 +39,19 @@ export class TicketFormPage implements OnInit {
     backdropDismiss: false
   };
 
+  public datePickerObj: any = {
+    fromDate: moment(), // default null
+    mondayFirst: true, // default false
+    setLabel: 'Ok',  // default 'Set'
+    todayLabel: 'Hoy', // default 'Today'
+    closeLabel: 'Cancelar', // default 'Close'
+    titleLabel: 'Fecha de entrega', // default null
+    monthsList: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    weeksList: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+    dateFormat: 'DD-MM-YYYY', // default DD MMM YYYY
+    clearButton : false , // default true
+  };
+
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,
@@ -53,30 +66,30 @@ export class TicketFormPage implements OnInit {
   }
 
   ngOnInit() {
-    this.activeTicket = this.storeService.getActiveTicket();
+    this.activeTicket = this.storeService.getActiveTicket() || {};
     this.states = this.storeService.getTicketStates();
     this.users = this.storeService.getTicketUsers();
     this.priorities = this.storeService.getTicketPriorities();
     const activeCompany = this.storeService.getActiveCompany();
     const details = this.storeService.getTicketDetails();
 
-    const lastDetail = details.find(item => item.id === this.activeTicket.tickets_det);
-    this.activeTicket.createdAt = moment(this.activeTicket.createdAt, "DD/MM/YYYY HH:mm").format("YYYY-MM-DD HH:mm");
-    this.activeTicket.description = this.cleanString(this.activeTicket.description);
-    this.activeTicket.reference = this.cleanString(this.activeTicket.reference);
+    const lastDetail = details.find(item => item.id === this.activeTicket?.tickets_det) || {};
+    this.activeTicket.createdAt = moment(this.activeTicket?.createdAt, ['DD/MM/YYYY HH:mm']).format('YYYY-MM-DD HH:mm');
+    this.activeTicket.description = this.cleanString(this.activeTicket?.description || '');
+    this.activeTicket.reference = this.cleanString(this.activeTicket?.reference || '');
 
     this.ticketForm = this.formBuilder.group({
       id: [0, Validators.required],
       ticket: [this.activeTicket.id, Validators.required],
-      state: [lastDetail ? lastDetail.state.toLowerCase() : '', Validators.required],
+      state: [lastDetail ? lastDetail.state?.toLowerCase() : '', Validators.required],
       public: [false, Validators.required],
       created_id: [activeCompany.user, Validators.required],
       assigned_id: [activeCompany.user, Validators.required],
       observations: ['', Validators.required],
-      commitmentAt: [lastDetail ? moment(lastDetail.commitmentAt, "DD/MM/YYYY").format("YYYY-MM-DD") : '1900-01-01'],
-      commitmentInternAt: [lastDetail ? moment(lastDetail.commitmentInternAt, "DD/MM/YYYY").format("YYYY-MM-DD") : '1900-01-01'],
+      commitmentAt: [moment(lastDetail?.commitmentAt || '1900-01-01', ['DD-MM-YYYY', 'YYYY-MM-DD']).format('DD/MM/YYYY')],
+      commitmentInternAt: [moment(lastDetail?.commitmentInternAt || '1900-01-01', ['DD-MM-YYYY', 'YYYY-MM-DD']).format('DD/MM/YYYY')],
       difficulty: [lastDetail ? lastDetail.difficulty : '', Validators.required],
-      priority: [lastDetail ? lastDetail.priority.toLowerCase() : '', Validators.required],
+      priority: [lastDetail ? lastDetail.priority?.toLowerCase() : '', Validators.required],
       assign_client: [0, Validators.required],
       temporal_id: [0]
     });
@@ -121,8 +134,8 @@ export class TicketFormPage implements OnInit {
 
     formData.assign_client = userSelected.clientContact;
     formData.observations = this.cleanString(formData.observations);
-    formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt).format('YYYY-MM-DD') : moment("1900-01-01");
-    formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt).format('YYYY-MM-DD') : moment("1900-01-01");
+    formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt, ['DD/MM/YYYY']).format('YYYY-MM-DD') : moment('1900-01-01');
+    formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt, ['DD/MM/YYYY']).format('YYYY-MM-DD') : moment('1900-01-01');
 
     const data = {
       ticket: this.activeTicket,
@@ -191,8 +204,8 @@ export class TicketFormPage implements OnInit {
    * Si el estado del ticket es cerrado y no tiene solución devuelve mensaje la_solucion_no_debe_estar_en_blanco
    */
   public ticketValidation1 = (formData: any): boolean => {
-    if (formData.state.toLowerCase() === "cerrado" && (this.activeTicket.solution.toLowerCase() === "ninguna" || this.activeTicket.solution === "")) {
-      this.toastService.warningToast("La solucion no debe estar en blanco");
+    if (formData.state.toLowerCase() === 'cerrado' && (this.activeTicket.solution.toLowerCase() === 'ninguna' || this.activeTicket.solution === '')) {
+      this.toastService.warningToast('La solucion no debe estar en blanco');
       return true;
     }
 
@@ -203,8 +216,8 @@ export class TicketFormPage implements OnInit {
    * Si el ticket es distinto a interno, el estado es abierto y esta asignado a cliente: devuelve el mensaje estado_abierto_no_puede_asignarse_a_cliente
    */
   public ticketValidation2 = (formData: any): boolean => {
-    if (this.activeTicket.origin_id.toLowerCase() !== "interno" && formData.state.toLowerCase() === "abierto" && formData.assign_client) {
-      this.toastService.warningToast("Estado abierto no se puede asignar a cliente");
+    if (this.activeTicket.origin_id.toLowerCase() !== 'interno' && formData.state.toLowerCase() === 'abierto' && formData.assign_client) {
+      this.toastService.warningToast('Estado abierto no se puede asignar a cliente');
       return true;
     }
 
@@ -217,8 +230,8 @@ export class TicketFormPage implements OnInit {
    * @returns
    */
   public ticketValidation3 = (formData: any): boolean => {
-    if (formData.assign_client && (formData.state.toLowerCase() !== "cerrado" || formData.state.toLowerCase() !== "no vamos" || formData.state.toLowerCase() !== "en proceso" || formData.state.toLowerCase() !== "por actualizar")) {
-      this.toastService.warningToast("Solo puede asignarse a cliente estados: 'cerrado', 'no vamos', 'por actualizar' y 'en proceso'");
+    if (formData.assign_client && (formData.state.toLowerCase() !== 'cerrado' || formData.state.toLowerCase() !== 'no vamos' || formData.state.toLowerCase() !== 'en proceso' || formData.state.toLowerCase() !== 'por actualizar')) {
+      this.toastService.warningToast('Solo puede asignarse a cliente estados: "cerrado", "no vamos", "por actualizar" y "en proceso"');
       return true;
     }
 
@@ -231,8 +244,8 @@ export class TicketFormPage implements OnInit {
    * @returns
    */
   public ticketValidation4 = (formData: any): boolean => {
-    if (this.activeTicket.origin_id.toLowerCase() !== "interno" && formData.assign_client) {
-      this.toastService.warningToast("Ticket origen interno no puede asignarse a cliente");
+    if (this.activeTicket.origin_id.toLowerCase() !== 'interno' && formData.assign_client) {
+      this.toastService.warningToast('Ticket origen interno no puede asignarse a cliente');
       return true;
     }
 

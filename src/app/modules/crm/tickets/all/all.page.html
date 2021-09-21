@@ -1,7 +1,7 @@
 <ion-content>
-
-  <ion-searchbar placeholder="Buscar..." (ionChange)="searchTickets($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
-
+  <ion-toolbar class="toolbar-search">
+    <ion-searchbar placeholder="Buscar..." (ionChange)="searchTickets($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
+  </ion-toolbar>
   <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-down"
@@ -14,11 +14,15 @@
   <ng-container *ngIf="filteredTickets.length > 0">
     <ion-virtual-scroll [items]="filteredTickets">
       <div *virtualItem="let ticket">
-        <app-ticket-card
-          (deleteTicketEvent)="deleteTicket($event)"
-          (ticketSelected)="ticketSelected($event)"
-          [ticket]="ticket">
-        </app-ticket-card>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="12">
+            <app-ticket-card
+              (deleteTicketEvent)="deleteTicket($event)"
+              (ticketSelected)="ticketSelected($event)"
+              [ticket]="ticket">
+            </app-ticket-card>
+          </ion-col>
+        </ion-row>
       </div>
     </ion-virtual-scroll>
   </ng-container>

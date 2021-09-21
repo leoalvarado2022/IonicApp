@@ -462,8 +462,9 @@ ion-action-sheet {
 
   ion-searchbar {
     padding: 0 !important;
-    height: unset !important;
+    height: 44px !important;
     --background: transparent !important;
+    --box-shadow: none !important;
   }
 }
 
@@ -597,5 +598,20 @@ li-ionic4-datepicker-modal {
     padding: 0.5rem 0;
     //margin: 0 5rem !important;
     //border-radius: 4px;
+  }
+}
+
+.media-container {
+  //border-bottom: 1px solid var(--ion-color-medium);
+
+  .media-content {
+    --min-height: 50px;
+    --highlight-height: 0 !important;
+    --background: transparent !important;
+    --border-style: none !important;
+
+    ion-button {
+      --box-shadow: none !important;
+    }
   }
 }

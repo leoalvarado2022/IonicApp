@@ -5,10 +5,11 @@ import {HttpClient} from '@angular/common/http';
 @Injectable()
 export class TicketsService {
 
-  private readonly ticketsUrl = 'crm/ticket/list';
+  private readonly ticketParamsUrl = 'mobile/ticket/0';
+  private readonly ticketsUrl = 'mobile/ticket/list';
   private readonly getTicketUrl = 'mobile/ticket';
-  private readonly storeTicketUrl = 'crm/ticket/store';
-  private readonly ticketUsersUrl = 'crm/ticket/client';
+  private readonly storeTicketUrl = 'mobile/ticket/store';
+  private readonly ticketUsersUrl = 'mobile/ticket/client';
 
   constructor(
     private httpService: HttpService,
@@ -53,5 +54,14 @@ export class TicketsService {
   public getTicketUsers = (client: number, user: number) => {
     const url = this.httpService.buildUrl(this.ticketUsersUrl);
     return this.httpClient.post(url, this.httpService.buildBody({id: client, user}), {headers: this.httpService.getHeaders()});
+  }
+
+  /**
+   * getTicketParamss
+   * @param data
+   */
+  public getTicketParams = (data: any = null) => {
+    const url = this.httpService.buildUrl(this.ticketParamsUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
   }
 }

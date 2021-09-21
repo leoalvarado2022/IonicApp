@@ -1,12 +1,12 @@
 <ion-card class="card-item">
-  <ion-item *ngIf="detail.active_assigned" class="reasignado" lines="full">
+  <ion-item *ngIf="detail.active_assigned" class="reasignado header-item" lines="none">
     <ion-label>
       <p>Asignado: {{ detail.assignedName }}</p>
       <p>Resignado: {{ detail.creatorName }}</p>
     </ion-label>
   </ion-item>
 
-  <ion-item *ngIf="!detail.active_assigned" lines="full">
+  <ion-item *ngIf="!detail.active_assigned" class="header-item" lines="none">
     <ion-label style="font-size: 12px;font-weight: bold;">
       <p>{{ detail.creatorName }}</p>
       <p>Asignado: {{ detail.assignedName }}</p>

@@ -7,7 +7,7 @@ export const environment = {
   // api_url: 'http://localhost:5572', //RED LOCAL
   // api_url: 'http://192.168.1.85:5572',   // RED LUIS
   // api_url: 'http://192.168.1.120:5572', // RED ANDRES
-  // api_url: 'http://192.168.250.2:5572', // RED ANDRES
+  // api_url: 'http://192.168.250.2:5572', // RED SERGIO
   api_url: 'https://apiqa.fx360.cl',
   api_url_qa: 'https://apiqa.fx360.cl',
   // api_url_delivery: 'http://192.168.1.120:5573',

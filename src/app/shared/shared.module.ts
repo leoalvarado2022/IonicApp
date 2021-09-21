@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IonicModule} from '@ionic/angular';
+import {Ionic4DatepickerModule} from '@logisticinfotech/ionic4-datepicker';
 
 import {HttpClientModule} from '@angular/common/http';
 import {UserService} from './services/user/user.service';
@@ -36,6 +37,7 @@ import {OrderCardComponent} from '../modules/orders/orders-list/order-card/order
 import {PosService} from '../modules/orders/services/pos.service';
 import {CalculatorComponent} from './components/calculator/calculator.component';
 import {OrderListSkeletonComponent} from './components/skeleton/order-list-skeleton/order-list-skeleton.component';
+import {TicketModalFormComponent} from '../modules/crm/ticket-modal-form/ticket-modal-form.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,8 @@ import {OrderListSkeletonComponent} from './components/skeleton/order-list-skele
     OrderCardComponent,
     TallyFormComponent,
     TallyFormMultipleComponent,
-    OrderListSkeletonComponent
+    OrderListSkeletonComponent,
+    TicketModalFormComponent,
   ],
   imports: [
     CommonModule,
@@ -61,7 +64,8 @@ import {OrderListSkeletonComponent} from './components/skeleton/order-list-skele
     IonicModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NgxEchartsModule
+    NgxEchartsModule,
+    Ionic4DatepickerModule,
   ],
   providers: [
     UserService,
@@ -102,7 +106,8 @@ import {OrderListSkeletonComponent} from './components/skeleton/order-list-skele
     TallyFormComponent,
     TallyFormMultipleComponent,
     CalculatorComponent,
-    OrderListSkeletonComponent
+    OrderListSkeletonComponent,
+    TicketModalFormComponent,
   ],
   entryComponents: [
     ImageViewerComponent,

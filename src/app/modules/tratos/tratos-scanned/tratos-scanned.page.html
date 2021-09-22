@@ -14,8 +14,8 @@
 
 <ion-content>
   <ion-row *ngIf="notSupported">
-    <ion-col col-12>
-      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize" (click)="showAlert()">
+    <ion-col size="12">
+      <ion-button color="danger" size="large" expand="full" class="ion-text-capitalize btn-app" (click)="showAlert()">
         Dispositivo no soporta NFC
       </ion-button>
     </ion-col>
@@ -33,28 +33,6 @@
       <div class="sub-title"><strong>{{centerCost?.deal?.unit_control}}:</strong> {{centerCost?.unit_control_count || 0}}
       </div>
     </div>
-
-    <!--
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          <ion-button size="block" color="warning" (click)="escaneoOne()">
-            escaneo 1
-          </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button size="block" color="warning" (click)="escaneoTwo()">
-            escaneo 2
-          </ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button size="block" color="warning" (click)="escaneoThree()">
-            escaneo 3
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    -->
 
     <ng-container *ngIf="centerCost.deal.weight">
       <ng-container *ngIf="isDeviceConnected; else notConnected">

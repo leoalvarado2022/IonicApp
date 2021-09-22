@@ -17,19 +17,17 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card class="title-card">
-    <ion-item lines="none">
-      <ion-label>
-        <h2>Tus Tratos</h2>
-      </ion-label>
-      <ion-badge slot="end" color="primary">{{ deals.length }}</ion-badge>
-    </ion-item>
-  </ion-card>
+  <ion-item lines="none" class="bg-transparent no-border">
+    <ion-label>
+      <h2>Tus Tratos</h2>
+    </ion-label>
+    <ion-badge slot="end" color="primary">{{ deals.length }}</ion-badge>
+  </ion-item>
 
   <ion-item-sliding #slidingItem *ngFor="let deal of deals">
     <ion-item (click)="goToRegister(deal)" class="slide-item">
-      <ion-card>
-        <ion-item>
+      <ion-card class="card-item">
+        <ion-item lines="none" class="header-item">
           <ion-icon slot="start" name="wifi"></ion-icon>
           <ion-label>{{deal.name_deal}}</ion-label>
         </ion-item>
@@ -66,7 +64,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="activeTrato()">
+  <ion-button expand="block" color="primary" class="btn-app" (click)="activeTrato()">
     Crear
   </ion-button>
 </ion-footer>

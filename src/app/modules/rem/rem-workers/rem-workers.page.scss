@@ -1,9 +1,23 @@
+ion-card {
+  box-shadow: none;
+}
+
+ion-card-content {
+  padding: 0px;
+}
+
 ion-menu-button {
   --color: white;
 }
 
 ion-title {
   color: white;
+}
+
+ion-searchbar {
+  padding: 0px !important;
+  --background: var(--ion-color-primary);
+  --color: #fff;
 }
 
 .label-padding {
@@ -17,12 +31,12 @@ ion-title {
 }
 
 .workerSelected {
-  --background: var(--ion-color-light);
-  //--color: var(--ion-color-light);
+  --background: var(--ion-color-light-shade);
+  //--color: white;
 
   ion-item {
     --background: var(--ion-color-light);
-    //--color: var(--ion-color-light);
+    //--color: var(--ion-color-medium);
   }
 }
 
@@ -45,5 +59,49 @@ ion-title {
   ion-card-content {
     padding: 0;
     margin: 10px;
+  }
+}
+
+.btn-workers {
+  --border-radius: 50px;
+}
+
+.trabajardor {
+  border: 1px solid var(--ion-color-primary);
+  color: var(--ion-color-primary);
+  border-radius: 10px;
+  font-size: 90%;
+  padding: 2px 0;
+}
+
+.contratista {
+  background: var(--ion-color-primary);
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 90%;
+  padding: 2px 0;
+}
+
+.traspaso {
+  background: #e4a213;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 90%;
+  padding: 2px 0;
+}
+
+.vertical-center {
+  margin-top: 5%;
+}
+
+.worker-title {
+  span {
+    color: var(--ion-color-primary);
+    font-size: 85%;
+
+    &.title {
+      font-size: 0.75rem;
+      display: block;
+    }
   }
 }

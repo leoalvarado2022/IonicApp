@@ -11,9 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
-      (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()">
-    </ion-searchbar>
+    <ion-searchbar class="production" animated placeholder="Buscar..." showCancelButton="never" (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -21,23 +19,6 @@
   <ion-refresher (ionRefresh)="reload($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-
-  <ion-card class="title-card">
-    <!-- NOMBRE CUADRILLA -->
-    <ion-item >
-      <ion-label>
-        <h2>{{  quadrille ? quadrille.name : 'Cuadrilla' }}</h2>
-      </ion-label>
-    </ion-item>
-
-    <!-- TRABAJADORES -->
-    <ion-item>
-      <ion-label>
-        <h2>Trabajadores</h2>
-      </ion-label>
-      <ion-badge slot="end" color="primary">{{ filteredWorkers.length }}</ion-badge>
-    </ion-item>
-  </ion-card>
 
   <ion-card class="title-card">
     <!-- DAY SELECTOR -->
@@ -52,67 +33,68 @@
     </ion-item>
   </ion-card>
 
+  <div>
+    <!-- NOMBRE CUADRILLA -->
+    <ion-item lines="none" class="bg-transparent">
+      <ion-label>
+        <h2>{{  quadrille ? quadrille.name : 'Cuadrilla' }}</h2>
+      </ion-label>
+      <ion-badge slot="end" color="primary">{{ filteredWorkers.length }}</ion-badge>
+    </ion-item>
+  </div>
+
   <ng-container *ngIf="isLoading">
     <h1 class="ion-text-center">Cargando...</h1>
   </ng-container>
 
-  <ng-container *ngIf="!isLoading">
-    <ion-virtual-scroll [items]="filteredWorkers">
-      <ion-card *virtualItem="let worker" class="card-item margin-extra" (click)="markWorker(worker)"
-        [ngClass]="{
-          'workerSelected': selectedWorkers.includes(worker)
-        }">
-        <ion-item lines="full">
-          <ion-icon slot="start" name="person" color="primary"></ion-icon>
-          <ion-label class="ion-text-wrap">
-            <h3>{{ worker.name | titlecase }}</h3>
-            <p>{{ worker.identifier | rut }}</p>
-          </ion-label>
-          <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
-        </ion-item>
 
-        <ion-card-content >
-          <ion-row class="ion-no-padding ion-no-margin">
-            <ion-col size="6" class="ion-no-padding ion-no-margin">
-              <ion-chip class="contractor" *ngIf="worker.workerType === 2">
-                <ion-label>
-                  Contratista
-                </ion-label>
-              </ion-chip>
-
-              <ion-chip class="external"  *ngIf="worker.workerType === 3">
-                <ion-label>
-                  Externo
-                </ion-label>
-              </ion-chip>
-            </ion-col>
-
-            <ion-col size="6" class="ion-no-padding ion-no-margin ion-text-end">
-              <ion-chip color="primary">
-                <ion-label>
-                  {{ getTotalWorkerWork(worker) | number }} JR
-                </ion-label>
-              </ion-chip>
-            </ion-col>
-          </ion-row>
-
-        </ion-card-content>
-      </ion-card>
-    </ion-virtual-scroll>
-  </ng-container>
+  <ion-card *ngFor="let worker of filteredWorkers" class="card-item margin-extra" (click)="markWorker(worker)" [ngClass]="{
+    'workerSelected': selectedWorkers.includes(worker)
+  }">
+    <ion-row class="ion-align-items-center">
+      <ion-col size="2" style="text-align: center;">
+        <ion-icon name="person" size="large" color="primary"></ion-icon>
+      </ion-col>
+      <ion-col size="7" style="text-align: start;" class="worker-title">
+        <p>
+          <span class="title"><strong>{{ worker.name | titlecase }}</strong></span>
+          <span>{{ worker.identifier | rut }}</span>
+        </p>
+      </ion-col>
+      <ion-col class="ion-margin-vertical" size="3" style="text-align: center;">
+        <ion-icon *ngIf="worker.memory" size="small" name="server" color="danger"></ion-icon>
+        <div class="contratista" *ngIf="worker.workerType === 2">
+          Contratista
+        </div>
+        <div class="trabajardor" *ngIf="worker.workerType === 3">
+          Externo
+        </div>
+        <div class="trabajardor" *ngIf="worker.workerType === 1">
+          Interno
+        </div>
+        <div style="text-align: end;">
+          <ion-chip class="jr">
+            <ion-label>
+              {{ getTotalWorkerWork(worker) | number }} JR
+            </ion-label>
+          </ion-chip>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-card>
 </ion-content>
 
 <ion-footer>
   <!-- One worker selected -->
   <ion-row *ngIf="selectedWorkers.length === 1">
     <ion-col size="6">
-      <ion-button color="success" expand="block" (click)="createTally()">
+      <ion-button class="btn-app" color="success" expand="block" (click)="createTally()">
         Agregar Jornada
       </ion-button>
     </ion-col>
 
     <ion-col size="6">
-      <ion-button color="primary" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0].id)">
+      <ion-button class="btn-app" color="primary" expand="block" (click)="goToWorkerTallyList(this.selectedWorkers[0].id)">
         Ver Tarjas
       </ion-button>
     </ion-col>
@@ -121,13 +103,13 @@
   <!-- Several workers selected -->
   <ion-row *ngIf="selectedWorkers.length > 1">
     <ion-col size="6">
-      <ion-button color="success" expand="block" (click)="createMultipleTally()">
+      <ion-button class="btn-app" color="success" expand="block" (click)="createMultipleTally()">
         Agregar Masivo
       </ion-button>
     </ion-col>
 
     <ion-col size="6">
-      <ion-button color="primary" expand="block" (click)="editMultipleTally()" [disabled]="!canUpdateMultiple">
+      <ion-button class="btn-app" color="primary" expand="block" (click)="editMultipleTally()" [disabled]="!canUpdateMultiple">
         Modificar Masivo
       </ion-button>
     </ion-col>

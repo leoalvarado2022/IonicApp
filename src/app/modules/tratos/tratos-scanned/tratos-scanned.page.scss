@@ -31,8 +31,6 @@ ion-content {
 ion-card {
   background: white;
   box-shadow: none;
-  margin: 5px 5px 0 5px;
-  width: 100%;
 }
 
 .arrow-left {
@@ -44,9 +42,11 @@ ion-card {
 
 .content-box {
   width: 100%;
-  background: #E9EAF0;
+  background: var(--ion-color-light);
   margin: 0;
   padding: 16px 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 

@@ -59,7 +59,7 @@
           <ion-label class="label-fx360">Tipo</ion-label>
           <ion-item class="input-fx360-down max-h-unset">
             <ion-select formControlName="type" placeholder="Tipo" cancelText="Cancelar" interface="action-sheet" (ionChange)="setStates($event)">
-              <ion-select-option *ngFor="let type of types" [value]="type.id">{{type.name}}</ion-select-option>
+              <ion-select-option *ngFor="let type of types" [value]="type.name">{{type.name}}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>
@@ -186,7 +186,19 @@
     </ng-container>
 
     <ng-container *ngIf="currentStep === 3">
-      <ion-item [disabled]="loadingStore">
+      <ion-row>
+        <ion-col size="12" class="media-container">
+          <ion-item class="media-content" [disabled]="loadingStore">
+            <ion-button size="default" (click)="openCamera()" slot="start">
+              <ion-icon name="camera" slot="icon-only"></ion-icon>
+            </ion-button>
+            <ion-button size="default" (click)="openGallery()" slot="end">
+              <ion-icon name="image" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <!--<ion-item [disabled]="loadingStore">
         <ion-button (click)="openCamera()" slot="start">
           <ion-icon name="camera" slot="icon-only"></ion-icon>
         </ion-button>
@@ -194,7 +206,7 @@
         <ion-button (click)="openGallery()" slot="end">
           <ion-icon name="image" slot="icon-only"></ion-icon>
         </ion-button>
-      </ion-item>
+      </ion-item>-->
       <ion-list *ngIf="attachments.length > 0">
         <ion-item-sliding *ngFor="let item of attachments">
           <ion-item>

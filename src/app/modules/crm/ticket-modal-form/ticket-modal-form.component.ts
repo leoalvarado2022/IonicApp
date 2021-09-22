@@ -218,14 +218,13 @@ export class TicketModalFormComponent implements OnInit {
   }
 
   public setTypes = ({detail: {value}}) => {
-    console.log('evt ::: ', value);
     this.types = this.areas.find(a => a.id === value)?.types ?? [];
     this.ticketForm.get('ticket').patchValue({type: 0, state: 0});
   }
 
   public setStates = ({detail: {value}}) => {
-    console.log('evt ::: ', value);
-    this.statesFiltered = this.states.filter(c => c.ticket_type === value.toString());
+    const typeId = this.types.find(t => t.name === value) || '';
+    this.statesFiltered = this.states.filter(c => c.ticket_type === typeId.toString());
     this.ticketForm.get('ticket').patchValue({state: 0});
   }
 

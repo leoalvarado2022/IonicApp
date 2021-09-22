@@ -1,35 +1,17 @@
-ion-menu-button {
-  --color: white;
+ion-card{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: none;
 }
 
-ion-title {
-  color: white;
-}
-
-.card-item {
-  ion-card-content {
-    padding: 0;
-    margin: 0;
-  }
-}
 
 .card-item:last-child {
   margin-bottom: 10px;
 }
 
 .workerSelected {
-  --background: var(--ion-color-medium);
-  --color: var(--ion-color-light);
-
-  ion-item {
-    --background: var(--ion-color-medium);
-    --color: var(--ion-color-light);
-  }
-
-  ion-chip {
-    background-color: var(--ion-color-light) !important;
-    color:  var(--ion-color-dark) !important;
-  }
+  --background: var(--ion-color-light-shade);
+  //--color: white;
 }
 
 .external {
@@ -49,4 +31,47 @@ ion-title {
 .title-card {
   margin: 5px;
   padding: 0;
+}
+
+.jr {
+  background: rgba(184, 184, 184, 0.5) !important;
+  color: var(--ion-color-primary) !important;
+  border-radius: 12px;
+  display: block;
+  height: unset;
+  text-align: center;
+  font-size: 90%;
+  padding: 5px;
+}
+
+.gris {
+  --background: rgba(184, 184, 184, 0.5) !important;
+}
+
+.trabajardor {
+  border: 1px solid var(--ion-color-primary);
+  color: var(--ion-color-primary);
+  border-radius: 4px;
+}
+
+.contratista {
+  background: var(--ion-color-primary);
+  color: #ffffff;
+  border-radius: 4px;
+}
+
+.vertical-center {
+  margin-top: 5%;
+}
+
+.worker-title {
+  span {
+    color: var(--ion-color-primary);
+    font-size: 85%;
+
+    &.title {
+      font-size: 0.75rem;
+      display: block;
+    }
+  }
 }

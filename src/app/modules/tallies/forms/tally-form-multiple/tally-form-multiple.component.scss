@@ -6,24 +6,20 @@ ion-item {
   }
 }
 
-.searchbar-results-list {
-  background-color: var(--ion-color-medium);
-  padding: 5px;
-}
+ion-segment {
+  min-height: 42px;
+  --background: white;
 
-.full-border {
-  --border-color: gray;
-  --border-color: 1px;
-  --border-style: solid;
-  --border-width: 1px;
-  --inner-border-width: 0;
-  --inner-padding-bottom: 0;
-  --inner-padding-end: 0;
-  --inner-padding-start: 0;
-  --inner-padding-top: 0;
-  --padding-start: 15px;
-}
-
-.segment-back {
-  --background: var(--ion-color-light)
+  ion-segment-button {
+    --border-radius: 0;
+    --border-style: none;
+    --border-width: 0;
+    --indicator-box-shadow: none;
+    --background: transparent;
+    --color-checked: white;
+    --indicator-color: var(--ion-color-primary);
+    --background-checked: var(--ion-color-primary);
+    --indicator-transition: none;
+    margin: 0;
+  }
 }

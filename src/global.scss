@@ -434,6 +434,11 @@ ion-action-sheet {
 
 /* INPUTS */
 
+.col-checkbox {
+  display: flex;
+  align-items: center;
+}
+
 .label-fx360 {
   color: var(--ion-color-primary);
   font-weight: 500;
@@ -452,6 +457,10 @@ ion-action-sheet {
   --background: #e7e7eb;
   border-radius: 20px;
   --border-style: none !important;
+
+  &.bg-white {
+    --background: white !important;
+  }
 }
 
 .input-fx360-down {
@@ -459,12 +468,18 @@ ion-action-sheet {
   --border-radius: 20px;
   margin: 5px 5px 10px;
   --border-style: none !important;
+  --min-height: 42px;
 
   ion-searchbar {
     padding: 0 !important;
-    height: 44px !important;
+    //height: 44px !important;
+    height: 100%;
     --background: transparent !important;
     --box-shadow: none !important;
+  }
+
+  ion-select {
+    width: 100%;
   }
 }
 
@@ -615,3 +630,12 @@ li-ionic4-datepicker-modal {
     }
   }
 }
+
+.bg-transparent {
+  --background: transparent;
+
+  &.no-border {
+    --border-style: none;
+  }
+}
+

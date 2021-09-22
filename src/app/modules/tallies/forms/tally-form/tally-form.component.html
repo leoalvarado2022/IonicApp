@@ -11,113 +11,148 @@
 
 <ion-content>
   <form [formGroup]="tallyForm">
+    <ion-row>
+      <ion-col>
+        <!-- COST CENTER -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-label class="label-fx360" position="stacked">Centro de Costo</ion-label>
+            <ion-item class="input-fx360-down max-h-unset">
+              <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
+            </ion-item>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
+            <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
+              <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
+                {{ costCenter.name  }}
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
 
-    <!-- COST CENTER -->
-    <ion-item>
-      <ion-label position="stacked">Centro de Costo</ion-label>
-      <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
-    </ion-item>
+        <!-- LABOR -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-label class="label-fx360" position="stacked">Labor</ion-label>
+            <ion-item class="input-fx360-down max-h-unset">
+              <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()" placeholder="Buscar"></ion-searchbar>
+            </ion-item>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
+            <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
+              <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
+                {{ labor.name  }}
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
 
-    <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
-      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
-        {{ costCenter.name  }}
-      </ion-item>
-    </ion-list>
+        <!-- DEAL -->
+        <ion-row>
+          <ion-col size="12">
+            <ng-container *ngIf="availableDeals.length > 0">
+              <ion-label class="label-fx360" position="stacked">Trato</ion-label>
+              <ion-item class="input-fx360-down max-h-unset">
+                <ion-select formControlName="dealValidity" placeholder="Trato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectDeal($event.detail.value)">
+                  <ion-select-option *ngFor="let deal of availableDeals" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ng-container>
+          </ion-col>
+        </ion-row>
+        <!-- BOND -->
+        <ion-row>
+          <ion-col size="12">
+            <ng-container *ngIf="availableBonds.length > 0">
+              <ion-label class="label-fx360" position="stacked">Bono</ion-label>
+              <ion-item class="input-fx360-down max-h-unset">
+                <ion-select formControlName="bondValidity" placeholder="Bono" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+                  <ion-select-option *ngFor="let bond of availableBonds" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ng-container>
+          </ion-col>
+        </ion-row>
 
-    <!-- LABOR -->
-    <ion-item>
-      <ion-label position="stacked">Labor</ion-label>
-      <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()" placeholder="Buscar"></ion-searchbar>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('laborId').hasError('required')">Seleccione una Labor</ion-text>
-    </ion-item>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label class="label-fx360">Jornada</ion-label>
+            <ion-item class="input-fx360-down max-h-unset">
+              <ion-input type="number" formControlName="workingDay" (ionChange)="workingDayChanged($event.target.value)"></ion-input>
+              <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
+                <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Ingrese una jornada. utilice punto en vez de coma.</ion-text>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('min')">El valor minimo es 0.1.</ion-text>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('pattern')">Maximo 3 decimales</ion-text>
 
-    <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
-      <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
-        {{ labor.name  }}
-      </ion-item>
-    </ion-list>
+            <ng-container *ngIf="workersOverMax.length > 0">
+              <ion-text color="danger" class="error--message">
+                El valor ingresado ({{ workersOverMax[0].value | number }}) supera el maximo de jornada permitida para {{ workersOverMax[0].name }}
+              </ion-text>
+            </ng-container>
+          </ion-col>
 
-    <!-- DEAL -->
-    <ng-container *ngIf="availableDeals.length > 0">
-      <ion-item>
-        <ion-label position="stacked">Trato</ion-label>
-        <ion-select formControlName="dealValidity" placeholder="Trato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectDeal($event.detail.value)">
-          <ion-select-option *ngFor="let deal of availableDeals" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ng-container>
+          <ion-col size="6">
+            <ion-label class="label-fx360">Horas Extra</ion-label>
+            <ion-item class="input-fx360-down max-h-unset">
+              <ion-input type="number" formControlName="hoursExtra"></ion-input>
+              <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(2)">
+                <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('min')">El valor minimo es 0.1</ion-text>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('pattern')">Maximo 3 decimales</ion-text>
+          </ion-col>
+        </ion-row>
 
-    <!-- BOND -->
-    <ng-container *ngIf="availableBonds.length > 0">
-      <ion-item>
-        <ion-label position="stacked">Bono</ion-label>
-        <ion-select formControlName="bondValidity" placeholder="Bono" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-          <ion-select-option *ngFor="let bond of availableBonds" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ng-container>
+        <ion-row>
+          <ion-col size="12">
+            <ion-label class="label-fx360" position="floating">Rendimiento</ion-label>
+            <ion-item class="input-fx360-down max-h-unset">
+              <ion-input type="number" formControlName="performance"></ion-input>
+            </ion-item>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('min')">El valor minimo es 0.1</ion-text>
+            <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('pattern')">Maximo 3 decimales</ion-text>
+          </ion-col>
+        </ion-row>
 
-    <ion-item>
-      <ion-label position="floating">Jornada</ion-label>
-      <ion-input type="number" formControlName="workingDay" (ionChange)="workingDayChanged($event.target.value)"></ion-input>
-      <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(1)">
-        <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
-      </ion-button>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('required')">Ingrese una jornada. utilice punto en vez de coma.</ion-text>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('min')">El valor minimo es 0.1.</ion-text>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('workingDay').hasError('pattern')">Maximo 3 decimales</ion-text>
-    </ion-item>
+        <ion-row>
+          <ion-col size="12">
+            <ng-container *ngIf="availableDeals.length > 0">
+              <ion-label class="label-fx360">Unidad</ion-label>
+              <ion-item class="input-fx360-down max-h-unset">
+                <ion-input formControlName="unit"></ion-input>
+              </ion-item>
+            </ng-container>
+          </ion-col>
+        </ion-row>
 
-    <ng-container *ngIf="workersOverMax.length > 0">
-      <p style="color: red">
-        El valor ingresado ({{ workersOverMax[0].value | number }}) supera el maximo de jornada permitida para {{ workersOverMax[0].name }}
-      </p>
-    </ng-container>
 
-    <ion-item>
-      <ion-label position="floating">Horas Extra</ion-label>
-      <ion-input type="number" formControlName="hoursExtra"></ion-input>
-      <ion-button fill="clear" size="default" slot="end" (click)="selectWorkingDay(2)">
-        <ion-icon slot="icon-only" name="arrow-down"></ion-icon>
-      </ion-button>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('min')">El valor minimo es 0.1</ion-text>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('hoursExtra').hasError('pattern')">Maximo 3 decimales</ion-text>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="floating">Rendimiento</ion-label>
-      <ion-input type="number" formControlName="performance"></ion-input>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('min')">El valor minimo es 0.1</ion-text>
-      <ion-text color="danger" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('pattern')">Maximo 3 decimales</ion-text>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="floating">Unidad</ion-label>
-      <ion-input formControlName="unit"></ion-input>
-    </ion-item>
-
-    <ion-item lines="none">
-      <ion-label position="floating">Notas</ion-label>
-      <ion-textarea formControlName="notes"></ion-textarea>
-    </ion-item>
-
+        <ion-row>
+          <ion-col size="12">
+            <ion-label class="label-fx360">Notas</ion-label>
+            <ion-item class="input-fx360-area" lines="none">
+              <ion-textarea formControlName="notes"></ion-textarea>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
   </form>
 </ion-content>
 
 <ion-footer>
-  <ion-row >
+  <ion-row>
     <ion-col>
-      <ion-button color="danger" expand="block" (click)="closeModal()">
+      <ion-button class="btn-app" color="danger" expand="block" (click)="closeModal()">
         Cancelar
       </ion-button>
     </ion-col>
 
     <ion-col>
-      <ion-button color="success" expand="block" [disabled]="tallyForm.invalid || workersOverMax.length > 0" (click)="submitForm()">
+      <ion-button class="btn-app" color="primary" expand="block" [disabled]="tallyForm.invalid || workersOverMax.length > 0" (click)="submitForm()">
         Guardar
       </ion-button>
     </ion-col>
   </ion-row>
 </ion-footer>
-

@@ -3,6 +3,7 @@ import {TicketFormPage} from './ticket-form.page';
 import {SharedModule} from '../../../shared/shared.module';
 import {RouterModule, Routes} from '@angular/router';
 import { CameraService } from 'src/app/shared/services/camera/camera.service';
+import {Ionic4DatepickerModule} from '@logisticinfotech/ionic4-datepicker';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     SharedModule,
+    Ionic4DatepickerModule,
     RouterModule.forChild(routes)
   ],
   declarations: [TicketFormPage],

@@ -13,27 +13,32 @@
 </ion-header>
 
 <ion-content scrollX="false" scrollY="false">
-  <ion-tabs (ionTabsWillChange)="change($event)">
+  <ion-tabs #ticketTabs (ionTabsWillChange)="change($event)">
     <!-- Tab bar -->
-    <ion-tab-bar slot="top">
+    <ion-tab-bar slot="top" color="primary">
       <ion-tab-button tab="me">
-        <ion-label>Mios</ion-label>
-        <ion-badge color="dark" *ngIf="activeNumberTicket('me') && numberTicket > 0">
+        <ion-label color="light">Mios</ion-label>
+        <ion-badge color="light" *ngIf="activeNumberTicket('me') && numberTicket > 0">
           {{ numberTicket }}
         </ion-badge>
       </ion-tab-button>
       <ion-tab-button tab="all">
-        <ion-label>Equipo</ion-label>
-        <ion-badge color="dark" *ngIf="activeNumberTicket('all') && numberTicket > 0">
+        <ion-label color="light">Equipo</ion-label>
+        <ion-badge color="light" *ngIf="activeNumberTicket('all') && numberTicket > 0">
           {{ numberTicket }}
         </ion-badge>
       </ion-tab-button>
       <ion-tab-button tab="active">
-        <ion-label>Activos</ion-label>
-        <ion-badge color="dark" *ngIf="activeNumberTicket('active') && numberTicket > 0">
+        <ion-label color="light">Activos</ion-label>
+        <ion-badge color="light" *ngIf="activeNumberTicket('active') && numberTicket > 0">
           {{ numberTicket }}
         </ion-badge>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openModalForm()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

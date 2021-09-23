@@ -78,7 +78,7 @@ export class TallyFormComponent implements OnInit {
       laborId: ['', Validators.required],
       dealValidity: [''],
       bondValidity: [''],
-      workingDay: [workingDayStartValue, [
+      workingDay: [1, [
         Validators.required,
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)
@@ -227,7 +227,7 @@ export class TallyFormComponent implements OnInit {
       cssClass: 'custom-action-sheet',
       header: 'Jornadas',
       backdropDismiss: false,
-      keyboardClose: false,      
+      keyboardClose: false,
       buttons: [
         ...buildButtons,
         {
@@ -386,10 +386,11 @@ export class TallyFormComponent implements OnInit {
         const start = moment(item.date_init).toISOString();
         const end = moment(item.date_end).toISOString();
 
-        return (item.allCostCenters || item.id_costCenter === costCenterId) && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
+        // return (item.allCostCenters || item.id_costCenter === costCenterId) && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
+        return item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
       });
 
-      if (this.availableDeals.length === 1) {
+      if (this.availableDeals.length > 0) {
         this.tallyForm.get('dealValidity').patchValue(this.availableDeals[0].id_deal_validity);
         this.tallyForm.get('unit').patchValue(this.availableDeals[0].unit_control);
       }
@@ -420,10 +421,11 @@ export class TallyFormComponent implements OnInit {
         const start = moment(item.startDate).toISOString();
         const end = moment(item.endDate).toISOString();
 
-        return (item.allCostCenters || item.costCenterId === costCenterId) && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
+        // return (item.allCostCenters || item.costCenterId === costCenterId) && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
+        return item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
       });
 
-      if (this.availableBonds.length === 1) {
+      if (this.availableBonds.length > 0) {
         this.tallyForm.get('bondValidity').patchValue(this.availableBonds[0].bondValidity);
       }
     }

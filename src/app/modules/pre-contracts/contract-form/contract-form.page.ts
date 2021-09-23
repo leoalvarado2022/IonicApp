@@ -47,6 +47,18 @@ export class ContractFormPage implements OnInit, OnDestroy {
     backdropDismiss: false
   };
 
+  public datePickerObj: any = {
+    mondayFirst: true, // default false
+    setLabel: 'Ok',  // default 'Set'
+    todayLabel: 'Hoy', // default 'Today'
+    closeLabel: 'Cancelar', // default 'Close'
+    titleLabel: 'Fecha de entrega', // default null
+    monthsList: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    weeksList: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+    dateFormat: 'DD-MM-YYYY', // default DD MMM YYYY
+    clearButton : false , // default true
+  };
+
   constructor(
     private formBuilder: FormBuilder,
     private storeService: StoreService,

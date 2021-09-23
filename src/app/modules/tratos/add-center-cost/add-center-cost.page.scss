@@ -1,70 +1,9 @@
-ion-menu-button {
-  --color: white;
+.label-fx360-checkbox{
+  font-weight: 500;
+  color: var(--ion-color-primary);
+  padding-left: 5px;
 }
 
-ion-title {
-  color: white;
-}
-
-ion-tab-button {
-  font-size: 16px;
-  color: white;
-  --color: white;
-}
-
-.tab-selected {
-  border-bottom: 1px solid white !important;
-}
-
-ion-tab-bar {
-  height: 45px;
-  //height: 100px;
-  --background: var(--color-home-header-menu);
-  --color: white;
-  // margin-bottom: 58px;
-}
-
-/*
-ion-content{
-  --background: var(--color-background-tabs);
-}
-
-ion-card{
-  background: white;
-  box-shadow: none;
-  margin: 5px 5px 0 5px;
-  width: 100%;
-}
-*/
-
-
-.item-searchbar {
-  --padding-end: 0;
-  --padding-start: 15px;
-  --padding-top: 0;
-  --padding-bottom: 0;
-  --inner-padding-bottom: 0;
-  --inner-padding-end: 0;
-  --inner-padding-start: 0;
-  --inner-padding-top: 0;
-
-  ion-searchbar {
-    padding-right: 0;
-    padding-left: 0;
-    padding-bottom: 0;
-  }
-}
-
-.searchbar-results-list {
-  background-color: var(--ion-color-medium);
-  padding: 5px;
-}
-
-.error-message {
-  padding-left: 20px;
-}
-
-.title-card {
-  margin: 5px;
-  padding: 0;
+ion-checkbox {
+  margin: 12px 0 !important;
 }

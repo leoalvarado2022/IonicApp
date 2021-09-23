@@ -1,3 +1,7 @@
+ion-router-outlet {
+  --background: #e7e7eb;
+}
+
 ion-menu-button {
   --color: white;
 }
@@ -8,24 +12,25 @@ ion-title {
 
 ion-tab-button {
   font-size: 16px;
-  color: white;
-  --color: white;
+  color: var(--ion-color-primary);
+  --color: var(--ion-color-primary);
 }
 
 .tab-selected {
-  border-bottom: 1px solid white !important;
+  border-bottom: 3px solid #ffffff !important;
+  --color: #ffffff !important;
 }
 
 ion-tab-bar {
   height: 45px;
-  //height: 100px;
-  --background: var(--color-home-header-menu);
-  --color: white;
-  // margin-bottom: 58px;
+  --background: var(--ion-color-primary) !important;
+  --color: #FFFFFF !important;
 }
 
-ion-item {
-  ion-label {
-    min-width: 50%;
-  }
+.paso {
+  --background: #e7e7eb !important;
+}
+
+.btn-ticket {
+  --border-radius: 50px;
 }

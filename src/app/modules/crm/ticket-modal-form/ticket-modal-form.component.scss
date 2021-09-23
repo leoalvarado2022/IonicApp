@@ -1,0 +1,46 @@
+li-ionic4-datepicker {
+  ::ng-deep {
+    input.li-dp-input {
+      margin: 0 !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+  }
+}
+
+.hide {
+  visibility: hidden !important;
+}
+
+::ng-deep {
+  .action-sheet-button-inner {
+    text-transform: capitalize !important;
+  }
+}
+
+ion-select {
+  text-transform: capitalize !important;
+}
+
+ion-segment {
+  background: var(--ion-color-primary) !important;
+
+  ion-segment-button {
+    opacity: 1 !important;
+    border-radius: 0 !important;
+
+    &.segment-button-checked {
+      border-bottom: 3px solid white !important;
+      --background: var(--ion-color-primary) !important;
+      /*button {
+        background: var(--ion-color-primary) !important;
+        border-radius: 0 !important;
+      }*/
+    }
+
+    ion-label {
+      text-transform: capitalize;
+      color: white;
+    }
+  }
+}

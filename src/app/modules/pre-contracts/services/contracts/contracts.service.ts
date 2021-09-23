@@ -30,6 +30,7 @@ export class ContractsService {
    * @param contract
    */
   public mapPreContractToBeListed = (contract: any): ContractListItem => {
+    console.log('contract ::: ', contract);
     return {
       id: contract.id,
       workerId: contract.workerId,

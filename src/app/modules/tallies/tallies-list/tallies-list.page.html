@@ -18,11 +18,11 @@
   </ion-refresher>
 
   <!-- TARJAS -->
-  <ion-card class="title-card">
-    <h3 class="ion-text-center">
+  <ion-item lines="none" class="bg-transparent">
+    <ion-label class="tarja-title">
       {{ getWorkerName() | titlecase }}
-    </h3>
-  </ion-card>
+    </ion-label>
+  </ion-item>
 
   <ion-row>
     <ion-col class="ion-no-margin ion-no-padding">
@@ -50,8 +50,8 @@
   <ng-container *ngIf="!isLoading">
     <ion-item-sliding #slide *ngFor="let tally of workerTallies">
       <ion-item lines="none" class="slide-item">
-        <ion-card>
-          <ion-item lines="full">
+        <ion-card class="card-item">
+          <ion-item lines="none" class="header-item">
             <ion-icon slot="start" name="reader" color="primary"></ion-icon>
             <ion-label>{{ getCostCenterName(tally.costCenterId) | titlecase }}</ion-label>
             <ion-icon *ngIf="tally.tempId" slot="end" name="server" color="danger" (click)="showTallyError(tally)"></ion-icon>
@@ -99,7 +99,7 @@
 <ion-footer>
   <ion-row>
     <ion-col>
-      <ion-button color="success" expand="block" (click)="createTally()" [disabled]="checkWorkerLimit()">
+      <ion-button color="primary" class="btn-app" expand="block" (click)="createTally()" [disabled]="checkWorkerLimit()">
         Agregar Jornada
       </ion-button>
     </ion-col>

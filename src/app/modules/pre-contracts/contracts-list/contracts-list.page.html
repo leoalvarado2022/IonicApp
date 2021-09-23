@@ -11,7 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never" class="production"
       (ionChange)="searchContract($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
@@ -22,20 +22,20 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card class="title-card">
-    <ion-item lines="none">
+  <div>
+    <ion-item lines="none" class="bg-transparent no-border">
       <ion-label>
         <h2>Pre-Contratos</h2>
       </ion-label>
       <ion-badge slot="end" color="primary">{{ filteredContracts.length }}</ion-badge>
     </ion-item>
-  </ion-card>
+  </div>
 
   <ion-virtual-scroll [items]="filteredContracts">
     <ion-item-sliding *virtualItem="let contract" #slide>
       <ion-item lines="none" class="slide-item item-bg">
-        <ion-card>
-          <ion-item lines="full">
+        <ion-card class="card-item">
+          <ion-item lines="none" class="header-item">
             <ion-icon slot="start" name="document" color="primary"></ion-icon>
             <ion-label>
               {{ contract.workerName + ' ' + contract.workerLastName + ' ' + contract.workerSurname | titlecase }}
@@ -44,8 +44,9 @@
           </ion-item>
 
           <ion-card-content>
-            <p> <strong>Tipo Contrato:</strong> {{ contract.contractTypeName | titlecase }}</p>
+            <p *ngIf="contract.contractTypeName"> <strong>Tipo Contrato:</strong> {{ contract.contractTypeName | titlecase }}</p>
             <p *ngIf="contract.contractorName"> <strong>Contratista:</strong> {{ contract.contractorName | titlecase }}
+            <p> <strong>Tipo de trabajador:</strong> {{contract.contractorName ? 'Externo' : 'Interno'}}
             </p>
           </ion-card-content>
         </ion-card>
@@ -64,7 +65,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="contractForm()" [disabled]="isLoading">
+  <ion-button expand="block" (click)="contractForm()" [disabled]="isLoading" class="btn-app">
     Crear
   </ion-button>
 </ion-footer>

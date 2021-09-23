@@ -14,39 +14,39 @@
   </ion-toolbar>
 </ion-header>
 
-<div (click)="openSelected = !openSelected" [class.selected]="openSelected"
-  class="header-content background-color--header">
-  <ng-container *ngIf="ticket">
-    <!--    <ion-row class="text-white">-->
-    <!--      <p class="h">{{remainingTime(ticket.clientCommitment)}}</p>-->
-    <div class="texto-ticket">
-      <p class="h"><strong>{{remainingTime(ticket.clientCommitment)}}</strong></p>
-      <p class="ticket-p"><strong>#Ticket:</strong> {{ ticket.id }}</p>
-      <p class="ticket-p"><strong>Cliente:</strong> {{ ticket.client }}</p>
-      <p class="ticket-p"><strong>Tipo:</strong> {{ ticket.type }}</p>
-      <p class="ticket-p"><strong>Producto:</strong> {{ ticket.productName }}</p>
-      <p class="ticket-p"><strong>Funcionalidad:</strong> {{ ticket.funcionalityName }}</p>
-      <!--    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>-->
-      <p class="ticket-p"><strong>Estado:</strong> {{ ticket.state }}</p>
-      <p class="ticket-p"><strong>Referencia:</strong> {{ ticket.reference }}</p>
-      <p class="ticket-p"><strong>Creador:</strong> {{ ticket.creator }}</p>
-      <!--<p class="ticket-p"><strong>Asignado:</strong> {{ ticket.creatorName }}</p>-->
-      <p class="ticket-p"><strong>Fecha de Compromiso:</strong> {{ ticket.clientCommitment }}</p>
-    </div>
-  </ng-container>
-  <div [class.scroll-card-custom]="openSelected" class="scroll-card">
-    <ng-container *ngIf="ticket">
-      <div class="card-text" style="padding-top: 0;">
-        <p class="ticket-p"><strong>Periodicidad:</strong> {{ ticket.periodicity }}</p>
-        <p class="ticket-p"><strong>Descripción:</strong> {{ ticket.description }}</p>
-        <p class="ticket-p"><strong>Solución:</strong> {{ ticket.solution }}</p>
-        <p class="ticket-p"><strong>Fecha de compromiso interna:</strong> {{ ticket.internalCommitment }}</p>
-      </div>
-    </ng-container>
-  </div>
-</div>
-
 <ion-content>
+  <div (click)="openSelected = !openSelected" [class.selected]="openSelected" >
+    <ion-row>
+      <ion-col size="12">
+        <ng-container *ngIf="ticket" class="header-content details-seccion">
+          <p><strong>{{remainingTime(ticket.clientCommitment)}}</strong></p>
+          <p><strong>#Ticket:</strong> {{ ticket.id }}</p>
+          <p><strong>Cliente:</strong> {{ ticket.client }}</p>
+          <p><strong>Tipo:</strong> {{ ticket.type }}</p>
+          <p><strong>Producto:</strong> {{ ticket.productName }}</p>
+          <p><strong>Funcionalidad:</strong> {{ ticket.funcionalityName }}</p>
+          <!--    <p>Fecha Maxima: {{ ticket.maxResolution | customDatetime }}</p>-->
+          <p><strong>Estado:</strong> {{ ticket.state }}</p>
+          <p><strong>Referencia:</strong> {{ ticket.reference }}</p>
+          <p><strong>Creador:</strong> {{ ticket.creator }}</p>
+          <!--<p class="ticket-p"><strong>Asignado:</strong> {{ ticket.creatorName }}</p>-->
+          <p class="ticket-p"><strong>Fecha de Compromiso:</strong> {{ ticket.clientCommitment }}</p>
+        </ng-container>
+        <div [class.scroll-card-custom]="openSelected" class="scroll-card">
+          <ng-container *ngIf="ticket">
+            <div class="" style="padding-top: 0;">
+              <p class=""><strong>Periodicidad:</strong> {{ ticket.periodicity }}</p>
+              <p class=""><strong>Descripción:</strong> {{ ticket.description }}</p>
+              <p class=""><strong>Solución:</strong> {{ ticket.solution }}</p>
+              <p class=""><strong>Fecha de compromiso interna:</strong> {{ ticket.internalCommitment }}</p>
+            </div>
+          </ng-container>
+        </div>
+      </ion-col>
+    </ion-row>
+  </div>
+
+
   <ion-refresher (ionRefresh)="reSync($event)" slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -54,14 +54,18 @@
   <ng-container *ngIf="details.length > 0">
     <ion-virtual-scroll [items]="details">
       <div *virtualItem="let detail">
-        <app-ticket-detail-card [detail]="detail"></app-ticket-detail-card>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="12">
+            <app-ticket-detail-card [detail]="detail"></app-ticket-detail-card>
+          </ion-col>
+        </ion-row>
       </div>
     </ion-virtual-scroll>
   </ng-container>
 </ion-content>
 
 <ion-footer>
-  <ion-button (click)="openForm()" [disabled]="!(getNetworkStatus() | async)" color="primary" expand="block">
+  <ion-button class="btn-app" (click)="openForm()" [disabled]="!(getNetworkStatus() | async)" color="primary" expand="block">
     Crear
   </ion-button>
 </ion-footer>

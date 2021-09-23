@@ -13,14 +13,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar
-      animated
-      showCancelButton="never"
-      placeholder="Buscar..."
-      class="production"
-      (ionChange)="searchWorker($event.target.value)"
-      (ionClear)="cancelSearch()">
-    </ion-searchbar>
+    <ion-searchbar class="production" animated showCancelButton="never" placeholder="Buscar..." (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
@@ -34,60 +27,51 @@
   </ng-container>
 
   <ng-container *ngIf="!isLoading">
-    <ion-card *ngIf="quadrille" class="title-card">
-      <ion-item lines="none">
+    <div *ngIf="quadrille">
+      <ion-item lines="none" class="bg-transparent no-border">
         <ion-label>
           <h2>{{ quadrille.name | titlecase }}</h2>
         </ion-label>
-        <ion-badge slot="end"  color="primary">{{ printableWorkers.length }}</ion-badge>
+        <ion-badge slot="end" color="primary">{{ printableWorkers.length }}</ion-badge>
       </ion-item>
+    </div>
+
+    <ion-card *ngFor="let worker of printableWorkers" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align: center;">
+          <ion-icon name="person" size="large" color="primary"></ion-icon>
+        </ion-col>
+        <ion-col size="7" style="text-align: start;" class="worker-title">
+          <p>
+            <span class="title"><strong>{{ worker.name | titlecase }}</strong></span>
+            <span>{{ worker.identifier | rut }}</span>
+          </p>
+        </ion-col>
+        <ion-col size="3" style="text-align: center;">
+          <ion-icon *ngIf="worker.memory" size="small" name="server" color="danger"></ion-icon>
+          <div class="contratista" *ngIf="worker.workerType === 2">
+            Contratista
+          </div>
+          <div class="trabajardor" *ngIf="worker.workerType === 3">
+            Externo
+          </div>
+          <div class="trabajardor" *ngIf="worker.workerType === 1">
+            Interno
+          </div>
+          <div *ngIf="worker.quadrilleToApprove > 0" class="traspaso" style="margin-top: 5px">
+            <div *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id">
+              Traspasando
+            </div>
+            <div *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille !== quadrille.id">
+              Por Aprobar
+            </div>
+          </div>
+          <div *ngIf="worker.quadrilleToApprove === 0 &&  worker.quadrilleStatus !== ''" [ngClass]="'traspaso ' + worker.quadrilleStatus" style="margin-top: 5px">
+            {{ worker.quadrilleStatus | titlecase }}
+          </div>
+        </ion-col>
+      </ion-row>
     </ion-card>
-
-    <ion-card *ngFor="let worker of printableWorkers" class="card-item" (click)="markWorker(worker)" [ngClass]="{ 'workerSelected': selectedWorkers.includes(worker) }">
-      <ion-item lines="full">
-        <ion-icon slot="start" name="person" color="primary"></ion-icon>
-        <ion-label class="ion-text-wrap">
-          <h3>{{ worker.name | titlecase }}</h3>
-          <p>{{ worker.identifier | rut }}</p>
-        </ion-label>
-        <ion-icon *ngIf="worker.memory" slot="end" name="server" color="danger"></ion-icon>
-      </ion-item>
-
-      <ion-card-content>
-        <ion-row class="ion-no-padding ion-no-margin">
-          <ion-col size="6" class="ion-no-padding ion-no-margin ion-text-start">
-            <ion-chip class="contractor" *ngIf="worker.workerType === 2">
-              <ion-label>
-                Contratista
-              </ion-label>
-            </ion-chip>
-
-            <ion-chip class="external"  *ngIf="worker.workerType === 3">
-              <ion-label>
-                Externo
-              </ion-label>
-            </ion-chip>
-          </ion-col>
-
-          <ion-col size="6" class="ion-no-padding ion-no-margin ion-text-end">
-            <ng-container *ngIf="worker.quadrilleToApprove > 0">
-              <ion-chip *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille === quadrille.id" color="warning">
-                Traspasando
-              </ion-chip>
-
-              <ion-chip *ngIf="worker.quadrilleStatus.toLowerCase() === getTransferNames().PorAprobar && worker.quadrille !== quadrille.id" color="warning">
-                Por Aprobar
-              </ion-chip>
-            </ng-container>
-
-            <ion-chip *ngIf="worker.quadrilleToApprove === 0 &&  worker.quadrilleStatus !== ''" color="danger">
-              {{ worker.quadrilleStatus | uppercase }}
-            </ion-chip>
-          </ion-col>
-        </ion-row>
-      </ion-card-content>
-    </ion-card>
-
   </ng-container>
 </ion-content>
 
@@ -95,13 +79,13 @@
   <ng-container *ngIf="selectedWorkers.length > 0">
     <ion-row *ngIf="selectedWorkers[0].quadrilleToApprove === 0">
       <ion-col *ngIf="selectedWorkers[0].quadrilleStatus === ''">
-        <ion-button (click)="selectQuadrille();" color="warning" expand="block" class="btn-app">
+        <ion-button class="btn-workers" (click)="selectQuadrille();" color="warning" expand="block">
           Traspasar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
         </ion-button>
       </ion-col>
 
       <ion-col *ngIf="selectedWorkers[0].quadrilleStatus.toLowerCase() === getTransferNames().Rechazado">
-        <ion-button (click)="cancelTransfer()" color="success" expand="block" class="btn-app">
+        <ion-button class="btn-workers" (click)="cancelTransfer()" color="success" expand="block">
           Aprobar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
         </ion-button>
       </ion-col>
@@ -109,20 +93,20 @@
 
     <ion-row *ngIf="selectedWorkers[0].quadrilleToApprove > 0">
       <ion-col *ngIf="selectedWorkers[0].quadrille === quadrille.id">
-        <ion-button (click)="cancelTransfer()" color="danger" expand="block" class="btn-app">
+        <ion-button class="btn-workers" (click)="cancelTransfer()" color="danger" expand="block">
           Cancelar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
         </ion-button>
       </ion-col>
 
       <ng-container *ngIf="selectedWorkers[0].quadrille !== quadrille.id && !selectedWorkers[0].memory">
         <ion-col size="6">
-          <ion-button (click)="acceptWorkers();" color="success" expand="block" class="btn-app">
+          <ion-button class="btn-workers" (click)="acceptWorkers();" color="success" expand="block">
             Aprobar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
           </ion-button>
         </ion-col>
 
         <ion-col size="6">
-          <ion-button (click)="rejectWorkers();" color="danger" expand="block" class="btn-app">
+          <ion-button class="btn-workers" (click)="rejectWorkers();" color="danger" expand="block">
             Rechazar {{ selectedWorkers.length }} persona{{ selectedWorkers.length > 1 ? 's' : ''  }}
           </ion-button>
         </ion-col>

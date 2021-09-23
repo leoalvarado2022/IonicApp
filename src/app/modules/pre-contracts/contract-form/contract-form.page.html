@@ -12,7 +12,7 @@
       <app-toolbar-buttons></app-toolbar-buttons>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar>
+  <ion-toolbar class="tabs-toolbar">
     <ion-tabs>
       <ion-tab-bar slot="top">
         <ion-tab-button [selected]="currentStep === 1">
@@ -37,86 +37,84 @@
     <!-- STEP 1 -->
     <ng-container *ngIf="currentStep === 1" formGroupName="step1">
 
-      <ion-card class="title-card">
-        <ion-item>
-          <ion-label>Tipo de Trabajador</ion-label>
-        </ion-item>
+      <ion-row>
+        <ion-col size="12">
+          <ion-label class="label-fx360">Tipo de trabajador</ion-label>
+          <ion-radio-group formControlName="workerType" (ionChange)="workerTypeChange($event.detail.value)">
+            <ion-row>
+              <ion-col size="6">
+                <ion-item class="input-radio-fx360">
+                  <ion-label class="label-fx360">Interno</ion-label>
+                  <ion-radio value="interno"></ion-radio>
+                </ion-item>
+              </ion-col>
+              <ion-col size="6">
+                <ion-item class="input-radio-fx360">
+                  <ion-label class="label-fx360">Externo</ion-label>
+                  <ion-radio value="externo"></ion-radio>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-radio-group>
+        </ion-col>
+      </ion-row>
 
-        <ion-segment formControlName="workerType" color="secondary" (ionChange)="workerTypeChange($event.detail.value)">
-          <ion-segment-button value="interno">
-            <ion-label>Interno</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="externo">
-            <ion-label>Externo</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-      </ion-card>
-
-      <ion-card class="title-card">
-        <ng-container *ngIf="showContractor">
-          <ion-item>
-            <ion-label position="floating">Contratista</ion-label>
-            <ion-select formControlName="contractor" placeholder="Contratista" cancelText="Cancelar"
-              [interfaceOptions]="actionHeader" interface="action-sheet">
-              <ion-select-option *ngFor="let contractor of contractors" [value]="contractor.id">
-                {{ contractor.name | titlecase }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item *ngIf="contractForm.get('step1.contractor').hasError('required')" lines="none">
-            <ion-icon slot="start" name="information-circle-outline" color="danger"></ion-icon>
-            <ion-label color="danger">Seleccione Contratista</ion-label>
-          </ion-item>
-        </ng-container>
-
-        <ion-item>
-          <ion-label position="floating">Nacionalidad</ion-label>
-          <ion-select formControlName="nationality" placeholder="Nacionalidad" cancelText="Cancelar"
-            [interfaceOptions]="actionHeader" interface="action-sheet" [selectedText]="getNationalityName()"
-            (ionChange)="changeIdentifierValidation($event.detail.value)">
-            <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality.id">{{ nationality.name }}
-            </ion-select-option>
+      <ng-container *ngIf="showContractor">
+        <ion-label class="label-fx360">Contratista</ion-label>
+        <ion-item class="input-fx360-down">
+          <ion-select formControlName="contractor" placeholder="Contratista" cancelText="Cancelar"
+                      [interfaceOptions]="actionHeader" interface="action-sheet">
+            <ion-select-option *ngFor="let contractor of contractors" [value]="contractor.id">
+              {{ contractor.name | titlecase }}</ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-text class="error--message" color="danger" *ngIf="contractForm.get('step1.contractor').hasError('required')">Seleccione Contratista.</ion-text>
+      </ng-container>
 
-        <ion-item>
-          <ion-label position="floating">Identificador</ion-label>
-          <ion-input formControlName="identifier" (keyup)="formatIdentifier($event.target.value)"></ion-input>
-        </ion-item>
+      <ion-row>
+        <ion-col size="12">
+          <ion-label class="label-fx360">Nacionalidad</ion-label>
+          <ion-item class="input-fx360-down">
+            <ion-select formControlName="nationality" placeholder="Nacionalidad" cancelText="Cancelar"
+                        [interfaceOptions]="actionHeader" interface="action-sheet" [selectedText]="getNationalityName()"
+                        (ionChange)="changeIdentifierValidation($event.detail.value)">
+              <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality.id">{{ nationality.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-label class="label-fx360">Identificador</ion-label>
+          <ion-input class="input-fx360 bg-white" formControlName="identifier" (keyup)="formatIdentifier($event.target.value)"></ion-input>
+          <ion-text class="error--message no-margin-t" color="danger" *ngIf="contractForm.get('step1.identifier').hasError('validRut')">Debe ingresar un RUT valido.</ion-text>
+        </ion-col>
+      </ion-row>
 
-        <ion-item *ngIf="contractForm.get('step1.identifier').hasError('validRut')" lines="none">
-          <ion-icon slot="start" name="information-circle-outline" color="danger"></ion-icon>
-          <ion-label color="danger">Debe ingresar un RUT valido.</ion-label>
-        </ion-item>
-      </ion-card>
+      <ion-row>
+        <ion-col size="5">
+          <ion-item lines="none" class="bg-transparent">
+            <ion-label>
+              <hr class="item-divider">
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="2">
+          <ion-item lines="none" class="ion-no-padding bg-transparent" style="padding-left: 12px">
+            <ion-label class="ion-text-center">
+              O
+            </ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col size="5">
+          <ion-item lines="none" class="bg-transparent">
+            <ion-label>
+              <hr class="item-divider">
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
 
-      <ion-card class="title-card">
-        <ion-row>
-          <ion-col size="5">
-            <ion-item lines="none">
-              <ion-label>
-                <hr class="item-divider">
-              </ion-label>
-            </ion-item>
-          </ion-col>
-          <ion-col size="2">
-            <ion-item lines="none" class="ion-no-padding" style="padding-left: 12px">
-              <ion-label class="ion-text-center">
-                O
-              </ion-label>
-            </ion-item>
-          </ion-col>
-          <ion-col size="5">
-            <ion-item lines="none">
-              <ion-label>
-                <hr class="item-divider">
-              </ion-label>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ion-card>
-
-      <ion-button expand="block" (click)="openBarcodeScanner()" [disabled]="checkConditions()">
+      <ion-button expand="block" class="btn-app" (click)="openBarcodeScanner()" [disabled]="checkConditions()">
         Escanear Carnet
         <ion-icon slot="end" name="camera"></ion-icon>
       </ion-button>
@@ -125,115 +123,117 @@
 
     <!-- STEP 2 -->
     <ng-container *ngIf="currentStep === 2" formGroupName="step2">
+      <ng-container *ngIf="isSearching">
+        <ion-item lines="none">
+          <ion-label>Buscando...</ion-label>
+        </ion-item>
+      </ng-container>
 
-      <ion-card class="title-card">
-        <ng-container *ngIf="isSearching">
-          <ion-item lines="none" color="warning">
-            <ion-label>Buscando...</ion-label>
-          </ion-item>
-        </ng-container>
+      <ng-container *ngIf="!isSearching">
+        <ion-item *ngIf="checkIfIdentifierAlreadyExistsOnWorkers()" lines="none" color="danger">
+          <ion-label>Trabajador posee contrato activo</ion-label>
+        </ion-item>
 
-        <ng-container *ngIf="!isSearching">
-          <ion-item *ngIf="checkIfIdentifierAlreadyExistsOnWorkers()" lines="none" color="danger">
-            <ion-label>Trabajador posee contrato activo</ion-label>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Nombre</ion-label>
-            <ion-input formControlName="name"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Apellido Paterno</ion-label>
-            <ion-input formControlName="lastName"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Apellido Materno</ion-label>
-            <ion-input formControlName="sureName"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Fecha de Nacimiento</ion-label>
-            <ion-datetime formControlName="dob" [pickerOptions]="customPickerOptions" [displayFormat]="dateFormat"
-              [max]="maxDate" [pickerFormat]="dateFormat"></ion-datetime>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">Estado Civil</ion-label>
-            <ion-select formControlName="civilStatus" placeholder="Estado Civil" cancelText="Cancelar"
-              [interfaceOptions]="actionHeader" interface="action-sheet">
-              <ion-select-option *ngFor="let status of civilStatus" [value]="status.name">{{ status.name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-radio-group formGroupName="gender" [value]="contractForm.get('step2.gender').value"
-            (ionChange)="changeGenderEvent($event.detail.value)">
-            <ion-row>
-              <ion-col>
-                <ion-item lines="none">
-                  <ion-label>Hombre</ion-label>
-                  <ion-radio slot="start" value="M"></ion-radio>
-                </ion-item>
-              </ion-col>
-
-              <ion-col>
-                <ion-item lines="none">
-                  <ion-label>Mujer</ion-label>
-                  <ion-radio slot="start" value="F"></ion-radio>
-                </ion-item>
-              </ion-col>
-            </ion-row>
-          </ion-radio-group>
-        </ng-container>
-      </ion-card>
+        <ion-row>
+          <ion-col size="12">
+            <ion-label class="label-fx360">Nombre</ion-label>
+            <ion-input class="input-fx360 bg-white" formControlName="name"></ion-input>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label class="label-fx360">Apellido Paterno</ion-label>
+            <ion-input class="input-fx360 bg-white" formControlName="lastName"></ion-input>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label class="label-fx360">Apellido Materno</ion-label>
+            <ion-input class="input-fx360 bg-white" formControlName="sureName"></ion-input>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label class="label-fx360">Fecha de Nacimiento</ion-label>
+            <ion-item class="input-fx360-down">
+              <li-ionic4-datepicker formControlName="dob" [inputDateConfig]="datePickerObj"></li-ionic4-datepicker>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label class="label-fx360">Estado civil</ion-label>
+            <ion-item class="input-fx360-down">
+              <ion-select formControlName="civilStatus" placeholder="Estado Civil" cancelText="Cancelar"
+                          [interfaceOptions]="actionHeader" interface="action-sheet">
+                <ion-select-option *ngFor="let status of civilStatus" [value]="status.name">{{ status.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-radio-group formControlName="gender" [value]="contractForm.get('step2.gender').value" (ionChange)="changeGenderEvent($event.detail.value)">
+              <ion-row>
+                <ion-col size="6">
+                  <ion-item class="input-radio-fx360">
+                    <ion-label class="label-fx360">Hombre</ion-label>
+                    <ion-radio value="M"></ion-radio>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-item class="input-radio-fx360">
+                    <ion-label class="label-fx360">Mujer</ion-label>
+                    <ion-radio value="F"></ion-radio>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-radio-group>
+          </ion-col>
+        </ion-row>
+      </ng-container>
     </ng-container>
 
     <!-- STEP 3 -->
     <ng-container *ngIf="currentStep === 3" formGroupName="step3">
-      <ion-card class="title-card">
+      <ion-row>
         <ng-container *ngIf="!showContractor">
-          <ion-item>
-            <ion-label position="floating">Tipo de Contrato</ion-label>
-            <ion-select formControlName="contractType" placeholder="Tipo de Contrato" cancelText="Cancelar"
-              [interfaceOptions]="actionHeader" interface="action-sheet">
-              <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">AFP</ion-label>
-            <ion-select formControlName="afp" placeholder="AFP" cancelText="Cancelar" [interfaceOptions]="actionHeader"
-              interface="action-sheet">
-              <ion-select-option *ngFor="let afp of afps" [value]="afp.id">{{ afp.name }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="floating">ISAPRE</ion-label>
-            <ion-select formControlName="isapre" placeholder="Isapre" cancelText="Cancelar"
-              [interfaceOptions]="actionHeader" interface="action-sheet">
-              <ion-select-option *ngFor="let isapre of isapres" [value]="isapre.id">{{ isapre.name }}</ion-select-option>
-            </ion-select>
-          </ion-item>
-
-          <ion-item>
-            <ion-label>Jubilado</ion-label>
-            <ion-checkbox formControlName="retired" slot="start"></ion-checkbox>
-          </ion-item>
+          <ion-col size="12">
+            <ion-label class="label-fx360">Tipo de Contrato</ion-label>
+            <ion-item class="input-fx360-down">
+              <ion-select formControlName="contractType" placeholder="Tipo de Contrato" cancelText="Cancelar"
+                          [interfaceOptions]="actionHeader" interface="action-sheet">
+                <ion-select-option *ngFor="let type of contractTypes" [value]="type.id">{{ type.name }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label class="label-fx360">AFP</ion-label>
+            <ion-item class="input-fx360-down">
+              <ion-select formControlName="afp" placeholder="AFP" cancelText="Cancelar" [interfaceOptions]="actionHeader"
+                          interface="action-sheet">
+                <ion-select-option *ngFor="let afp of afps" [value]="afp.id">{{ afp.name }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label class="label-fx360">ISAPRE</ion-label>
+            <ion-item class="input-fx360-down">
+              <ion-select formControlName="isapre" placeholder="Isapre" cancelText="Cancelar"
+                          [interfaceOptions]="actionHeader" interface="action-sheet">
+                <ion-select-option *ngFor="let isapre of isapres" [value]="isapre.id">{{ isapre.name }}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="12" class="ion-text-start">
+            <ion-item class="input-fx360-down">
+              <ion-checkbox formControlName="retired"></ion-checkbox>
+              <ion-label class="label-fx360-checkbox">Jubilado</ion-label>
+            </ion-item>
+          </ion-col>
         </ng-container>
-
-        <ion-item>
-          <ion-label position="floating">Cuadrilla</ion-label>
-          <ion-select formControlName="quadrille" placeholder="Cuadrilla" cancelText="Cancelar"
-            [interfaceOptions]="actionHeader" interface="action-sheet">
-            <ion-select-option *ngFor="let quadrille of quadrilles" [value]="quadrille.id">{{ quadrille.name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-
-      </ion-card>
+        <ion-col size="12">
+          <ion-label class="label-fx360">Cuadrilla</ion-label>
+          <ion-item class="input-fx360-down">
+            <ion-select formControlName="quadrille" placeholder="Cuadrilla" cancelText="Cancelar"
+                        [interfaceOptions]="actionHeader" interface="action-sheet">
+              <ion-select-option *ngFor="let quadrille of quadrilles" [value]="quadrille.id">{{ quadrille.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
     </ng-container>
 
   </form>
@@ -242,20 +242,20 @@
 <ion-footer>
   <ion-row>
     <ion-col>
-      <ion-button color="warning" expand="block" [disabled]="currentStep === 1" (click)="currentStep = currentStep - 1">
+      <ion-button color="primary" class="btn-app" expand="block" [disabled]="currentStep === 1" (click)="currentStep = currentStep - 1">
         <ion-icon slot="start" name="arrow-back"></ion-icon>
         Anterior
       </ion-button>
     </ion-col>
 
     <ion-col>
-      <ion-button color="warning" expand="block" *ngIf="currentStep < 3" [disabled]="checkNexButtonDisabled()"
+      <ion-button color="primary" class="btn-app" expand="block" *ngIf="currentStep < 3" [disabled]="checkNexButtonDisabled()"
         (click)="increaseStep()">
         Siguiente
         <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>
 
-      <ion-button color="success" expand="block" *ngIf="currentStep === 3"
+      <ion-button color="success" class="btn-app" expand="block" *ngIf="currentStep === 3"
         [disabled]="this.contractForm.get('step3').invalid" (click)="submit()">
         Guardar
         <ion-icon slot="end" name="save"></ion-icon>

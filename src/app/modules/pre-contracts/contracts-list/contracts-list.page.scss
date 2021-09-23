@@ -1,3 +1,7 @@
+ion-card {
+  box-shadow: none;
+}
+
 ion-menu-button {
   --color: white;
 }
@@ -8,9 +12,4 @@ ion-title {
 
 .item-bg {
   --background: none !important;
-}
-
-.title-card {
-  margin: 5px;
-  padding: 0;
 }

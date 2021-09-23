@@ -66,8 +66,8 @@
               Por Aprobar
             </div>
           </div>
-          <div *ngIf="worker.quadrilleToApprove === 0 &&  worker.quadrilleStatus !== ''">
-            {{ worker.quadrilleStatus | uppercase }}
+          <div *ngIf="worker.quadrilleToApprove === 0 &&  worker.quadrilleStatus !== ''" [ngClass]="'traspaso ' + worker.quadrilleStatus" style="margin-top: 5px">
+            {{ worker.quadrilleStatus | titlecase }}
           </div>
         </ion-col>
       </ion-row>

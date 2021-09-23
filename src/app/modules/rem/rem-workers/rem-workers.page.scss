@@ -87,7 +87,19 @@ ion-searchbar {
   color: #ffffff;
   border-radius: 10px;
   font-size: 90%;
-  padding: 2px 0;
+  padding: 2px;
+
+  &.rechazado {
+    background: #eb445a;
+  }
+
+  &.por.aprobar {
+    background: #496193;
+  }
+
+  &.aprobado {
+    background: #0ec254;
+  }
 }
 
 .vertical-center {

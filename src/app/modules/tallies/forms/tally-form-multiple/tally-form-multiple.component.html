@@ -70,6 +70,7 @@
               <ion-label class="label-fx360" position="stacked">Trato</ion-label>
               <ion-item class="input-fx360-down max-h-unset">
                 <ion-select formControlName="dealValidity" placeholder="Trato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectDeal($event.detail.value)">
+                  <ion-select-option [value]="null">Ninguno</ion-select-option>
                   <ion-select-option *ngFor="let deal of availableDeals" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
                 </ion-select>
               </ion-item>
@@ -83,6 +84,7 @@
               <ion-label class="label-fx360" position="stacked">Bono</ion-label>
               <ion-item class="input-fx360-down max-h-unset">
                 <ion-select formControlName="bondValidity" placeholder="Bono" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
+                  <ion-select-option [value]="null">Ninguno</ion-select-option>
                   <ion-select-option *ngFor="let bond of availableBonds" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
                 </ion-select>
               </ion-item>
@@ -136,9 +138,17 @@
               <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('min')">El valor mínimo es 0.1</ion-text>
               <ion-text color="danger" class="error--message" *ngIf="tallyForm.dirty && tallyForm.get('performance').hasError('pattern')">Maximo 3 decimales</ion-text>
             </ion-col>
+            <ion-col size="6">
+              <ng-container *ngIf="tallyForm.get('unit').value">
+                <ion-label class="label-fx360">Unidad</ion-label>
+                <ion-item class="input-fx360-down max-h-unset">
+                  <ion-input formControlName="unit"></ion-input>
+                </ion-item>
+              </ng-container>
+            </ion-col>
           </ion-row>
           <!-- UNIT -->
-          <ion-row>
+          <!--<ion-row>
             <ion-col size="12">
               <ng-container *ngIf="availableDeals.length > 0">
                 <ion-label class="label-fx360" position="floating">Unidad</ion-label>
@@ -147,7 +157,7 @@
                 </ion-item>
               </ng-container>
             </ion-col>
-          </ion-row>
+          </ion-row>-->
           <!-- NOTES -->
           <ion-row>
             <ion-col size="12">

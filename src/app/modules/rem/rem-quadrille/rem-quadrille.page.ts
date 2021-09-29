@@ -24,7 +24,9 @@ export class RemQuadrillePage implements OnInit {
 
   }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewDidEnter() {
     this.loadQuadrilles();
   }
 

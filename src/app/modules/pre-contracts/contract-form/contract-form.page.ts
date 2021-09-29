@@ -22,7 +22,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
   public contractForm: FormGroup;
   public currentStep = 1;
   public isSearching = false;
-  public customPickerOptions: any;
 
   public nationalities: Array<any> = [];
   public contractTypes: Array<any> = [];
@@ -55,7 +54,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     titleLabel: 'Fecha de entrega', // default null
     monthsList: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     weeksList: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
-    dateFormat: 'DD-MM-YYYY', // default DD MMM YYYY
+    dateFormat: 'DD/MM/YYYY', // default DD MMM YYYY
     clearButton : false , // default true
   };
 
@@ -71,24 +70,6 @@ export class ContractFormPage implements OnInit, OnDestroy {
     private storageSyncService: StorageSyncService,
     private stepperService: StepperService
   ) {
-    this.customPickerOptions = {
-      animated: true,
-      backdropDismiss: false,
-      keyboardClose: false,
-      buttons: [{
-        text: 'Ok',
-        handler: (data) => {
-          this.contractForm.get('step2.dob').patchValue(moment(`${data.year.text}-${data.month.text}-${data.day.text}`).format('YYYY-MM-DD'));
-        }
-      }, {
-        role: 'cancel',
-        text: 'Cancelar',
-        handler: () => {
-
-        }
-      }]
-    };
-
     this.contractForm = this.formBuilder.group({
       id: [0],
       companyId: 0,
@@ -171,7 +152,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
             name: find.workerName,
             lastName: find.workerLastName,
             sureName: find.workerSurname,
-            dob: moment(this.cleanDate(find.dob)).format('YYYY-MM-DD'),
+            dob: moment(this.cleanDate(find.dob)).format('DD/MM/YYYY'),
             civilStatus: find.workerCivilStatus,
             gender: find.gender,
           });
@@ -279,7 +260,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     delete data.step3;
 
     step1.identifier = this.editPreContrat ? cleanRut(this.editPreContrat.workerIdentifier) : cleanRut(step1.identifier);
-    step2.dob = moment.utc(step2.dob).format('YYYY-MM-DD');
+    step2.dob = moment(step2.dob, ['DD/MM/YYYY', 'DD-MM-YYYY']).format('YYYY-MM-DD');
     step3.retired = step3.retired ? 1 : 0;
 
     const preparedData = { ...data, ...step1, ...step2, ...step3 };
@@ -349,7 +330,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
             name: worker.names,
             lastName: worker.lastName,
             sureName: worker.surName,
-            dob: worker.dob ? moment(this.cleanDate(worker.dob)).format('YYYY-MM-DD') : '',
+            dob: worker.dob ? moment(this.cleanDate(worker.dob)).format('DD/MM/YYYY') : '',
             gender: worker.gender,
             civilStatus: worker.civilStatus
           },

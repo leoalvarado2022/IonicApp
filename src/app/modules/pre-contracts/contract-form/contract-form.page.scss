@@ -15,28 +15,15 @@ ion-tab-button {
 .tab-selected {
   border-bottom: 3px solid #ffffff !important;
   --color: #ffffff !important;
+
+  ion-label {
+    font-weight: bold;
+  }
 }
 
 ion-tab-bar {
   --background: var(--ion-color-primary);
   --color: white;
-}
-
-
-.search-toolbar {
-  background: var(--ion-color-primary);
-
-  .searchbar-input {
-    box-shadow: none !important;
-    background: var(--ion-color-primary);
-    color: white;
-  }
-
-  .searchbar-search-icon {
-    color: white !important;
-    font-weight: bold !important;
-  }
-
 }
 
 .item-divider {
@@ -64,4 +51,8 @@ ion-tab-bar {
 
 ion-checkbox {
   margin: 15px 0 !important;
+}
+
+.tabs-toolbar {
+  --min-height: 50px;
 }

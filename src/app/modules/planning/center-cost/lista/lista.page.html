@@ -11,7 +11,7 @@
   <ng-container *ngIf="!isLoading">
     <ion-virtual-scroll [items]="filteredCostCenters">
       <ion-card *virtualItem="let item" class="card-item" (click)="costCenterSelected(item)">
-        <ion-item lines="full" class="header-item">
+        <ion-item lines="none" class="header-item">
           <ion-badge slot="start" color="primary">{{ item.code | uppercase }}</ion-badge>
           <ion-label>
             {{ item.name }}

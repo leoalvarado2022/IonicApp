@@ -204,7 +204,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         // Make printable array
         this.printableWorkers = this.mergeArrays();
 
-        this.isLoading = false;
+        // this.stepperService.onlySyncREM();
+        this.sendTransfers();
+        // this.isLoading = false;
       });
     });
   }
@@ -212,7 +214,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   /**
    * cancelTransfer
    */
-  public cancelTransfer = () => {
+  public cancelTransfer =  () => {
     // Map data to store
 
     const mapData = this.mapDataToMemory(this.quadrille.id, TransferActions.ApruebaRechazo);
@@ -233,7 +235,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         // Make printable array
         this.printableWorkers = this.mergeArrays();
 
-        this.isLoading = false;
+        // this.stepperService.onlySyncREM();
+        this.sendTransfers();
+        // this.isLoading = false;
       });
     });
   }
@@ -261,7 +265,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         // Make printable array
         this.printableWorkers = this.mergeArrays();
 
-        this.isLoading = false;
+        // this.stepperService.onlySyncREM();
+        this.sendTransfers();
+        // this.isLoading = false;
       });
     });
   }
@@ -289,7 +295,9 @@ export class RemWorkersPage implements OnInit, OnDestroy {
         // Make printable array
         this.printableWorkers = this.mergeArrays();
 
-        this.isLoading = false;
+        // this.stepperService.onlySyncREM();
+        this.sendTransfers();
+        // this.isLoading = false;
       });
     });
   }
@@ -307,15 +315,19 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * sendTransfers
    */
   private sendTransfers = () => {
-    this.isLoading = true;
+    // this.isLoading = true;
     this.quadrilleService.transferWorkers(this.onMemoryTransfers).subscribe(() => {
+      this.isLoading = true;
       this.selectedWorkers = [];
 
       const id = this.route.snapshot.paramMap.get('id');
       this.quadrilleService.clearQuadrilleTransfers(+id).then(() => {
         this.onMemoryTransfers = [];
         this.printableWorkers = this.mergeArrays();
-        this.stepperService.onlySyncREM();
+
+        this.stepperService.onlySyncREM().then(() => {
+          this.isLoading = false;
+        });
       });
     }, error => {
       this.isLoading = false;
@@ -390,6 +402,11 @@ export class RemWorkersPage implements OnInit, OnDestroy {
   public goBack = () => {
     // this.sendTransfers();
     this.router.navigate(['/home-page/tarja_cuadrillas']);
+  }
+
+  public refreshAll = async () => {
+    await this.stepperService.onlySyncREM();
+    this.loadWorkers();
   }
 
 }

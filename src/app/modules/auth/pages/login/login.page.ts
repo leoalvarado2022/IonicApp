@@ -7,9 +7,11 @@ import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { HttpService } from '../../../../shared/services/http/http.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { Subscription } from 'rxjs';
-import { ActionSheetController, Platform } from '@ionic/angular';
+import {ActionSheetController, AlertController, Platform} from '@ionic/angular';
 import { AppService } from 'src/app/services/app/app.service';
 import { DeviceService } from 'src/app/services/device/device.service';
+import {StorageService} from '../../../../shared/services/storage/storage.service';
+import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +40,9 @@ export class LoginPage implements OnInit, OnDestroy {
     public deviceService: DeviceService,
     private platform: Platform,
     public actionSheetController: ActionSheetController,
+    private storage: StorageService,
+    private storageSyncService: StorageSyncService,
+    private alertController: AlertController,
   ) {
     this.platform.ready().then(() => {
       this.showCordovaFeatures = this.platform.is('cordova');
@@ -240,5 +245,56 @@ export class LoginPage implements OnInit, OnDestroy {
 
   public showQa = (): string => {
     return localStorage.getItem('connectionEnvironment') === 'qa' ? 'QA' : '';
+  }
+
+  /**
+   * confirmClean
+   */
+  public confirmClean = async () => {
+    const alert = await this.alertController.create({
+      message: 'Desea borrar la base de datos del telefono ?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Si',
+          handler: () => {
+            this.storageSyncService.clearStorage().then(() => {
+              this.storeService.clearStore();
+              this.cleanCache();
+            });
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  /**
+   * cleanCache
+   */
+  public cleanCache = async () => {
+    const remember = localStorage.getItem('remember');
+    const user = this.storeService.getUserLocaStorage();
+
+    if (remember === 'true') {
+      const userRemember = await this.storage.getRow('userRemember');
+      localStorage.clear();
+      await this.storage.clearAllRow();
+      await this.storage.setRow('userRemember', userRemember);
+      localStorage.setItem('remember', 'true');
+    } else {
+      localStorage.clear();
+      await this.storage.clearAllRow();
+    }
+
+    this.storeService.setUserLocaStorage(user);
+    this.toastService.successToast('Datos eliminados');
   }
 }

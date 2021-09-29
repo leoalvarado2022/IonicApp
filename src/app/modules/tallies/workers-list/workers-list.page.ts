@@ -105,7 +105,6 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.tallySyncService.getTalliesToRecord(),
       this.storageSyncService.getAllQuadrilles()
     ]).then( data => {
-
       // Workers
       this.workers = [...data[0]];
       this.filteredWorkers = [...this.workers] ;

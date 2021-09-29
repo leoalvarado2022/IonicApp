@@ -83,7 +83,7 @@ ion-card {
   --inner-padding-top: 0;
 
   ion-card {
-    margin: 5px;
+    margin: 10px;
     padding: 0;
     width: 100%;
 
@@ -106,11 +106,14 @@ ion-card {
 
 /** CARD ITEM */
 .card-item {
-  margin: 5px;
+  margin: 10px;
   padding: 0;
+  box-shadow: none;
 
-  ion-item.header-item {
-    --background: var(--ion-color-light);
+  ion-item {
+    &.header-item {
+      --background: var(--ion-color-light-shade);
+    }
   }
 
   /*ion-card-content {

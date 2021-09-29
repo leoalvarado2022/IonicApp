@@ -25,8 +25,10 @@
     </div>
     <div class="auth-content">
       <div class="logo-home">
-        <img alt="Primetec" src="assets/icon/favicon.png">
-        <p>{{ appService.getAppName() }}</p>
+        <div (click)="confirmClean()">
+          <img alt="Primetec" src="assets/icon/favicon.png">
+          <p>{{ appService.getAppName() }}</p>
+        </div>
       </div>
       <div class="home-buttons-container no-flex-grow">
         <div class="buttons-home">

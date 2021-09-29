@@ -35,3 +35,15 @@ ion-item {
     font-size: 1em;
   }
 }
+
+.unit-container {
+  display: flex;
+  align-items: center;
+
+  .unit-label {
+    font-size: 17px;
+    //color: var(--ion-color-light);
+    opacity: 0.6;
+  }
+}
+

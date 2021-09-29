@@ -52,8 +52,9 @@ ion-tab-button {
 }
 
 ion-tab-bar {
-  --background: var(--color-home-header-menu);
+  --background: var(--ion-color-primary);
   --color: white;
+  --border: none;
 }
 
 .number {
@@ -102,4 +103,8 @@ ion-content {
   .tab-bar {
     height: 65px;
   }
+}
+
+.order-tabs {
+  --min-height: 50px;
 }

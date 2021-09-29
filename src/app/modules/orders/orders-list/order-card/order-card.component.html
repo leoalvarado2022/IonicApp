@@ -6,7 +6,7 @@
   </ion-item-options>
 
   <ion-item lines="none" class="slide-item item-bg" (click)="viewOrder(order)">
-    <ion-card>
+    <ion-card class="card-item">
       <ion-item class="header-item" lines="none">
         <ion-badge slot="start" [ngClass]="{'error':order?.error}">
           #{{ order?.id }}

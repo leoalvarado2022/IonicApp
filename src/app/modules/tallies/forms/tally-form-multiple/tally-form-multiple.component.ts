@@ -202,6 +202,8 @@ export class TallyFormMultipleComponent implements OnInit {
   public selectCostCenter = (costCenter: any): void => {
     this.tallyForm.get('costCenterId').patchValue(costCenter.id);
     this.costCenterName = costCenter.name;
+    this.tallyForm.get('laborId').patchValue('');
+    this.laborName = null;
     this.filteredCostCenters = [];
 
     this.getDeals();
@@ -213,8 +215,10 @@ export class TallyFormMultipleComponent implements OnInit {
    */
   public cleanCostCenterSearch = (): void => {
     this.tallyForm.get('costCenterId').patchValue('');
+    this.tallyForm.get('laborId').patchValue('');
     this.filteredCostCenters = [];
     this.costCenterName = null;
+    this.laborName = null;
 
     this.availableDeals = [];
     this.availableBonds = [];
@@ -496,13 +500,16 @@ export class TallyFormMultipleComponent implements OnInit {
         const start = moment(item.date_init).toISOString();
         const end = moment(item.date_end).toISOString();
 
-        // return (item.allCostCenters || item.id_costCenter === costCenterId) && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
-        return item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
+        return (item.allCostCenters || item.id_costCenter === costCenterId) && item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
+        // return item.id_labor === laborId && moment(this.dateSelected).isBetween(start, end);
       });
 
       if (this.availableDeals.length > 0) {
         this.tallyForm.get('dealValidity').patchValue(this.availableDeals[0].id_deal_validity);
         this.tallyForm.get('unit').patchValue(this.availableDeals[0].unit_control);
+      } else {
+        const currentLabor = this.labors.find(l => l.id === laborId);
+        this.tallyForm.get('unit').patchValue(currentLabor.unit || '');
       }
     }
   }
@@ -511,10 +518,16 @@ export class TallyFormMultipleComponent implements OnInit {
    * selectDeal
    */
   public selectDeal = (deal: any): void => {
-    const findDeal = this.availableDeals.find(item => item.id_deal_validity === deal);
+    if (deal) {
+      const findDeal = this.availableDeals.find(item => item.id_deal_validity === deal);
 
-    if (findDeal) {
-      this.tallyForm.get('unit').patchValue(findDeal.unit_control);
+      if (findDeal) {
+        this.tallyForm.get('unit').patchValue(findDeal.unit_control);
+      }
+    } else {
+      const laborId = this.tallyForm.get('laborId').value;
+      const currentLabor = this.labors.find(l => l.id === laborId);
+      this.tallyForm.get('unit').patchValue(currentLabor.unit || '');
     }
   }
 
@@ -531,8 +544,8 @@ export class TallyFormMultipleComponent implements OnInit {
         const start = moment(item.startDate).toISOString();
         const end = moment(item.endDate).toISOString();
 
-        // return item.costCenterId === costCenterId && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
-        return item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
+        return item.costCenterId === costCenterId && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
+        // return item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
       });
 
       if (this.availableBonds.length > 0) {

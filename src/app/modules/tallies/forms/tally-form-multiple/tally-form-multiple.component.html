@@ -70,7 +70,7 @@
               <ion-label class="label-fx360" position="stacked">Trato</ion-label>
               <ion-item class="input-fx360-down max-h-unset">
                 <ion-select formControlName="dealValidity" placeholder="Trato" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet" (ionChange)="selectDeal($event.detail.value)">
-                  <ion-select-option [value]="null">Ninguno</ion-select-option>
+                  <ion-select-option value="null">Ninguno</ion-select-option>
                   <ion-select-option *ngFor="let deal of availableDeals" [value]="deal.id_deal_validity">{{ deal.name_deal }}</ion-select-option>
                 </ion-select>
               </ion-item>
@@ -84,7 +84,7 @@
               <ion-label class="label-fx360" position="stacked">Bono</ion-label>
               <ion-item class="input-fx360-down max-h-unset">
                 <ion-select formControlName="bondValidity" placeholder="Bono" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-                  <ion-select-option [value]="null">Ninguno</ion-select-option>
+                  <ion-select-option value="null">Ninguno</ion-select-option>
                   <ion-select-option *ngFor="let bond of availableBonds" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
                 </ion-select>
               </ion-item>

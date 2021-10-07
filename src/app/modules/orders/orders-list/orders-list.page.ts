@@ -250,10 +250,10 @@ export class OrdersListPage implements OnInit, OnDestroy {
       id: command.id
     };
 
-    this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
+    this._deliveryService.getNotificationHttpId(data).subscribe(async (success: any) => {
       this.orderDetail = success.resp;
       if (this.printIP) {
-        this.prints.printCommand(this.orderDetail);
+        await this.prints.printCommand(this.orderDetail);
       }
       this.loaderService.stopLoader();
     }, error => {

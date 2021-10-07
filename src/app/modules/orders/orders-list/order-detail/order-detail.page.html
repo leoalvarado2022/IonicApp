@@ -40,7 +40,7 @@
 
           <ion-button color="primary" class="button-class"
                       *ngIf="acceptedOrder(order) || (order?.origin !== 'FX360' && order?.status === 'pending')"
-                      [disabled]="loadingActionButton"
+                      [disabled]="loadingActionButton || loadingButton"
                       (click)="setNotificationStatus('accepted', order?.id_integration)">
             <span>Aceptar</span>
             <!--            <span *ngIf="loadingButton"><ion-spinner name="crescent"></ion-spinner></span>-->
@@ -48,19 +48,19 @@
 
           <ion-button color="warning" class="button-class"
                       *ngIf="order?.status === 'accepted'"
-                      [disabled]="loadingActionButton"
+                      [disabled]="loadingActionButton || loadingButton"
                       (click)="setNotificationStatus('done', order?.id_integration)">Cerrar
           </ion-button>
 
           <ion-button color="warning" class="button-class"
                       *ngIf="order?.status === 'delivering'"
-                      [disabled]="loadingActionButton"
+                      [disabled]="loadingActionButton || loadingButton"
                       (click)="setNotificationStatus('done', order?.id_integration)">Cerrar
           </ion-button>
 
           <ion-button color="tertiary" class="button-class"
                       style="margin-left: auto;" *ngIf="order?.status === 'done' && isAndroid"
-                      [disabled]="loadingActionButton"
+                      [disabled]="loadingActionButton || loadingButton"
                       (click)="printOrderCommand(order)">
             Comanda
           </ion-button>
@@ -214,50 +214,51 @@
       <ion-icon name="ellipsis-vertical-outline"></ion-icon>
     </ion-button>
     <ion-fab-list class="list-order-button">
-      <ion-button color="success" style="margin-left: auto;" [disabled]="loadingActionButton"
+      <ion-button color="success" style="margin-left: auto;"
+                  [disabled]="loadingActionButton || loadingButton"
                   *ngIf="order.origin === 'FX360' && order.status !== 'rejected' && ((!documents && !payments) || (documents && !payments) || (payments && !documents))"
                   (click)="deliveryPayment()">
         Pago
       </ion-button>
       <ion-button color="danger" style="margin-left: auto;" *ngIf="order?.status === 'pending'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="setNotificationStatus('rejected', order?.id_integration)">
         Rechazar
       </ion-button>
       <ion-button color="warning"
                   *ngIf="reprocess(order?.id_integration, order?.products) && order?.origin === 'JUSTO'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="httpReprocess()">
         Reprocesar
       </ion-button>
       <ion-button color="dark" style="margin-left: auto;" *ngIf="order?.status === 'accepted'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="setNotificationStatus('delivering', order?.id_integration)">
         Entregar
       </ion-button>
       <ion-button color="primary" style="margin-left: auto;"
                   *ngIf="order?.status !== 'pending' && order?.update_pos_status === 0  && order.status !== 'rejected' && modoPos && modoPos === '1'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="updatePosStatus(order)">
         Traspasar POS
       </ion-button>
       <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && !documents && payments && order.status !== 'rejected'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="printOrderDocument(order, false)">
         Documento
       </ion-button>
       <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && documents && order.status !== 'rejected'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="printOrderDocument(order)">
         Reimprimir
       </ion-button>
       <ion-button color="dark" style="margin-left: auto;" *ngIf="isAndroid && ticket && documents && order.status !== 'rejected'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="printTicket()">
         Ticket
       </ion-button>
       <ion-button color="tertiary" style="margin-left: auto;" *ngIf="isAndroid && order?.status !== 'done'"
-                  [disabled]="loadingActionButton"
+                  [disabled]="loadingActionButton || loadingButton"
                   (click)="printOrderCommand(order)">
         Comanda
       </ion-button>

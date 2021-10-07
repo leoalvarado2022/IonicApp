@@ -261,7 +261,6 @@ export class Prints {
    * @param port
    */
   commandFull(data: any, ip: string = '192.168.1.50', port: string = '9100') {
-  // commandFull(data: any, ip: string = '192.168.250.3', port: string = '8632') {
     const encoder = new EscPosEncoder();
     const result = encoder.initialize();
 
@@ -303,7 +302,6 @@ export class Prints {
    * @param port
    */
   commandLegal(data: any, img: string, ip: string = '192.168.1.50', port: string = '9100') {
-  // commandLegal(data: any, img: string, ip: string = '192.168.250.3', port: string = '8632') {
     return new Promise((resolve, reject) => {
       const encoder = new EscPosEncoder();
       const result = encoder.initialize();
@@ -457,7 +455,6 @@ export class Prints {
    * @param port
    */
   async printOptions(result: any, port: string = '9100', text: string = 'Desea Imprimir', ticket = false) {
-  // async printOptions(result: any, port: string = '8632', text: string = 'Desea Imprimir', ticket = false) {
     return new Promise((resolve, reject) => {
       this.printQuestion(text).then((success: boolean) => {
         if (success) {
@@ -553,8 +550,8 @@ export class Prints {
       const imgBase64PDF417 = success.response.xml;
       this.commandLegal(data, imgBase64PDF417, ip, port).then(async (commandResolve: any) => {
         try {
-          // this.printOptions(commandResolve, '9100', 'Desea Imprimir', true);
-          await this.printOptions(commandResolve, '8632', 'Desea Imprimir', true);
+          await this.printOptions(commandResolve, '9100', 'Desea Imprimir', true);
+          // await this.printOptions(commandResolve, '8632', 'Desea Imprimir', true);
           this.loaderButton.next(false);
           this.loaderService.stopLoader();
         } catch (err) {
@@ -573,7 +570,6 @@ export class Prints {
    * @param port
    */
   async printDocumentPdf417(data: any, ip: string = '192.168.1.50', port: string = '9100') {
-  // async printDocumentPdf417(data: any, ip: string = '192.168.250.3', port: string = '8632') {
     this.loaderButton.next(true);
 
     try {
@@ -629,7 +625,6 @@ export class Prints {
    * @description imprimir documento
    */
   async printDocumentProcess(document, ip: string = '192.168.1.50', port: string = '9100') {
-  // printDocumentProcess(document, ip: string = '192.168.250.3', port: string = '8632') {
     return new Promise(async (resolve, reject) => {
       // setTimeout(() => {
         this.loaderButton.next(true);
@@ -794,11 +789,10 @@ export class Prints {
    * @param port
    */
   async printCommand(data: any, ip: string = '192.168.1.50', port: string = '9100') {
-  // async printCommand(data: any, ip: string = '192.168.250.3', port: string = '8632') {
     const dataProcess = this.addNameProducts(data);
     const result: any = this.commandFull(dataProcess, ip, port);
-    // await this.printOptions(result, '9100', 'Desea Imprimir la Comanda');
-    await this.printOptions(result, '8632', 'Desea Imprimir la Comanda');
+    await this.printOptions(result, '9100', 'Desea Imprimir la Comanda');
+    // await this.printOptions(result, '8632', 'Desea Imprimir la Comanda');
   }
 
   /**

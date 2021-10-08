@@ -351,7 +351,8 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
             text: 'Aceptar',
             handler: (data) => resolve(data)
           }
-        ]
+        ],
+        backdropDismiss: false,
       }).then(alert => {
         alert.present();
       });

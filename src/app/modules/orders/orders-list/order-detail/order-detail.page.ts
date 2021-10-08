@@ -62,7 +62,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.skeleton = true;
-    this.loadNotifications().then();
+    this.loadNotifications().then(() => this.skeleton = false);
   }
 
   ngOnDestroy(): void {
@@ -80,7 +80,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
     this.prints.getGenerateDocument().subscribe((data) => {
       if (data) {
         setTimeout(() => {
-          this.loadNotifications().then();
+          this.loadNotifications().then(() => this.skeleton = false);
         }, 2000);
       }
     });
@@ -114,7 +114,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
       });
 
       if (this.id) {
-        this.loaderService.startLoader('Cargando...');
+        // this.loaderService.startLoader('Cargando...');
         const user = this.storeService.getActiveCompany();
 
         const data = {
@@ -124,7 +124,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
 
         this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
           this.order = success.resp;
-          this.skeleton = false;
+          // this.skeleton = false;
           if (this.order.documents && this.order.documents.length) {
             this.documents = true;
           }
@@ -134,10 +134,10 @@ export class OrderDetailPage implements OnInit, OnDestroy {
           this.prints.setOrder(success.resp);
           // this.printTicketChange();
           resolve(true);
-          this.loaderService.stopLoader();
+          // this.loaderService.stopLoader();
         }, error => {
           resolve(false);
-          this.loaderService.stopLoader();
+          // this.loaderService.stopLoader();
           this.httpService.errorHandler(error);
         });
       }
@@ -378,7 +378,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
    * @param order
    */
   async httpReprocess() {
-    this.loadingButtonFunction();
+    // this.loadingButtonFunction();
     this.loaderService.startLoader(`Obteniendo la orden con ${this.order.origin}`);
     // obtener la integraciones
     const integration = await this._storageSyncService.getIntegrationDelivery();
@@ -511,9 +511,11 @@ export class OrderDetailPage implements OnInit, OnDestroy {
    */
   printOrderCommand(command: any) {
     this.loadingButtonFunction();
-    this._storageSyncService.getPrintConfig().then(data => {
+    this._storageSyncService.getPrintConfig().then(async data => {
+      this.loaderService.startLoader(`Procesando...`);
       this.prints.printConfigActive(data, 'comanda');
-      this.prints.printCommand(command);
+      await this.prints.printCommand(command);
+      this.loaderService.stopLoader();
     });
   }
 
@@ -526,8 +528,10 @@ export class OrderDetailPage implements OnInit, OnDestroy {
     if (this.platform.is('android') ||
       this.platform.is('desktop') || this.platform.is('electron')) {
       this._storageSyncService.getPrintConfig().then(data => {
+        this.loaderService.startLoader(`Procesando...`);
         this.prints.printConfigActive(data, 'documento');
         this.prints.printTicketChange('9100');
+        this.loaderService.stopLoader();
       });
     }
   }
@@ -537,17 +541,18 @@ export class OrderDetailPage implements OnInit, OnDestroy {
    * @param command
    */
   printOrderDocument(command: any, reprint = true) {
+    this.loaderService.startLoader(`Procesando...`);
     this.loadingButtonFunction();
     if (this.platform.is('android') ||
       this.platform.is('desktop') || this.platform.is('electron')) {
-      this._storageSyncService.getPrintConfig().then(data => {
+      this._storageSyncService.getPrintConfig().then(async data => {
         this.prints.printConfigActive(data, 'documento');
         if (!reprint) {
           this.prints.printDocumentPdf417(command).then();
         } else {
           if (this.order.documents && this.order.documents.length) {
             this.prints.setOrder(this.order);
-            this.prints.printDocumentProcess(this.order.documents[0].type_document);
+            await this.prints.printDocumentProcess(this.order.documents[0].type_document);
           }
         }
       });

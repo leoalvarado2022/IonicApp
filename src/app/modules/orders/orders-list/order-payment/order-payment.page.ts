@@ -376,7 +376,8 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
     this._deliveryService.savePayment(data).subscribe((data: any) => {
       if (data.response && data.response.length && data.response[0] && data.response[0].respuesta && data.response[0].respuesta === 'ok') {
         this.isPaymentOnProcess = false;
-        this.loaderService.stopLoader();
+        // this.loaderService.stopLoader();
+        this.loaderService.startLoader('Procesando..');
         this.printOrderCommand(this.order);
         setTimeout(() => {
           if (this.order.type_order === 'Venta Directa') {
@@ -386,6 +387,7 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
               }
             });
           }
+          this.loaderService.stopLoader();
           this.printOrderDocument(this.order);
         }, 2000);
         this.goBack();
@@ -404,9 +406,9 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
    * @param command
    */
   printOrderCommand(command: any) {
-    this._storageSyncService.getPrintConfig().then(data => {
+    this._storageSyncService.getPrintConfig().then(async data => {
       this.prints.printConfigActive(data, 'comanda');
-      this.prints.printCommand(command);
+      await this.prints.printCommand(command);
     });
   }
 

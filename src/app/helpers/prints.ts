@@ -439,47 +439,62 @@ export class Prints {
     return true;
   }
 
+  binArrayToJson = (binArray) => {
+    if (binArray?.length > 0) {
+      let str = '';
+      for (let i = 0; i < binArray.length; i++) {
+        str += String.fromCharCode(parseInt(binArray[i], 10));
+      }
+      console.log('str ::: ', str);
+    }
+  }
+
   /**
    * @description formas de imprimir un documento
    * @param result
    * @param port
    */
-  printOptions(result: any, port: string = '9100', text: string = 'Desea Imprimir', ticket = false) {
-    this.printQuestion(text).then((success: boolean) => {
-      if (success) {
-        if (this.getPrintBluetooth()) {
-          this.connectBT();
-          setTimeout(() => {
-            if (this.isConnected) {
-              this.printBT(result, this.getValueBP());
-            }
-          }, 3000);
-          setTimeout(() => {
-            if (this.isConnected) {
-              this.printTicketChange(port, true);
-            }
-          }, 5000);
-        } else if (this.getPrintIP()) {
-          for (let i = 0; i < this.getCopy(); ++i) {
-            this.loaderService.startLoader(`Imprimiendo...`);
+  async printOptions(result: any, port: string = '9100', text: string = 'Desea Imprimir', ticket = false) {
+    return new Promise((resolve, reject) => {
+      this.printQuestion(text).then((success: boolean) => {
+        if (success) {
+          if (this.getPrintBluetooth()) {
+            this.connectBT();
             setTimeout(() => {
-              this.loaderService.stopLoader();
-            }, 2500);
-            if (i === 0) {
-              setTimeout(() => {
-                this.sockets.write(result, this.getValueBP(), port);
-                if (this.getTicketChangeBP() === 'si' && ticket) {
-                  this.printTicketChange(port);
-                }
-              }, 2000);
-            } else {
-              setTimeout(() => {
-                this.sockets.write(result, this.getValueBP(), port);
-              }, 4000 * i);
+              if (this.isConnected) {
+                this.printBT(result, this.getValueBP());
+              }
+            }, 3000);
+            setTimeout(() => {
+              if (this.isConnected) {
+                this.printTicketChange(port, true);
+              }
+            }, 5000);
+          } else if (this.getPrintIP()) {
+            for (let i = 0; i < this.getCopy(); ++i) {
+              this.loaderService.startLoader(`Imprimiendo...`);
+              // setTimeout(() => {
+              //   this.loaderService.stopLoader();
+              // }, 2500);
+              if (i === 0) {
+                setTimeout(() => {
+                  this.binArrayToJson(result);
+                  this.sockets.write(result, this.getValueBP(), port);
+                  if (this.getTicketChangeBP() === 'si' && ticket) {
+                    this.printTicketChange(port);
+                  }
+                  resolve();
+                }, 2000);
+              } else {
+                setTimeout(() => {
+                  this.sockets.write(result, this.getValueBP(), port);
+                  resolve();
+                }, 4000 * i);
+              }
             }
           }
         }
-      }
+      });
     });
   }
 
@@ -533,8 +548,16 @@ export class Prints {
 
     this.getHttpPDF417(dataHttp).subscribe((success: any) => {
       const imgBase64PDF417 = success.response.xml;
-      this.commandLegal(data, imgBase64PDF417, ip, port).then((commandResolve: any) => {
-        this.printOptions(commandResolve, '9100', 'Desea Imprimir', true);
+      this.commandLegal(data, imgBase64PDF417, ip, port).then(async (commandResolve: any) => {
+        try {
+          await this.printOptions(commandResolve, '9100', 'Desea Imprimir', true);
+          // await this.printOptions(commandResolve, '8632', 'Desea Imprimir', true);
+          this.loaderButton.next(false);
+          this.loaderService.stopLoader();
+        } catch (err) {
+          this.loaderButton.next(false);
+          this.loaderService.stopLoader();
+        }
       });
     });
   }
@@ -548,64 +571,95 @@ export class Prints {
    */
   async printDocumentPdf417(data: any, ip: string = '192.168.1.50', port: string = '9100') {
     this.loaderButton.next(true);
-    this.loaderService.startLoader(`Procesando...`);
 
-    const document: string = 'BOEV';
+    try {
+      const document: string = 'BOEV';
 
-    setTimeout(() => {
-      this.loaderService.stopLoader();
-    }, 3000);
+      /*setTimeout(() => {
+        this.loaderService.stopLoader();
+      }, 3000);*/
 
-    // variable para generar la boleta
-    let generate = false;
+      // variable para generar la boleta
+      let generate = false;
 
-    // buscar si tiene documentos
-    if (this.order.documents && this.order.documents.length) {
-      // comprobar si ya existe el documento
-      const documentAvailable = this.order.documents.find(value => value.type_document === document);
-      if (!documentAvailable) {
-        generate = await this.questionGenerate('Desea generar el Documento');
+      // buscar si tiene documentos
+      if (this.order.documents && this.order.documents.length) {
+        // comprobar si ya existe el documento
+        const documentAvailable = this.order.documents.find(value => value.type_document === document);
+        if (!documentAvailable) {
+          generate = await this.questionGenerate('Desea generar el Documento #' + data.id);
+          if (generate) {
+            this.loaderService.startLoader(`Procesando...`);
+            await this.generateDocumentDB(data);
+          }
+        }
+      } else {
+        generate = await this.questionGenerate('Desea generar el Documento #' + data.id);
         if (generate) {
+          this.loaderService.startLoader(`Procesando...`);
           await this.generateDocumentDB(data);
         }
       }
-    } else {
-      generate = await this.questionGenerate('Desea generar el Documento');
+      // si se genera la boleta
       if (generate) {
-        await this.generateDocumentDB(data);
+        this.loaderService.startLoader(`Imprimiendo...`);
+        await this.printDocumentProcess(document, ip, port);
+        // this.loaderButton.next(false);
+        // this.loaderService.stopLoader();
+        /*this.printDocumentProcess(document, ip, port).then((dataProcess) => {
+          console.log('1 imprimio', dataProcess);
+          this.binArrayToJson(dataProcess);
+          this.loaderButton.next(false);
+          this.loaderService.stopLoader();
+        });*/
+        // console.log('1 imprimio');
       }
-    }
-    this.loaderButton.next(false);
-    // si se genera la boleta
-    if (generate) {
-      this.printDocumentProcess(document, ip, port);
+      this.loaderButton.next(false);
+    } catch (err) {
+      this.loaderButton.next(false);
+      this.loaderService.stopLoader();
     }
   }
 
   /**
    * @description imprimir documento
    */
-  printDocumentProcess(document, ip: string = '192.168.1.50', port: string = '9100') {
-    // esperar el delay para cambiar de datos e imprimir
-    setTimeout(() => {
-      // buscar si tiene documentos
-      if (this.order.documents && this.order.documents.length) {
-        // comprobar si ya existe el documento
-        const documentAvailable = this.order.documents.find(value => value.type_document === document);
-        // procesar la data
-        const dataProcess = this.addNameProducts(this.order);
-        // si existe envia la data
-        if (documentAvailable) {
-          dataProcess.documentsAvailable = documentAvailable;
-          this.getHttpHeaderDocument({order: dataProcess.id}).subscribe((success: any) => {
+  async printDocumentProcess(document, ip: string = '192.168.1.50', port: string = '9100') {
+    return new Promise(async (resolve, reject) => {
+      // setTimeout(() => {
+        this.loaderButton.next(true);
+        // buscar si tiene documentos
+        if (this.order.documents && this.order.documents.length) {
+          // comprobar si ya existe el documento
+          const documentAvailable = this.order.documents.find(value => value.type_document === document);
+          // procesar la data
+          const dataProcess = this.addNameProducts(this.order);
+          // si existe envia la data
+          if (documentAvailable) {
+            dataProcess.documentsAvailable = documentAvailable;
+            const success: any = await this.getHttpHeaderDocument({order: dataProcess.id}).toPromise();
             if (success && success.resp && success.resp.length) {
               dataProcess.header = success.resp[0];
               this.printPdf417(dataProcess, ip, port);
+              resolve(dataProcess);
+              // this.loaderButton.next(false);
             }
-          });
+            /*this.getHttpHeaderDocument({order: dataProcess.id}).subscribe((success: any) => {
+              if (success && success.resp && success.resp.length) {
+                dataProcess.header = success.resp[0];
+                console.log('2 (printDocumentProcess) dataProcess ::: ', dataProcess);
+                this.printPdf417(dataProcess, ip, port);
+                console.log('2 imprimio');
+                resolve(dataProcess);
+                // this.loaderButton.next(false);
+              }
+            });*/
+          }
         }
-      }
-    }, 2500);
+        resolve();
+      // }, 2500);
+    });
+    // esperar el delay para cambiar de datos e imprimir
   }
 
   /**
@@ -613,104 +667,118 @@ export class Prints {
    * @param data
    */
   async generateDocumentDB(data) {
-    const document: string = 'BOEV';
+    try {
+      const document: string = 'BOEV';
 
-    // obtener el usuario logueado
-    const user: any = this.storeService.getUser();
+      // obtener el usuario logueado
+      const user: any = this.storeService.getUser();
 
-    const getSN: any = {
-      user: +user.id,
-      entity: +data.id_entities,
-      document
-    };
+      const getSN: any = {
+        user: +user.id,
+        entity: +data.id_entities,
+        document
+      };
 
-    // obtener el numero sugerido
-    const suggestNumber: any = await this.deliveryService.getSuggestNumber(getSN);
+      // obtener el numero sugerido
+      const suggestNumber: any = await this.deliveryService.getSuggestNumber(getSN);
 
-    // obtener la integraciones
-    const integration = await this.storageSyncService.getIntegrationDelivery();
-    // obtener los folios
-    const folios = await this.storageSyncService.getFoliosConfig();
+      // obtener la integraciones
+      const integration = await this.storageSyncService.getIntegrationDelivery();
+      // obtener los folios
+      const folios = await this.storageSyncService.getFoliosConfig();
 
-    // buscar productos que sean de tipo item nada mas
-    const itemsProducts = data.products.filter(value => value.type === 'ITEM');
+      // buscar productos que sean de tipo item nada mas
+      const itemsProducts = data.products.filter(value => value.type === 'ITEM');
 
-    // si existe un numero sugerido y si hay integraciones para dte
-    if (folios && folios.length && suggestNumber && suggestNumber.resp &&
-      itemsProducts && itemsProducts.length &&
-      suggestNumber.resp.number && integration && integration.length) {
-      getSN.folio = suggestNumber.resp.number;
+      // si existe un numero sugerido y si hay integraciones para dte
+      if (folios && folios.length && suggestNumber && suggestNumber.resp &&
+        itemsProducts && itemsProducts.length &&
+        suggestNumber.resp.number && integration && integration.length) {
+        getSN.folio = suggestNumber.resp.number;
 
 
-      // valida el numero sugerido
-      const validate: any = await this.deliveryService.getValidateFolio(getSN);
+        // valida el numero sugerido
+        const validate: any = await this.deliveryService.getValidateFolio(getSN);
 
-      // buscar la integracion depende el dte
-      const integ = integration.find(value => value.id_entity === getSN.entity && value.type_integration === 'DTE');
-      const foliosIntegration = folios.find(value => value.entity_id === getSN.entity && value.type_dte === 39);
+        // buscar la integracion depende el dte
+        const integ = integration.find(value => value.id_entity === getSN.entity && value.type_integration === 'DTE');
+        const foliosIntegration = folios.find(value => value.entity_id === getSN.entity && value.type_dte === 39);
 
-      // si existe un numero valido
-      if (foliosIntegration && foliosIntegration.xmlCaf && foliosIntegration.xmlCaf !== ''
-        && integ && validate && validate.resp &&
-        validate.resp.available && validate.resp.alert > 0) {
+        // si existe un numero valido
+        if (foliosIntegration && foliosIntegration.xmlCaf && foliosIntegration.xmlCaf !== ''
+          && integ && validate && validate.resp &&
+          validate.resp.available && validate.resp.alert > 0) {
 
-        // si quedan pocos folios
-        if (validate.resp.available !== 'ok') {
-          this.toastService.warningToast(validate.resp.available.toLocaleUpperCase());
-        }
-        // obtener el tocken
-        const token = integ.api_key;
-        // get data dte
-        const dte = {
-          transmitter_rut: data.rut_format,
-          first_item: itemsProducts[0].name_product,
-          total: data.value_total,
-          entity_id: data.id_entities,
-          type_dte: 39,
-          folio: validate.resp.validate,
-          xmlCaf: foliosIntegration.xmlCaf
-        };
-
-        // obtener el ted que se enviara con el documento
-        const tedApiDTE: any = await this.deliveryService.getHttpTEDDTE(dte, token);
-
-        // si existe el documento ted y ademas de eso existe el xml
-        if (tedApiDTE && tedApiDTE.integration && tedApiDTE.integration.ted && tedApiDTE.integration.ted.xml) {
-          // guardar una boleta
-          const folio: number = validate.resp.validate;
-          const user: number = getSN.user;
-          const entity: number = getSN.entity;
-          const order_id: number = data.id;
-          const total: number = data.value_total;
-
-          // object para grabar el documento
-          const dataSaveDocument = {
-            folio,
-            document,
-            user,
-            entity,
-            order_id,
-            total,
-            order: data,
-            xml: tedApiDTE.integration.ted.xml
+          // si quedan pocos folios
+          if (validate.resp.available !== 'ok') {
+            this.toastService.warningToast(validate.resp.available.toLocaleUpperCase());
+          }
+          // obtener el tocken
+          const token = integ.api_key;
+          // get data dte
+          const dte = {
+            transmitter_rut: data.rut_format,
+            first_item: itemsProducts[0].name_product,
+            total: data.value_total,
+            entity_id: data.id_entities,
+            type_dte: 39,
+            folio: validate.resp.validate,
+            xmlCaf: foliosIntegration.xmlCaf
           };
-          // guardar el documento
-          const saveDocument: any = await this.deliveryService.saveDocument(dataSaveDocument);
-          // si el documento esta ok
-          if (saveDocument.response && saveDocument.response.length && saveDocument.response[0].respuesta === 'ok') {
-            this.isGenerateDocument.next(true);
-          } else {
-            this.toastService.warningToast(saveDocument.response);
+
+          // obtener el ted que se enviara con el documento
+          const tedApiDTE: any = await this.deliveryService.getHttpTEDDTE(dte, token);
+
+          // si existe el documento ted y ademas de eso existe el xml
+          if (tedApiDTE && tedApiDTE.integration && tedApiDTE.integration.ted && tedApiDTE.integration.ted.xml) {
+            // guardar una boleta
+            const folio: number = validate.resp.validate;
+            const user: number = getSN.user;
+            const entity: number = getSN.entity;
+            const order_id: number = data.id;
+            const total: number = data.value_total;
+
+            // object para grabar el documento
+            const dataSaveDocument = {
+              folio,
+              document,
+              user,
+              entity,
+              order_id,
+              total,
+              order: data,
+              xml: tedApiDTE.integration.ted.xml
+            };
+            // guardar el documento
+            const saveDocument: any = await this.deliveryService.saveDocument(dataSaveDocument);
+
+            const userCompany = this.storeService.getActiveCompany();
+            const dataOrder = {
+              user: userCompany.user,
+              id: data.id,
+            };
+            const orderWithDocument: any = await this.deliveryService.getNotificationHttpId(dataOrder).toPromise();
+            this.setOrder(orderWithDocument.resp);
+
+            // si el documento esta ok
+            if (saveDocument.response && saveDocument.response.length && saveDocument.response[0].respuesta === 'ok') {
+              this.isGenerateDocument.next(true);
+            } else {
+              this.toastService.warningToast(saveDocument.response);
+            }
+            // si el documento tiene alertas
+            if (saveDocument.response && saveDocument.response.length && saveDocument.response.alert) {
+              this.toastService.warningToast(saveDocument.response.alert);
+            }
           }
-          // si el documento tiene alertas
-          if (saveDocument.response && saveDocument.response.length && saveDocument.response.alert) {
-            this.toastService.warningToast(saveDocument.response.alert);
-          }
+        } else {
+          // si no hay folios
+          this.toastService.errorToast(validate.resp.available.toLocaleUpperCase());
         }
-      } else {
-        // si no hay folios
-        this.toastService.errorToast(validate.resp.available.toLocaleUpperCase());
       }
+    } catch (err) {
+      this.loaderService.stopLoader();
+      this.loaderButton.next(false);
     }
   }
 
@@ -720,10 +788,11 @@ export class Prints {
    * @param ip
    * @param port
    */
-  printCommand(data: any, ip: string = '192.168.1.50', port: string = '9100') {
+  async printCommand(data: any, ip: string = '192.168.1.50', port: string = '9100') {
     const dataProcess = this.addNameProducts(data);
     const result: any = this.commandFull(dataProcess, ip, port);
-    this.printOptions(result, '9100', 'Desea Imprimir la Comanda');
+    await this.printOptions(result, '9100', 'Desea Imprimir la Comanda');
+    // await this.printOptions(result, '8632', 'Desea Imprimir la Comanda');
   }
 
   /**

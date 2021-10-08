@@ -18,6 +18,7 @@ import { Consumption } from './../../../shared/services/store/store-interface';
 import { throttle } from 'rxjs/operators';
 import { OrderSyncService } from '../order-sync/order-sync.service';
 import { ApplicationRegistryService } from '../../application-registry/application-registry.service';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -107,13 +108,13 @@ export class StepperService {
         this.onlySyncConsumptions(validConsumptions);
       }
 
-      // If Applications        
-      const validAplications = await this.orderSyncService.getApplicationsPendingToSave();      
+      // If Applications
+      const validAplications = await this.orderSyncService.getApplicationsPendingToSave();
       if (validAplications.length && this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Registros de Aplicación' });
         this.stepsArraySubject.next(this.stepsArray);
         this.onlySyncApplications(validAplications);
-      }      
+      }
 
       // Sync data
       if (this.syncError === null) {
@@ -183,7 +184,7 @@ export class StepperService {
   /**
    * onlySyncTallies
    */
-  public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {    
+  public onlySyncTallies = async (talliesBuilded: Array<Tally>) => {
     const log = await this.syncTallies(talliesBuilded);
 
     if (log instanceof HttpErrorResponse) {
@@ -228,25 +229,63 @@ export class StepperService {
   private buildTalliesArray = (): Promise<any> => {
     return this.tallySyncService.getTalliesToRecord().then((talliesToRecord: Array<Tally>) => {
       if (talliesToRecord) {
-        return talliesToRecord.map(item => {
+        const tmpArray = talliesToRecord.map(item => {
+          let validity = 0;
+          const worker = this.storeService.getWorkers().find(w => w.id === item.workerId);
+
+          if (worker) {
+            const start = moment(worker?.startDate).toISOString();
+            const end = moment(worker?.endDate).toISOString();
+
+            if (worker.validity > 0 && moment(item.date).isBetween(start, end)) {
+              validity = worker.validity;
+            }
+          }
+
           if (item.status === 'delete') {
-            return Object.assign({}, item, { order: 1 });
+            return Object.assign({}, item, { validity, order: 1 });
           }
 
           if (item.status === 'edit') {
-            return Object.assign({}, item, { order: 2 });
+            return Object.assign({}, item, { validity, order: 2 });
           }
 
           if (item.status === 'new') {
-            return Object.assign({}, item, { order: 3 });
+            return Object.assign({}, item, { validity, order: 3 });
           }
 
-          return item;
+          return Object.assign({}, item, { validity });
+        });
+
+        return tmpArray.filter(item => {
+          const worker = this.storeService.getWorkers().find(w => w.id === item.workerId);
+          return worker?.validity > 0;
         });
       }
 
       return [];
     });
+    // return this.tallySyncService.getTalliesToRecord().then((talliesToRecord: Array<Tally>) => {
+    //   if (talliesToRecord) {
+    //     return talliesToRecord.map(item => {
+    //       if (item.status === 'delete') {
+    //         return Object.assign({}, item, { order: 1 });
+    //       }
+    //
+    //       if (item.status === 'edit') {
+    //         return Object.assign({}, item, { order: 2 });
+    //       }
+    //
+    //       if (item.status === 'new') {
+    //         return Object.assign({}, item, { order: 3 });
+    //       }
+    //
+    //       return item;
+    //     });
+    //   }
+    //
+    //   return [];
+    // });
   }
 
   /**
@@ -276,7 +315,7 @@ export class StepperService {
   /**
    * onlySyncDevices
    */
-  public onlySyncDevices = async (devicesToRecord: Array<any>) => {    
+  public onlySyncDevices = async (devicesToRecord: Array<any>) => {
     const log = await this.syncDevices(devicesToRecord);
 
     if (log instanceof HttpErrorResponse) {
@@ -473,12 +512,12 @@ export class StepperService {
    * onlySyncApplications
    * @param applications
    */
-  public onlySyncApplications = async (applications: Array<any> = []) => {    
+  public onlySyncApplications = async (applications: Array<any> = []) => {
     const activeCompany = this.storeService.getActiveCompany();
 
     for (let index = 0; index < applications.length; index++) {
       const element = applications[index];
-            
+
       const application = Object.assign({}, element[0], {
         humidity: element[2]["humidity"],
         wind: element[2]["wind"],
@@ -487,13 +526,13 @@ export class StepperService {
         startDate: element[3]["startDate"],
         endDate: element[3]["endDate"],
       });
-      
+
       this.applicationRegistryService.storeApplication(application, element[4], element[1], activeCompany.user).subscribe(success => {
         this.orderSyncService.removeTempApplication(application.tempId);
       }, error => {
         this.httpService.errorHandler(error);
         this.syncError = true;
-      });      
+      });
     }
   }
 

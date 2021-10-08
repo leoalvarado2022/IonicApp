@@ -36,7 +36,8 @@ export class AlertService {
             text: 'Si',
             handler: () => resolve(true)
           }
-        ]
+        ],
+        backdropDismiss: false,
       }).then(alert => {
         alert.present();
       });

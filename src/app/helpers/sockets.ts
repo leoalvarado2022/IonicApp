@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ToastService} from '../shared/services/toast/toast.service';
+import {LoaderService} from '../shared/services/loader/loader.service';
 
 declare var Socket: any;
 
@@ -8,8 +9,10 @@ declare var Socket: any;
 })
 export class Sockets {
 
-  constructor(public toastServie: ToastService) {
-  }
+  constructor(
+    public toastServie: ToastService,
+    private loaderService: LoaderService,
+  ) {}
 
   /**
    * @description write socket
@@ -27,6 +30,7 @@ export class Sockets {
           // socket.close();
         }, (err) => {
         console.log(err);
+        this.loaderService.stopLoader();
         this.toastServie.errorToast(err + ' Error al Imprimir, revisar la configuración');
         }
       );

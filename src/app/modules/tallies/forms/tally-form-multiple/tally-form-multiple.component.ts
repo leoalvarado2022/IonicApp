@@ -242,6 +242,8 @@ export class TallyFormMultipleComponent implements OnInit {
    */
   public selectLabor = (labor: any): void => {
     this.tallyForm.get('laborId').patchValue(labor.id);
+    this.tallyForm.get('bondValidity').patchValue('');
+    this.tallyForm.get('dealValidity').patchValue('');
     this.laborName = labor.name;
     this.filteredLabors = [];
 
@@ -254,6 +256,9 @@ export class TallyFormMultipleComponent implements OnInit {
    */
   public cleanLaborSearch = (): void => {
     this.tallyForm.get('laborId').patchValue('');
+    this.tallyForm.get('unit').patchValue('');
+    this.tallyForm.get('bondValidity').patchValue('');
+    this.tallyForm.get('dealValidity').patchValue('');
     this.filteredLabors = [];
     this.laborName = null;
 
@@ -301,6 +306,8 @@ export class TallyFormMultipleComponent implements OnInit {
   public submitForm = async () => {
     const formData = Object.assign({}, this.tallyForm.value);
     formData.notes = this.cleanStringService.replaceDoubleQuotes(formData.notes);
+    formData.dealValidity = formData.dealValidity === 'null' ? null : formData.dealValidity;
+    formData.bondValidity = formData.bondValidity === 'null' ? null : formData.bondValidity;
 
     for (const worker of this.workers) {
       if (this.numberOfCases.length === 0) {
@@ -505,7 +512,11 @@ export class TallyFormMultipleComponent implements OnInit {
       });
 
       if (this.availableDeals.length > 0) {
-        this.tallyForm.get('dealValidity').patchValue(this.availableDeals[0].id_deal_validity);
+        if (this.updateTallies) {
+          this.tallyForm.get('dealValidity').patchValue(String(this.updateTallies[0].dealValidity) === 'null' ? String(this.updateTallies[0].dealValidity) : this.updateTallies[0].dealValidity);
+        } else {
+          this.tallyForm.get('dealValidity').patchValue(this.availableDeals[0].id_deal_validity);
+        }
         this.tallyForm.get('unit').patchValue(this.availableDeals[0].unit_control);
       } else {
         const currentLabor = this.labors.find(l => l.id === laborId);
@@ -549,7 +560,11 @@ export class TallyFormMultipleComponent implements OnInit {
       });
 
       if (this.availableBonds.length > 0) {
-        this.tallyForm.get('bondValidity').patchValue(this.availableBonds[0].bondValidity);
+        if (this.updateTallies) {
+          this.tallyForm.get('bondValidity').patchValue(String(this.updateTallies[0].bondValidity) === 'null' ? String(this.updateTallies[0].bondValidity) : this.updateTallies[0].bondValidity);
+        } else {
+          this.tallyForm.get('bondValidity').patchValue(this.availableBonds[0].bondValidity);
+        }
       }
     }
   }

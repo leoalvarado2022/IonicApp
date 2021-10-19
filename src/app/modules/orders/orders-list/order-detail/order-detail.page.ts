@@ -527,10 +527,11 @@ export class OrderDetailPage implements OnInit, OnDestroy {
     this.loadingButtonFunction();
     if (this.platform.is('android') ||
       this.platform.is('desktop') || this.platform.is('electron')) {
+      this.loaderService.startLoader(`Imprimiendo...`);
       this._storageSyncService.getPrintConfig().then(data => {
-        this.loaderService.startLoader(`Procesando...`);
         this.prints.printConfigActive(data, 'documento');
         this.prints.printTicketChange('9100');
+        // this.prints.printTicketChange('8632');
         this.loaderService.stopLoader();
       });
     }

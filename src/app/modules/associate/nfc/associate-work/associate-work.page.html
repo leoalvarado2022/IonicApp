@@ -18,22 +18,31 @@
 <ion-content>
 
   <ion-grid>
-    <ion-row *ngIf="filtered.length">
-      <ion-card *ngFor="let worker of filtered" (click)="onPress(worker)">
+    <ng-container *ngIf="!loading">
+      <ion-row *ngIf="filtered.length">
+        <ion-card *ngFor="let worker of filtered" (click)="onPress(worker)">
+          <ion-card-content>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="2">
+                <img src="assets/imgs/cuadrillas-icon-item.png">
+              </ion-col>
+              <ion-col size="10">
+                <div class="title-row" style="font-size: 18px;">
+                  {{ worker.name }}
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-row>
+    </ng-container>
+
+    <ion-row *ngIf="loading">
+      <ion-card>
         <ion-card-content>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="2">
-              <img src="assets/imgs/cuadrillas-icon-item.png">
-            </ion-col>
-            <ion-col size="10">
-              <div class="title-row" style="font-size: 18px;">
-                {{ worker.name }}
-              </div>
-            </ion-col>
-          </ion-row>
+          Asociando trabajador...
         </ion-card-content>
       </ion-card>
-
     </ion-row>
   </ion-grid>
 

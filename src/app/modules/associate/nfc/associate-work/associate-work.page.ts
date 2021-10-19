@@ -4,6 +4,7 @@ import { StoreService } from '../../../../shared/services/store/store.service';
 import * as moment from 'moment';
 import { StorageSyncService } from '../../../../services/storage/storage-sync/storage-sync.service';
 import { DeviceSyncService } from '../../../../services/storage/device-sync/device-sync.service';
+import {StepperService} from '../../../../services/storage/stepper/stepper.service';
 
 @Component({
   selector: 'app-associate-work',
@@ -15,13 +16,15 @@ export class AssociateWorkPage implements OnInit {
   workers: any;
   filtered = [];
   tag = [];
+  loading = false;
 
   constructor(
     public modalController: ModalController,
     private storeService: StoreService,
     public _storageSyncService: StorageSyncService,
     private _deviceSyncService: DeviceSyncService,
-    private navParams: NavParams
+    private navParams: NavParams,
+    public stepperService: StepperService,
   ) {
     this.tag = this.navParams.get('tag');
   }
@@ -95,11 +98,14 @@ export class AssociateWorkPage implements OnInit {
     body.id_link = worker.id;
     body.link = worker.name;
     body.tempId = tempId;
-    body.tempId = tempId;
+    // body.tempId = tempId;
     body.date = moment().format('YYYY-MM-DD HH:mm:ss');
 
     if (body) {
+      this.loading = true;
       await this._deviceSyncService.addDevicesToRecord(body);
+      await this.stepperService.syncAll();
+      this.loading = false;
     }
 
     await this.closeWork(body);

@@ -25,7 +25,7 @@ export class DeviceSyncService {
    */
   public addDevicesToRecord = (preDevice: any): Promise<Array<any>> => {
     return this.getDevicesToRecord().then((devicesToRecord: Array<any>) => {
-      if (preDevice.delete) {
+      if (preDevice?.delete) {
         const toRemoved = devicesToRecord.filter(item => item.tempId !== preDevice.tempId);
         return this.storage.set(StorageKeys.DevicesToRecord, toRemoved);
       } else {

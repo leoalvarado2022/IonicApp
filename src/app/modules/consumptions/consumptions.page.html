@@ -11,7 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never" class="production"
       (ionChange)="searchConsumption($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
@@ -39,9 +39,9 @@
   <ng-container *ngIf="!isLoading; else loading">
     <ion-virtual-scroll [items]="filteredConsumptions">
       <ion-item-sliding #slide *virtualItem="let consumption">
-        <ion-item class="slide-item" lines="none">
-          <ion-card>
-            <ion-item lines="full" class="full-maquinaria">
+        <ion-item class="bg-transparent slide-item-con" lines="none">
+          <ion-card class="card-item">
+            <ion-item lines="none" class="header-item">
               <ion-badge slot="start">{{ consumption.warehouseOriginCode | uppercase }}</ion-badge>
               <ion-label>{{ consumption.warehouseOriginName | titlecase }}</ion-label>
               <ion-icon *ngIf="consumption.tempId" name="server" slot="end" color="danger"></ion-icon>
@@ -54,7 +54,7 @@
 
               <p *ngIf="consumption.unitName"> <strong>Unidad:</strong> {{ consumption.unitName | titlecase }}</p>
 
-              <div class="ion-float-end">
+              <div class="ion-text-right">
                 <ion-chip>
                   <ion-icon name="clipboard" color="primary"></ion-icon>
                   <ion-label>{{ consumption.quantity }}</ion-label>
@@ -85,7 +85,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" [disabled]="isLoading" (click)="createConsumption()">
+  <ion-button expand="block" class="btn-app" [disabled]="isLoading" (click)="createConsumption()">
     Crear
   </ion-button>
 </ion-footer>

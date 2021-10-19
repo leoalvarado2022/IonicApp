@@ -3,7 +3,7 @@
     <name>FX360</name>
     <description>Aplicacion para la gestion de varios servicios</description>
     <author email="desarrollo@primetec.cl" href="http://primetec.cl/">Primetec Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="https://localhost:8100" />
     <access origin="*" />
     <access origin="*" />
     <allow-navigation href="*" />
@@ -201,4 +201,5 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^4.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <allow-navigation href="http://localhost:8100" sessionid="7c41c3bc" />
+    <allow-navigation href="https://localhost:8100" sessionid="5ca0c655" />
 </widget>

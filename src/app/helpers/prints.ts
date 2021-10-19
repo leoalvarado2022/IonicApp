@@ -520,13 +520,14 @@ export class Prints {
     // construir para imprimir
     const result = this.ticketChangeFull(data);
 
-    setTimeout(() => {
+    // setTimeout(() => {
       if (!bluetooth) {
+        this.binArrayToJson(result);
         this.sockets.write(result, this.getValueBP(), port);
       } else {
         this.printBT(result, this.getValueBP());
       }
-    }, 3000);
+    // }, 3000);
   }
 
   /**
@@ -773,6 +774,8 @@ export class Prints {
           }
         } else {
           // si no hay folios
+          this.loaderService.stopLoader();
+          this.loaderButton.next(false);
           this.toastService.errorToast(validate.resp.available.toLocaleUpperCase());
         }
       }

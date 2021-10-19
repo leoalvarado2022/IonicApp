@@ -14,7 +14,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never" class="production"
       (ionChange)="searchMachinery($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
@@ -41,9 +41,9 @@
   <ng-container *ngIf="!isLoading; else loading">
     <ion-virtual-scroll [items]="filteredMachinery">
       <ion-item-sliding #slide *virtualItem="let machinery">
-        <ion-item class="slide-item" lines="none">
-          <ion-card>
-            <ion-item lines="full" class="full-maquinaria">
+        <ion-item class="bg-transparent slide-item-mac" lines="none">
+          <ion-card class="card-item">
+            <ion-item lines="none" class="header-item">
               <ion-badge slot="start">{{ machinery.costCenterCode | uppercase }}</ion-badge>
               <ion-label>{{ machinery.costCenterName | titlecase }}</ion-label>
               <ion-icon *ngIf="machinery.tempId" name="server" slot="end" color="danger"></ion-icon>
@@ -57,7 +57,7 @@
                 <strong>Implemento:</strong> {{ machinery.implementCostCenterName | titlecase }}
               </p>
 
-              <div class="ion-float-end">
+              <div class="ion-text-right">
                 <ion-chip>
                   <ion-icon name="clipboard" color="primary"></ion-icon>
                   <ion-label>{{ machinery.quantity }}</ion-label>
@@ -93,7 +93,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="createMachinery()" [disabled]="isLoading">
+  <ion-button expand="block" class="btn-app" (click)="createMachinery()" [disabled]="isLoading">
     Crear
   </ion-button>
 </ion-footer>

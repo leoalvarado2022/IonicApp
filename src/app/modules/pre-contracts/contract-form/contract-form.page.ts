@@ -51,7 +51,7 @@ export class ContractFormPage implements OnInit, OnDestroy {
     setLabel: 'Ok',  // default 'Set'
     todayLabel: 'Hoy', // default 'Today'
     closeLabel: 'Cancelar', // default 'Close'
-    titleLabel: 'Fecha de entrega', // default null
+    titleLabel: 'Fecha de nacimiento', // default null
     monthsList: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
     weeksList: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
     dateFormat: 'DD/MM/YYYY', // default DD MMM YYYY

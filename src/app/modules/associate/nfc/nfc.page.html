@@ -39,9 +39,8 @@
   <ion-grid>
     <ion-row *ngIf="!scanned.length && !notSupported; else notSupportedElse">
       <ion-col col-12>
-        <ion-button color="warning" size="large" expand="full" class="ion-text-capitalize">
-          <ion-spinner style="position: absolute;left: 15%;"></ion-spinner>
-          Buscando Dispositivos
+        <ion-button color="warning" size="large" expand="full" class="ion-text-capitalize btn-app">
+          Acerque su dispositivo
         </ion-button>
       </ion-col>
     </ion-row>
@@ -61,7 +60,7 @@
   <ion-grid>
     <ion-row *ngIf="scanned.length > 0">
       <ion-card *ngFor="let device of scanned" (click)="onPress(device)"
-                [class.selected]="selected === device"
+                [class.selected]="selected?.id_device === device.id_device"
                 [class.error]="error && device?.id < 1"
                 [class.sync]="sync && device?.id < 1">
         <ion-card-content>

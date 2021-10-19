@@ -14,117 +14,127 @@
 <ion-content>
 
   <form [formGroup]="machineryForm">
-    <!-- Machinery -->
-    <ion-item lines="full">
-      <ion-label position="stacked">Maquina</ion-label>
-      <ion-searchbar [value]="machineryName" (keyup)="searchMachinery($event.target.value)" (ionClear)="cleanMachinerySearch()" placeholder="Buscar"></ion-searchbar>
-    </ion-item>
-    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('machineryCostCenterId').hasError('required')">
-      Seleccione una Maquina
-    </ion-text>
-
-    <ion-list class="searchbar-results-list" *ngIf="filteredMachinery.length > 0">
-      <ion-item *ngFor="let machinery of filteredMachinery" (click)="selectMachinery(machinery)">
-        {{ machinery.name | titlecase  }}
-      </ion-item>
-    </ion-list>
-
-    <!-- Implemento -->
-    <ng-container *ngIf="showImplement">
-      <ion-item>
-        <ion-label position="stacked">Implemento</ion-label>
-        <ion-searchbar [value]="implementName" (keyup)="searchImplement($event.target.value)" (ionClear)="cleanImplementSearch()" placeholder="Buscar"></ion-searchbar>
-      </ion-item>
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('implementCostCenterId').hasError('required')">
-        Seleccione un Implemento
-      </ion-text>
-
-      <ion-list class="searchbar-results-list" *ngIf="filteredImplements.length > 0">
-        <ion-item *ngFor="let implement of filteredImplements" (click)="selectImplement(implement)">
-          {{ implement.name | titlecase  }}
+    <ion-row>
+      <!-- Machinery -->
+      <ion-col size="12" size-md="6">
+        <ion-label class="label-fx360" position="stacked">Maquina</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-searchbar [value]="machineryName" (keyup)="searchMachinery($event.target.value)" (ionClear)="cleanMachinerySearch()" placeholder="Buscar"></ion-searchbar>
         </ion-item>
-      </ion-list>
-    </ng-container>
+        <ion-text class="error--message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('machineryCostCenterId').hasError('required')">
+          Seleccione una Maquina.
+        </ion-text>
 
-    <!-- LABOR -->
-    <ion-item>
-      <ion-label position="stacked">Labor</ion-label>
-      <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()" placeholder="Buscar"></ion-searchbar>
-    </ion-item>
-    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('laborId').hasError('required')">
-      Seleccione una Labor
-    </ion-text>
+        <ion-list class="searchbar-results-list" *ngIf="filteredMachinery.length > 0">
+          <ion-item *ngFor="let machinery of filteredMachinery" (click)="selectMachinery(machinery)">
+            {{ machinery.name | titlecase  }}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <!-- Implemento -->
+      <ng-container *ngIf="showImplement">
+        <ion-col size="12" size-md="6">
+          <ion-label class="label-fx360" position="stacked">Implemento</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-searchbar [value]="implementName" (keyup)="searchImplement($event.target.value)" (ionClear)="cleanImplementSearch()" placeholder="Buscar"></ion-searchbar>
+          </ion-item>
+          <ion-text class="error--message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('implementCostCenterId').hasError('required')">
+            Seleccione un Implemento.
+          </ion-text>
 
-    <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
-      <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
-        {{ labor.name | titlecase  }}
-      </ion-item>
-    </ion-list>
+          <ion-list class="searchbar-results-list" *ngIf="filteredImplements.length > 0">
+            <ion-item *ngFor="let implement of filteredImplements" (click)="selectImplement(implement)">
+              {{ implement.name | titlecase  }}
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ng-container>
+      <!-- LABOR -->
+      <ion-col size="12" size-md="6">
+        <ion-label class="label-fx360" position="stacked">Labor</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-searchbar [value]="laborName" (keyup)="searchLabor($event.target.value)" (ionClear)="cleanLaborSearch()" placeholder="Buscar"></ion-searchbar>
+        </ion-item>
+        <ion-text class="error--message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('laborId').hasError('required')">
+          Seleccione una Labor.
+        </ion-text>
 
-    <!-- COST CENTER -->
-    <ion-item>
-      <ion-label position="stacked">Centro de Costo</ion-label>
-      <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
-    </ion-item>
-    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('costCenterId').hasError('required')">
-      Seleccione un Centro de Costo
-    </ion-text>
+        <ion-list class="searchbar-results-list" *ngIf="filteredLabors.length > 0">
+          <ion-item *ngFor="let labor of filteredLabors" (click)="selectLabor(labor)">
+            {{ labor.name | titlecase  }}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <!-- COST CENTER -->
+      <ion-col size="12" size-md="6">
+        <ion-label class="label-fx360" position="stacked">Centro de Costo</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
+        </ion-item>
+        <ion-text class="error--message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('costCenterId').hasError('required')">
+          Seleccione un Centro de Costo.
+        </ion-text>
 
-    <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
-      <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
-        {{ costCenter.name | titlecase  }}
-      </ion-item>
-    </ion-list>
+        <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
+          <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
+            {{ costCenter.name | titlecase  }}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <!-- Operador -->
+      <ion-col size="12" size-md="6">
+        <ion-label class="label-fx360" position="stacked">Operador</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-searchbar [value]="workerName" (keyup)="searchWorker($event.target.value)" (ionClear)="cleanWorkerSearch()" placeholder="Buscar"></ion-searchbar>
+        </ion-item>
+        <ion-text class="error--message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('workerId').hasError('required')">
+          Seleccione un Operador.
+        </ion-text>
 
-    <!-- Operador -->
-    <ion-item>
-      <ion-label position="stacked">Operador</ion-label>
-      <ion-searchbar [value]="workerName" (keyup)="searchWorker($event.target.value)" (ionClear)="cleanWorkerSearch()" placeholder="Buscar"></ion-searchbar>
-    </ion-item>
-    <ion-text class="error-message" color="danger" *ngIf="machineryForm.dirty && machineryForm.get('workerId').hasError('required')">
-      Seleccione un Operador
-    </ion-text>
-
-    <ion-list class="searchbar-results-list" *ngIf="filteredWorkers.length > 0">
-      <ion-item *ngFor="let worker of filteredWorkers" (click)="selectWorker(worker)">
-        {{ worker.name | titlecase }}
-      </ion-item>
-    </ion-list>
-
-    <!-- Cantidad -->
-    <ion-item>
-      <ion-label>Cantidad:</ion-label>
-      <ion-input class="input-number" formControlName="quantity" type="number"></ion-input>
-      <ion-badge slot="end">{{ machineryUnitCode | uppercase  }}</ion-badge>
-    </ion-item>
-    <ng-container *ngIf="machineryForm.get('quantity').dirty">
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">
-        La cantidad es requerida
-      </ion-text>
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('min')">
-        La cantidad debe ser mayor a 0.1
-      </ion-text>
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('quantity').hasError('pattern')">
-        Ingrese valores con . y maximo 3 decimales
-      </ion-text>
-    </ng-container>
-
-     <!-- Rendimiento -->
-     <ion-item>
-      <ion-label>Rendimiento:</ion-label>
-      <ion-input class="input-number" formControlName="performance" type="number"></ion-input>
-      <ion-badge slot="end">{{ laborUnitCode | uppercase }}</ion-badge>
-    </ion-item>
-    <ng-container *ngIf="machineryForm.get('performance').dirty">
-      <ion-text class="error-message" color="danger" *ngIf="machineryForm.get('performance').hasError('pattern')">
-        Ingrese valores con . y maximo 3 decimales
-      </ion-text>
-    </ng-container>
+        <ion-list class="searchbar-results-list" *ngIf="filteredWorkers.length > 0">
+          <ion-item *ngFor="let worker of filteredWorkers" (click)="selectWorker(worker)">
+            {{ worker.name | titlecase }}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <!-- Cantidad -->
+      <ion-col size="6" size-md="6">
+        <ion-label class="label-fx360">Cantidad</ion-label>
+        <div class="content-machinery-input">
+          <ion-input class="input-fx360 bg-white" formControlName="quantity" type="number"></ion-input>
+          <ion-badge class="badge-unit-code">{{ machineryUnitCode | uppercase  }}</ion-badge>
+        </div>
+        <ng-container *ngIf="machineryForm.get('quantity').dirty">
+          <ion-text class="error--message no-margin-t" color="danger" *ngIf="machineryForm.get('quantity').hasError('required')">
+            La cantidad es requerida
+          </ion-text>
+          <ion-text class="error--message no-margin-t" color="danger" *ngIf="machineryForm.get('quantity').hasError('min')">
+            La cantidad debe ser mayor a 0.1
+          </ion-text>
+          <ion-text class="error--message no-margin-t" color="danger" *ngIf="machineryForm.get('quantity').hasError('pattern')">
+            Ingrese valores con . y maximo 3 decimales
+          </ion-text>
+        </ng-container>
+      </ion-col>
+      <!-- Rendimiento -->
+      <ion-col size="6" size-md="6">
+        <ion-label class="label-fx360">Rendimiento</ion-label>
+        <div class="content-machinery-input">
+          <ion-input class="input-fx360 bg-white" formControlName="performance" type="number"></ion-input>
+          <ion-badge class="badge-unit-code">{{ laborUnitCode | uppercase }}</ion-badge>
+        </div>
+        <ng-container *ngIf="machineryForm.get('performance').dirty">
+          <ion-text class="error--message no-margin-t" color="danger" *ngIf="machineryForm.get('performance').hasError('pattern')">
+            Ingrese valores con . y maximo 3 decimales
+          </ion-text>
+        </ng-container>
+      </ion-col>
+    </ion-row>
   </form>
 </ion-content>
 
 <ion-footer>
-  <ion-button color="primary" expand="block" [disabled]="machineryForm.invalid" (click)="submitForm()">
+  <ion-button color="primary" class="btn-app" expand="block" [disabled]="machineryForm.invalid" (click)="submitForm()">
     Guardar
   </ion-button>
 </ion-footer>

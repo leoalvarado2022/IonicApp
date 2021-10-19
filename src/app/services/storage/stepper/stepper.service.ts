@@ -81,7 +81,13 @@ export class StepperService {
       if (devicesToRecord.length && this.syncError === null) {
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Dispositivos' });
         this.stepsArraySubject.next(this.stepsArray);
-        await this.onlySyncDevices(devicesToRecord);
+        const toRecord = devicesToRecord.map(d => {
+          if (d.id && !d.id_device) {
+            d.id = d.id * -1;
+          }
+          return d;
+        });
+        await this.onlySyncDevices(toRecord);
       }
 
       // If deals sync

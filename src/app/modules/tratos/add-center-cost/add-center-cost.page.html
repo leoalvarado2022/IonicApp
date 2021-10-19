@@ -57,7 +57,7 @@
           <ion-col size="12">
             <ion-label class="label-fx360">{{deal.unit_control}}</ion-label>
             <ion-input class="input-fx360 bg-white" formControlName="unit_control_count" type="number"></ion-input>
-            <ion-text class="error--message" color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
+            <ion-text class="error--message no-margin-t" color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
               Ingrese {{deal.unit_control}}
             </ion-text>
           </ion-col>

@@ -48,3 +48,19 @@ ion-item {
 .error-message {
   padding-left: 20px;
 }
+
+.content-consumption-input {
+  position: relative;
+
+  .input-fx360 {
+    --padding-end: 45px;
+  }
+
+  .badge-unit-code {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 7px;
+    z-index: 2;
+  }
+}

@@ -34,6 +34,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public exist = true;
   public notSupported = false;
   private listener$: Subscription;
+  private currentIdx = 0;
 
   // temp
   public tallyTemp = [];
@@ -69,6 +70,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
+    this.loadData();
 
     this._platform.ready().then(() => {
       this.isCordova = this._platform.is('cordova');
@@ -86,35 +88,38 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         // NFC Scanner
         this.openNFCScanner();
 
-        // Connect to live weight
-        this.getLiveWeight();
+        if (this.centerCost.deal.weight) {
+          // Connect to live weight
+          this.getLiveWeight();
 
-        // Connect to live weight
-        this.bluetoothService.getLiveWeight().pipe(
-          takeUntil(this.unsubscriber)
-        ).subscribe((value: string) => {
-          if (this.weightsBuffer.length % 5 === 0) {
-            this.weightsBuffer.shift();
-          }
+          // Connect to live weight
+          this.bluetoothService.getLiveWeight().pipe(
+            takeUntil(this.unsubscriber)
+          ).subscribe((value: string) => {
+            if (this.weightsBuffer.length % 5 === 0) {
+              this.weightsBuffer.shift();
+            }
 
-          const processWeight = this.bluetoothService.processWeight(value);
-          this.weightsBuffer.push(processWeight);
-          this.lastWeight = processWeight;
-          this.validWeight = this.isValidWeight(processWeight);
-        });
+            const processWeight = this.bluetoothService.processWeight(value);
+            this.weightsBuffer.push(processWeight);
+            this.lastWeight = processWeight;
+            this.validWeight = this.isValidWeight(processWeight);
+          });
 
-        // getConnectionStatus
-        this.bluetoothService.getConnectionStatus().pipe(
-          takeUntil(this.unsubscriber)
-        ).subscribe((status: boolean) => {
-          this.isDeviceConnected = status;
-        });
+          // getConnectionStatus
+          this.bluetoothService.getConnectionStatus().pipe(
+            takeUntil(this.unsubscriber)
+          ).subscribe((status: boolean) => {
+            this.isDeviceConnected = status;
+          });
+        }
+
       } else {
         this.notSupported = true;
       }
     });
 
-    this.loadData();
+    // this.loadData();
   }
 
   /**
@@ -210,9 +215,11 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           // guardar y transformar data para guardar
           this.pullDevice(id).then();
 
-          // Comprobar si hay blueetooth Conectado
-          if (!this.isDeviceConnected) {
-            this.toastService.warningToast('No hay dispositivo conectado', 2000, 'bottom');
+          if (this.centerCost.deal.weight) {
+            // Comprobar si hay blueetooth Conectado
+            if (!this.isDeviceConnected) {
+              this.toastService.warningToast('No hay dispositivo conectado', 2000, 'bottom');
+            }
           }
         }, error => {
           console.log(error, 'error');
@@ -484,10 +491,12 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     const findIndex = this.workersSuccess.findIndex(value => value.id === worker.id);
 
     if (findIndex > -1) {
+      this.currentIdx = findIndex;
       this.workersSuccess[findIndex] = Object.assign({}, this.workersSuccess[findIndex], {
         count: performance
       });
     } else {
+      this.currentIdx = 0;
       this.workersSuccess.unshift({
         name: worker.name,
         count: performance,

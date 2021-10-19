@@ -11,7 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar class="toolbar-search">
-    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never"
+    <ion-searchbar animated placeholder="Buscar..." showCancelButton="never" class="production"
       (ionChange)="searchOrder($event.target.value)" (ionClear)="cancelSearch()">
     </ion-searchbar>
   </ion-toolbar>
@@ -23,9 +23,9 @@
   </ion-refresher>
 
   <ion-virtual-scroll [items]="ordersListFiltered">
-    <ion-item class="slide-item" lines="none" *virtualItem="let order" (click)="goToApplications(order.id)">
-      <ion-card>
-        <ion-item lines="full">
+    <ion-item class="slide-item bg-transparent" lines="none" *virtualItem="let order" (click)="goToApplications(order.id)">
+      <ion-card class="card-item">
+        <ion-item lines="none" class="header-item">
           <ion-badge slot="start"> {{ fillWithZeros(order.number) }}</ion-badge>
           <ion-label>{{ order.responsibleName | titlecase }}</ion-label>
         </ion-item>

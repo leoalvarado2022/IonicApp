@@ -21,3 +21,16 @@ ion-content{
 .full-maquinaria{
   padding: 0 10px 0 10px;
 }
+
+ion-card-content {
+  padding: 10px;
+}
+
+.slide-item-con {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+
+  .card-item {
+    width: 100%;
+  }
+}

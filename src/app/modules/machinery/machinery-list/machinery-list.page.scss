@@ -6,10 +6,6 @@ ion-title {
   color: white;
 }
 
-ion-content{
-  --background: #f4f4f4;
-}
-
 .maquinaria{
   margin: 0 auto;
   padding: 5px;
@@ -20,4 +16,17 @@ ion-content{
 
 .full-maquinaria{
   padding: 0 10px 0 10px;
+}
+
+ion-card-content {
+  padding: 10px;
+}
+
+.slide-item-mac {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+
+  .card-item {
+    width: 100%;
+  }
 }

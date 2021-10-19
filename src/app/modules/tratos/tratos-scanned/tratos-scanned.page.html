@@ -82,7 +82,7 @@
               <ng-template #notWeight>
                 <ng-container *ngIf="exist">
                   <span  class="title-performance">
-                    {{ workersSuccess[0] ? workersSuccess[0].count : 0 | number:'1.0-3' }}
+                    {{ workersSuccess[currentIdx] ? workersSuccess[currentIdx].count : 0 | number:'1.0-3' }}
                   </span>
                   <div *ngIf="!exist" style="padding-top: 14%;">
                     {{ worker }}

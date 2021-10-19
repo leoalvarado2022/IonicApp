@@ -34,7 +34,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public exist = true;
   public notSupported = false;
   private listener$: Subscription;
-  private currentIdx = 0;
+  public currentIdx = 0;
 
   // temp
   public tallyTemp = [];

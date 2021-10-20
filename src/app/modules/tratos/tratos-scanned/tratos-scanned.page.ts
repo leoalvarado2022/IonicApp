@@ -12,15 +12,12 @@ import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
-import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-
 @Component({
   selector: 'app-tratos-scanned',
   templateUrl: './tratos-scanned.page.html',
   styleUrls: ['./tratos-scanned.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    BluetoothSerial,
     BluetoothService
   ],
 })
@@ -93,6 +90,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           this.getLiveWeight();
 
           // Connect to live weight
+          /*
           this.bluetoothService.getLiveWeight().pipe(
             takeUntil(this.unsubscriber)
           ).subscribe((value: string) => {
@@ -105,6 +103,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
             this.lastWeight = processWeight;
             this.validWeight = this.isValidWeight(processWeight);
           });
+          */
 
           // getConnectionStatus
           this.bluetoothService.getConnectionStatus().pipe(
@@ -113,7 +112,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
             this.isDeviceConnected = status;
           });
         }
-
       } else {
         this.notSupported = true;
       }
@@ -287,7 +285,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         this.exist = false;
       }
     } else {
-      this.worker = `No existe trabajador con el dispositivo ${id}`;
+      // this.worker = `No existe trabajador con el dispositivo ${id}`;
+      this.worker = `El trabajador no pertenece a su cuadrilla`;
       this.exist = false;
     }
 
@@ -637,7 +636,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * getLiveWeight
    */
   public getLiveWeight = () => {
-    this.showWeight = this.bluetoothService.getLiveWeight();
+    // this.showWeight = this.bluetoothService.getLiveWeight();
   }
 
   /**

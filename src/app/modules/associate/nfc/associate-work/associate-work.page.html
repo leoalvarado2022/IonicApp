@@ -12,8 +12,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-searchbar placeholder="Buscar..." (ionChange)="searchWork($event.target.value)" (ionClear)="cancelWork()" animated
-  class="production" showCancelButton="never"></ion-searchbar>
+<ion-toolbar class="toolbar-search">
+  <ion-searchbar placeholder="Buscar..." (ionChange)="searchWork($event.target.value)" (ionClear)="cancelWork()" animated
+    class="production" showCancelButton="never"></ion-searchbar>
+</ion-toolbar>
 
 <ion-content>
 

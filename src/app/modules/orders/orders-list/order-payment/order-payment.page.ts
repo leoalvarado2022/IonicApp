@@ -61,6 +61,7 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.order = undefined;
   }
 
   ngOnInit() {
@@ -107,7 +108,7 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
     if (this.id) {
       this.loaderService.startLoader('Cargando...');
       data.id = this.id;
-      this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
+      this._deliveryService.getNotificationHttpId(data).toPromise().then((success: any) => {
         this.order = success.resp;
 
         if (this.order.discounts && this.order.discounts.length) {
@@ -127,6 +128,7 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
           this._deliveryService.setGenerateDocument(true);
         }
         this.forPay = this.order.value_pay;
+        this.prints.setOrder(this.order);
         this.loaderService.stopLoader();
       }, error => {
         this.loaderService.stopLoader();
@@ -354,7 +356,7 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
   /**
    * @description enviar pago
    */
-  paymentSubmit() {
+  async paymentSubmit() {
     this.loaderService.startLoader('Enviando pago..');
 
     this.isPaymentOnProcess = true;
@@ -373,39 +375,40 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
       order: this.order
     };
 
-    this._deliveryService.savePayment(data).subscribe((data: any) => {
-      if (data.response && data.response.length && data.response[0] && data.response[0].respuesta && data.response[0].respuesta === 'ok') {
+    try {
+      const respData: any = await this._deliveryService.savePayment(data).toPromise();
+      if (respData.response && respData.response.length && respData.response[0] && respData.response[0].respuesta && respData.response[0].respuesta === 'ok') {
         this.isPaymentOnProcess = false;
         // this.loaderService.stopLoader();
         this.loaderService.startLoader('Procesando..');
-        this.printOrderCommand(this.order);
-        setTimeout(() => {
+        await this.printOrderCommand(this.order);
+        setTimeout(async () => {
           if (this.order.type_order === 'Venta Directa') {
-            this.subscribeIsGenerateDocument = this.prints.getGenerateDocument().subscribe(data => {
-              if (data) {
+            this.subscribeIsGenerateDocument = this.prints.getGenerateDocument().subscribe(doc => {
+              if (doc) {
                 this.setNotificationStatus('done');
               }
             });
           }
           this.loaderService.stopLoader();
-          this.printOrderDocument(this.order);
+          await this.printOrderDocument(this.order);
+          this.goBack();
         }, 2000);
-        this.goBack();
       } else {
         this.loaderService.stopLoader();
       }
-    }, error => {
+    } catch (error) {
       this.isPaymentOnProcess = false;
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
-    });
+    }
   }
 
   /**
    * @description imprimir comanda
    * @param command
    */
-  printOrderCommand(command: any) {
+  async printOrderCommand(command: any) {
     this._storageSyncService.getPrintConfig().then(async data => {
       this.prints.printConfigActive(data, 'comanda');
       await this.prints.printCommand(command);
@@ -416,11 +419,10 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
    * @description generar e imprimir documento
    * @param command
    */
-  printOrderDocument(command: any) {
-    this._storageSyncService.getPrintConfig().then(data => {
-      this.prints.printConfigActive(data, 'documento');
-      this.prints.printDocumentPdf417(this.order).then();
-    });
+  async printOrderDocument(command: any) {
+    const data = await this._storageSyncService.getPrintConfig();
+    this.prints.printConfigActive(data, 'documento');
+    await this.prints.printDocumentPdf417(this.order);
   }
 
   /**

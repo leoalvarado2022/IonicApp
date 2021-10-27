@@ -58,10 +58,12 @@
       </ng-template>
     </ng-container>
 
-    <ion-card *ngIf="worker" style="width: 98%;margin-bottom: 5px;">
-      <ion-card-content>
+    <ion-button (click)="doCount()">Contar</ion-button>
+    <div>Time: {{ timer }}</div>
+
+    <ion-card *ngIf="worker">
         <ion-grid>
-          <ion-row>
+          <ion-row class="ion-align-items-center">
             <ion-col size="4">
               <img src="assets/imgs/contract/tally-success-icon.png" *ngIf="exist" style="width: 90%">
               <img src="assets/imgs/contract/tally-unsuccess-icon.png" *ngIf="!exist" style="width: 90%">
@@ -102,7 +104,6 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-      </ion-card-content>
     </ion-card>
 
     <ion-list class="ion-list-worker">

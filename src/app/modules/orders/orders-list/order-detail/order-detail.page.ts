@@ -7,12 +7,10 @@ import {NavParams, Platform} from '@ionic/angular';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {PosService} from '../../services/pos.service';
-import {SyncService} from '../../../../shared/services/sync/sync.service';
 import {StorageSyncService} from '../../../../services/storage/storage-sync/storage-sync.service';
 import {ToastService} from '../../../../shared/services/toast/toast.service';
 import {Prints} from '../../../../helpers/prints';
 import {DeviceService} from '../../../../services/device/device.service';
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-order-detail',
@@ -72,19 +70,15 @@ export class OrderDetailPage implements OnInit, OnDestroy {
    * @description ir atras
    */
   goBack() {
-    // this.location.back();
     this.router.navigate(['/home-page/ordenes']);
   }
 
   ngOnInit() {
-    this.prints.getGenerateDocument().subscribe((data) => {
+    this.prints.getGenerateDocument().toPromise().then(data => {
       if (data) {
-        setTimeout(() => {
-          this.loadNotifications().then(() => this.skeleton = false);
-        }, 2000);
+        this.loadNotifications().then(() => this.skeleton = false);
       }
     });
-
     this.prints.getLoaderBotton().subscribe((data) => {
       this.loadingButton = data;
     });
@@ -100,7 +94,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
   async loadNotifications(): Promise<any> {
     this.documents = false;
     this.payments = false;
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
       this._storageSyncService.getIntegrationImages().then((data) => {
         this.images = data;
       });
@@ -114,7 +108,6 @@ export class OrderDetailPage implements OnInit, OnDestroy {
       });
 
       if (this.id) {
-        // this.loaderService.startLoader('Cargando...');
         const user = this.storeService.getActiveCompany();
 
         const data = {
@@ -122,24 +115,21 @@ export class OrderDetailPage implements OnInit, OnDestroy {
           id: this.id
         };
 
-        this._deliveryService.getNotificationHttpId(data).subscribe((success: any) => {
-          this.order = success.resp;
-          // this.skeleton = false;
+        try {
+          const success: any = await this._deliveryService.getNotificationHttpId(data).toPromise();
+          this.order = { ...success.resp };
           if (this.order.documents && this.order.documents.length) {
             this.documents = true;
           }
           if (this.order.payments && this.order.payments.length > 0) {
             this.payments = true;
           }
-          this.prints.setOrder(success.resp);
-          // this.printTicketChange();
+          this.prints.setOrder(this.order);
           resolve(true);
-          // this.loaderService.stopLoader();
-        }, error => {
+        } catch (error) {
           resolve(false);
-          // this.loaderService.stopLoader();
           this.httpService.errorHandler(error);
-        });
+        }
       }
     });
   }
@@ -169,10 +159,6 @@ export class OrderDetailPage implements OnInit, OnDestroy {
         id_order: this.id,
         status
       };
-      // console.log(data);
-      // this._posService.openTableNew(this.order, user.user);
-      // this.setHttpNotificationStatus(status, data);
-      // this.printOrderDocument(this.order);
 
       // si el origin es una app externa
       if (this.order.origin === 'JUSTO') {
@@ -195,8 +181,6 @@ export class OrderDetailPage implements OnInit, OnDestroy {
         this.setHttpNotificationStatus(status, data);
       }
     }
-
-
   }
 
   /**
@@ -457,10 +441,6 @@ export class OrderDetailPage implements OnInit, OnDestroy {
       this.loaderService.stopLoader();
       this.httpService.errorHandler(error);
     });
-
-    // setTimeout(() => {
-    //   this.loaderService.stopLoader();
-    // }, 10000)
   }
 
   /**

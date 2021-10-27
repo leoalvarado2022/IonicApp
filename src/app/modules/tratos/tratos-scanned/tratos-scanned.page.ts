@@ -47,6 +47,11 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public validWeight = false;
   private unsubscriber = new Subject();
 
+  public timer: number;
+  public workersCounted = [];
+  public interval = null;
+  public running = false;
+
   constructor(
     public _modalController: ModalController,
     private _storageSyncService: StorageSyncService,
@@ -85,7 +90,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         // NFC Scanner
         this.openNFCScanner();
 
-        if (this.centerCost.deal.weight) {
+        if (this.centerCost?.deal.weight) {
           // Connect to live weight
           this.getLiveWeight();
 
@@ -134,6 +139,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     if (this.listener$) {
       this.listener$.unsubscribe();
     }
+
+    clearInterval(this.interval);
   }
 
   /**
@@ -175,11 +182,25 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           this.addPreviousPerformance(worker, total);
         }
       });
-
       this.isLoading = false;
 
       this._changeDetectorRef.detectChanges();
     });
+  }
+
+  public startTimer() {
+    this.timer = this.centerCost.time_limit;
+    this.running = true;
+    this.interval = setInterval(() => {
+      if (this.timer === 0) {
+        this.running = false;
+        this.timer = this.centerCost.time_limit;
+        clearInterval(this.interval);
+        return;
+      }
+      this.timer -= 1;
+      this._changeDetectorRef.detectChanges();
+    }, 1000);
   }
 
   /**
@@ -213,7 +234,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
           // guardar y transformar data para guardar
           this.pullDevice(id).then();
 
-          if (this.centerCost.deal.weight) {
+          if (this.centerCost?.deal.weight) {
             // Comprobar si hay blueetooth Conectado
             if (!this.isDeviceConnected) {
               this.toastService.warningToast('No hay dispositivo conectado', 2000, 'bottom');
@@ -235,11 +256,33 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       return;
     }
 
+    console.log('this.running ::: ', this.running);
+    if (this.running) {
+      this.exist = false;
+      return;
+    }
+
     if (this.centerCost.automatic) {
       this.setInfo(id);
     } else {
+      let worker: any;
+      const device = this.devices.find(value => value.id_device === id);
+      if (device) {
+        worker = this.workers.find(value => value.id === device.id_link);
+        if (!worker) {
+          this.worker = `Trabajador ${device.link} no activo`;
+          this.exist = false;
+          return;
+        }
+      } else {
+        // this.worker = `No existe trabajador con el dispositivo ${id}`;
+        this.worker = `El trabajador no pertenece a su cuadrilla`;
+        this.exist = false;
+        return;
+      }
       const alert = await this._alertController.create({
-        header: 'Desea continuar con la lectura?',
+        // header: 'Desea continuar con la lectura?',
+        header: `¿Confirma grabar ${this.centerCost.unit_control_count} ${this.centerCost.deal?.unit_control} a ${worker?.name}?`,
         backdropDismiss: false,
         buttons: [
           {
@@ -280,6 +323,13 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         this.worker = worker.name;
         this.exist = true;
         this.setScanned(worker);
+
+        if (this.centerCost.control_method === 'time' && this.centerCost.time_limit > 0) {
+          this.startTimer();
+        }
+        // if (this.centerCost.control_method === 'person') {
+        //   this.workersCounted.push(worker);
+        // }
       } else {
         this.worker = `Trabajador ${device.link} no activo`;
         this.exist = false;
@@ -476,6 +526,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     tally.fecha_lectura_dispositivo = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
     tally.latitud = 0;
     tally.longitud = 0;
+    tally.validity = worker.validity;
     this.tallyTemp.push(tally);
 
     this._storageSyncService.setTallyTemp(this.tallyTemp).then();
@@ -657,4 +708,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     this.toastService.errorToast("Dispositivo no es compatible con NFC", 2000, 'bottom');
   }
 
+
+  public doCount() {
+    this.pullDevice('AAAAAABBBBBBCCCCC').then();
+  }
 }

@@ -46,7 +46,9 @@ export class AddCenterCostPage implements OnInit {
       center_cost_id: ['', Validators.required],
       unit_control_count: [0, Validators.required],
       currentDate: [this.currentDate, Validators.required],
-      automatic: true
+      automatic: false,
+      control_method: ['time', Validators.required],
+      time_limit: [60, Validators.required],
     });
   }
 
@@ -60,7 +62,8 @@ export class AddCenterCostPage implements OnInit {
 
       this.centerForm.patchValue({
         deal: this.deal,
-        unit_control_count: this.deal?.count ? '' : 0
+        unit_control_count: this.deal?.count ? '' : 0,
+        automatic: this.deal.automatic,
       });
 
       this._storeSync.getCostCentersCustomByDeal(this.deal).then( data => {

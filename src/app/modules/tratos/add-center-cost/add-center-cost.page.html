@@ -34,75 +34,56 @@
     </ion-item>
   </ion-card>
 
-  <!--<ion-card class="title-card">-->
-    <form [formGroup]="centerForm">
-      <ion-row>
-        <ion-col size="12">
-          <ion-label class="label-fx360">Centro de Costo</ion-label>
-          <ion-item class="input-fx360-down max-h-unset">
-            <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)"
-                           (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
-          </ion-item>
-          <ion-text class="error--message" color="danger" *ngIf="centerForm.dirty && centerForm.get('center_cost_id').hasError('required')">
-            Seleccione un Centro de Costo.
-          </ion-text>
-
-          <ion-list *ngIf="filteredCostCenter.length > 0">
-            <ion-item lines="none" *ngFor="let costCenter of filteredCostCenter" (click)="selectCostCenter(costCenter)">
-              {{ costCenter.name | titlecase  }}
-            </ion-item>
-          </ion-list>
-        </ion-col>
-        <ng-container *ngIf="deal && deal.count">
-          <ion-col size="12">
-            <ion-label class="label-fx360">{{deal.unit_control}}</ion-label>
-            <ion-input class="input-fx360 bg-white" formControlName="unit_control_count" type="number"></ion-input>
-            <ion-text class="error--message no-margin-t" color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
-              Ingrese {{deal.unit_control}}
-            </ion-text>
-          </ion-col>
-        </ng-container>
-        <ion-col size="12">
-          <ion-item class="input-fx360-down">
-            <ion-checkbox formControlName="automatic"></ion-checkbox>
-            <ion-label class="label-fx360-checkbox">Grabación automatica</ion-label>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-
-      <!-- COST CENTER -->
-      <!--<ion-item class="item-searchbar">
-        <ion-label position="stacked">Centro de Costo</ion-label>
-        <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)"
-          (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
-      </ion-item>
-      <ion-text class="error-message" color="danger"
-        *ngIf="centerForm.dirty && centerForm.get('center_cost_id').hasError('required')">
-        Seleccione un Centro de Costo
-      </ion-text>-->
-
-      <!--<ion-list class="searchbar-results-list" *ngIf="filteredCostCenter.length > 0">
-        <ion-item *ngFor="let costCenter of filteredCostCenter" (click)="selectCostCenter(costCenter)">
-          {{ costCenter.name | titlecase  }}
+  <form [formGroup]="centerForm">
+    <ion-row>
+      <ion-col size="12">
+        <ion-label class="label-fx360">Centro de Costo</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-searchbar [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)"
+                         (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
         </ion-item>
-      </ion-list>-->
-
-      <!--<ng-container *ngIf="deal && deal.count">
-        <ion-item>
-          <ion-label position="floating">{{deal.unit_control}}</ion-label>
-          <ion-input formControlName="unit_control_count" type="number"></ion-input>
-        </ion-item>
-        <ion-text class="error-message" color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
-          Ingrese {{deal.unit_control}}
+        <ion-text class="error--message" color="danger" *ngIf="centerForm.dirty && centerForm.get('center_cost_id').hasError('required')">
+          Seleccione un Centro de Costo.
         </ion-text>
-      </ng-container>-->
 
-      <!--<ion-item>
-        <ion-label>Grabación automatica</ion-label>
-        <ion-checkbox slot="end" formControlName="automatic"></ion-checkbox>
-      </ion-item>-->
-    </form>
-  <!--</ion-card>-->
+        <ion-list *ngIf="filteredCostCenter.length > 0">
+          <ion-item lines="none" *ngFor="let costCenter of filteredCostCenter" (click)="selectCostCenter(costCenter)">
+            {{ costCenter.name | titlecase  }}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ng-container *ngIf="deal && deal.count">
+        <ion-col size="12">
+          <ion-label class="label-fx360">{{deal.unit_control}}</ion-label>
+          <ion-input class="input-fx360 bg-white" formControlName="unit_control_count" type="number"></ion-input>
+          <ion-text class="error--message no-margin-t" color="danger" *ngIf="centerForm.get('unit_control_count').hasError('required')">
+            Ingrese {{deal.unit_control}}
+          </ion-text>
+        </ion-col>
+      </ng-container>
+      <ion-col size="12">
+        <ion-label class="label-fx360">Método de control de duplicados</ion-label>
+        <ion-item class="input-fx360-down">
+          <ion-select formControlName="control_method" interface="action-sheet" placeholder="Seleccione">
+            <ion-select-option value="time">Tiempo</ion-select-option>
+            <!--<ion-select-option value="person">Persona</ion-select-option>-->
+          </ion-select>
+        </ion-item>
+        <!--<ng-container *ngIf="activeForm.get('option').errors && !activeForm.invalid">
+          <ion-text class="error&#45;&#45;message" color="danger" *ngIf="activeForm.get('option').hasError('required')">
+            Debe elegir un método.
+          </ion-text>
+        </ng-container>-->
+      </ion-col>
+      <ion-col size="12">
+        <!--<ion-label class="label-fx360">
+          {{centerForm.get('unit_control_count').value === 'time' ? 'Límite de tiempo (segundos)' : 'Límite de personas'}}
+        </ion-label>-->
+        <ion-label class="label-fx360">Límite de tiempo (segundos)</ion-label>
+        <ion-input class="input-fx360 bg-white" formControlName="time_limit" type="number"></ion-input>
+      </ion-col>
+    </ion-row>
+  </form>
 </ion-content>
 
 <ion-footer>

@@ -20,22 +20,23 @@
         <ion-card-content>
           <ion-grid>
             <ion-row class="header">
-              <ion-col size="10">
+              <ion-col size="7">
                 Trabajador
               </ion-col>
-              <ion-col size="2" style="text-align: center;">
-                R
+              <ion-col size="5" style="text-align: center;">
+                Rendimiento
               </ion-col>
             </ion-row>
           </ion-grid>
           <ion-list class="fixed-list">
             <ion-grid>
-              <ion-row *ngFor="let worker of deals?.worker">
-                <ion-col size="10">
-                  <p>{{ worker.worker.names }}</p>
+              <ion-row *ngFor="let worker of deals?.worker" class="ion-align-items-center">
+                <ion-col size="7">
+                  <!--<p>{{ worker.worker?.name }}&nbsp;{{ worker.worker?.lastName }}</p>-->
+                  <p>{{ getWorkerName(worker) }}</p>
                 </ion-col>
-                <ion-col size="2" style="text-align: center;">
-                  <ion-input type="text" value="{{ worker.performance }}" readonly></ion-input>
+                <ion-col size="5" style="text-align: center;">
+                  <ion-input type="text" value="{{ worker.performance || worker.rendimiento }}" readonly></ion-input>
                 </ion-col>
               </ion-row>
             </ion-grid>

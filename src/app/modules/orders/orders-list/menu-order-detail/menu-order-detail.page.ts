@@ -227,10 +227,10 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
 
     if (validation) {
       // const quantity = this.quantityOrder(item);
-      const val: number = parseInt(value.value);
+      const val: number = parseInt(value.value, 10);
 
       item.type_discount = 'Porcentaje';
-      item.discount = item.price * val / 100;
+      item.discount = Math.round(item.price * val / 100);
       itemSlidingDiscount.close();
 
       this.remappingOrder(item);
@@ -268,7 +268,7 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
     const validation = this.getValidation(value, item, 'Monetario', quantity);
 
     if (validation) {
-      const val: number = parseInt(value.value) / quantity;
+      const val: number = Math.round(parseInt(value.value, 10) / quantity);
 
       item.type_discount = 'Monetario';
       item.discount = val;
@@ -301,23 +301,23 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
     //   }
     // }
 
-    if (type === 'Monetario' && value && parseInt(value.value) > (item.price * quantity)) {
+    if (type === 'Monetario' && value && parseInt(value.value, 10) > (item.price * quantity)) {
       this._toastService.warningToast('El valor del descuento tiene que ser menor al precio del item');
       return false;
     }
 
-    if (type === 'Porcentaje' && value && parseInt(value.value) > 100) {
+    if (type === 'Porcentaje' && value && parseInt(value.value, 10) > 100) {
       this._toastService.warningToast('El valor del descuento tiene que ser menor al precio del item');
       return false;
     }
 
-    if (value && parseInt(value.value) <= 0) {
+    if (value && parseInt(value.value, 10) <= 0) {
       this._toastService.warningToast('El valor del descuento tiene que ser mayor a 0');
       return false;
     }
 
     // si el valor del descuento es 0
-    if (!value || parseInt(value.value) === 0 || !value.value) {
+    if (!value || parseInt(value.value, 10) === 0 || !value.value) {
       this._toastService.warningToast('El valor del descuento tiene que ser mayor a 0');
       return false;
     }
@@ -364,6 +364,6 @@ export class MenuOrderDetailPage implements OnInit, OnDestroy {
    * @param value
    */
   int(value) {
-    return parseInt(value);
+    return parseInt(value, 10);
   }
 }

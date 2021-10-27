@@ -16,4 +16,5 @@ export class TallyInterface {
   fecha_lectura_dispositivo?: string;
   latitud?: number;
   longitud?: number;
+  validity?: number;
 }

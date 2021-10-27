@@ -104,8 +104,11 @@ export class ContractFormPage implements OnInit, OnDestroy {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     this.activeCompany = this.storeService.getActiveCompany();
 
+    const access = this.storeService.getAccess();
+
     Promise.all([
-      this.storageSyncService.getAllQuadrilles(),
+      // this.storageSyncService.getAllQuadrilles(),
+      this.storageSyncService.getQuadrillesByCurrentUser(this.activeCompany.user, !!access.find(x => x.functionality === 4)),
       this.storageSyncService.getWorkers(),
       this.storageSyncService.getPreContracts(),
       this.storageSyncService.getCountries(),

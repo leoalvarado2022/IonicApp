@@ -439,7 +439,7 @@ export class StepperService {
       const user = this.storeService.getUser();
       delete user.avatar;
 
-      this.dealService.saveTalliesToRecord(dealsToRecord, user).subscribe((success: any) => {
+      this.dealService.saveTalliesToRecord(dealsToRecord.filter(d => d.validity > 0), user).subscribe((success: any) => {
         resolve(true);
       }, error => {
         reject(error);
@@ -451,7 +451,12 @@ export class StepperService {
    * cleanDealsMemory
    */
   private cleanDealsMemory = () => {
-    return this.storageSyncService.setTallyTemp([]);
+    this.storageSyncService.getTallyTemp().then(tallies => {
+      if (tallies) {
+        return this.storageSyncService.setTallyTemp(tallies.filter(t => t.validity === 0));
+      }
+      return this.storageSyncService.setTallyTemp([]);
+    });
   }
 
   /**

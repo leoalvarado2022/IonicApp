@@ -11,7 +11,6 @@ import { DeviceSyncService } from '../../../services/storage/device-sync/device-
 import {StepperService} from '../../../services/storage/stepper/stepper.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
 import {ToastService} from '../../../shared/services/toast/toast.service';
-
 @Component({
   selector: 'app-nfc',
   templateUrl: './nfc.page.html',
@@ -19,7 +18,6 @@ import {ToastService} from '../../../shared/services/toast/toast.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NfcPage implements OnInit, OnDestroy {
-
   notSupported = false;
   scanned: Array<any>;
   $listener: Subscription;
@@ -29,7 +27,6 @@ export class NfcPage implements OnInit, OnDestroy {
   list = [];
   error = false;
   sync = false;
-
   constructor(public nativeAudio: NativeAudio,
               private platform: Platform,
               public nfc: NFC,
@@ -43,9 +40,7 @@ export class NfcPage implements OnInit, OnDestroy {
               private loaderService: LoaderService,
               private toastService: ToastService,
   ) {
-
   }
-
   /**
    * desacativar audios y unsuscribe data de la lista
    */
@@ -56,39 +51,31 @@ export class NfcPage implements OnInit, OnDestroy {
     this.nativeAudio.unload('error').then(() => {
     });
   }
-
-
   /**
    * @description cargar la data predeterminada y activar los audios
    */
   preload() {
     this.scanned = [];
     this.scanning = false;
-
     this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3').then(() => {
     }).catch((ex) => {
       console.log(ex);
     });
-
     this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3').then(() => {
     }).catch((ex) => {
       console.log(ex);
     });
-
     this._storageSyncService.getDevices().then(data => {
       this.list = data.filter(d => d.id_device);
     });
   }
-
   ngOnInit() {
     this.preload();
-
     // si es escritorio o web no deja
     if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
       this.notSupported = true;
       return;
     }
-
     // ios no deja usar NFC
     if (this.platform.is('ios')) {
       this.notSupported = true;
@@ -97,13 +84,11 @@ export class NfcPage implements OnInit, OnDestroy {
       this.openNFCScanner();
     }
   }
-
   closeNFCScanner() {
     if (this.$listener) {
       this.$listener.unsubscribe();
     }
   }
-
   /**
    * @description abrir el escaner
    */
@@ -112,11 +97,9 @@ export class NfcPage implements OnInit, OnDestroy {
       this.scanned = [];
     }
     this.closeNFCScanner();
-
     if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
       return;
     }
-
     this.$listener =
       this.nfc
         .addTagDiscoveredListener(success => console.log(success, 'success'), onFailure => {
@@ -129,7 +112,6 @@ export class NfcPage implements OnInit, OnDestroy {
           console.log('event ::: ', event);
           // conseguir el id del tag
           const id = this.nfc.bytesToHexString(event.tag.id);
-
           // guardar y transformar data para guardar
           this.pullDevice(id, event.type.toUpperCase()).then();
         }, error => {
@@ -137,29 +119,23 @@ export class NfcPage implements OnInit, OnDestroy {
           this.notSupported = true;
         });
   }
-
   /**
    * @description buscar la  lista de trabajadores con el tag de lo contrario crearlo
    * @param id
    * @param type
    */
   async pullDevice(id, type) {
-
     this.error = false;
     this.sync = false;
     this.selected = undefined;
-
     let exist = this.list.find(value => value.id_device === id);
-
     if (!exist) {
       exist = this.scanned.find(value => value.id_device === id);
     }
-
     if (!exist) {
       const devices = await this._deviceSyncService.getDevicesToRecord();
       exist = devices.find(value => value.id_device === id && value.id === 0);
     }
-
     if (!exist) {
       const device = new Device();
       device.id_device = id;
@@ -171,17 +147,13 @@ export class NfcPage implements OnInit, OnDestroy {
       });
     } else {
       const indexScanned = this.scanned.find(item => item.id_device === exist.id_device);
-
       if (!indexScanned) {
         this.scanned.unshift(exist);
         this.nativeAudio.play('beep');
       }
     }
-
     this._changeDetectorRef.detectChanges();
-
   }
-
   /**
    * @description activar para asociar trabajador o desasociarlo
    * @param device
@@ -195,10 +167,8 @@ export class NfcPage implements OnInit, OnDestroy {
       this.deassociateWork();
       return;
     }
-
     this.associateWork();
   }
-
   /**
    * @description asociar un trabajador con el tag
    */
@@ -207,12 +177,13 @@ export class NfcPage implements OnInit, OnDestroy {
       component: AssociateWorkPage,
       componentProps: { tag: this.selected }
     });
-
     modal.onDidDismiss().then(async (data: any) => {
       if (data.data) {
-        const idx = this.scanned.findIndex(s => s.id_device === data.data.id_device);
+        this.list = await this._storageSyncService.getDevices();
+        const tmp = this.list.find(s => s.id_device === data.data.id_device);
+        const idx = this.scanned.findIndex(s => s.id_device === tmp.id_device);
         if (idx > -1) {
-          this.scanned.splice(idx, 1, data.data);
+          this.scanned.splice(idx, 1, tmp);
         }
         this.toastService.successToast('Trabajador asociado con éxito');
         this.openNFCScanner(false);
@@ -224,15 +195,12 @@ export class NfcPage implements OnInit, OnDestroy {
         this._changeDetectorRef.detectChanges();
       }
     });
-
     return await modal.present();
   }
-
   /**
    * @description desasociar trabajador
    */
   async deassociateWork() {
-
     const cancelButton = {
       text: 'Cancelar',
       role: 'cancel',
@@ -242,7 +210,6 @@ export class NfcPage implements OnInit, OnDestroy {
         this._changeDetectorRef.detectChanges();
       }
     };
-
     const deleteButton = {
       text: 'Desasociar',
       handler: () => {
@@ -250,16 +217,12 @@ export class NfcPage implements OnInit, OnDestroy {
         // this.scanned = [];
       }
     };
-
     const alert = await this.alertCtrl.create({
       header: '¿Seguro que desea desasociar este trabajador?',
       buttons: [cancelButton, deleteButton]
     });
-
     await alert.present();
   }
-
-
   /**
    * @description borrar un tag
    * @param deleted
@@ -269,7 +232,7 @@ export class NfcPage implements OnInit, OnDestroy {
     this.selected = undefined;
     this.isDelete = false;
     // this.scanned = [];
-
+    console.log('Deleted: ', deleted);
     if (deleted.id && deleted.id > 0 && !deleted.tempId) {
       deleted.id = deleted.id * -1;
       this._deviceSyncService.getDeviceTempId().then(tempId => {
@@ -278,27 +241,20 @@ export class NfcPage implements OnInit, OnDestroy {
     } else {
       deleted.delete = true;
     }
-
     // idx = this.scanned.findIndex(s => s.tempId === deleted.tempId);
     idx = this.scanned.findIndex(s => s.id_link === deleted.id_link);
-
     if (idx >= 0) {
       this.scanned.splice(idx, 1);
     }
-
     deleted.date = moment().format('YYYY-MM-DD HH:mm:ss');
-
     await this.syncAndRefreshList(deleted);
-
     return true;
   }
-
   async syncAndRefreshList(deleted: any = {}) {
     this.loaderService.startLoader('Cargando...');
     this.closeNFCScanner();
-    if (deleted?.id) {
-      await this._deviceSyncService.addDevicesToRecord(deleted);
-    }
+
+    await this._deviceSyncService.addDevicesToRecord(deleted);
 
     try {
       await this.stepperService.syncAll();
@@ -310,5 +266,8 @@ export class NfcPage implements OnInit, OnDestroy {
       this._changeDetectorRef.detectChanges();
     }
   }
-}
 
+  async tmpAssociate() {
+    this.pullDevice('AAAAAABBBBBBCCCCC', 'TAG').then();
+  }
+}

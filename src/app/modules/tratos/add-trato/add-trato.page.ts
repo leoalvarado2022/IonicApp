@@ -31,8 +31,8 @@ export class AddTratoPage implements OnInit {
     this.activeForm = this.formBuilder.group({
       id: ['', Validators.required],
       option: ['', Validators.required],
-      method: ['', Validators.required],
-      automatic: [true, Validators.required],
+      method: ['nfc', Validators.required],
+      automatic: [false, Validators.required],
       name_labor: ['', Validators.required],
       unit_control: ['', Validators.required],
     });

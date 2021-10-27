@@ -393,7 +393,7 @@ export class Prints {
       .align('left')
       .line(`Rut: ${data.entity?.rut}`)
       .line(`Nombre de empresa: ${this.noSpecialChars(data.order.entity)}`)
-      .line(`Fecha: ${data.date}   Hora: ${data.hour}`)
+      .line(`Fecha: ${data.order.date_createdAt}`)
       .newline()
       .line(`SUCURSAL: ${this.noSpecialChars(data.entity.name)}`)
       .line(`NRO. INTERNO: ${data.order?.id}`)
@@ -464,11 +464,13 @@ export class Prints {
               if (this.isConnected) {
                 this.printBT(result, this.getValueBP());
               }
+              resolve();
             }, 3000);
             setTimeout(() => {
               if (this.isConnected) {
                 this.printTicketChange(port, true);
               }
+              resolve();
             }, 5000);
           } else if (this.getPrintIP()) {
             for (let i = 0; i < this.getCopy(); ++i) {
@@ -481,12 +483,15 @@ export class Prints {
                   this.binArrayToJson(result);
                   this.sockets.write(result, this.getValueBP(), port);
                   if (this.getTicketChangeBP() === 'si' && ticket) {
-                    this.printTicketChange(port);
+                    this.printTicketChange(port).then(() => console.log('imprimio ticket de cambio'));
+                    resolve();
+                  } else {
+                    resolve();
                   }
-                  resolve();
                 }, 2000);
               } else {
                 setTimeout(() => {
+                  console.log('else print options....');
                   this.sockets.write(result, this.getValueBP(), port);
                   resolve();
                 }, 4000 * i);
@@ -503,31 +508,30 @@ export class Prints {
    * @description imprimir ticket de cambio
    */
   printTicketChange(port = '9100', bluetooth = false) {
-    const order = this.order;
-    const entity = this.storeService.getActiveCompany();
-    const date = moment().format('DD-mm-yyyy');
-    const hour = moment().format('HH:mm:ss');
-    const user = this.storeService.getUser();
+    return new Promise((resolve, reject) => {
+      const order = this.order;
+      const entity = this.storeService.getActiveCompany();
+      const user = this.storeService.getUser();
 
-    const data = {
-      order,
-      entity,
-      date,
-      hour,
-      user
-    };
+      const data = {
+        order,
+        entity,
+        user
+      };
 
-    // construir para imprimir
-    const result = this.ticketChangeFull(data);
+      // construir para imprimir
+      const result = this.ticketChangeFull(data);
 
-    // setTimeout(() => {
-      if (!bluetooth) {
-        this.binArrayToJson(result);
-        this.sockets.write(result, this.getValueBP(), port);
-      } else {
-        this.printBT(result, this.getValueBP());
-      }
-    // }, 3000);
+      setTimeout(() => {
+        if (!bluetooth) {
+          this.binArrayToJson(result);
+          this.sockets.write(result, this.getValueBP(), port);
+        } else {
+          this.printBT(result, this.getValueBP());
+        }
+        resolve();
+      }, 3000);
+    });
   }
 
   /**
@@ -536,7 +540,7 @@ export class Prints {
    * @param ip
    * @param port
    */
-  printPdf417(data: any, ip, port) {
+  async printPdf417(data: any, ip, port) {
     // const xmlString = '<TED version="1.0"><DD><RE>76484902-7</RE><TD>34</TD><F>166</F><FE>2018-09-24</FE><RR>11111111-1</RR><RSR>Nombre Receptor</RSR><MNT>100</MNT><IT1>Primer detalle</IT1><CAF version="1.0"><DA><RE>76484902-7</RE><RS>SHAREABLE INNOVATIONS SPA</RS><TD>34</TD><RNG><D>164</D><H>213</H></RNG><FA>2018-05-02</FA><RSAPK><M>xEgzQHlbuDyVQ/o2en9fyXZ5CbOhCfeWngsGoiURilsMrTDJYxzVEyYycnaOYn9xe7PueENj8GkxYxM2TxOERQ==</M><E>Aw==</E></RSAPK><IDK>300</IDK></DA><FRMA algoritmo="SHA1withRSA">em1SxWkeCDql+jX35oruOy1MfBWT60fEBaJ2Cc0yNI0aysy437B6kXOfXDN51TZZJ1cZPSsWdprnLYmEbeZ6Bw==</FRMA></CAF><TSTED>2018-09-24T00:51:02</TSTED></DD><FRMT algoritmo="SHA1withRSA">uDNJNlohWaJ2qKGp7Eo4/V3zu+Y3KnGNvBwKX+FNojlDApDAyiPne2P44M78EOLSrv6El/78ZKPBGFgXDS09eQ==</FRMT></TED>';
 
     const xmlString = data.documentsAvailable.ted;
@@ -547,20 +551,18 @@ export class Prints {
       xml: xmlString
     };
 
-    this.getHttpPDF417(dataHttp).subscribe((success: any) => {
-      const imgBase64PDF417 = success.response.xml;
-      this.commandLegal(data, imgBase64PDF417, ip, port).then(async (commandResolve: any) => {
-        try {
-          await this.printOptions(commandResolve, '9100', 'Desea Imprimir', true);
-          // await this.printOptions(commandResolve, '8632', 'Desea Imprimir', true);
-          this.loaderButton.next(false);
-          this.loaderService.stopLoader();
-        } catch (err) {
-          this.loaderButton.next(false);
-          this.loaderService.stopLoader();
-        }
-      });
-    });
+    const success: any = await this.getHttpPDF417(dataHttp).toPromise();
+    const imgBase64PDF417 = success.response.xml;
+    const commandResolve = await this.commandLegal(data, imgBase64PDF417, ip, port);
+    try {
+      await this.printOptions(commandResolve, '9100', 'Desea Imprimir', true);
+      // await this.printOptions(commandResolve, '8632', 'Desea Imprimir', true);
+      this.loaderButton.next(false);
+      this.loaderService.stopLoader();
+    } catch (err) {
+      this.loaderButton.next(false);
+      this.loaderService.stopLoader();
+    }
   }
 
 
@@ -576,13 +578,8 @@ export class Prints {
     try {
       const document: string = 'BOEV';
 
-      /*setTimeout(() => {
-        this.loaderService.stopLoader();
-      }, 3000);*/
-
       // variable para generar la boleta
       let generate = false;
-
       // buscar si tiene documentos
       if (this.order.documents && this.order.documents.length) {
         // comprobar si ya existe el documento
@@ -605,18 +602,10 @@ export class Prints {
       if (generate) {
         this.loaderService.startLoader(`Imprimiendo...`);
         await this.printDocumentProcess(document, ip, port);
-        // this.loaderButton.next(false);
-        // this.loaderService.stopLoader();
-        /*this.printDocumentProcess(document, ip, port).then((dataProcess) => {
-          console.log('1 imprimio', dataProcess);
-          this.binArrayToJson(dataProcess);
-          this.loaderButton.next(false);
-          this.loaderService.stopLoader();
-        });*/
-        // console.log('1 imprimio');
       }
       this.loaderButton.next(false);
     } catch (err) {
+      console.log('errr::: ', err);
       this.loaderButton.next(false);
       this.loaderService.stopLoader();
     }
@@ -626,41 +615,23 @@ export class Prints {
    * @description imprimir documento
    */
   async printDocumentProcess(document, ip: string = '192.168.1.50', port: string = '9100') {
-    return new Promise(async (resolve, reject) => {
-      // setTimeout(() => {
-        this.loaderButton.next(true);
-        // buscar si tiene documentos
-        if (this.order.documents && this.order.documents.length) {
-          // comprobar si ya existe el documento
-          const documentAvailable = this.order.documents.find(value => value.type_document === document);
-          // procesar la data
-          const dataProcess = this.addNameProducts(this.order);
-          // si existe envia la data
-          if (documentAvailable) {
-            dataProcess.documentsAvailable = documentAvailable;
-            const success: any = await this.getHttpHeaderDocument({order: dataProcess.id}).toPromise();
-            if (success && success.resp && success.resp.length) {
-              dataProcess.header = success.resp[0];
-              this.printPdf417(dataProcess, ip, port);
-              resolve(dataProcess);
-              // this.loaderButton.next(false);
-            }
-            /*this.getHttpHeaderDocument({order: dataProcess.id}).subscribe((success: any) => {
-              if (success && success.resp && success.resp.length) {
-                dataProcess.header = success.resp[0];
-                console.log('2 (printDocumentProcess) dataProcess ::: ', dataProcess);
-                this.printPdf417(dataProcess, ip, port);
-                console.log('2 imprimio');
-                resolve(dataProcess);
-                // this.loaderButton.next(false);
-              }
-            });*/
-          }
+    this.loaderButton.next(true);
+    // buscar si tiene documentos
+    if (this.order.documents && this.order.documents.length) {
+      // comprobar si ya existe el documento
+      const documentAvailable = this.order.documents.find(value => value.type_document === document);
+      // procesar la data
+      const dataProcess = this.addNameProducts(this.order);
+      // si existe envia la data
+      if (documentAvailable) {
+        dataProcess.documentsAvailable = documentAvailable;
+        const success: any = await this.getHttpHeaderDocument({order: dataProcess.id}).toPromise();
+        if (success && success.resp && success.resp.length) {
+          dataProcess.header = success.resp[0];
+          await this.printPdf417(dataProcess, ip, port);
         }
-        resolve();
-      // }, 2500);
-    });
-    // esperar el delay para cambiar de datos e imprimir
+      }
+    }
   }
 
   /**

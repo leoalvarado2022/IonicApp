@@ -69,7 +69,6 @@ export class TratosListPage {
       this._storageSyncService.getTallies(),
       this._storageSyncService.getTallyTemp()
     ]).then(data => {
-      // console.log(data[0], 'getTallies', data[1], 'getTallyTemp');
       let tallies: any = [];
       // si las tarjas existen
       if (data[0] && data[0].length) {

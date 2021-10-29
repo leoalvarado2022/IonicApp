@@ -84,7 +84,7 @@
       </ion-item>
 
       <ion-item-options side="end">
-        <ion-item-option color="warning" (click)="editTally(tally, slide)">
+        <ion-item-option color="warning" (click)="editTally(tally, slide)" *ngIf="tally.dispositivo !== 1">
           <ion-icon slot="icon-only" name="pencil"></ion-icon>
         </ion-item-option>
         <ion-item-option color="danger" (click)="deleteTally(tally, slide)">

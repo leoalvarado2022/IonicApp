@@ -47,10 +47,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public validWeight = false;
   private unsubscriber = new Subject();
 
-  public timer: number;
-  public workersCounted = [];
-  public interval = null;
-  public running = false;
+  public devicesCounted = [];
 
   constructor(
     public _modalController: ModalController,
@@ -139,8 +136,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     if (this.listener$) {
       this.listener$.unsubscribe();
     }
-
-    clearInterval(this.interval);
   }
 
   /**
@@ -186,21 +181,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
       this._changeDetectorRef.detectChanges();
     });
-  }
-
-  public startTimer() {
-    this.timer = this.centerCost.time_limit;
-    this.running = true;
-    this.interval = setInterval(() => {
-      if (this.timer === 0) {
-        this.running = false;
-        this.timer = this.centerCost.time_limit;
-        clearInterval(this.interval);
-        return;
-      }
-      this.timer -= 1;
-      this._changeDetectorRef.detectChanges();
-    }, 1000);
   }
 
   /**
@@ -256,9 +236,14 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('this.running ::: ', this.running);
-    if (this.running) {
+    if (
+      (this.centerCost.control_method === 'time' && !this.validLimitTime(id)) ||
+      (this.centerCost.control_method === 'person' && !this.validLimitPerson(id))
+    ) {
+      const device = this.devices.find(value => value.id_device === id);
+      this.worker = device.link;
       this.exist = false;
+      this.nativeAudio.play('error');
       return;
     }
 
@@ -323,13 +308,19 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         this.worker = worker.name;
         this.exist = true;
         this.setScanned(worker);
+        this.nativeAudio.play('beep');
 
-        if (this.centerCost.control_method === 'time' && this.centerCost.time_limit > 0) {
-          this.startTimer();
+        // Duplicated control methods
+        if (this.centerCost.control_method === 'time' && !this.devicesCounted.some(d => d.deviceId === id)) {
+          this.devicesCounted.push({
+            deviceId: id,
+            date: moment().unix(),
+          });
         }
-        // if (this.centerCost.control_method === 'person') {
-        //   this.workersCounted.push(worker);
-        // }
+        // If is person method and the device had not been scanned
+        if (this.centerCost.control_method === 'person' && !this.devicesCounted.includes(id)) {
+          this.devicesCounted.push(id);
+        }
       } else {
         this.worker = `Trabajador ${device.link} no activo`;
         this.exist = false;
@@ -341,6 +332,53 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     }
 
     this._changeDetectorRef.detectChanges();
+  }
+
+  public validLimitTime = (device) => {
+    const index = this.devicesCounted.findIndex(d => d.deviceId === device);
+
+    if (index > -1) {
+      const currentDate = moment().unix();
+      const diff = currentDate - this.devicesCounted[index].date;
+
+      if (diff < this.centerCost.limit) {
+        return false;
+      }
+
+      this.devicesCounted[index].date = currentDate;
+    }
+
+    return true;
+  }
+
+  public validLimitPerson = (device) => {
+    const checkExists = this.devicesCounted.includes(device);
+
+    if (checkExists) {
+      this.devicesCounted.push(device);
+
+      const initIdx = this.devicesCounted.indexOf(device);
+      const lastIdx = this.devicesCounted.lastIndexOf(device);
+
+      const diffIdx = Math.abs(initIdx - lastIdx);
+      const inter = diffIdx - 1;
+      const invalid = inter < this.centerCost.limit;
+
+      // Avoid duplicated id's
+      if (diffIdx === 1 || (diffIdx > 1 && invalid)) {
+        this.devicesCounted.splice(lastIdx, 1);
+      }
+      if (!invalid) {
+        this.devicesCounted.splice(initIdx, 1);
+        // this.devicesCounted.splice(lastIdx, 1);
+      }
+
+      if (invalid) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 
@@ -510,7 +548,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
     const tally: TallyInterface = {};
     tally.id = 0;
-    tally.fecha = moment().utc().format('YYYY-MM-DD');
+    tally.fecha = moment(this.centerCost.currentDate).utc().format('YYYY-MM-DD');
     tally.id_par_entidades_trabajador = worker.id;
     tally.id_par_centros_costos = this.centerCost.center_cost_id;
     tally.id_par_labores = this.centerCost.deal?.id_labor;
@@ -653,7 +691,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   private getTempTalliesPerformance = (tempTallies: Array<any>): number => {
     if (tempTallies.length > 0) {
-      return tempTallies.map(obj => obj.rendimiento || 0).reduce((sum, current) => sum + current);
+      return tempTallies.map(obj => obj.rendimiento || 0).reduce((sum, current) => sum + current, 0);
     }
 
     return 0;
@@ -665,7 +703,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   private getSyncedTalliesPerformance = (syncedTallies: Array<any>): number => {
     if (syncedTallies.length > 0) {
-      return syncedTallies.map(obj => obj.performance || 0).reduce((sum, current) => sum + current);
+      return syncedTallies.map(obj => obj.performance || 0).reduce((sum, current) => sum + current, 0);
     }
 
     return 0;
@@ -709,7 +747,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   }
 
 
-  public doCount() {
-    this.pullDevice('AAAAAABBBBBBCCCCC').then();
+  public doCount(workerId) {
+    this.pullDevice(workerId).then();
   }
 }

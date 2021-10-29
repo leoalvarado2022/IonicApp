@@ -267,7 +267,7 @@ export class NfcPage implements OnInit, OnDestroy {
     }
   }
 
-  async tmpAssociate() {
-    this.pullDevice('AAAAAABBBBBBCCCCC', 'TAG').then();
+  async tmpAssociate(workerId) {
+    this.pullDevice(workerId, 'TAG').then();
   }
 }

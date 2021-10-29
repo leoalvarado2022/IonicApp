@@ -174,7 +174,10 @@ export class TratosListPage {
     let work = [];
     worker.forEach((valor, clave, map) => {
       if (valor.length) {
-        work.push(valor[0]);
+        work.push({
+          ...valor[0],
+          performance: valor.reduce((sum, current) => sum + current.rendimiento, 0),
+        });
       }
     });
     const nameWorker = await this._storageSyncService.getWorkers();

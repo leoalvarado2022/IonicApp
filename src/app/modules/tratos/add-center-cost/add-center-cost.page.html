@@ -64,23 +64,23 @@
       <ion-col size="12">
         <ion-label class="label-fx360">Método de control de duplicados</ion-label>
         <ion-item class="input-fx360-down">
-          <ion-select formControlName="control_method" interface="action-sheet" placeholder="Seleccione">
+          <ion-select formControlName="control_method" interface="action-sheet" placeholder="Seleccione" (ionChange)="changeLimit($event)">
             <ion-select-option value="time">Tiempo</ion-select-option>
-            <!--<ion-select-option value="person">Persona</ion-select-option>-->
+            <ion-select-option value="person">Persona</ion-select-option>
           </ion-select>
         </ion-item>
-        <!--<ng-container *ngIf="activeForm.get('option').errors && !activeForm.invalid">
-          <ion-text class="error&#45;&#45;message" color="danger" *ngIf="activeForm.get('option').hasError('required')">
-            Debe elegir un método.
-          </ion-text>
-        </ng-container>-->
       </ion-col>
       <ion-col size="12">
-        <!--<ion-label class="label-fx360">
-          {{centerForm.get('unit_control_count').value === 'time' ? 'Límite de tiempo (segundos)' : 'Límite de personas'}}
-        </ion-label>-->
-        <ion-label class="label-fx360">Límite de tiempo (segundos)</ion-label>
-        <ion-input class="input-fx360 bg-white" formControlName="time_limit" type="number"></ion-input>
+        <ion-label class="label-fx360">
+          {{centerForm.get('control_method').value === 'time' ? 'Límite de tiempo (segundos)' : 'Límite de personas'}}
+        </ion-label>
+        <ion-input class="input-fx360 bg-white" formControlName="limit" type="number"></ion-input>
+        <ion-text class="error--message no-margin-t" color="danger" *ngIf="centerForm.get('limit').hasError('required')">
+          Debe agregar un límite.
+        </ion-text>
+        <ion-text class="error--message no-margin-t" color="danger" *ngIf="centerForm.get('limit').hasError('min')">
+          El valor mínimo del límite es cero.
+        </ion-text>
       </ion-col>
     </ion-row>
   </form>

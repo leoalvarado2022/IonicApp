@@ -262,6 +262,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       (this.centerCost.control_method === 'time' && !this.validLimitTime(id)) ||
       (this.centerCost.control_method === 'person' && !this.validLimitPerson(id))
     ) {
+      console.log('Disparando condición cuando no es valido...');
       const device = this.devices.find(value => value.id_device === id);
       this.worker = device.link;
       this.exist = false;

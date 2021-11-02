@@ -46,10 +46,8 @@ export class NfcPage implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.closeNFCScanner();
-    this.nativeAudio.unload('beep').then(() => {
-    });
-    this.nativeAudio.unload('error').then(() => {
-    });
+    this.nativeAudio.unload('beep').then(() => {});
+    this.nativeAudio.unload('error').then(() => {});
   }
   /**
    * @description cargar la data predeterminada y activar los audios

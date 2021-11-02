@@ -68,18 +68,38 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // this.nativeAudio.unload('beep').then(() => {});
+    // this.nativeAudio.unload('error').then(() => {});
+    this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3')
+      .then(() => {}).catch((ex) => {
+      console.log('ex ::: ', ex);
+    });
+    this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
+      .then(() => {}).catch((ex) => {
+      console.log('ex ::: ', ex);
+    });
+
     this.isLoading = true;
     this.loadData();
 
     this._platform.ready().then(() => {
       this.isCordova = this._platform.is('cordova');
 
-      if (this.isCordova) {
-        Promise.all([
-          this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3'),
-          this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
-        ]).then();
-      }
+      // if (this.isCordova) {
+      //   // Promise.all([
+      //   //   this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3'),
+      //   //   this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
+      //   // ]).then();
+      //
+      //   this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3')
+      //     .then(() => {}).catch((ex) => {
+      //       console.log(ex);
+      //     });
+      //   this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
+      //     .then(() => {}).catch((ex) => {
+      //       console.log(ex);
+      //     });
+      // }
 
       // ios no deja usar NFC
       if (this._platform.is('android')) {
@@ -126,12 +146,14 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * desacativar audios y unsuscribe data de la lista
    */
   ngOnDestroy(): void {
-    if (this.isCordova) {
-      Promise.all([
-        this.nativeAudio.unload('beep'),
-        this.nativeAudio.unload('error')
-      ]).then();
-    }
+    // if (this.isCordova) {
+      // Promise.all([
+      //   this.nativeAudio.unload('beep'),
+      //   this.nativeAudio.unload('error')
+      // ]).then();
+      this.nativeAudio.unload('beep').then(() => {});
+      this.nativeAudio.unload('error').then(() => {});
+    // }
 
     if (this.listener$) {
       this.listener$.unsubscribe();
@@ -548,7 +570,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
     const tally: TallyInterface = {};
     tally.id = 0;
-    tally.fecha = moment(this.centerCost.currentDate).utc().format('YYYY-MM-DD');
+    // tally.fecha = moment(this.centerCost.currentDate).utc().format('YYYY-MM-DD');
+    tally.fecha = moment(this.centerCost.currentDate).format('YYYY-MM-DD');
     tally.id_par_entidades_trabajador = worker.id;
     tally.id_par_centros_costos = this.centerCost.center_cost_id;
     tally.id_par_labores = this.centerCost.deal?.id_labor;
@@ -628,8 +651,10 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   private filterWorkersByValidity = (date: string, workers: Array<any>): Array<any> => {
     return workers.filter(worker => {
 
-      const startDate = moment.utc(worker.startDate);
-      const endDate = moment.utc(worker.endDate);
+      // const startDate = moment.utc(worker.startDate);
+      // const endDate = moment.utc(worker.endDate);
+      const startDate = moment(worker.startDate);
+      const endDate = moment(worker.endDate);
 
       return moment(date).isBetween(startDate, endDate);
     });
@@ -691,7 +716,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   private getTempTalliesPerformance = (tempTallies: Array<any>): number => {
     if (tempTallies.length > 0) {
-      return tempTallies.map(obj => obj.rendimiento || 0).reduce((sum, current) => sum + current, 0);
+      return tempTallies.map(obj => obj.rendimiento || 0).reduce((sum, current) => sum + current);
     }
 
     return 0;
@@ -703,7 +728,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   private getSyncedTalliesPerformance = (syncedTallies: Array<any>): number => {
     if (syncedTallies.length > 0) {
-      return syncedTallies.map(obj => obj.performance || 0).reduce((sum, current) => sum + current, 0);
+      return syncedTallies.map(obj => obj.performance || 0).reduce((sum, current) => sum + current);
     }
 
     return 0;

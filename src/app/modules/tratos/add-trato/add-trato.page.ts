@@ -30,7 +30,7 @@ export class AddTratoPage implements OnInit {
   ngOnInit() {
     this.activeForm = this.formBuilder.group({
       id: ['', Validators.required],
-      option: ['', Validators.required],
+      option: ['1', Validators.required],
       method: ['nfc', Validators.required],
       automatic: [false, Validators.required],
       name_labor: ['', Validators.required],

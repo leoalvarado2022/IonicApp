@@ -12,9 +12,11 @@ import {StepperService} from '../../../../services/storage/stepper/stepper.servi
 })
 export class AssociateWorkPage implements OnInit {
   workers: any;
+  quadrilles: any;
   filtered = [];
   tag = [];
   loading = false;
+
   constructor(
     public modalController: ModalController,
     private storeService: StoreService,
@@ -32,14 +34,38 @@ export class AssociateWorkPage implements OnInit {
    * @description buscar los trabajadores activos por compañía y los que tengas fechas validas
    */
   private filterActiveWork = () => {
-    this._storageSyncService.getWorkers().then(data => {
-      const company = this.storeService.getActiveCompany();
-      this.workers = data.filter(data => {
-        const valid = moment(new Date()).isBetween(moment(data.startDate), moment(data.endDate), null, '[]');
-        return valid && data.active && data.company === company.id;
+    const company = this.storeService.getActiveCompany();
+    const access = this.storeService.getAccess();
+
+    Promise.all([
+      this._storageSyncService.getWorkers(),
+      this._storageSyncService.getQuadrillesByCurrentUser(company.user, !!access.find(x => x.functionality === 4)),
+    ]).then(data => {
+      // this.workers = [...data[0]];
+      this.quadrilles = [...data[1]];
+      // console.log('this.quadrilles ::: ', this.quadrilles);
+
+      this.workers = data[0].filter((work: any) => {
+        // console.log('work ::: ', work);
+        const quadrille = this.quadrilles.find(q => q.id === work.quadrille);
+        // console.log('quadrille ::: ', quadrille);
+        const valid = moment(new Date()).isBetween(moment(work.startDate), moment(work.endDate), null, '[]');
+        // return valid && work.active && work.company === company.id && quadrille && quadrille.responsible === company.user;
+        return valid && work.active && quadrille && quadrille.responsible === company.user;
       });
       this.filtered = this.workers.filter((value: any, index: any) => index < 10);
     });
+    /*this._storageSyncService.getWorkers().then(data => {
+      const company = this.storeService.getActiveCompany();
+      const quadrilles = this.storeService.getQuadrilles();
+      console.log('quadrilles ::: ', quadrilles);
+      this.workers = data.filter(work => {
+        console.log('work ::: ', work);
+        const valid = moment(new Date()).isBetween(moment(work.startDate), moment(work.endDate), null, '[]');
+        return valid && work.active && work.company === company.id;
+      });
+      this.filtered = this.workers.filter((value: any, index: any) => index < 10);
+    });*/
   }
   /**
    * cancelWork

@@ -30,6 +30,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
   private syncedTallies: Array<Tally> = [];
   private talliesToRecord: Array<Tally> = [];
   private talliesWithErrors: Array<any> = [];
+  private talliesTemp: Array<any> = [];
 
   // FORM
   private costCenters: Array<CostCenterList> = [];
@@ -92,6 +93,8 @@ export class TalliesListPage implements OnInit, OnDestroy {
       this.storageSyncService.getLabors(),
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
+
+      this.storageSyncService.getTallyTemp(),
     ]).then( data => {
 
       // Worker
@@ -101,6 +104,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
       this.syncedTallies = [...data[1]];
       this.talliesToRecord = [...data[2]];
       this.talliesWithErrors = [...data[3]];
+      this.talliesTemp = [...data[8]];
 
       // Form
       this.costCenters = [...data[4]];
@@ -111,7 +115,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
       // CALC TALLIES
       const a = this.getNumberOfWorkerTallies();
       this.workerTallies = [...a];
-
+      console.log('this.workerTallies ::: ', this.workerTallies);
       // END LOADING
       this.isLoading = false;
     });
@@ -132,7 +136,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
    */
   public getTotalWorkerWork = (): string => {
     if (this.workerTallies) {
-      const workTotal = this.workerTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+      const workTotal = this.workerTallies.reduce((total: number, tally: any) => total + (tally.workingDay || tally.jornada_trabajo), 0);
       return parseFloat(workTotal).toFixed(2);
     }
 
@@ -143,7 +147,13 @@ export class TalliesListPage implements OnInit, OnDestroy {
    * getNumberOfWorkerTallies
    */
   private getNumberOfWorkerTallies = (): Array<Tally> => {
-    return this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, this.activeWorker, this.currentDate);
+    return this.tallySyncService.getNumberOfWorkerTalliesAndTemp(
+      this.syncedTallies,
+      this.talliesToRecord,
+      this.talliesTemp,
+      this.activeWorker,
+      this.currentDate,
+    );
   }
 
   /**
@@ -335,12 +345,14 @@ export class TalliesListPage implements OnInit, OnDestroy {
       this.tallySyncService.getWorkerSyncedTallies(+id),
       this.tallySyncService.getWorkerTalliesToRecord(+id),
       this.tallySyncService.getTalliesWithErrors(),
+      this.storageSyncService.getTallyTemp(),
     ]).then( data => {
 
       // Tallies
       this.syncedTallies = [...data[0]];
       this.talliesToRecord = [...data[1]];
       this.talliesWithErrors = [...data[2]];
+      this.talliesTemp = [...data[3]];
 
       // CALC TALLIES
       const b = this.getNumberOfWorkerTallies();

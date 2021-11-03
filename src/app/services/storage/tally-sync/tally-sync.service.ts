@@ -164,7 +164,13 @@ export class TallySyncService {
    * - Filter tallies of a worker that are marked to delete
    * - Filter tallies to record that are being edited
    */
-  public getNumberOfWorkerTallies = (syncedTallies: Array<Tally>, talliesToRecord: Array<Tally>, worker: any, currentDate: string, ignoreId: number = null): Array<Tally> => {
+  public getNumberOfWorkerTallies = (
+    syncedTallies: Array<Tally>,
+    talliesToRecord: Array<Tally>,
+    worker: any,
+    currentDate: string,
+    ignoreId: number = null,
+  ): Array<Tally> => {
     // Get the tallys to be deleted and convert the ID to positive for comparison use
     const markedToDelete = talliesToRecord.filter(item => item.status === 'delete').map(item => item.id * -1);
 
@@ -189,6 +195,48 @@ export class TallySyncService {
 
     // Return joined lists
     return [...toRecord, ...filteredTallies];
+  }
+
+  public getNumberOfWorkerTalliesAndTemp = (
+    syncedTallies: Array<Tally>,
+    talliesToRecord: Array<Tally>,
+    talliesTemp: Array<any>,
+    worker: any,
+    currentDate: string,
+    ignoreId: number = null,
+  ): Array<Tally> => {
+    // Get the tallys to be deleted and convert the ID to positive for comparison use
+    const markedToDelete = talliesToRecord.filter(item => item.status === 'delete').map(item => item.id * -1);
+
+    // Get the tallys to be edited
+    const markedToEdit = talliesToRecord.filter(item => item.status === 'edit').map(item => item.id);
+
+    // Filter synced tallies by current date and not marked for delete
+    const filteredTallies = syncedTallies.filter(item => {
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.workerId === worker.id && tallyDate === current && !markedToDelete.includes(item.id) && !markedToEdit.includes(item.id);
+    });
+
+    // Filter tallies to record by current date and that are not being edited
+    const toRecord = talliesToRecord.filter(item => {
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.workerId === worker.id && tallyDate === current && item.status !== 'delete' && item.tempId !== ignoreId;
+    });
+
+    // Filter temporal tallies by current date
+    const temporalTallies = talliesTemp.filter((item: any) => {
+      const tallyDate = this.removeTimeFromDate(item.fecha);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.id_par_entidades_trabajador === worker.id && tallyDate === current;
+    });
+
+    // Return joined lists
+    return [...toRecord, ...filteredTallies, ...temporalTallies];
   }
 
   /**

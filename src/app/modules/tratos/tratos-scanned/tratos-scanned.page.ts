@@ -258,18 +258,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      (this.centerCost.control_method === 'time' && !this.validLimitTime(id)) ||
-      (this.centerCost.control_method === 'person' && !this.validLimitPerson(id))
-    ) {
-      console.log('Disparando condición cuando no es valido...');
-      const device = this.devices.find(value => value.id_device === id);
-      this.worker = device.link;
-      this.exist = false;
-      this.nativeAudio.play('error');
-      return;
-    }
-
     if (this.centerCost.automatic) {
       this.setInfo(id);
     } else {
@@ -318,6 +306,16 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    */
   public setInfo = (id: number) => {
     const device = this.devices.find(value => value.id_device === id);
+
+    if (
+      (this.centerCost.control_method === 'time' && !this.validLimitTime(id)) ||
+      (this.centerCost.control_method === 'person' && !this.validLimitPerson(id))
+    ) {
+      this.worker = device.link;
+      this.exist = false;
+      this.nativeAudio.play('error');
+      return;
+    }
 
     console.log('device', device);
 

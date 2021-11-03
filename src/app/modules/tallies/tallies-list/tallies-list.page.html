@@ -53,20 +53,20 @@
         <ion-card class="card-item">
           <ion-item lines="none" class="header-item">
             <ion-icon slot="start" name="reader" color="primary"></ion-icon>
-            <ion-label>{{ getCostCenterName(tally.costCenterId) | titlecase }}</ion-label>
+            <ion-label>{{ getCostCenterName(tally.costCenterId || tally.id_par_centros_costos) | titlecase }}</ion-label>
             <ion-icon *ngIf="tally.tempId" slot="end" name="server" color="danger" (click)="showTallyError(tally)"></ion-icon>
           </ion-item>
 
           <ion-card-content>
-            <p> <strong>Labor</strong>: {{ getLaborName(tally.laborId) | titlecase }}</p>
+            <p> <strong>Labor</strong>: {{ getLaborName(tally.laborId || tally.id_par_labores) | titlecase }}</p>
             <p *ngIf="tally.hoursExtra"> <strong>Horas Extra</strong>: {{ tally.hoursExtra }}</p>
-            <p *ngIf="tally.performance"> <strong>Rendimiento</strong>: {{ tally.performance }}</p>
-            <p *ngIf="tally.dealValidity"> <strong>Trato</strong>: {{ getDealName(tally.dealValidity) | titlecase }}</p>
-            <p *ngIf="tally.bondValidity"> <strong>Bono</strong>: {{ getBondName(tally.bondValidity) | titlecase }}</p>
-            <p *ngIf="tally.notes">
+            <p *ngIf="tally.performance || tally.rendimiento"> <strong>Rendimiento</strong>: {{ tally.performance || tally.rendimiento }}</p>
+            <p *ngIf="tally.dealValidity || tally.id_par_tratos_vigencias"> <strong>Trato</strong>: {{ getDealName(tally.dealValidity || tally.id_par_tratos_vigencias) | titlecase }}</p>
+            <p *ngIf="tally.bondValidity || tally.id_par_bonos_vigencias"> <strong>Bono</strong>: {{ getBondName(tally.bondValidity || tally.id_par_bonos_vigencias) | titlecase }}</p>
+            <p *ngIf="tally.notes || tally.notas">
               <strong>Notas</strong>:
               <span #note hidden="true">
-                {{ tally.notes }}
+                {{ tally.notes || tally.notas }}
               </span>
 
               <ion-button shape="round" fill="outline" (click)="showNote(note)">
@@ -75,16 +75,19 @@
             </p>
 
             <ion-chip class="ion-float-end" color="primary">
-              <ion-label>
+              <ion-label *ngIf="tally.workingDay && !tally.jornada_trabajo">
                 {{ tally.workingDay.toFixed(2) }} JR
+              </ion-label>
+              <ion-label *ngIf="tally.jornada_trabajo && !tally.workingDay">
+                {{ tally.jornada_trabajo.toFixed(2) }} JR
               </ion-label>
             </ion-chip>
           </ion-card-content>
         </ion-card>
       </ion-item>
 
-      <ion-item-options side="end">
-        <ion-item-option color="warning" (click)="editTally(tally, slide)" *ngIf="tally.dispositivo !== 1">
+      <ion-item-options side="end" *ngIf="tally.dispositivo !== 1 && tally.id > 0">
+        <ion-item-option color="warning" (click)="editTally(tally, slide)">
           <ion-icon slot="icon-only" name="pencil"></ion-icon>
         </ion-item-option>
         <ion-item-option color="danger" (click)="deleteTally(tally, slide)">

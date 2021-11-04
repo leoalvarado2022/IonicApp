@@ -3,6 +3,7 @@ import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { Storage } from '@ionic/storage';
 import { StorageKeys } from '../storage-keys';
 import * as moment from 'moment';
+import {DealsService} from '../../../modules/tratos/services/deals/deals.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,10 @@ export class TallySyncService {
 
   private tallyTempId = 1;
 
-  constructor(private storage: Storage) {
+  constructor(
+    private storage: Storage,
+    private dealService: DealsService,
+  ) {
 
   }
 
@@ -228,12 +232,22 @@ export class TallySyncService {
     });
 
     // Filter temporal tallies by current date
-    const temporalTallies = talliesTemp.filter((item: any) => {
+    const temporalTallies = [];
+    const filterArr = talliesTemp.filter((item: any) => {
       const tallyDate = this.removeTimeFromDate(item.fecha);
       const current = this.removeTimeFromDate(currentDate);
 
       return item.id_par_entidades_trabajador === worker.id && tallyDate === current;
     });
+    const groupedArr = this.dealService.groupBy(filterArr, (item) => item.id_par_centros_costos);
+    groupedArr.forEach(valor => {
+      const workingDayTotal = valor.reduce((total, next) => total + next.jornada_trabajo, 0);
+      temporalTallies.push({
+        ...valor[0],
+        jornada_trabajo: (workingDayTotal / valor.length),
+      });
+    });
+
 
     // Return joined lists
     return [...toRecord, ...filteredTallies, ...temporalTallies];

@@ -11,6 +11,7 @@ import * as moment from 'moment';
 import { ModalController, IonItemSliding } from '@ionic/angular';
 import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
+import {DealsService} from '../../tratos/services/deals/deals.service';
 
 @Component({
   selector: 'app-tallies-list',
@@ -50,7 +51,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
     private tallySyncService: TallySyncService,
     private toastService: ToastService,
     private modalController: ModalController,
-    private alertService: AlertService
+    private alertService: AlertService,
   ) {
 
   }
@@ -115,7 +116,6 @@ export class TalliesListPage implements OnInit, OnDestroy {
       // CALC TALLIES
       const a = this.getNumberOfWorkerTallies();
       this.workerTallies = [...a];
-      console.log('this.workerTallies ::: ', this.workerTallies);
       // END LOADING
       this.isLoading = false;
     });

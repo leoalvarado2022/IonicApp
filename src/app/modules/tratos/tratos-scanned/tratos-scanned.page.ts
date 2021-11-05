@@ -314,6 +314,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       this.worker = device.link;
       this.exist = false;
       this.nativeAudio.play('error');
+      this._changeDetectorRef.detectChanges();
       return;
     }
 

@@ -244,6 +244,7 @@ export class TallySyncService {
       const workingDayTotal = valor.reduce((total, next) => total + next.jornada_trabajo, 0);
       temporalTallies.push({
         ...valor[0],
+        rendimiento: valor.reduce((total, next) => total + next.rendimiento, 0),
         jornada_trabajo: (workingDayTotal / valor.length),
       });
     });

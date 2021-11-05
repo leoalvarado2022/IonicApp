@@ -22,7 +22,7 @@
           <ion-item class="input-fx360-down max-h-unset">
             <ion-searchbar [value]="dealName" (keyup)="searchDeal($event.target.value)" (ionClear)="cleanDealSearch()" placeholder="Buscar"></ion-searchbar>
           </ion-item>
-          <ion-text class="error--message" color="danger" *ngIf="activeForm.dirty && activeForm.get('id').hasError('required')">
+          <ion-text class="error--message no-margin-t" color="danger" *ngIf="activeForm.dirty && activeForm.get('id').hasError('required')">
             Debe elegir un trato
           </ion-text>
 
@@ -40,7 +40,7 @@
           <ion-label class="label-fx360">Unidad</ion-label>
           <ion-input class="input-fx360 bg-white" readonly [value]="activeForm.get('unit_control').value"></ion-input>
         </ion-col>
-        <ion-col size="12">
+        <ion-col size="6">
           <ion-label class="label-fx360">Método de Lectura</ion-label>
           <ion-item class="input-fx360-down">
             <ion-select formControlName="option" interface="action-sheet" placeholder="Seleccione">
@@ -50,12 +50,12 @@
             </ion-select>
           </ion-item>
           <ng-container *ngIf="activeForm.get('option').errors && !activeForm.invalid">
-            <ion-text class="error--message" color="danger" *ngIf="activeForm.get('option').hasError('required')">
+            <ion-text class="error--message no-margin-t" color="danger" *ngIf="activeForm.get('option').hasError('required')">
               Debe elegir un método.
             </ion-text>
           </ng-container>
         </ion-col>
-        <ion-col size="12">
+        <ion-col size="6">
           <ion-label class="label-fx360">Método de conexión</ion-label>
           <ion-item class="input-fx360-down">
             <ion-select formControlName="method" interface="action-sheet" placeholder="Seleccione">
@@ -64,14 +64,14 @@
             </ion-select>
           </ion-item>
           <ng-container *ngIf="activeForm.get('option').errors && !activeForm.invalid">
-            <ion-text class="error--message" color="danger" *ngIf="activeForm.get('option').hasError('required')">
+            <ion-text class="error--message no-margin-t" color="danger" *ngIf="activeForm.get('option').hasError('required')">
               Debe elegir un método.
             </ion-text>
           </ng-container>
         </ion-col>
         <ion-col size="12">
           <ion-item class="input-fx360-down">
-            <ion-checkbox formControlName="automatic"></ion-checkbox>
+            <ion-checkbox formControlName="automatic" mode="ios"></ion-checkbox>
             <ion-label class="label-fx360-checkbox">Registro Automatico</ion-label>
           </ion-item>
         </ion-col>

@@ -72,7 +72,9 @@ export class TratosListPage {
       let tallies: any = [];
       // si las tarjas existen
       if (data[0] && data[0].length) {
-        tallies = data[0].filter((value: any) => moment(value.date).utc().format('YYYY-MM-DD') === moment().utc().format('YYYY-MM-DD') && value.dispositivo === 1);
+        tallies = data[0].filter((value: any) => {
+          return moment(value.date).utc().format('YYYY-MM-DD') === moment().utc().format('YYYY-MM-DD') && value.dispositivo === 1;
+        });
 
         if (tallies.length) {
           // mapear tarjas pra el conteo y para clasificarlos en escaneo
@@ -90,11 +92,16 @@ export class TratosListPage {
 
       // si hay temporales tambien se agregan
       if (data[1] && data[1].length) {
-        this.tallyTemp = [...data[1]];
+        tallies = [...tallies, ...data[1]];
+        // this.tallyTemp = [...tallies, ...data[1]];
       }
 
+      // removing duplicated
+      const toRecord = tallies.filter((v, i, a) => v.id === 0 || a.findIndex(t => (t.id === v.id)) === i);
+      this.tallyTemp = toRecord;
+
       // se agrega a los temporales
-      this._storageSyncService.setTallyTemp(this.tallyTemp).then();
+      this._storageSyncService.setTallyTemp(toRecord).then();
       // console.log(this.tallyTemp);
       this._changeDetect.detectChanges();
     });
@@ -174,7 +181,10 @@ export class TratosListPage {
     let work = [];
     worker.forEach((valor, clave, map) => {
       if (valor.length) {
-        work.push(valor[0]);
+        work.push({
+          ...valor[0],
+          performance: valor.reduce((sum, current) => sum + current.rendimiento, 0),
+        });
       }
     });
     const nameWorker = await this._storageSyncService.getWorkers();

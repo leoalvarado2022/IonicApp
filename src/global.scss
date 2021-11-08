@@ -469,7 +469,7 @@ ion-action-sheet {
 .input-fx360-down {
   --background: #fff;
   --border-radius: 20px;
-  margin: 5px 5px 10px;
+  margin: 5px 5px 5px 0;
   --border-style: none !important;
   --min-height: 42px;
 
@@ -489,7 +489,7 @@ ion-action-sheet {
 .input-fx360-area {
   background: #fff;
   border-radius: 20px;
-  margin: 5px 5px 10px;
+  margin: 5px 5px 5px 0;
 }
 
 .input-fx360-select {

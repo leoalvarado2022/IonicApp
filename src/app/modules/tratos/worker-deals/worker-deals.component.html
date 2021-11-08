@@ -13,35 +13,33 @@
 </ion-header>
 
 <ion-content>
-
+  <ion-toolbar class="toolbar-search">
+    <ion-searchbar class="production" animated placeholder="Buscar..." showCancelButton="never" (ionChange)="searchWorker($event.target.value)" (ionClear)="cancelSearch()"></ion-searchbar>
+  </ion-toolbar>
   <ion-grid>
     <ion-row>
       <ion-card>
-        <ion-card-content>
+        <ion-row class="header">
+          <ion-col size="7">
+            Trabajador
+          </ion-col>
+          <ion-col size="5" style="text-align: center;">
+            Rendimiento
+          </ion-col>
+        </ion-row>
+        <ion-list class="fixed-list">
           <ion-grid>
-            <ion-row class="header">
+            <ion-row *ngFor="let worker of filteredWorkers" class="ion-align-items-center">
               <ion-col size="7">
-                Trabajador
+                <!--<p>{{ worker.worker?.name }}&nbsp;{{ worker.worker?.lastName }}</p>-->
+                <p>{{ getWorkerName(worker) }}</p>
               </ion-col>
               <ion-col size="5" style="text-align: center;">
-                Rendimiento
+                <ion-input type="text" value="{{ worker.performance || worker.rendimiento }}" readonly></ion-input>
               </ion-col>
             </ion-row>
           </ion-grid>
-          <ion-list class="fixed-list">
-            <ion-grid>
-              <ion-row *ngFor="let worker of deals?.worker" class="ion-align-items-center">
-                <ion-col size="7">
-                  <!--<p>{{ worker.worker?.name }}&nbsp;{{ worker.worker?.lastName }}</p>-->
-                  <p>{{ getWorkerName(worker) }}</p>
-                </ion-col>
-                <ion-col size="5" style="text-align: center;">
-                  <ion-input type="text" value="{{ worker.performance || worker.rendimiento }}" readonly></ion-input>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
-          </ion-list>
-        </ion-card-content>
+        </ion-list>
       </ion-card>
 
     </ion-row>

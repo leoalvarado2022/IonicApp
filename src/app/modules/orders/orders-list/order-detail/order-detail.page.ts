@@ -577,4 +577,12 @@ export class OrderDetailPage implements OnInit, OnDestroy {
 
     return 0;
   }
+
+  doRound(value) {
+    if (!value) {
+      return 0;
+    }
+
+    return Math.round(value);
+  }
 }

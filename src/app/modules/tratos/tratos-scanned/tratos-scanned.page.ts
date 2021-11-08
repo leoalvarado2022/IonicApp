@@ -47,10 +47,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public validWeight = false;
   private unsubscriber = new Subject();
 
-  public timer: number;
-  public workersCounted = [];
-  public interval = null;
-  public running = false;
+  public devicesCounted = [];
 
   constructor(
     public _modalController: ModalController,
@@ -71,18 +68,38 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // this.nativeAudio.unload('beep').then(() => {});
+    // this.nativeAudio.unload('error').then(() => {});
+    this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3')
+      .then(() => {}).catch((ex) => {
+      console.log('ex ::: ', ex);
+    });
+    this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
+      .then(() => {}).catch((ex) => {
+      console.log('ex ::: ', ex);
+    });
+
     this.isLoading = true;
     this.loadData();
 
     this._platform.ready().then(() => {
       this.isCordova = this._platform.is('cordova');
 
-      if (this.isCordova) {
-        Promise.all([
-          this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3'),
-          this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
-        ]).then();
-      }
+      // if (this.isCordova) {
+      //   // Promise.all([
+      //   //   this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3'),
+      //   //   this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
+      //   // ]).then();
+      //
+      //   this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3')
+      //     .then(() => {}).catch((ex) => {
+      //       console.log(ex);
+      //     });
+      //   this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
+      //     .then(() => {}).catch((ex) => {
+      //       console.log(ex);
+      //     });
+      // }
 
       // ios no deja usar NFC
       if (this._platform.is('android')) {
@@ -129,18 +146,18 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * desacativar audios y unsuscribe data de la lista
    */
   ngOnDestroy(): void {
-    if (this.isCordova) {
-      Promise.all([
-        this.nativeAudio.unload('beep'),
-        this.nativeAudio.unload('error')
-      ]).then();
-    }
+    // if (this.isCordova) {
+      // Promise.all([
+      //   this.nativeAudio.unload('beep'),
+      //   this.nativeAudio.unload('error')
+      // ]).then();
+      this.nativeAudio.unload('beep').then(() => {});
+      this.nativeAudio.unload('error').then(() => {});
+    // }
 
     if (this.listener$) {
       this.listener$.unsubscribe();
     }
-
-    clearInterval(this.interval);
   }
 
   /**
@@ -186,21 +203,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
       this._changeDetectorRef.detectChanges();
     });
-  }
-
-  public startTimer() {
-    this.timer = this.centerCost.time_limit;
-    this.running = true;
-    this.interval = setInterval(() => {
-      if (this.timer === 0) {
-        this.running = false;
-        this.timer = this.centerCost.time_limit;
-        clearInterval(this.interval);
-        return;
-      }
-      this.timer -= 1;
-      this._changeDetectorRef.detectChanges();
-    }, 1000);
   }
 
   /**
@@ -256,12 +258,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('this.running ::: ', this.running);
-    if (this.running) {
-      this.exist = false;
-      return;
-    }
-
     if (this.centerCost.automatic) {
       this.setInfo(id);
     } else {
@@ -311,6 +307,17 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public setInfo = (id: number) => {
     const device = this.devices.find(value => value.id_device === id);
 
+    if (
+      (this.centerCost.control_method === 'time' && !this.validLimitTime(id)) ||
+      (this.centerCost.control_method === 'person' && !this.validLimitPerson(id))
+    ) {
+      this.worker = device.link;
+      this.exist = false;
+      this.nativeAudio.play('error');
+      this._changeDetectorRef.detectChanges();
+      return;
+    }
+
     console.log('device', device);
 
     if (device) {
@@ -323,13 +330,19 @@ export class TratosScannedPage implements OnInit, OnDestroy {
         this.worker = worker.name;
         this.exist = true;
         this.setScanned(worker);
+        this.nativeAudio.play('beep');
 
-        if (this.centerCost.control_method === 'time' && this.centerCost.time_limit > 0) {
-          this.startTimer();
+        // Duplicated control methods
+        if (this.centerCost.control_method === 'time' && !this.devicesCounted.some(d => d.deviceId === id)) {
+          this.devicesCounted.push({
+            deviceId: id,
+            date: moment().unix(),
+          });
         }
-        // if (this.centerCost.control_method === 'person') {
-        //   this.workersCounted.push(worker);
-        // }
+        // If is person method and the device had not been scanned
+        if (this.centerCost.control_method === 'person' && !this.devicesCounted.includes(id)) {
+          this.devicesCounted.push(id);
+        }
       } else {
         this.worker = `Trabajador ${device.link} no activo`;
         this.exist = false;
@@ -341,6 +354,53 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     }
 
     this._changeDetectorRef.detectChanges();
+  }
+
+  public validLimitTime = (device) => {
+    const index = this.devicesCounted.findIndex(d => d.deviceId === device);
+
+    if (index > -1) {
+      const currentDate = moment().unix();
+      const diff = currentDate - this.devicesCounted[index].date;
+
+      if (diff < this.centerCost.limit) {
+        return false;
+      }
+
+      this.devicesCounted[index].date = currentDate;
+    }
+
+    return true;
+  }
+
+  public validLimitPerson = (device) => {
+    const checkExists = this.devicesCounted.includes(device);
+
+    if (checkExists) {
+      this.devicesCounted.push(device);
+
+      const initIdx = this.devicesCounted.indexOf(device);
+      const lastIdx = this.devicesCounted.lastIndexOf(device);
+
+      const diffIdx = Math.abs(initIdx - lastIdx);
+      const inter = diffIdx - 1;
+      const invalid = inter < this.centerCost.limit;
+
+      // Avoid duplicated id's
+      if (diffIdx === 1 || (diffIdx > 1 && invalid)) {
+        this.devicesCounted.splice(lastIdx, 1);
+      }
+      if (!invalid) {
+        this.devicesCounted.splice(initIdx, 1);
+        // this.devicesCounted.splice(lastIdx, 1);
+      }
+
+      if (invalid) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 
@@ -510,7 +570,8 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
     const tally: TallyInterface = {};
     tally.id = 0;
-    tally.fecha = moment().utc().format('YYYY-MM-DD');
+    // tally.fecha = moment(this.centerCost.currentDate).utc().format('YYYY-MM-DD');
+    tally.fecha = moment(this.centerCost.currentDate).format('YYYY-MM-DD');
     tally.id_par_entidades_trabajador = worker.id;
     tally.id_par_centros_costos = this.centerCost.center_cost_id;
     tally.id_par_labores = this.centerCost.deal?.id_labor;
@@ -590,8 +651,10 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   private filterWorkersByValidity = (date: string, workers: Array<any>): Array<any> => {
     return workers.filter(worker => {
 
-      const startDate = moment.utc(worker.startDate);
-      const endDate = moment.utc(worker.endDate);
+      // const startDate = moment.utc(worker.startDate);
+      // const endDate = moment.utc(worker.endDate);
+      const startDate = moment(worker.startDate);
+      const endDate = moment(worker.endDate);
 
       return moment(date).isBetween(startDate, endDate);
     });
@@ -709,7 +772,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   }
 
 
-  public doCount() {
-    this.pullDevice('AAAAAABBBBBBCCCCC').then();
+  public doCount(workerId) {
+    this.pullDevice(workerId).then();
   }
 }

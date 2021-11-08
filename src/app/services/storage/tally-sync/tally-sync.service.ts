@@ -3,6 +3,7 @@ import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { Storage } from '@ionic/storage';
 import { StorageKeys } from '../storage-keys';
 import * as moment from 'moment';
+import {DealsService} from '../../../modules/tratos/services/deals/deals.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,10 @@ export class TallySyncService {
 
   private tallyTempId = 1;
 
-  constructor(private storage: Storage) {
+  constructor(
+    private storage: Storage,
+    private dealService: DealsService,
+  ) {
 
   }
 
@@ -164,7 +168,13 @@ export class TallySyncService {
    * - Filter tallies of a worker that are marked to delete
    * - Filter tallies to record that are being edited
    */
-  public getNumberOfWorkerTallies = (syncedTallies: Array<Tally>, talliesToRecord: Array<Tally>, worker: any, currentDate: string, ignoreId: number = null): Array<Tally> => {
+  public getNumberOfWorkerTallies = (
+    syncedTallies: Array<Tally>,
+    talliesToRecord: Array<Tally>,
+    worker: any,
+    currentDate: string,
+    ignoreId: number = null,
+  ): Array<Tally> => {
     // Get the tallys to be deleted and convert the ID to positive for comparison use
     const markedToDelete = talliesToRecord.filter(item => item.status === 'delete').map(item => item.id * -1);
 
@@ -189,6 +199,59 @@ export class TallySyncService {
 
     // Return joined lists
     return [...toRecord, ...filteredTallies];
+  }
+
+  public getNumberOfWorkerTalliesAndTemp = (
+    syncedTallies: Array<Tally>,
+    talliesToRecord: Array<Tally>,
+    talliesTemp: Array<any>,
+    worker: any,
+    currentDate: string,
+    ignoreId: number = null,
+  ): Array<Tally> => {
+    // Get the tallys to be deleted and convert the ID to positive for comparison use
+    const markedToDelete = talliesToRecord.filter(item => item.status === 'delete').map(item => item.id * -1);
+
+    // Get the tallys to be edited
+    const markedToEdit = talliesToRecord.filter(item => item.status === 'edit').map(item => item.id);
+
+    // Filter synced tallies by current date and not marked for delete
+    const filteredTallies = syncedTallies.filter(item => {
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.workerId === worker.id && tallyDate === current && !markedToDelete.includes(item.id) && !markedToEdit.includes(item.id);
+    });
+
+    // Filter tallies to record by current date and that are not being edited
+    const toRecord = talliesToRecord.filter(item => {
+      const tallyDate = this.removeTimeFromDate(item.date);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.workerId === worker.id && tallyDate === current && item.status !== 'delete' && item.tempId !== ignoreId;
+    });
+
+    // Filter temporal tallies by current date
+    const temporalTallies = [];
+    const filterArr = talliesTemp.filter((item: any) => {
+      const tallyDate = this.removeTimeFromDate(item.fecha);
+      const current = this.removeTimeFromDate(currentDate);
+
+      return item.id_par_entidades_trabajador === worker.id && tallyDate === current;
+    });
+    const groupedArr = this.dealService.groupBy(filterArr, (item) => item.id_par_centros_costos);
+    groupedArr.forEach(valor => {
+      const workingDayTotal = valor.reduce((total, next) => total + next.jornada_trabajo, 0);
+      temporalTallies.push({
+        ...valor[0],
+        rendimiento: valor.reduce((total, next) => total + next.rendimiento, 0),
+        jornada_trabajo: (workingDayTotal / valor.length),
+      });
+    });
+
+
+    // Return joined lists
+    return [...toRecord, ...filteredTallies, ...temporalTallies];
   }
 
   /**

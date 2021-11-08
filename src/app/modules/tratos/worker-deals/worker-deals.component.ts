@@ -11,6 +11,8 @@ export class WorkerDealsComponent implements OnInit {
 
   @Input() deals: any;
 
+  public filteredWorkers = [];
+
   constructor(
     public modalController: ModalController,
     private storeService: StoreService,
@@ -18,6 +20,7 @@ export class WorkerDealsComponent implements OnInit {
 
   ngOnInit() {
     console.log(this.deals, 'deals');
+    this.filteredWorkers = this.deals?.worker || [];
   }
 
   /**
@@ -39,6 +42,23 @@ export class WorkerDealsComponent implements OnInit {
       }
     }
     return '';
+  }
+
+  public searchWorker = (search: string) => {
+    if (search) {
+      this.filteredWorkers = this.deals.worker.filter(item => {
+        return (
+          item.workerId.toString().includes(search.toLowerCase()) ||
+          item.worker?.name.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    } else {
+      this.filteredWorkers = [...this.deals.worker];
+    }
+  }
+
+  public cancelSearch = () => {
+    this.filteredWorkers = [...this.deals.worker];
   }
 
 }

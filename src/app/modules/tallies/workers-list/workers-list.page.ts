@@ -39,6 +39,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
   // Tallies
   private syncedTallies: Array<Tally> = [];
   private talliesToRecord: Array<Tally> = [];
+  private talliesTemp: Array<any> = [];
 
   // FORM
   private costCenters: Array<CostCenterList> = [];
@@ -103,7 +104,8 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.storageSyncService.getDeals(),
       this.storageSyncService.getBonds(),
       this.tallySyncService.getTalliesToRecord(),
-      this.storageSyncService.getAllQuadrilles()
+      this.storageSyncService.getAllQuadrilles(),
+      this.storageSyncService.getTallyTemp(),
     ]).then( data => {
       // Workers
       this.workers = [...data[0]];
@@ -113,6 +115,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
       // Tallies
       this.syncedTallies = [...data[1]];
       this.talliesToRecord = [...data[6]];
+      this.talliesTemp = [...data[8]];
 
       // Form
       this.costCenters = [...data[2]];
@@ -157,7 +160,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    */
   public addDayToDate = (): void => {
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
-      this.currentDate = moment(this.currentDate).add(1, 'day').toISOString();
+      this.currentDate = moment(this.currentDate).add(1, 'day').format('YYYY-MM-DD');
       this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.selectedWorkers = [];
     }
@@ -168,7 +171,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    */
   public subtractDayToDate = (): void => {
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
-      this.currentDate = moment(this.currentDate).subtract(1, 'day').toISOString();
+      this.currentDate = moment(this.currentDate).subtract(1, 'day').format('YYYY-MM-DD');
       this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.selectedWorkers = [];
     }
@@ -201,7 +204,13 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * @param worker
    */
   private getNumberOfWorkerTallies = (worker: Worker): Array<Tally> => {
-    return this.tallySyncService.getNumberOfWorkerTallies(this.syncedTallies, this.talliesToRecord, worker, this.currentDate);
+    return this.tallySyncService.getNumberOfWorkerTalliesAndTemp(
+      this.syncedTallies,
+      this.talliesToRecord,
+      this.talliesTemp,
+      worker,
+      this.currentDate,
+    );
   }
 
   /**
@@ -294,7 +303,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    */
   public getTotalWorkerWork = (worker: Worker): string => {
     const todayTallies = this.getNumberOfWorkerTallies(worker);
-    const workTotal = todayTallies.reduce((total: number, tally: any) => total + tally.workingDay, 0);
+    const workTotal = todayTallies.reduce((total: number, tally: any) => total + (tally.workingDay || tally.jornada_trabajo), 0);
 
     return parseFloat(workTotal).toFixed(2);
   }
@@ -416,10 +425,12 @@ export class WorkersListPage implements OnInit, OnDestroy {
     this.selectedWorkers = [];
     this.syncedTallies = [];
     this.talliesToRecord = [];
+    this.talliesTemp = [];
 
     Promise.all([
       this.storageSyncService.getTallies(),
       this.tallySyncService.getTalliesToRecord(),
+      this.storageSyncService.getTallyTemp(),
     ]).then( data => {
 
       // Workers
@@ -428,6 +439,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
       // Tallies
       this.syncedTallies = [...data[0]];
       this.talliesToRecord = [...data[1]];
+      this.talliesTemp = [...data[2]];
 
       // END LOADING
       this.isLoading = false;

@@ -48,7 +48,7 @@ export class AddCenterCostPage implements OnInit {
       currentDate: [this.currentDate, Validators.required],
       automatic: false,
       control_method: ['time', Validators.required],
-      time_limit: [60, Validators.required],
+      limit: [60, [Validators.required, Validators.min(0)]],
     });
   }
 
@@ -140,6 +140,10 @@ export class AddCenterCostPage implements OnInit {
 
     this.costCenterName = costCenter.name;
     this.filteredCostCenter = [];
+  }
+
+  public changeLimit = ({detail: {value}}) => {
+    this.centerForm.get('limit').patchValue(value === 'person' ? 0 : 60);
   }
 
 }

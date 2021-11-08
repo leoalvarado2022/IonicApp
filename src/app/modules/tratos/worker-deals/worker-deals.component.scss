@@ -43,6 +43,9 @@ ion-card {
 }
 
 .header {
+  background: var(--ion-color-light-shade);
+  padding: 7px 5px;
+
   ion-col {
     font-weight: bold;
     font-size: 18px;

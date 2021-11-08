@@ -168,7 +168,7 @@ export class RemWorkersPage implements OnInit, OnDestroy {
    * buildButtons
    */
   private buildButtons = () => {
-    this.buttons = this.allQuadrilles.filter(item => item.id !== this.quadrille.id)
+    this.buttons = this.quadrilles.filter(item => item.id !== this.quadrille.id)
       .map(item => ({
         text: item.name,
         handler: () => {

@@ -113,7 +113,7 @@ export class AssociateWorkPage implements OnInit {
     if (body) {
       this.loading = true;
       await this._deviceSyncService.addDevicesToRecord(body);
-      await this.stepperService.syncAll();
+      // await this.stepperService.syncAll();
       this.loading = false;
     }
     await this.closeWork(body);

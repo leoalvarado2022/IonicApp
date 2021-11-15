@@ -78,7 +78,7 @@ export class TallyFormComponent implements OnInit {
       laborId: ['', Validators.required],
       dealValidity: [''],
       bondValidity: [''],
-      workingDay: [1, [
+      workingDay: [0, [
         Validators.required,
         Validators.min(0.1),
         Validators.pattern(this.decimalRegex)

@@ -12,6 +12,8 @@ import { BluetoothService } from 'src/app/services/bluetooth/bluetooth.service';
 import { takeUntil } from 'rxjs/operators';
 import { ToastService } from 'src/app/shared/services/toast/toast.service';
 import { StoreService } from 'src/app/shared/services/store/store.service';
+import {DeviceSyncService} from '../../../services/storage/device-sync/device-sync.service';
+import {StepperService} from '../../../services/storage/stepper/stepper.service';
 @Component({
   selector: 'app-tratos-scanned',
   templateUrl: './tratos-scanned.page.html',
@@ -28,6 +30,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   public worker = '';
   private devices: any;
   private workers: any;
+  private recorded: any;
   public exist = true;
   public notSupported = false;
   private listener$: Subscription;
@@ -36,7 +39,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
   // temp
   public tallyTemp = [];
   private syncedTallies: Array<any> = [];
-  public previousPerformance: Array<any> = [];
 
   public isLoading = false;
   public isCordova = false;
@@ -62,14 +64,13 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     public nativeAudio: NativeAudio,
     private bluetoothService: BluetoothService,
     private toastService: ToastService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private _deviceSyncService: DeviceSyncService,
   ) {
 
   }
 
   ngOnInit() {
-    // this.nativeAudio.unload('beep').then(() => {});
-    // this.nativeAudio.unload('error').then(() => {});
     this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3')
       .then(() => {}).catch((ex) => {
       console.log('ex ::: ', ex);
@@ -84,22 +85,6 @@ export class TratosScannedPage implements OnInit, OnDestroy {
 
     this._platform.ready().then(() => {
       this.isCordova = this._platform.is('cordova');
-
-      // if (this.isCordova) {
-      //   // Promise.all([
-      //   //   this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3'),
-      //   //   this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
-      //   // ]).then();
-      //
-      //   this.nativeAudio.preloadSimple('beep', 'assets/sounds/beep.mp3')
-      //     .then(() => {}).catch((ex) => {
-      //       console.log(ex);
-      //     });
-      //   this.nativeAudio.preloadSimple('error', 'assets/sounds/error.mp3')
-      //     .then(() => {}).catch((ex) => {
-      //       console.log(ex);
-      //     });
-      // }
 
       // ios no deja usar NFC
       if (this._platform.is('android')) {
@@ -146,14 +131,10 @@ export class TratosScannedPage implements OnInit, OnDestroy {
    * desacativar audios y unsuscribe data de la lista
    */
   ngOnDestroy(): void {
-    // if (this.isCordova) {
-      // Promise.all([
-      //   this.nativeAudio.unload('beep'),
-      //   this.nativeAudio.unload('error')
-      // ]).then();
+    if (this.isCordova) {
       this.nativeAudio.unload('beep').then(() => {});
       this.nativeAudio.unload('error').then(() => {});
-    // }
+    }
 
     if (this.listener$) {
       this.listener$.unsubscribe();
@@ -172,10 +153,15 @@ export class TratosScannedPage implements OnInit, OnDestroy {
       this._storageSyncService.getDevices(),
       this._storageSyncService.getWorkers(),
       this._storageSyncService.getTallyTemp(),
-      this._storageSyncService.getTallies()
+      this._storageSyncService.getTallies(),
+      this._deviceSyncService.getDevicesToRecord(),
     ]).then(data => {
       this.centerCost = data[0];
-      this.devices = data[1];
+      this.devices = [
+        ...data[1].filter(d => !data[5].some(s => s.id_device === d.id_device && s.id < 0)),
+        ...data[5].filter(d => d.id >= 0),
+      ];
+      this.recorded = data[5];
       this.workers = this.filterWorkersByValidity(this.centerCost.currentDate, data[2]);
       this.tallyTemp = data[3];
       this.syncedTallies = data[4];
@@ -263,6 +249,7 @@ export class TratosScannedPage implements OnInit, OnDestroy {
     } else {
       let worker: any;
       const device = this.devices.find(value => value.id_device === id);
+
       if (device) {
         worker = this.workers.find(value => value.id === device.id_link);
         if (!worker) {

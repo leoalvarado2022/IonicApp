@@ -749,6 +749,7 @@ export class StorageSyncService {
         // REVISAR AQUI
         // const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId) && x.status !== 'delete' );
         const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId));
+        // const mergeArrays = syncedDevices.filter(x => x.id_device !== +);
         return this.storage.set(StorageKeys.Devices, mergeArrays);
       }
 

@@ -88,7 +88,7 @@
   <!-- One worker selected -->
   <ion-row *ngIf="selectedWorkers.length === 1">
     <ion-col size="6">
-      <ion-button class="btn-app" color="success" expand="block" (click)="createTally()">
+      <ion-button class="btn-app" color="success" expand="block" (click)="createTally()" [disabled]="checkWorkerLimit()">
         Agregar Jornada
       </ion-button>
     </ion-col>

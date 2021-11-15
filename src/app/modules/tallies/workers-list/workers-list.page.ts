@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
@@ -58,7 +58,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private tallySyncService: TallySyncService,
     private modalController: ModalController,
-    private router: Router
+    private router: Router,
   ) {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.showDate = moment(this.currentDate).format(this.dateFormat);
@@ -109,6 +109,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
     ]).then( data => {
       // Workers
       this.workers = [...data[0]];
+      console.log('this.workers ::: ', this.workers);
       this.filteredWorkers = [...this.workers] ;
       this.selectedWorkers = [];
 
@@ -444,6 +445,19 @@ export class WorkersListPage implements OnInit, OnDestroy {
       // END LOADING
       this.isLoading = false;
     });
+  }
+
+  public checkWorkerLimit = () => {
+    for (const worker of this.selectedWorkers) {
+      const tallies = this.getNumberOfWorkerTallies(worker);
+
+      const workTotal = tallies.reduce((total: number, tally: any) => total + (tally.workingDay || tally.jornada_trabajo), 0);
+      if (workTotal === worker.dailyMax) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }

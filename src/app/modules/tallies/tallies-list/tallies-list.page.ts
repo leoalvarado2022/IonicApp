@@ -116,6 +116,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
       // CALC TALLIES
       const a = this.getNumberOfWorkerTallies();
       this.workerTallies = [...a];
+      console.log('workerTallies ::: ', this.workerTallies);
       // END LOADING
       this.isLoading = false;
     });
@@ -311,6 +312,8 @@ export class TalliesListPage implements OnInit, OnDestroy {
    * checkWorkerLimit
    */
   public checkWorkerLimit = () => {
+    // console.log('this.activeWorker ::: ', this.activeWorker);
+    // console.log('this.getTotalWorkerWork() ::: ', this.getTotalWorkerWork());
     if (this.activeWorker) {
       return this.getTotalWorkerWork() >= this.activeWorker.dailyMax;
     }
@@ -357,6 +360,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
       // CALC TALLIES
       const b = this.getNumberOfWorkerTallies();
       this.workerTallies = [...b];
+      console.log('this.workerTallies ::: ', this.workerTallies);
 
       // END LOADING
       this.isLoading = false;

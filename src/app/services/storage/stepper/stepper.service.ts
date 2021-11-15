@@ -27,6 +27,7 @@ export class StepperService {
 
   private stepsArray: Array<any> = [];
   private stepsArraySubject = new BehaviorSubject<any>([]);
+  public syncStep = new BehaviorSubject<string>('standby');
 
   private isOnline: boolean;
 
@@ -67,6 +68,7 @@ export class StepperService {
     if (this.isOnline && this.storeService.getLoginStatus()) {
       let data = null;
       this.syncError = null;
+      this.syncStep.next('starting');
 
       // If tallies sync
       const talliesBuilded = await this.buildTalliesArray();
@@ -138,13 +140,16 @@ export class StepperService {
       if (this.syncError === null) {
         // Store Data
         this.stepsArray.push({ index: this.stepsArray.length, name: 'Almacenando en memoria' });
-        this.storeAllSyncData(data);
+        await this.storeAllSyncData(data);
       }
+
+      this.syncStep.next('finished');
 
       // Terminado
       setTimeout(() => {
         this.stepsArray = [];
         this.stepsArraySubject.next([]);
+        this.syncStep.next('standby');
       }, 1000);
     }
   }
@@ -328,6 +333,7 @@ export class StepperService {
       this.httpService.errorHandler(log);
       this.syncError = true;
     } else {
+      console.log('log => ', log);
       this.checkRecordedDevices(log);
       await this.storageSyncService.addDevicesToSyncedDevices(devicesToRecord);
       await this.cleanDevicesMemory();

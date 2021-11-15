@@ -259,7 +259,6 @@ export class NfcPage implements OnInit, OnDestroy {
     this.selected = undefined;
     this.isDelete = false;
     // this.scanned = [];
-    console.log('Deleted: ', deleted);
     if (deleted.id && deleted.id > 0 && !deleted.tempId) {
       deleted.id = deleted.id * -1;
       this._deviceSyncService.getDeviceTempId().then(tempId => {
@@ -269,9 +268,7 @@ export class NfcPage implements OnInit, OnDestroy {
       deleted.delete = true;
     }
     // idx = this.scanned.findIndex(s => s.tempId === deleted.tempId);
-    console.log('this.scanned ::: ', this.scanned);
     const idx = this.scanned.findIndex(s => s.id_link === deleted.id_link);
-    console.log('idx ::: ', idx);
     if (idx >= 0) {
       this.scanned.splice(idx, 1);
     }

@@ -333,7 +333,6 @@ export class StepperService {
       this.httpService.errorHandler(log);
       this.syncError = true;
     } else {
-      console.log('log => ', log);
       this.checkRecordedDevices(log);
       await this.storageSyncService.addDevicesToSyncedDevices(devicesToRecord);
       await this.cleanDevicesMemory();

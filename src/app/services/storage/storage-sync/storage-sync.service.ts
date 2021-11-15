@@ -744,15 +744,12 @@ export class StorageSyncService {
    * @param recorded
    */
   public addDevicesToSyncedDevices = (recorded: Array<number>) => {
-    console.log('recorded ::: ', recorded);
     return this.storage.get(StorageKeys.Devices).then((syncedDevices: Array<any>) => {
-      console.log('syncedDevices ::: ', syncedDevices);
       if (syncedDevices) {
         // REVISAR AQUI
         // const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId) && x.status !== 'delete' );
         const mergeArrays = syncedDevices.filter(x => recorded.includes(x.tempId));
         // const mergeArrays = syncedDevices.filter(x => x.id_device !== +);
-        console.log('mergeArrays ::: ', mergeArrays);
         return this.storage.set(StorageKeys.Devices, mergeArrays);
       }
 

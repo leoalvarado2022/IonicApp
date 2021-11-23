@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { StorageSyncService } from '../../../../services/storage/storage-sync/storage-sync.service';
 import { DeviceSyncService } from '../../../../services/storage/device-sync/device-sync.service';
 import {StepperService} from '../../../../services/storage/stepper/stepper.service';
+import {sortArrayByStringKey} from '../../../../helpers/utils';
 @Component({
   selector: 'app-associate-work',
   templateUrl: './associate-work.page.html',
@@ -41,37 +42,21 @@ export class AssociateWorkPage implements OnInit {
       this._storageSyncService.getWorkers(),
       this._storageSyncService.getQuadrillesByCurrentUser(company.user, !!access.find(x => x.functionality === 4)),
     ]).then(data => {
-      // this.workers = [...data[0]];
       this.quadrilles = [...data[1]];
-      // console.log('this.quadrilles ::: ', this.quadrilles);
 
       this.workers = data[0].filter((work: any) => {
-        // console.log('work ::: ', work);
         const quadrille = this.quadrilles.find(q => q.id === work.quadrille);
-        // console.log('quadrille ::: ', quadrille);
         const valid = moment(new Date()).isBetween(moment(work.startDate), moment(work.endDate), null, '[]');
-        // return valid && work.active && work.company === company.id && quadrille && quadrille.responsible === company.user;
         return valid && work.active && quadrille && quadrille.responsible === company.user;
       });
-      this.filtered = this.workers.filter((value: any, index: any) => index < 10);
+      this.filtered = sortArrayByStringKey(this.workers.filter((value: any, index: any) => index < 10), 'name');
     });
-    /*this._storageSyncService.getWorkers().then(data => {
-      const company = this.storeService.getActiveCompany();
-      const quadrilles = this.storeService.getQuadrilles();
-      console.log('quadrilles ::: ', quadrilles);
-      this.workers = data.filter(work => {
-        console.log('work ::: ', work);
-        const valid = moment(new Date()).isBetween(moment(work.startDate), moment(work.endDate), null, '[]');
-        return valid && work.active && work.company === company.id;
-      });
-      this.filtered = this.workers.filter((value: any, index: any) => index < 10);
-    });*/
   }
   /**
    * cancelWork
    */
   public cancelWork = () => {
-    this.filtered = this.workers;
+    this.filtered = sortArrayByStringKey(this.workers, 'name');
   }
   /**
    * closeModal
@@ -85,16 +70,17 @@ export class AssociateWorkPage implements OnInit {
    */
   public searchWork = (search: string) => {
     if (!search || !search.length) {
-      this.filtered = this.workers;
+      this.filtered = sortArrayByStringKey(this.workers, 'name');
       return;
     }
-    this.filtered = this.workers
+    const arr = this.workers
       .filter((worker: any, index: any) => {
         const filter = search.toLowerCase().replace(/\./g, '').replace(/-/g, '');
         const matchIdentified = worker.identifier ? worker.identifier.toLowerCase().indexOf(filter.toLowerCase()) > -1 : true;
         const matchName = worker.names ? worker.names.toLowerCase().indexOf(filter.toLowerCase()) > -1 : true;
         return (matchIdentified || matchName) && index < 5;
       });
+    this.filtered = sortArrayByStringKey(arr, 'name');
   }
   /**
    * @description seleccionar trabajador

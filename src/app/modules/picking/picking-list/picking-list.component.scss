@@ -1,0 +1,43 @@
+.current-container {
+  padding: 0.8rem;
+  margin: 1rem 0;
+
+  h6 {
+    font-weight: 600;
+    margin-top: 0;
+
+    &.error {
+      margin: 10px 0 !important;
+      color: var(--ion-color-danger);
+    }
+  }
+
+  p {
+    font-size: 85%;
+    margin-top: 0;
+    margin-bottom: 0.2rem;
+  };
+}
+
+.card-item {
+  width: 100%;
+  margin: 0 10px;
+  padding: 10px 15px;
+
+  ion-card-content {
+    padding: 0;
+  }
+}
+
+.item-container {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+ion-item-options {
+  border-bottom-width: 0 !important;
+}
+
+ion-item-sliding {
+  margin-bottom: 10px;
+}

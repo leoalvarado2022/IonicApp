@@ -9,6 +9,7 @@ import { StorageSyncService } from 'src/app/services/storage/storage-sync/storag
 import { StepperService } from 'src/app/services/storage/stepper/stepper.service';
 import { IonItemSliding } from '@ionic/angular';
 import { take, takeUntil } from 'rxjs/operators';
+import {sortArrayByStringKey} from '../../../helpers/utils';
 
 @Component({
   selector: 'app-contracts-list',
@@ -61,7 +62,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
     this.storageSyncService.getPreContracts().then(data => {
       const preContractsMapped = data.map(item => this.contractsService.mapPreContractToBeListed(item));
 
-      this.contracts = [...preContractsMapped];
+      this.contracts = [...sortArrayByStringKey(preContractsMapped, 'workerName')];
       this.filteredContracts = [...this.contracts];
 
       this.isLoading = false;
@@ -74,7 +75,8 @@ export class ContractsListPage implements OnInit, OnDestroy {
    */
   public searchContract = (search: string) => {
     if (search) {
-      this.filteredContracts = this.contracts.filter(item => {
+      // sortArrayByStringKey(preContractsMapped, 'workerName')
+      const arr = this.contracts.filter(item => {
         const fullName = `${item.workerName.toLowerCase()} ${item.workerLastName.toLowerCase()} ${item.workerSurname.toLowerCase()}`;
         return (
           item.id.toString().includes(search.toLowerCase()) ||
@@ -82,8 +84,9 @@ export class ContractsListPage implements OnInit, OnDestroy {
           item.contractTypeName.toLowerCase().includes(search.toLowerCase())
         );
       });
+      this.filteredContracts = sortArrayByStringKey(arr, 'workerName');
     } else {
-      this.filteredContracts = [...this.contracts];
+      this.filteredContracts = [...sortArrayByStringKey(this.contracts, 'workerName')];
     }
   }
 
@@ -91,7 +94,7 @@ export class ContractsListPage implements OnInit, OnDestroy {
    * cancelSearch
    */
   public cancelSearch = () => {
-    this.filteredContracts = [...this.contracts];
+    this.filteredContracts = [...sortArrayByStringKey(this.contracts, 'workerName')];
   }
 
   /**

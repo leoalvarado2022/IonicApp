@@ -103,7 +103,7 @@
           <ion-label class="label-fx360">Funcionalidad</ion-label>
           <ion-item class="input-fx360-down max-h-unset">
             <ion-select formControlName="funcionality_id" placeholder="Funcionalidad" cancelText="Cancelar" interface="action-sheet">
-              <ion-select-option *ngFor="let functionality of functionalities" [value]="functionality.id">{{functionality.functionality}}</ion-select-option>
+              <ion-select-option *ngFor="let functionality of functionalitiesFiltered" [value]="functionality.id">{{functionality.functionality}}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>

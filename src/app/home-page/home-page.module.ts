@@ -140,6 +140,10 @@ const routes: Routes = [
         path: 'registro_aplicacion',
         loadChildren: () => import('../modules/application-registry/application-registry.module').then(m => m.ApplicationRegistryPageModule)
       },
+      {
+        path: 'gestion_ordenes_transporte',
+        loadChildren: () => import('../modules/picking/picking.module').then(m => m.PickingModule)
+      },
       {path: '**', redirectTo: ''},
     ],
   },

@@ -6,8 +6,9 @@ import { TimerService } from '../services/storage/timer/timer.service';
 import { Subject } from 'rxjs';
 import { StepperService } from '../services/storage/stepper/stepper.service';
 import { Platform } from '@ionic/angular';
-import { takeUntil } from 'rxjs/operators';
+import {takeUntil, tap} from 'rxjs/operators';
 import { GeolocationService } from '../shared/services/geolocation/geolocation.service';
+import {NetworkService} from '../shared/services/network/network.service';
 
 @Component({
   selector: 'app-home-page',
@@ -25,7 +26,8 @@ export class HomePagePage {
     private stepperService: StepperService,
     private httpService: HttpService,
     private platform: Platform,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private networkService: NetworkService,
   ) {
 
   }
@@ -47,7 +49,14 @@ export class HomePagePage {
     this.timerService.getTimerNotifier()
       .pipe(takeUntil(this.subscription))
       .subscribe(() => {
-        this.stepperService.syncAll();
+        let isOnline = false;
+        this.networkService.getNetworkStatus().subscribe(status => {
+          isOnline = status;
+        });
+
+        if (isOnline) {
+          this.stepperService.syncAll();
+        }
       });
 
     // StartTimer

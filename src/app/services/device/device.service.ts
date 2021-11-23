@@ -30,6 +30,16 @@ export class DeviceService {
   };
 
   /**
+   * get full uuid
+   */
+  public getFullUUID = () => {
+    if (this.device.uuid) {
+      return this.device.uuid;
+    }
+    return '';
+  };
+
+  /**
    * getUUIDLast8
    */
   public getUUIDLast8 = () => {

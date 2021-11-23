@@ -1,7 +1,15 @@
+<ion-toolbar class="toolbar-search">
+  <ion-searchbar
+    placeholder="Buscar..."
+    (ionChange)="searchTickets($event.target.value)"
+    (ionClear)="cancelSearch()"
+    animated
+    class="production"
+    showCancelButton="never"
+    debounce="650"
+  ></ion-searchbar>
+</ion-toolbar>
 <ion-content>
-  <ion-toolbar class="toolbar-search">
-    <ion-searchbar placeholder="Buscar..." (ionChange)="searchTickets($event.target.value)" (ionClear)="cancelSearch()" animated class="production" showCancelButton="never"></ion-searchbar>
-  </ion-toolbar>
   <ion-refresher (ionRefresh)="reSync($event)" class="refresher" slot="fixed">
     <ion-refresher-content
       pullingIcon="arrow-down"
@@ -12,8 +20,8 @@
   </ion-refresher>
 
   <ng-container *ngIf="filteredTickets.length > 0">
-    <ion-virtual-scroll [items]="filteredTickets">
-      <div *virtualItem="let ticket">
+    <ion-list class="bg-transparent">
+      <ng-container *ngFor="let ticket of filteredTickets">
         <ion-row class="ion-justify-content-center">
           <ion-col size="12">
             <app-ticket-card
@@ -23,8 +31,13 @@
             </app-ticket-card>
           </ion-col>
         </ion-row>
-      </div>
-    </ion-virtual-scroll>
+      </ng-container>
+    </ion-list>
+
+    <ion-infinite-scroll (ionInfinite)="nextSearch($event)" [disabled]="noMoreRows">
+      <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Buscando más tickets...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ng-container>
 
 </ion-content>

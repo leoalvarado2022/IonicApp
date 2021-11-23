@@ -1,0 +1,114 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start">
+      <ion-button class="toolbar-button white-button" (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>PICKING</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12">
+      <ion-label class="label-fx360">Cliente</ion-label>
+      <ion-item class="input-fx360-down max-h-unset">
+        <ion-searchbar [value]="clientName" (keyup)="searchClient($event.target.value)" (ionClear)="cleanClientSearch()" placeholder="Buscar cliente"></ion-searchbar>
+      </ion-item>
+      <ion-list class="searchbar-results-list" *ngIf="filteredClients.length > 0">
+        <ion-item *ngFor="let client of filteredClients" (click)="selectClient(client)">
+          {{ client.name  }}
+        </ion-item>
+      </ion-list>
+    </ion-col>
+    <ion-col size="12">
+      <ion-label class="label-fx360">Número externo de orden</ion-label>
+      <ion-row class="ion-align-items-center">
+        <ion-col [size]="!client ? 12 : 9" class="ion-no-padding">
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-input [(ngModel)]="externalNumber" placeholder="Buscar orden"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="3" class="ion-no-padding ion-text-center">
+          <ion-button shape="round" class="ion-no-margin" (click)="findOrder()" *ngIf="client">
+            <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+
+  <ng-container *ngIf="currentOrder || errorMessage">
+    <div class="current-container bg-white">
+      <ng-container *ngIf="errorMessage && !currentOrder">
+        <h6 class="error">{{errorMessage}}</h6>
+      </ng-container>
+      <ng-container *ngIf="currentOrder">
+        <h6>Orden encontrada</h6>
+        <ion-item-sliding>
+          <ion-item lines="none" class="ion-no-padding">
+            <div>
+              <p><span class="bold">Dirección</span>: {{currentOrder?.destination_region}}, {{currentOrder?.destination_province}}, {{currentOrder?.destination_commune}}, {{currentOrder?.destination_address}}</p>
+              <p><span class="bold">Identificado</span>: {{currentOrder?.destination_identifier}}</p>
+              <p><span class="bold">Contacto</span>: {{currentOrder?.destination_contact}}</p>
+              <p><span class="bold">Teléfono</span>: {{currentOrder?.destination_phone}}</p>
+              <p><span class="bold">Email</span>: {{currentOrder?.destination_email}}</p>
+            </div>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="success" (click)="processOrder()" *ngIf="!checkInList()">
+              <ion-icon name="add-outline"></ion-icon>
+            </ion-item-option>
+            <ion-item-option color="danger" (click)="removeCurrentOrder()">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ng-container>
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="orderList.length > 0">
+    <h6 class="bold" style="margin-left: 10px;">Ordenes procesadas</h6>
+    <ion-list class="bg-transparent">
+      <ion-item-sliding *ngFor="let order of orderList">
+        <ion-item class="bg-transparent item-container" lines="none">
+          <ion-card class="card-item">
+            <ion-card-content>
+              <p><span class="bold">Order</span>: {{order.id}}</p>
+              <p><span class="bold">Número externo</span>: {{order.number_external}}</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-item>
+
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="removeOrder(order)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ng-container>
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col size="6" *ngIf="orderList.length > 0">
+      <ion-button color="danger" class="btn-app" expand="block" (click)="cancelPicking()">
+        Cancelar
+      </ion-button>
+    </ion-col>
+    <ion-col [size]="orderList.length > 0 ? 6 : 12">
+      <ion-button color="primary" class="btn-app" expand="block" (click)="submitForm()" [disabled]="orderList.length === 0">
+        Guardar
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

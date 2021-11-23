@@ -28,6 +28,7 @@ export class TicketModalFormComponent implements OnInit {
   workersFiltered: Array<any> = [];
   statesFiltered: Array<any> = [];
   clientsFiltered: Array<any> = [];
+  functionalitiesFiltered: Array<any> = [];
   attachments: Array<any> = [];
 
   datePickerObj: any = {
@@ -185,12 +186,14 @@ export class TicketModalFormComponent implements OnInit {
     this.ticketForm.get('ticket').get('product').patchValue(0);
     this.productsFiltered = [];
     this.productName = null;
+    this.functionalitiesFiltered = [];
   }
 
   public selectProduct = async (product: any) => {
     this.ticketForm.get('ticket').get('product').patchValue(product.id);
     this.productName = product.name;
     this.productsFiltered = [];
+    this.functionalitiesFiltered = this.functionalities.filter(f => f.product === product.id);
   }
 
   public searchWorker = (search: string) => {

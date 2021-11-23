@@ -15,6 +15,11 @@ export class MePage implements OnInit {
   private myTickets: Array<any> = [];
   public filteredTickets: Array<any> = [];
 
+  public maxRows = 20;
+  public init = 0;
+  public noMoreRows = false;
+  public search = '';
+
   constructor(
     private ticketsService: TicketsService,
     private storeService: StoreService,
@@ -30,29 +35,52 @@ export class MePage implements OnInit {
   }
 
   ionViewDidEnter() {
-    this.loadTickets();
+    this.myTickets = [];
+    this.filteredTickets = [];
+    this.init = 0;
+    this.noMoreRows = false;
+    this.loadTickets(null);
   }
 
   /**
    * loadTickets
    */
-  private loadTickets = () => {
-    this.loaderService.startLoader('Cargando tickets');
+  private loadTickets = (event, firstLoad = true) => {
+    if (!event) {
+      this.loaderService.startLoader('Cargando tickets');
+    }
     const user = this.storeService.getActiveCompany();
 
     const data = {
       filter: 'mis tickets',
       user: user.user,
-      init: 0,
-      registers: 0,
-      order: 0,
-      search: ''
+      pagination: {
+        init: this.init,
+        registers: this.maxRows,
+        order: 1,
+        search: this.search,
+      },
     };
 
     this.ticketsService.getTickets(data).subscribe((success: any) => {
-      this.myTickets = success.data.listTickets;
-      this.filteredTickets = success.data.listTickets;
+      if (this.search) {
+        this.myTickets = success.data.listTickets;
+        this.filteredTickets = success.data.listTickets;
+      } else {
+        this.myTickets = this.myTickets.concat(success.data.listTickets);
+        this.filteredTickets = this.filteredTickets.concat(success.data.listTickets);
+      }
       this.storeService.setTotalTicket(+success.data.total);
+
+      if (success.data.listTickets.length < this.maxRows || success.data.listTickets.length === 0) {
+        this.noMoreRows = true;
+      }
+
+      if (!firstLoad || (event && success.data.listTickets.length)) {
+        event.target.complete();
+      }
+
+      this.init += success.data.listTickets.length;
       this.loaderService.stopLoader();
     }, error => {
       this.loaderService.stopLoader();
@@ -65,26 +93,20 @@ export class MePage implements OnInit {
    * @param search
    */
   public searchTickets = (search: string) => {
-    if (search) {
-      this.filteredTickets = this.myTickets.filter(item => {
-        return (
-          item.id.toString().includes(search.toLowerCase()) ||
-          item.client.toLowerCase().includes(search.toLowerCase()) ||
-          item.maxResolution.toLowerCase().includes(search.toLowerCase()) ||
-          item.state.toLowerCase().includes(search.toLowerCase()) ||
-          item.createdAt.toLowerCase().includes(search.toLowerCase())
-        );
-      });
-    } else {
-      this.filteredTickets = this.myTickets;
-    }
+    this.search = search;
+    this.noMoreRows = false;
+    this.init = 0;
+    this.loadTickets(null);
   }
 
   /**
    * cancelSearch
    */
   public cancelSearch = () => {
-    this.filteredTickets = this.myTickets;
+    this.init = 0;
+    this.search = '';
+    this.noMoreRows = false;
+    this.loadTickets(null);
   }
 
   /**
@@ -94,7 +116,9 @@ export class MePage implements OnInit {
   public reSync = (event: any) => {
     this.myTickets = [];
     this.filteredTickets = [];
-    this.loadTickets();
+    this.init = 0;
+    this.noMoreRows = false;
+    this.loadTickets(null);
     event.target.complete();
   }
 
@@ -114,4 +138,7 @@ export class MePage implements OnInit {
     console.log('deleteTicket', ticket);
   }
 
+  nextSearch(event) {
+    this.loadTickets(event, false);
+  }
 }

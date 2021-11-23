@@ -635,10 +635,16 @@ li-ionic4-datepicker-modal {
 }
 
 .bg-transparent {
+  background: transparent;
   --background: transparent;
 
   &.no-border {
     --border-style: none;
   }
+}
+
+.bg-white {
+  --background: white;
+  background: white;
 }
 

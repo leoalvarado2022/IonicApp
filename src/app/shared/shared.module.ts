@@ -38,6 +38,7 @@ import {PosService} from '../modules/orders/services/pos.service';
 import {CalculatorComponent} from './components/calculator/calculator.component';
 import {OrderListSkeletonComponent} from './components/skeleton/order-list-skeleton/order-list-skeleton.component';
 import {TicketModalFormComponent} from '../modules/crm/ticket-modal-form/ticket-modal-form.component';
+import {PickingService} from '../modules/picking/services/picking.service';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import {TicketModalFormComponent} from '../modules/crm/ticket-modal-form/ticket-
     TallyService,
     DeliveryService,
     PosService,
-    InfiniteScrollPaginatorService
+    InfiniteScrollPaginatorService,
+    PickingService,
   ],
   exports: [
     CommonModule,

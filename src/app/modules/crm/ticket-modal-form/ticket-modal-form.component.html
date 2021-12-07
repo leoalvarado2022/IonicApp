@@ -141,22 +141,21 @@
           </ion-item>
         </ion-col>-->
         <ion-col size="12" size-md="6">
-          <!--<ion-label class="label-fx360">Usuario asignado</ion-label>
+          <ion-label class="label-fx360">Usuario asignado</ion-label>
           <ion-item class="input-fx360-down max-h-unset">
             <ion-select formControlName="assigned_id" placeholder="Usuario asignado" cancelText="Cancelar" interface="action-sheet">
               <ion-select-option *ngFor="let worker of workers" [value]="worker.id">{{worker.name}}</ion-select-option>
             </ion-select>
-          </ion-item>-->
-          <ion-label class="label-fx360" position="stacked">Usuario asignado</ion-label>
+          </ion-item>
+          <!--<ion-label class="label-fx360" position="stacked">Usuario asignado</ion-label>
           <ion-item class="input-fx360-down max-h-unset">
             <ion-searchbar [value]="workerName" (keyup)="searchWorker($event.target.value)" (ionClear)="cleanWorkerSearch()" placeholder="Buscar"></ion-searchbar>
           </ion-item>
-          <!--<ion-text color="danger" class="text&#45;&#45;error" *ngIf="tallyForm.dirty && tallyForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>-->
           <ion-list class="searchbar-results-list" *ngIf="workersFiltered.length > 0">
             <ion-item *ngFor="let worker of workersFiltered" (click)="selectWorker(worker)">
               {{ worker.name  }}
             </ion-item>
-          </ion-list>
+          </ion-list>-->
         </ion-col>
         <ion-col size="6" size-md="6">
           <ion-label class="label-fx360">Prioridad</ion-label>

@@ -5,6 +5,7 @@ import {HttpService} from '../../../shared/services/http/http.service';
 @Injectable()
 export class PickingService {
 
+  private readonly pickingOrdersUrl = 'mobile/logistic/orders';
   private readonly pickingClientsUrl = 'mobile/logistic/clients';
   private readonly orderByExternalUrl = 'mobile/logistic/get';
   private readonly updateOrderUrl = 'mobile/logistic/update';
@@ -14,6 +15,11 @@ export class PickingService {
     private httpService: HttpService,
     private httpClient: HttpClient
   ) {}
+
+  public pickingOrders = (data) => {
+    const url = this.httpService.buildUrl(this.pickingOrdersUrl);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {headers: this.httpService.getHeaders()});
+  }
 
   public pickingClients = (data) => {
     const url = this.httpService.buildUrl(this.pickingClientsUrl);

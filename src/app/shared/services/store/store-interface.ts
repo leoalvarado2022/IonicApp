@@ -82,6 +82,8 @@ export interface Sync {
   foliosConfig?: Array<any>;
   typePayment?: Array<any>;
   typeDiscount?: Array<any>;
+  currencies?: Array<any>;
+  transportActions?: Array<any>;
 }
 
 export interface ContractInterface {

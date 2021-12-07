@@ -54,6 +54,7 @@ export class TicketModalFormComponent implements OnInit {
   @Input() priorities: Array<any> = [];
   @Input() states: Array<any> = [];
   @Input() userCreator: any;
+  @Input() userArea: any;
   @Input() getClients = (id, user): any => {};
   @Input() submitTicket = (fields): any => {};
 
@@ -67,9 +68,9 @@ export class TicketModalFormComponent implements OnInit {
     this.ticketForm = this.formBuilder.group({
       ticket: this.formBuilder.group({
         id: [0],
-        origin_id: [{value: 'telefono', disabled: true}, Validators.required],
-        periodicity: [{value: 'diario', disabled: true}, Validators.required],
-        area_id: [null, Validators.required],
+        origin_id: ['telefono', Validators.required],
+        periodicity: ['diario', Validators.required],
+        area_id: [Number(this.userArea), Validators.required],
         type: [null, Validators.required],
         client_id: [null, Validators.required],
         contact_id: [null, Validators.required],
@@ -85,25 +86,24 @@ export class TicketModalFormComponent implements OnInit {
         state: [null, Validators.required],
         // created_id: [{value: this.userCreator.id, disabled: true}, Validators.required],
         created_id: [{value: this.userCreator, disabled: true}, Validators.required],
-        assigned_id: [null, Validators.required],
-        priority: [null, Validators.required],
+        assigned_id: [this.userCreator, Validators.required],
+        priority: ['normal', Validators.required],
         difficulty: [1, Validators.required],
         observations: [null],
       }),
     });
 
-    // this.load();
+    if (this.userArea) {
+      this.setTypes({
+        detail: {
+          value: Number(this.userArea),
+        },
+      });
+    }
   }
 
-  // private load = () => {
-  //   this.contactsFiltered = this.contacts.filter(c => c.client === this.clients[0].id);
-  //   this.productsFiltered = this.products.filter(c => c.client === this.clients[0].id);
-  //
-  //   this.ticketForm.get('ticket').patchValue({client: this.clients[0].id});
-  // }
-
   public increaseStep = () => {
-    console.log('this.ticketForm.value ::: ', this.ticketForm.value);
+    // console.log('this.ticketForm.value ::: ', this.ticketForm.value);
     this.currentStep += 1;
   }
 
@@ -194,6 +194,9 @@ export class TicketModalFormComponent implements OnInit {
     this.productName = product.name;
     this.productsFiltered = [];
     this.functionalitiesFiltered = this.functionalities.filter(f => f.product === product.id);
+    if (this.functionalitiesFiltered.length === 1) {
+      this.ticketForm.get('ticket').get('funcionality_id').patchValue(this.functionalitiesFiltered[0].id);
+    }
   }
 
   public searchWorker = (search: string) => {
@@ -222,13 +225,19 @@ export class TicketModalFormComponent implements OnInit {
 
   public setTypes = ({detail: {value}}) => {
     this.types = this.areas.find(a => a.id === value)?.types ?? [];
-    this.ticketForm.get('ticket').patchValue({type: 0, state: 0});
+    this.ticketForm.get('ticket').patchValue({
+      type: this.types.length === 0 ? this.types[0].name : 0,
+    });
+    this.ticketForm.get('detail').patchValue({state: null});
   }
 
   public setStates = ({detail: {value}}) => {
     const typeId = this.types.find(t => t.name === value) || '';
-    this.statesFiltered = this.states.filter(c => c.ticket_type === typeId.toString());
-    this.ticketForm.get('ticket').patchValue({state: 0});
+    this.statesFiltered = this.states.filter(c => c.ticket_type === typeId?.id?.toString());
+    const defaultState = this.statesFiltered.find(s => s.id === 3);
+    this.ticketForm.get('detail').patchValue({
+      state: defaultState ? defaultState.name : null,
+    });
   }
 
   public openCamera = async () => {
@@ -277,7 +286,7 @@ export class TicketModalFormComponent implements OnInit {
       fields.attachments = this.attachments;
       fields.wsAuthID = workerSelected.wsAuthID;
 
-      console.log('submit ::: ', fields);
+      // console.log('submit ::: ', fields);
       await this.submitTicket(fields);
 
       this.ticketForm.enable();

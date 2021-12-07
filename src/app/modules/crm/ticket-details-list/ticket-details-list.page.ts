@@ -62,17 +62,19 @@ export class TicketDetailsListPage implements OnInit {
     };
 
     this.ticketsService.getTicket(this.id, data).subscribe((success: any) => {
+      console.log('success ::: ', success);
       const {
-        ticket,
+        element,
         details,
         states,
         workers,
         priorities
       } = success.data;
 
-      this.ticket = ticket;
+      this.ticket = element;
       this.details = [...details];
 
+      console.log('this.ticket ::: ', this.ticket);
       this.storeService.setActiveTicket(this.ticket);
       this.storeService.setTicketStates(states);
       this.storeService.setTicketUsers(workers);

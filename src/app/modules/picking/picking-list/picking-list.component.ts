@@ -3,8 +3,10 @@ import {Router} from '@angular/router';
 import {PickingService} from '../services/picking.service';
 import {StoreService} from '../../../shared/services/store/store.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
-import {AlertController} from '@ionic/angular';
+import {ActionSheetController, AlertController} from '@ionic/angular';
 import {DeviceService} from '../../../services/device/device.service';
+import {GeolocationService} from '../../../shared/services/geolocation/geolocation.service';
+import {ToastService} from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-picking-list',
@@ -13,15 +15,21 @@ import {DeviceService} from '../../../services/device/device.service';
 })
 export class PickingListComponent implements OnInit {
 
+  public user = null;
+  public actions = [];
   public action = 'picking';
-  public client = 63;
+  public client = null;
   public clients: Array<any> = [];
   public filteredClients: Array<any> = [];
   public clientName: string;
-  public externalNumber = 'NUMEXT00023';
+  public externalNumber = '';
   public currentOrder: any;
   public orderList: Array<any> = [];
   public errorMessage: string;
+  public latitude: number;
+  public longitude: number;
+
+  public dataBase: any;
 
   constructor(
     private router: Router,
@@ -30,16 +38,49 @@ export class PickingListComponent implements OnInit {
     private loaderService: LoaderService,
     private alertController: AlertController,
     private deviceService: DeviceService,
-  ) { }
+    private geolocationService: GeolocationService,
+    private toastService: ToastService,
+    private actionSheetController: ActionSheetController
+  ) {
+    const actions = this.storeService.getTransportActions();
+    this.actions = actions.map(a => a.name);
+    this.user = this.storeService.getActiveCompany();
+
+    this.geolocationService.getCurrentPosition().toPromise().then(res => {
+      this.latitude = res.lat;
+      this.longitude = res.lng;
+    });
+  }
 
   ngOnInit() {
-    const user = this.storeService.getActiveCompany();
+    this.loadData();
+    this.getClients();
+  }
 
+  loadData = () => {
+    this.loaderService.startLoader('Verificando ordenes');
     const data = {
-      user: user.user,
+      user: this.user.user,
+      nc: this.deviceService.getFullUUID(),
+      type: 'updateReading',
+      action: this.action,
+    };
+    try {
+      this.pickingService.pickingOrders(data).toPromise()
+        .then((res: any) => {
+          this.orderList = res.data.orders.map(o => ({id: o.id, number_external: o.number_external}));
+        });
+      this.loaderService.stopLoader();
+    } catch (err) {
+      this.loaderService.stopLoader();
+    }
+  }
+
+  getClients = () => {
+    const data = {
+      user: this.user.user,
       nc: this.deviceService.getFullUUID(),
     };
-
     this.pickingService.pickingClients(data).toPromise()
       .then((res: any) => {
         this.clients = res.data.clients;
@@ -76,6 +117,7 @@ export class PickingListComponent implements OnInit {
       client: this.client,
       number_external: this.externalNumber,
       nc: this.deviceService.getFullUUID(),
+      user: this.user.user,
     };
 
     try {
@@ -92,10 +134,14 @@ export class PickingListComponent implements OnInit {
             action: this.action,
             orderId: this.currentOrder.id,
             nc: this.deviceService.getFullUUID(),
+            user: this.user.user,
           };
-          await this.pickingService.updateOrder(orderData).toPromise();
-
-          this.orderList.push(this.currentOrder);
+          try {
+            await this.pickingService.updateOrder(orderData).toPromise();
+            this.orderList.push(this.currentOrder);
+          } catch (err) {
+            await this.toastService.errorToast(err.error?.message ?? 'Ocurrió un error inesperado. Contacte al administrador.');
+          }
         }
       }
 
@@ -122,6 +168,7 @@ export class PickingListComponent implements OnInit {
           action: this.action,
           orderId: this.currentOrder.id,
           nc: this.deviceService.getFullUUID(),
+          user: this.user.user,
         };
         await this.pickingService.updateOrder(orderData).toPromise();
         this.orderList.push(this.currentOrder);
@@ -142,6 +189,7 @@ export class PickingListComponent implements OnInit {
       details: [order.id],
       action: this.action,
       nc: this.deviceService.getFullUUID(),
+      user: this.user.user,
     };
     this.loaderService.startLoader('Eliminando...');
     try {
@@ -163,11 +211,16 @@ export class PickingListComponent implements OnInit {
       details: this.orderList.map(o => o.id),
       action: this.action,
       nc: this.deviceService.getFullUUID(),
+      user: this.user.user,
     };
     this.loaderService.startLoader('Eliminando...');
     try {
       await this.pickingService.removeOrder(data).toPromise();
       this.orderList = [];
+      this.currentOrder = null;
+      this.externalNumber = '';
+      this.client = null;
+      this.clientName = '';
 
       this.loaderService.stopLoader();
     } catch (err) {
@@ -201,20 +254,48 @@ export class PickingListComponent implements OnInit {
 
   public submitForm = async () => {
     try {
+      this.loaderService.startLoader('Guardando...');
       const data = {
         type: 'updateState',
         action: this.action,
         nc: this.deviceService.getFullUUID(),
+        user: this.user.user,
+        latitude: this.latitude,
+        longitude: this.longitude,
       };
 
       await this.pickingService.updateOrder(data).toPromise();
 
       this.orderList = [];
       this.currentOrder = null;
+      this.externalNumber = '';
+      this.client = null;
+      this.clientName = '';
 
       this.loaderService.stopLoader();
     } catch (err) {
       this.loaderService.stopLoader();
     }
+  }
+
+  public selectAction = async () => {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Seleccione la acción',
+      buttons: [
+        ...this.actions.map(a => ({
+          text: a.toUpperCase(),
+          handler: () => {
+            this.action = a;
+          }
+        })),
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {},
+        }],
+    });
+
+    await actionSheet.present();
   }
 }

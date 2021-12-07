@@ -5,7 +5,7 @@
   </ion-item>
   <ion-card-content>
     <p class="h">{{remainingTime(ticket.clientCommitment)}}</p>
-    <p><strong>Tipo:</strong> {{ ticket.type }}</p>
+    <p><strong>Tipo:</strong> {{ ticket.type_id | titlecase }}</p>
     <p><strong>Producto:</strong> {{ ticket.productName }}</p>
     <p><strong>Funcionalidad:</strong> {{ ticket.funcionalityName }}</p>
     <p><strong>Estado:</strong> {{ ticket.state  }}</p>

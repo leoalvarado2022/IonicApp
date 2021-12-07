@@ -44,7 +44,6 @@ export class PickingListComponent implements OnInit {
   ) {
     const actions = this.storeService.getTransportActions();
     this.actions = actions.map(a => a.name);
-    console.log('actions ::: ', this.actions);
     this.user = this.storeService.getActiveCompany();
 
     this.geolocationService.getCurrentPosition().toPromise().then(res => {

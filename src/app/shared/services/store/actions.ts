@@ -34,6 +34,8 @@ export enum StoreActions {
   SetTicketDetails = 'SET_TICKET_DETAILS',
   SetPushToken = 'SET_PUSH_TOKEN',
   SetTallies = 'SET_TALLIES',
+  SetCurrencies = 'SET_CURRENCIES',
+  SetTransportActions = 'SET_TRANSPORT_ACTIONS',
 
   SetPreContracts = 'SET_PRE_CONTRACTS',
   SetCountries = 'SET_COUNTRIES',

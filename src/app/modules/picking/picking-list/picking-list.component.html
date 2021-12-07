@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
     <ion-title>
-      <strong>PICKING</strong>
+      <strong (click)="selectAction()">{{action | titlecase}}</strong>
     </ion-title>
     <ion-buttons slot="end">
       <app-toolbar-buttons></app-toolbar-buttons>

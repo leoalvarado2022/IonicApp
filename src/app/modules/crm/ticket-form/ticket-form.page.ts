@@ -67,11 +67,14 @@ export class TicketFormPage implements OnInit {
 
   ngOnInit() {
     this.activeTicket = this.storeService.getActiveTicket() || {};
-    this.states = this.storeService.getTicketStates();
+    console.log('this.activeTicket::: ', this.activeTicket);
+    this.states = this.storeService.getTicketStates().filter(s => s.ticket_type === this.activeTicket.num_type_id);
+    console.log('this.states::: ', this.states);
     this.users = this.storeService.getTicketUsers();
     this.priorities = this.storeService.getTicketPriorities();
     const activeCompany = this.storeService.getActiveCompany();
     const details = this.storeService.getTicketDetails();
+    console.log('details::: ', details);
 
     const lastDetail = details.find(item => item.id === this.activeTicket?.tickets_det) || {};
     this.activeTicket.createdAt = moment(this.activeTicket?.createdAt, ['DD/MM/YYYY HH:mm']).format('YYYY-MM-DD HH:mm');

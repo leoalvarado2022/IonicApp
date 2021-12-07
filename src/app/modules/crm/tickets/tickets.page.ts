@@ -81,7 +81,6 @@ export class TicketsPage implements OnInit, OnDestroy {
 
     const response = await this.ticketsService.getTicketParams().toPromise();
     const {data: {areas, clients, origins, periodicities, priorities, states}}: any = response;
-    console.log('areas ::: ', areas)
     const modal = await this.modalController.create({
       component: TicketModalFormComponent,
       componentProps: {
@@ -95,6 +94,7 @@ export class TicketsPage implements OnInit, OnDestroy {
         submitTicket: this.submitTicket,
         // userCreator: {id: user.id, name: `${user.name} ${user.lastName}`},
         userCreator: company.user,
+        userArea: company.area,
       },
       backdropDismiss: false,
       keyboardClose: false,

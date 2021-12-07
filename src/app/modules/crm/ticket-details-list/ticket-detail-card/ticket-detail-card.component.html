@@ -19,15 +19,23 @@
   </ion-item>
 
   <ion-card-content>
-    <p *ngIf="detail.priorityChange" style="color: grey;font-size: 12px;"><span>Prioridad:</span> {{ detail.priority }}
+    <p *ngIf="detail.priorityChange" style="color: grey;font-size: 12px;">
+      <strong>Prioridad:</strong> {{ detail.priority }}
     </p>
-    <p *ngIf="detail.stateChange" style="color: grey;font-size: 12px;"><strong>Estado:</strong> {{ detail.state }}</p>
-    <p *ngIf="detail.commitmentDateChange" style="color: grey;font-size: 12px;"><span>Fecha de compromiso
-        Cliente:</span> {{detail.commitmentAt}}</p>
-    <p style="color: grey;font-size: 12px;"><span>Fecha de compromiso Interna:</span> {{detail.commitmentInternAt}}</p>
+    <p *ngIf="detail.stateChange" style="color: grey;font-size: 12px;">
+      <strong>Estado:</strong> {{ detail.state }}
+    </p>
+    <p *ngIf="detail.commitmentDateChange" style="color: grey;font-size: 12px;">
+      <strong>Fecha de compromiso Cliente:</strong> {{detail.commitmentAt}}
+    </p>
+    <p style="color: grey;font-size: 12px;">
+      <strong>Fecha de compromiso Interna:</strong> {{detail.commitmentInternAt}}
+    </p>
     <br>
     <p>{{ detail.observations || 'Sin Observacion' }}</p>
-    <p class="text-confirm" *ngIf="detail.active_commit">Fecha Compromiso: {{ detail.commitmentAt | customDate }}</p>
+    <p class="text-confirm" *ngIf="detail.active_commit">
+      <strong>Fecha Compromiso:</strong> {{ detail.commitmentAt | customDate }}
+    </p>
 
     <ng-container *ngIf="detail.attached && detail.attached.length">
       Adjuntos:

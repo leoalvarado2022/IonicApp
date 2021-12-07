@@ -95,7 +95,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
         costCenterTypes: [],
         warehouses: [],
         consumptions: [],
-        products: []
+        products: [],
+        currencies: [],
+        transportActions: [],
       },
       contract: {
         activeCostCenter: null,
@@ -365,7 +367,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
    * setActiveCompany
    * @param company
    */
-  public setActiveCompany = (company: Company): void => {
+  public setActiveCompany = (company: any): void => {
     const auth = { ...this.getState().auth, userActiveCompany: company };
     this.setState({ auth }, StoreActions.SetUserActiveCompany);
   }
@@ -373,7 +375,7 @@ export class StoreService extends ObservableStore<StoreInterface> {
   /**
    * getActiveCompany
    */
-  public getActiveCompany = (): Company => {
+  public getActiveCompany = (): any => {
     return this.getState().auth.userActiveCompany;
   }
 
@@ -493,7 +495,9 @@ export class StoreService extends ObservableStore<StoreInterface> {
       destinations,
       laborsCostCenter,
       deals,
-      devices
+      devices,
+      currencies,
+      transportActions,
     } = data;
 
     this.setCompanies(companies);
@@ -509,6 +513,8 @@ export class StoreService extends ObservableStore<StoreInterface> {
     this.setLaborsCostCenter(laborsCostCenter);
     this.setDeals(deals);
     this.setDevices(devices);
+    this.setCurrencies(currencies);
+    this.setTransportActions(transportActions);
   }
 
   /**
@@ -557,6 +563,38 @@ export class StoreService extends ObservableStore<StoreInterface> {
    */
   public getProductionContracts = (): Array<ProductContract> => {
     return this.getState().contract.productionContracts;
+  }
+
+  /**
+   * setCurrencies
+   * @param currencies
+   */
+  public setCurrencies = (currencies: Array<any>): void => {
+    const sync = { ...this.getState().sync, currencies };
+    this.setState({ sync }, StoreActions.SetCurrencies);
+  }
+
+  /**
+   * getCurrencies
+   */
+  public getCurrencies = (): Array<any> => {
+    return this.getState().sync.currencies;
+  }
+
+  /**
+   * setTransportActions
+   * @param transportActions
+   */
+  public setTransportActions = (transportActions: Array<any>): void => {
+    const sync = { ...this.getState().sync, transportActions };
+    this.setState({ sync }, StoreActions.SetTransportActions);
+  }
+
+  /**
+   * getTransportActions
+   */
+  public getTransportActions = (): Array<any> => {
+    return this.getState().sync.transportActions;
   }
 
   /**

@@ -131,6 +131,7 @@ export class MenuListPage implements OnInit, OnDestroy {
     for (let index = 0; index < menus.length; index++) {
       const itemIcon = `/assets/svg_icons/${menus[index].icon_url}.svg`;
       menus[index].icon_url = await this.checkIcon(itemIcon);
+      menus[index].caption = menus[index].caption.replace(/_/g, ' ');
     }
 
     this.menus = [...menus];

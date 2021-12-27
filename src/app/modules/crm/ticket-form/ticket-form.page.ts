@@ -67,7 +67,8 @@ export class TicketFormPage implements OnInit {
 
   ngOnInit() {
     this.activeTicket = this.storeService.getActiveTicket() || {};
-    this.states = this.storeService.getTicketStates();
+    this.states = this.storeService.getTicketStates() || [];
+    this.states = this.states.filter(st => st.ticket_type === this.activeTicket.num_type_id);
     this.users = this.storeService.getTicketUsers();
     this.priorities = this.storeService.getTicketPriorities();
     const activeCompany = this.storeService.getActiveCompany();

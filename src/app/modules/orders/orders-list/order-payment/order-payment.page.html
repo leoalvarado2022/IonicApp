@@ -135,9 +135,17 @@
             <ion-icon name="trash-outline"></ion-icon>
           </ion-item-option>
         </ion-item-options>
-        <ion-item>
+        <ion-item lines="none">
           <span>{{transaction?.type}}</span>
           <span slot="end" style="font-weight: bold;">{{transaction?.value | currency:' ':'symbol':'1.0-2'}}</span>
+        </ion-item>
+        <ion-item lines="none">
+          <small># Transacción</small>
+          <small slot="end" style="font-weight: bold;">{{transaction?.transaction_number}}</small>
+        </ion-item>
+        <ion-item lines="none">
+          <small>Notas</small>
+          <small slot="end" style="font-weight: bold;">{{transaction?.notes}}</small>
         </ion-item>
       </ion-item-sliding>
     </ion-card-content>

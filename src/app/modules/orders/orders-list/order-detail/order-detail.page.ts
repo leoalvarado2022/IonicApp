@@ -510,8 +510,8 @@ export class OrderDetailPage implements OnInit, OnDestroy {
       this.loaderService.startLoader(`Imprimiendo...`);
       this._storageSyncService.getPrintConfig().then(data => {
         this.prints.printConfigActive(data, 'documento');
-        this.prints.printTicketChange('9100');
-        // this.prints.printTicketChange('8632');
+        this.prints.printTicketChange('9100').then(r => console.log('tickets printed...'));
+        // this.prints.printTicketChange('8632').then(r => console.log('tickets printed...'));
         this.loaderService.stopLoader();
       });
     }

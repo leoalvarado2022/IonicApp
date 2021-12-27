@@ -11,7 +11,7 @@
 
 <ion-content>
   <ion-card>
-    <div>
+    <form [formGroup]="form" novalidate autocomplete="off">
       <div class="description">
         <div class="color-grey">
           <p>
@@ -72,11 +72,20 @@
           <p *ngIf="data?.type_payment">
             {{data?.type_payment}}
           </p>
+          <div class="divider"></div>
+          <ion-item lines="none" class="item-input">
+            <span>Nro. Transacción</span>
+            <ion-input type="text" slot="end" formControlName="transaction_number" class="ion-no-padding ion-no-margin"></ion-input>
+          </ion-item>
+          <ion-item lines="none" class="item-input">
+            <span>Notas</span>
+            <ion-textarea type="text" formControlName="notes" class="ion-no-padding ion-no-margin"></ion-textarea>
+          </ion-item>
         </div>
       </div>
       <ion-grid>
         <ion-row>
-          <form [formGroup]="form" novalidate autocomplete="off">
+
             <ion-col size="12" class="ion-no-padding">
               <div>
                 <div class="number-class">
@@ -121,10 +130,10 @@
                 </tr>
               </table>
             </ion-col>
-          </form>
+
         </ion-row>
       </ion-grid>
-    </div>
+    </form>
   </ion-card>
 </ion-content>
 

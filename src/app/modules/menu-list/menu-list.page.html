@@ -35,7 +35,7 @@
               <ion-badge *ngIf="showBadge(menu) > 0" class="menu-bagde">{{ showBadge(menu) }}</ion-badge>
             </p>
             <p class="menu-name">
-              {{ menu.caption }}
+              {{ menu.caption | titlecase }}
             </p>
           </ion-card-content>
         </ion-card>

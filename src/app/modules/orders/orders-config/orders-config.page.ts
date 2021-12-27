@@ -414,6 +414,10 @@ export class OrdersConfigPage implements OnInit {
         return 'Ticket de Cambio';
         break;
       }
+      case 'tipo_ticket_cambio': {
+        return 'Tipo de ticket de Cambio';
+        break;
+      }
       default: {
         return label;
         break;
@@ -466,6 +470,14 @@ export class OrdersConfigPage implements OnInit {
         'app': 'impresion_documentos',
         'param': 'ticket_cambio',
         'value': 'no',
+        'entity_id': null
+      },
+      {
+        'id': 11,
+        'nc': null,
+        'app': 'impresion_documentos',
+        'param': 'tipo_ticket_cambio',
+        'value': '1',
         'entity_id': null
       }
     ];

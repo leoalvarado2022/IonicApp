@@ -130,8 +130,8 @@
                 <ion-item *ngIf="labelDocument(i) === 'tipo_ticket_cambio'">
                   <ion-label position="floating">{{traduction(labelDocument(i))}}</ion-label>
                   <ion-select [formControlName]="i">
-                    <ion-select-option value="1">por order</ion-select-option>
-                    <ion-select-option value="2">por producto</ion-select-option>
+                    <ion-select-option value="por orden">por order</ion-select-option>
+                    <ion-select-option value="por producto">por producto</ion-select-option>
                   </ion-select>
                 </ion-item>
                 <ion-item *ngIf="labelDocument(i) === 'metodo'">

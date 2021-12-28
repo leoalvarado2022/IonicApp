@@ -537,11 +537,11 @@ export class Prints {
       const entity = this.storeService.getActiveCompany();
       const user = this.storeService.getUser();
 
-      const type = parseInt(this.getTypeTicketChange(), 10);
+      const type = this.getTypeTicketChange();
       const len = order.products.length + 1;
       let count = 1;
 
-      if (type === 1) {
+      if (type === 'por orden') {
         const data = {
           order,
           entity,
@@ -560,7 +560,7 @@ export class Prints {
           }
           resolve();
         }, 3000);
-      } else if (type === 2) {
+      } else if (type === 'por producto') {
         for (const product of order.products) {
           const data = {
             order,

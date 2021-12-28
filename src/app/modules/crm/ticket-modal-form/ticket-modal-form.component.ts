@@ -234,7 +234,7 @@ export class TicketModalFormComponent implements OnInit {
   public setStates = ({detail: {value}}) => {
     const typeId = this.types.find(t => t.name === value) || '';
     this.statesFiltered = this.states.filter(c => c.ticket_type === typeId?.id?.toString());
-    const defaultState = this.statesFiltered.find(s => s.id === 3);
+    const defaultState = this.statesFiltered.find(s => s.name.toLowerCase() === 'abierto');
     this.ticketForm.get('detail').patchValue({
       state: defaultState ? defaultState.name : null,
     });

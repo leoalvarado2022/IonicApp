@@ -12,3 +12,11 @@ export const sortArrayByStringKey = (arr: Array<any>, key: string, order: string
     : b[key].toLowerCase().localeCompare(a[key].toLowerCase()));
   return arr;
 };
+
+export const sortArrayByNumberKey = (arr: Array<any>, key: string, order: string = 'asc'): Array<any> => {
+  if (!arr) {
+    return [];
+  }
+  arr.sort((a, b) => order === 'asc' ? a[key] - b[key] : b[key] - a[key]);
+  return arr;
+};

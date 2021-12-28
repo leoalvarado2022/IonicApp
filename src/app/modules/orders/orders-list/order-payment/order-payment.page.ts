@@ -173,8 +173,16 @@ export class OrderPaymentPage implements OnInit, OnDestroy {
    * @param number
    * @param type
    */
-  setTransaction(number: number, type: string, id: number, your_change: boolean) {
-    this.transactions.push({value: number, type, id, your_change});
+  // setTransaction(number: number, type: string, id: number, your_change: boolean) {
+  setTransaction(form: any, type: string, id: number, your_change: boolean) {
+    this.transactions.push({
+      type,
+      id,
+      your_change,
+      value: form.number,
+      transaction_number: form.transaction_number,
+      notes: form.notes,
+    });
   }
 
   /**

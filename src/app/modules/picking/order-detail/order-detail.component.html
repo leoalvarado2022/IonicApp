@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar class="background-color-header">
+    <ion-buttons slot="start" (click)="closeWork()" class="arrow-left">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title>
+      <strong>Detalle de oden</strong>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-toolbar-buttons></app-toolbar-buttons>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="card-item">
+    <ion-item lines="none" class="header-item">
+      Datos generales
+    </ion-item>
+
+    <ion-card-content>
+      <p><span class="bold">Número de orden</span>: {{order?.id}}</p>
+      <p><span class="bold">Número externo</span>: {{order?.number_external}}</p>
+      <p><span class="bold">Nombre de cliente</span>: {{order?.client_name}}</p>
+      <p><span class="bold">Tipo de orden</span>: {{order?.type_package|titlecase}}</p>
+      <p><span class="bold">Número de paquetes</span>: {{order?.number_package}}</p>
+      <p *ngIf="order?.kilos"><span class="bold">Peso</span>: {{order?.kilos}} Kg.</p>
+      <p *ngIf="order?.collection_value"><span class="bold">Valor de la orden</span>: {{order?.collection_value}}</p>
+      <p *ngIf="order?.transportation_value"><span class="bold">Valor del transporte</span>: {{order?.transportation_value}}</p>
+      <p><span class="bold">Notas</span>: {{order?.notes}}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="card-item">
+    <ion-item lines="none" class="header-item">
+      Origen
+    </ion-item>
+
+    <ion-card-content>
+      <p><span class="bold">Dirección</span>: {{order?.origin_region}}, {{order?.origin_province}}, {{order?.origin_commune}}, {{order?.origin_address}}</p>
+      <p><span class="bold">Contacto</span>: {{order?.origin_contact}}</p>
+      <p><span class="bold">Teléfono</span>: {{order?.origin_phone}}</p>
+      <p><span class="bold">Email</span>: {{order?.origin_email}}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="card-item">
+    <ion-item lines="none" class="header-item">
+      Destino
+    </ion-item>
+
+    <ion-card-content>
+      <p><span class="bold">Dirección</span>: {{order?.destination_region}}, {{order?.destination_province}}, {{order?.destination_commune}}, {{order?.destination_address}}</p>
+      <p><span class="bold">Identificador</span>: {{order?.destination_identifier}}</p>
+      <p><span class="bold">Contacto</span>: {{order?.destination_contact}}</p>
+      <p><span class="bold">Teléfono</span>: {{order?.destination_phone}}</p>
+      <p><span class="bold">Email</span>: {{order?.destination_email}}</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

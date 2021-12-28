@@ -33,6 +33,8 @@ export class CalculatorComponent implements OnInit {
   createForm() {
     this.form = this.formBuilder.group({
       number: ['', [Validators.required, Validators.maxLength(100)]],
+      transaction_number: [''],
+      notes: [''],
     });
   }
 
@@ -94,6 +96,7 @@ export class CalculatorComponent implements OnInit {
       return;
     }
     const formData = Object.assign({}, this.form.value);
-    this.modalController.dismiss(formData.number);
+    // this.modalController.dismiss(formData.number);
+    this.modalController.dismiss(formData);
   }
 }

@@ -25,6 +25,7 @@ export class Prints {
   public printIP;
   public valueBP;
   public ticketChangeBP;
+  public typeTicketChange;
   public generalQuestion;
   public copy;
   public isConnected = false;
@@ -194,6 +195,22 @@ export class Prints {
    */
   getTicketChangeBP() {
     return this.ticketChangeBP;
+  }
+
+  /**
+   * @description guardar el valor de impresion
+   * @param value
+   */
+  setTypeTicketChange(value: string) {
+    this.typeTicketChange = value;
+  }
+
+  /**
+   * @description optener valor de impresion
+   * @param value
+   */
+  getTypeTicketChange() {
+    return this.typeTicketChange;
   }
 
   /**
@@ -395,8 +412,15 @@ export class Prints {
       .line(`Nombre de empresa: ${this.noSpecialChars(data.order.entity)}`)
       .line(`Fecha: ${data.order.date_createdAt}`)
       .newline()
-      .line(`SUCURSAL: ${this.noSpecialChars(data.entity.name)}`)
-      .line(`NRO. INTERNO: ${data.order?.id}`)
+      .line(`SUCURSAL: ${this.noSpecialChars(data.entity.name)}`);
+
+    if (data.product) {
+      result.line(`PRODUCTO: ${data.product.name_product}`);
+    } else {
+      result.line(`NRO. INTERNO: ${data.order?.id}`);
+    }
+
+    result
       .line(`BOL. ELECTRONICA: ${data.order?.documents[0]?.number_document}`)
       .line(`VENDEDOR: ${data.user?.name}`)
       .newline()
@@ -513,24 +537,58 @@ export class Prints {
       const entity = this.storeService.getActiveCompany();
       const user = this.storeService.getUser();
 
-      const data = {
-        order,
-        entity,
-        user
-      };
+      const type = this.getTypeTicketChange();
+      const len = order.products.length + 1;
+      let count = 1;
 
-      // construir para imprimir
-      const result = this.ticketChangeFull(data);
+      if (type === 'por orden') {
+        const data = {
+          order,
+          entity,
+          user
+        };
 
-      setTimeout(() => {
-        if (!bluetooth) {
-          this.binArrayToJson(result);
-          this.sockets.write(result, this.getValueBP(), port);
-        } else {
-          this.printBT(result, this.getValueBP());
+        // construir para imprimir
+        const result = this.ticketChangeFull(data);
+
+        setTimeout(() => {
+          if (!bluetooth) {
+            this.binArrayToJson(result);
+            this.sockets.write(result, this.getValueBP(), port);
+          } else {
+            this.printBT(result, this.getValueBP());
+          }
+          resolve();
+        }, 3000);
+      } else if (type === 'por producto') {
+        for (const product of order.products) {
+          const data = {
+            order,
+            entity,
+            user,
+            product,
+          };
+
+          // construir para imprimir
+          const result = this.ticketChangeFull(data);
+
+          setTimeout(() => {
+            if (!bluetooth) {
+              this.binArrayToJson(result);
+              this.sockets.write(result, this.getValueBP(), port);
+            } else {
+              this.printBT(result, this.getValueBP());
+            }
+
+            if (count === len) {
+              resolve();
+            }
+          }, count * (3000 / count));
+
+          count += 1;
         }
-        resolve();
-      }, 3000);
+      }
+
     });
   }
 
@@ -886,6 +944,10 @@ export class Prints {
           } else if (print.app === 'impresion_documentos' && print.param === 'ticket_cambio') {
             if (valueIp) {
               this.setTicketChangeBP(print.value);
+            }
+          } else if (print.app === 'impresion_documentos' && print.param === 'tipo_ticket_cambio') {
+            if (valueIp) {
+              this.setTypeTicketChange(print.value);
             }
           }
         }

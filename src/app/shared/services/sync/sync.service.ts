@@ -28,6 +28,7 @@ export class SyncService {
     return this.httpClient.post(url, this.httpService.buildBody({
       username,
       superuser,
+      // nc: this.deviceService.getUUIDAndroid() || '54a62048537a716a'
       nc: this.deviceService.getUUIDAndroid()
     }), {headers: this.httpService.getHeaders()});
   };

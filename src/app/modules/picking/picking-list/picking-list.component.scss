@@ -1,10 +1,9 @@
 .current-container {
-  padding: 0.8rem;
-  margin: 1rem 0;
-
   h6 {
     font-weight: 600;
     margin-top: 0;
+    margin-bottom: 0;
+    text-transform: uppercase;
 
     &.error {
       margin: 10px 0 !important;
@@ -21,11 +20,17 @@
 
 .card-item {
   width: 100%;
-  margin: 0 10px;
-  padding: 10px 15px;
+  --background: white;
 
   ion-card-content {
-    padding: 0;
+    padding-inline-start: 8px !important;
+    padding-inline-end: 8px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
+  &.incomplete {
+    --background: rgba(0, 0, 0, 0.1) !important;
   }
 }
 
@@ -38,6 +43,14 @@ ion-item-options {
   border-bottom-width: 0 !important;
 }
 
-ion-item-sliding {
-  margin-bottom: 10px;
+//ion-item-sliding {
+//  margin-bottom: 10px;
+//}
+
+.item-error {
+  --inner-padding-end: 0 !important;
+}
+
+.card-content {
+  --inner-padding-end: 0 !important;
 }

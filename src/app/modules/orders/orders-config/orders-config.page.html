@@ -104,7 +104,7 @@
         <br>
         <div *ngIf="android && printDocument && printDocument.length">
           <h4 class="ion-text-center" (click)="testPrint('documento')">
-            Impresion Documentos
+            Impresión Documentos
           </h4>
           <form [formGroup]="configFormDocuments">
             <div formArrayName="value">
@@ -125,6 +125,13 @@
                   <ion-select [formControlName]="i">
                     <ion-select-option value="si">si</ion-select-option>
                     <ion-select-option value="no">no</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item *ngIf="labelDocument(i) === 'tipo_ticket_cambio'">
+                  <ion-label position="floating">{{traduction(labelDocument(i))}}</ion-label>
+                  <ion-select [formControlName]="i">
+                    <ion-select-option value="por orden">por order</ion-select-option>
+                    <ion-select-option value="por producto">por producto</ion-select-option>
                   </ion-select>
                 </ion-item>
                 <ion-item *ngIf="labelDocument(i) === 'metodo'">

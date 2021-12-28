@@ -477,7 +477,7 @@ export class OrdersConfigPage implements OnInit {
         'nc': null,
         'app': 'impresion_documentos',
         'param': 'tipo_ticket_cambio',
-        'value': '1',
+        'value': 'por producto',
         'entity_id': null
       }
     ];

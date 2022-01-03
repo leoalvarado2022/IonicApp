@@ -101,6 +101,42 @@
       <p *ngIf="order?.lat"><strong>Latitud:</strong> {{ order?.lat }}</p>
       <p *ngIf="order?.lng"><strong>Longitud:</strong> {{ order?.lng }}</p>
       <p *ngIf="order?.comment"><strong>Sugerencia:</strong> {{ order?.comment }}</p>
+
+      <ng-container *ngIf="order?.payments.length">
+        <div *ngIf="order.payments.length === 1" style="margin-top: 10px;">
+          <strong>PAGO</strong>
+          <div *ngIf="order?.payments[0].value_mp">
+            <strong>Nº Monto:&nbsp;</strong><span>{{ order?.payments[0].value_mp | currency:' ':'symbol':'1.0-2' }}</span>
+          </div>
+          <div *ngIf="order?.payments[0].transaction_number">
+            <strong>Nº Transacción:&nbsp;</strong> <span>{{ order?.payments[0].transaction_number }}</span>
+          </div>
+          <div *ngIf="order?.payments[0].notes">
+            <strong>Notas:&nbsp;</strong> <span>{{ order?.payments[0].notes }}</span>
+          </div>
+        </div>
+        <ng-container *ngIf="order.payments.length > 1">
+          <ion-item class="ion-no-padding item-header" lines="none" slot="header" (click)="togglePaymentDetails()">
+            <strong>PAGOS</strong>
+            <ion-icon slot="end" [name]="paymentDetails ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+          </ion-item>
+          <div *ngIf="paymentDetails">
+            <ng-container *ngFor="let payment of order?.payments; let i = index">
+              <div *ngIf="payment.value_mp">
+                <strong>Nº Monto:&nbsp;</strong><span>{{ payment.value_mp | currency:' ':'symbol':'1.0-2' }}</span>
+              </div>
+              <div *ngIf="payment.transaction_number">
+                <strong>Nº Transacción:&nbsp;</strong> <span>{{ payment.transaction_number }}</span>
+              </div>
+              <div *ngIf="payment.notes">
+                <strong>Notas:&nbsp;</strong> <span>{{ payment.notes }}</span>
+              </div>
+              <div class="divider" *ngIf="i < order.payments.length - 1"></div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </ng-container>
+
       <ng-container *ngIf="order?.products.length">
         <div style="margin-top: 10px;margin-bottom: 10px;"
              *ngFor="let product of orderProducts()">

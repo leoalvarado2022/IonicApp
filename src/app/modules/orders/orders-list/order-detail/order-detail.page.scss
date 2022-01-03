@@ -159,3 +159,18 @@ ion-content {
     height: 43px !important;
   }
 }
+
+.divider {
+  background-color: rgb(0 0 0 / 10%);
+  height: 1px;
+  margin: 10px 0;
+}
+
+.item-header {
+  --inner-padding-end: 0 !important;
+  margin-top: 10px;
+
+  strong {
+    color: #737373 !important;
+  }
+}

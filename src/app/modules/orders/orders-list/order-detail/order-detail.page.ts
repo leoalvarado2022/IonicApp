@@ -32,6 +32,7 @@ export class OrderDetailPage implements OnInit, OnDestroy {
   public skeleton = true;
   public loadingActionButton = false;
   public modoPos;
+  public paymentDetails = false;
 
   constructor(
     private storeService: StoreService,
@@ -584,5 +585,9 @@ export class OrderDetailPage implements OnInit, OnDestroy {
     }
 
     return Math.round(value);
+  }
+
+  togglePaymentDetails() {
+    this.paymentDetails = !this.paymentDetails;
   }
 }

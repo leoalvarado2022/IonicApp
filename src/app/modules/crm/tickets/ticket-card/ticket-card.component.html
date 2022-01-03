@@ -12,7 +12,7 @@
     <p><strong>Referencia:</strong> {{ ticket.reference }}</p>
     <p><strong>Creador:</strong> {{ ticket.creator }}</p>
     <p><strong>Asignado:</strong> {{ ticket.user }}</p>
-    <p><strong>Fecha de creación:</strong> {{ ticket.createdAt }}</p>
+    <p><strong>Fecha de creación:</strong> {{ ticket.createdAtSystem || ticket.createdAt }}</p>
     <p class="date-compromiso">Fecha de Compromiso: {{ ticket.clientCommitment }}</p>
   </ion-card-content>
 </ion-card>

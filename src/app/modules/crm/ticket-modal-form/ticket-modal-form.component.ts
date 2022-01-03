@@ -75,8 +75,8 @@ export class TicketModalFormComponent implements OnInit {
         client_id: [null, Validators.required],
         contact_id: [null, Validators.required],
         product: [null, Validators.required],
-        // funcionality_id: [0, Validators.required],
-        funcionality_id: [null],
+        funcionality_id: [null, Validators.required],
+        // funcionality_id: [null],
         reference: [null, Validators.required],
         description: [null, Validators.required],
         createdAt: [moment().format('DD-MM-YYYY'), Validators.required],
@@ -226,7 +226,7 @@ export class TicketModalFormComponent implements OnInit {
   public setTypes = ({detail: {value}}) => {
     this.types = this.areas.find(a => a.id === value)?.types ?? [];
     this.ticketForm.get('ticket').patchValue({
-      type: this.types.length === 0 ? this.types[0].name : 0,
+      type: this.types.length === 0 ? (this.types[0]?.name || '') : '',
     });
     this.ticketForm.get('detail').patchValue({state: null});
   }
@@ -286,7 +286,6 @@ export class TicketModalFormComponent implements OnInit {
       fields.attachments = this.attachments;
       fields.wsAuthID = workerSelected.wsAuthID;
 
-      // console.log('submit ::: ', fields);
       await this.submitTicket(fields);
 
       this.ticketForm.enable();

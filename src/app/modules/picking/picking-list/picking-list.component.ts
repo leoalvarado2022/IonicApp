@@ -87,8 +87,8 @@ export class PickingListComponent implements OnInit {
   loadData = async () => {
     const data = {
       user: this.user.user,
-      // nc: this.deviceService.getFullUUID() || '54a62048537a716a',
-      nc: this.deviceService.getFullUUID(),
+      nc: this.deviceService.getFullUUID() || '54a62048537a716a',
+      // nc: this.deviceService.getFullUUID(),
       type: 'updateReading',
       action: this.action,
     };
@@ -120,8 +120,8 @@ export class PickingListComponent implements OnInit {
   getClients = () => {
     const data = {
       user: this.user.user,
-      // nc: this.deviceService.getFullUUID() || '54a62048537a716a',
-      nc: this.deviceService.getFullUUID(),
+      nc: this.deviceService.getFullUUID() || '54a62048537a716a',
+      // nc: this.deviceService.getFullUUID(),
     };
     return this.pickingService.pickingClients(data).toPromise();
   }
@@ -199,8 +199,8 @@ export class PickingListComponent implements OnInit {
     const data = {
       client: this.client,
       number_external: externalNumber,
-      // nc: this.deviceService.getFullUUID() || '54a62048537a716a',
-      nc: this.deviceService.getFullUUID(),
+      nc: this.deviceService.getFullUUID() || '54a62048537a716a',
+      // nc: this.deviceService.getFullUUID(),
       user: this.user.user,
     };
 
@@ -231,8 +231,8 @@ export class PickingListComponent implements OnInit {
         type: 'updateReading',
         action: this.action,
         orderId: order.id,
-        // nc: this.deviceService.getFullUUID() || '54a62048537a716a',
-        nc: this.deviceService.getFullUUID(),
+        nc: this.deviceService.getFullUUID() || '54a62048537a716a',
+        // nc: this.deviceService.getFullUUID(),
         user: this.user.user,
       };
       try {
@@ -258,8 +258,8 @@ export class PickingListComponent implements OnInit {
     const data = {
       details: order.group_id,
       action: this.action,
-      // nc: this.deviceService.getFullUUID() || '54a62048537a716a',
-      nc: this.deviceService.getFullUUID(),
+      nc: this.deviceService.getFullUUID() || '54a62048537a716a',
+      // nc: this.deviceService.getFullUUID(),
       user: this.user.user,
     };
     this.loaderService.startLoader('Eliminando...');
@@ -292,8 +292,8 @@ export class PickingListComponent implements OnInit {
     const data = {
       details: this.orderGroup.reduce((next, prev) => next.concat(prev.group_id), []),
       action: this.action,
-      // nc: this.deviceService.getFullUUID() || '54a62048537a716a',
-      nc: this.deviceService.getFullUUID(),
+      nc: this.deviceService.getFullUUID() || '54a62048537a716a',
+      // nc: this.deviceService.getFullUUID(),
       user: this.user.user,
     };
     this.loaderService.startLoader('Eliminando...');
@@ -374,8 +374,8 @@ export class PickingListComponent implements OnInit {
       const data = {
         type: 'updateState',
         action: this.action,
-        // nc: this.deviceService.getFullUUID() || '54a62048537a716a',
-        nc: this.deviceService.getFullUUID(),
+        nc: this.deviceService.getFullUUID() || '54a62048537a716a',
+        // nc: this.deviceService.getFullUUID(),
         user: this.user.user,
         latitude: this.latitude,
         longitude: this.longitude,
@@ -405,6 +405,13 @@ export class PickingListComponent implements OnInit {
           text: a.toUpperCase(),
           handler: () => {
             this.action = a;
+            this.orderList = [];
+            this.orderGroup = [];
+            this.currentOrder = null;
+            this.externalNumber = '';
+            this.client = null;
+            this.clientName = '';
+            this.clientDisabled = false;
           }
         })),
         {

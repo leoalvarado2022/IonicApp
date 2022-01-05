@@ -138,6 +138,10 @@ export class TicketFormPage implements OnInit {
     formData.commitmentAt = formData.commitmentAt ? moment(formData.commitmentAt, ['DD/MM/YYYY']).format('YYYY-MM-DD') : moment('1900-01-01');
     formData.commitmentInternAt = formData.commitmentInternAt ? moment(formData.commitmentInternAt, ['DD/MM/YYYY']).format('YYYY-MM-DD') : moment('1900-01-01');
 
+    // this.activeTicket.type = this.activeTicket.type_id;
+    // console.log('this.activeTicket ::: ', this.activeTicket);
+    // return;
+
     const data = {
       ticket: this.activeTicket,
       detail: formData,

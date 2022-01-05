@@ -405,6 +405,13 @@ export class PickingListComponent implements OnInit {
           text: a.toUpperCase(),
           handler: () => {
             this.action = a;
+            this.orderList = [];
+            this.orderGroup = [];
+            this.currentOrder = null;
+            this.externalNumber = '';
+            this.client = null;
+            this.clientName = '';
+            this.clientDisabled = false;
           }
         })),
         {

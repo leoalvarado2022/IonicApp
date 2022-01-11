@@ -33,6 +33,7 @@
               <p><strong>Creador:</strong> {{ ticket.creator }}</p>
               <!--<p class="ticket-p"><strong>Asignado:</strong> {{ ticket.creatorName }}</p>-->
               <p class="ticket-p"><strong>Fecha de Compromiso:</strong> {{ ticket.clientCommitment }}</p>
+              <p class="ticket-p"><strong>Fecha de Compromiso:</strong> {{ ticket.description }}</p>
             </ng-container>
             <div [class.scroll-card-custom]="openSelected" class="scroll-card">
               <ng-container *ngIf="ticket">

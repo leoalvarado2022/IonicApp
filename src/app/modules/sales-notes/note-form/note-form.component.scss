@@ -1,0 +1,23 @@
+ion-segment {
+  background: var(--ion-color-primary) !important;
+
+  ion-segment-button {
+    opacity: 1 !important;
+    border-radius: 0 !important;
+
+    &.segment-button-checked {
+      border-bottom: 3px solid white !important;
+      --background: var(--ion-color-primary) !important;
+    }
+
+    ion-label {
+      text-transform: capitalize;
+      color: white;
+    }
+  }
+}
+
+.btn-app {
+  --padding-start: 18px;
+  --padding-end: 18px;
+}

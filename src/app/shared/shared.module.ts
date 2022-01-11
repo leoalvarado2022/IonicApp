@@ -39,6 +39,8 @@ import {CalculatorComponent} from './components/calculator/calculator.component'
 import {OrderListSkeletonComponent} from './components/skeleton/order-list-skeleton/order-list-skeleton.component';
 import {TicketModalFormComponent} from '../modules/crm/ticket-modal-form/ticket-modal-form.component';
 import {PickingService} from '../modules/picking/services/picking.service';
+import {SalesNotesService} from '../modules/sales-notes/services/sales-notes.service';
+import {NoteFormComponent} from '../modules/sales-notes/note-form/note-form.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,7 @@ import {PickingService} from '../modules/picking/services/picking.service';
     TallyFormMultipleComponent,
     OrderListSkeletonComponent,
     TicketModalFormComponent,
+    NoteFormComponent,
   ],
   imports: [
     CommonModule,
@@ -87,6 +90,7 @@ import {PickingService} from '../modules/picking/services/picking.service';
     PosService,
     InfiniteScrollPaginatorService,
     PickingService,
+    SalesNotesService,
   ],
   exports: [
     CommonModule,
@@ -110,6 +114,7 @@ import {PickingService} from '../modules/picking/services/picking.service';
     CalculatorComponent,
     OrderListSkeletonComponent,
     TicketModalFormComponent,
+    NoteFormComponent,
   ],
   entryComponents: [
     ImageViewerComponent,

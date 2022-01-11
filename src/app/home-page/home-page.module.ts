@@ -144,6 +144,10 @@ const routes: Routes = [
         path: 'gestion_ordenes_transporte',
         loadChildren: () => import('../modules/picking/picking.module').then(m => m.PickingModule)
       },
+      {
+        path: 'gestion_nota_ventas',
+        loadChildren: () => import('../modules/sales-notes/sales-notes.module').then(m => m.SalesNotesModule)
+      },
       {path: '**', redirectTo: ''},
     ],
   },

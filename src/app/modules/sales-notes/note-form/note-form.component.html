@@ -1,0 +1,254 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="chevron-back-outline" slot="icon-only" style="color:white;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Crear nota de venta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment mode="md" color="primary" [value]="currentStep" [disabled]="true">
+    <ion-segment-button value="1">
+      <ion-label>Datos básicos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="2">
+      <ion-label>Detalle</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <form [formGroup]="noteForm">
+    <ng-container formGroupName="basic" *ngIf="currentStep === 1">
+      <ion-row>
+        <ion-col size="6" size-md="6">
+          <ion-label class="label-fx360">Tipo de documento</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-input formControlName="document_type"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" size-md="6">
+          <ion-label class="label-fx360">Número</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-input type="number" formControlName="number"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-md="6">
+          <ion-label class="label-fx360">Fecha de emisión</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <li-ionic4-datepicker formControlName="createdAt" [inputDateConfig]="datePickerObj"></li-ionic4-datepicker>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" size-md="6">
+          <ion-label class="label-fx360" position="stacked">Cliente</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-searchbar [value]="clientName" (keyup)="searchClient($event.target.value)" (ionClear)="cleanClientSearch()" placeholder="Buscar"></ion-searchbar>
+          </ion-item>
+          <ion-list class="searchbar-results-list" *ngIf="clientsFiltered.length > 0">
+            <ion-item *ngFor="let client of clientsFiltered" (click)="selectClient(client)">
+              {{ client.name  }}
+            </ion-item>
+          </ion-list>
+        </ion-col>
+        <ion-col size="6" size-md="6">
+          <ion-label class="label-fx360">Moneda</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-select formControlName="currency" placeholder="Tipo" cancelText="Cancelar" interface="action-sheet">
+              <ion-select-option *ngFor="let currency of currencies" [value]="currency.id">{{currency.name}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" size-md="6">
+          <ion-label class="label-fx360">Tasa de cambio</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-input type="number" formControlName="tasa"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-label class="label-fx360">Observaciones</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-textarea formControlName="observation"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+    <ng-container formArrayName="detail" *ngIf="currentStep === 2">
+      <ion-item class="bg-transparent ion-no-padding ion-no-margin" lines="none">
+        <ion-button slot="end" class="btn-app" (click)="addDetail()">
+          Agregar
+          <ion-icon slot="start" name="add"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+      <ion-card class="card-item outline" *ngFor="let item of noteForm.get('detail')['controls']; let index = index" style="margin-bottom: 5px;">
+        <ng-container [formGroupName]="index">
+          <ion-item-sliding>
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="removeDetail(index)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+            <ion-item lines="none" class="ion-no-padding bg-transparent">
+              <ion-row>
+                <ion-col size="12" size-md="6">
+                  <ion-label class="label-fx360" position="stacked">Producto</ion-label>
+                  <ion-item class="input-fx360-down max-h-unset">
+                    <ion-searchbar
+                      [value]="productName[index] || ''"
+                      (keyup)="searchProduct($event.target.value, index)"
+                      (ionClear)="cleanProductSearch(index)"
+                      placeholder="Buscar"
+                    ></ion-searchbar>
+                  </ion-item>
+                  <ion-list class="searchbar-results-list" *ngIf="productsFiltered[index]?.length > 0">
+                    <ion-item *ngFor="let product of productsFiltered[index]" (click)="selectProduct(product, index)">
+                      {{product.code}} - {{product.name}}
+                    </ion-item>
+                  </ion-list>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-fx360">Unidad</ion-label>
+                  <ion-item class="input-fx360-down max-h-unset">
+                    <ion-input formControlName="unit"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-fx360">Lote</ion-label>
+                  <ion-item class="input-fx360-down max-h-unset">
+                    <ion-input type="number" formControlName="lote"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12" size-md="6">
+                  <ion-label class="label-fx360" position="stacked">Bodega</ion-label>
+                  <ion-item class="input-fx360-down max-h-unset">
+                    <ion-searchbar
+                      [value]="whName[index] || ''"
+                      (keyup)="searchWh($event.target.value, index)"
+                      (ionClear)="cleanWhSearch(index)"
+                      placeholder="Buscar"
+                      [disabled]="!detailArray.controls[index].get('product_id').value"
+                    ></ion-searchbar>
+                  </ion-item>
+                  <ion-list class="searchbar-results-list" *ngIf="whsFiltered[index]?.length > 0">
+                    <ion-item *ngFor="let wh of whsFiltered[index]" (click)="selectWh(wh, index)">
+                      {{wh.code}} - {{wh.name}}
+                    </ion-item>
+                  </ion-list>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-fx360">Cantidad</ion-label>
+                  <ion-item class="input-fx360-down">
+                    <ion-input
+                      type="number"
+                      formControlName="quantity"
+                      [disabled]="!quantities[index]"
+                      (ionChange)="calculate('quantity', index)"
+                    ></ion-input>
+                  </ion-item>
+                  <ion-text class="error--message no-margin-t" color="danger" *ngIf="!quantities[index]">
+                    La bodega no tiene disponibilidad
+                  </ion-text>
+                </ion-col>
+                <ion-col size="6">
+                  <ion-label class="label-fx360">Precio</ion-label>
+                  <ion-item class="input-fx360-down max-h-unset">
+                    <ion-input
+                      type="number"
+                      formControlName="price"
+                      [disabled]="!quantities[index]"
+                      (ionChange)="calculate('price', index)"
+                    ></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="12">
+                  <ion-label class="label-fx360">Total</ion-label>
+                  <ion-item class="input-fx360-down max-h-unset">
+                    <ion-input
+                      type="number"
+                      formControlName="total"
+                      [disabled]="!quantities[index]"
+                      (ionChange)="calculate('total', index)"
+                    ></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-item>
+          </ion-item-sliding>
+        </ng-container>
+      </ion-card>
+
+      <ion-row>
+        <ion-col size="12">
+          <ion-item lines="none" class="ion-no-margin ion-no-padding bg-transparent">
+            <span slot="end">Neto afecto:</span>
+            <ion-item slot="end" class="input-fx360-down max-h-unset">
+              <ion-input
+                type="number"
+                [readonly]="true"
+              ></ion-input>
+            </ion-item>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item lines="none" class="ion-no-margin ion-no-padding bg-transparent">
+            <span slot="end">Neto exento:</span>
+            <ion-item slot="end" class="input-fx360-down max-h-unset">
+              <ion-input
+                type="number"
+                [readonly]="true"
+              ></ion-input>
+            </ion-item>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12" *ngFor="let tax of inputTaxes">
+          <ion-item lines="none" class="ion-no-margin ion-no-padding bg-transparent">
+            <span slot="end">{{tax.tax | titlecase}}:</span>
+            <ion-item slot="end" class="input-fx360-down max-h-unset">
+              <ion-input
+                type="number"
+                [readonly]="true"
+              ></ion-input>
+            </ion-item>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item lines="none" class="ion-no-margin ion-no-padding bg-transparent">
+            <span slot="end">TOTAL:</span>
+            <ion-item slot="end" class="input-fx360-down max-h-unset">
+              <ion-input
+                type="number"
+                [readonly]="true"
+              ></ion-input>
+            </ion-item>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+    </ng-container>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col>
+      <ion-button class="btn-app" color="primary" expand="block" [disabled]="currentStep === 1 || loadingStore" (click)="currentStep = currentStep - 1">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+        Anterior
+      </ion-button>
+    </ion-col>
+
+    <ion-col>
+      <ion-button class="btn-app" color="primary" expand="block" *ngIf="currentStep < 3" [disabled]="checkNexButtonDisabled()"
+                  (click)="increaseStep()">
+        Siguiente
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+
+      <ion-button class="btn-app" color="success" expand="block" *ngIf="currentStep === 3" (click)="submit()" [disabled]="loadingStore">
+        {{loadingStore ? 'Guardando...' : 'Guardar'}}
+        <ion-icon slot="end" name="save"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

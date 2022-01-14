@@ -3,6 +3,8 @@ import {ModalController} from '@ionic/angular';
 import * as moment from 'moment';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CameraService} from '../../../shared/services/camera/camera.service';
+import {TicketsService} from '../services/tickets/tickets.service';
+import {StoreService} from '../../../shared/services/store/store.service';
 
 @Component({
   selector: 'app-ticket-modal-form',
@@ -56,12 +58,13 @@ export class TicketModalFormComponent implements OnInit {
   @Input() userCreator: any;
   @Input() userArea: any;
   @Input() getClients = (id, user): any => {};
-  @Input() submitTicket = (fields): any => {};
 
   constructor(
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private cameraService: CameraService,
+    private ticketsService: TicketsService,
+    private storeService: StoreService,
   ) { }
 
   ngOnInit() {
@@ -267,6 +270,17 @@ export class TicketModalFormComponent implements OnInit {
       type: '.jpg',
       detail: 0,
     });
+  }
+
+  public submitTicket = async (fields: any) => {
+    const company = this.storeService.getActiveCompany();
+
+    fields.ticket.company_id = company.id;
+    const response: any = await this.ticketsService.storeTicket(fields).toPromise();
+
+    if (response.data?.created_id) {
+      await this.modalController.dismiss(true);
+    }
   }
 
   public submit = async () => {

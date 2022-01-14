@@ -4,6 +4,7 @@ import {StoreService} from '../../../../shared/services/store/store.service';
 import {HttpService} from '../../../../shared/services/http/http.service';
 import {LoaderService} from '../../../../shared/services/loader/loader.service';
 import {Router} from '@angular/router';
+import {TicketEventService} from '../../../../helpers/ticket-event';
 
 @Component({
   selector: 'app-all',
@@ -25,7 +26,8 @@ export class ActivePage implements OnInit {
     private storeService: StoreService,
     private httpService: HttpService,
     private loaderService: LoaderService,
-    private router: Router
+    private router: Router,
+    private ticketEventService: TicketEventService,
   ) {
 
   }
@@ -40,6 +42,17 @@ export class ActivePage implements OnInit {
     this.init = 0;
     this.noMoreRows = false;
     this.loadTickets(null);
+
+    this.ticketEventService.getTicketSaved().subscribe(value => {
+      this.ticketEventService.getCurrentTicketTab().subscribe(currentTab => {
+        if (value && currentTab === 'active') {
+          this.allTickets = [];
+          this.filteredTickets = [];
+          this.cancelSearch();
+          this.ticketEventService.setTicketSaved(false);
+        }
+      });
+    });
   }
 
   /**

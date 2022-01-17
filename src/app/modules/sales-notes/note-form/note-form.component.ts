@@ -31,6 +31,7 @@ export class NoteFormComponent implements OnInit {
   balances: any = {};
   taxes: any = {};
   inputTaxes: Array<any> = [];
+  sumTaxes: any = {};
 
   @Input() tab: any;
   @Input() number: number;
@@ -296,6 +297,28 @@ export class NoteFormComponent implements OnInit {
       const quantity = this.detailArray.controls[index].get('quantity').value || this.quantities[index];
       this.detailArray.controls[index].get('price').patchValue(Number((total / quantity).toFixed(2)));
     }
+    this.calculateTaxes();
+  }
+
+  public calculateTaxes = () => {
+    const sumTaxes = {};
+    this.detailArray.controls.forEach((item) => {
+      const productId = item.get('product_id').value;
+      const total = item.get('total').value;
+
+      const product = this.products.find(p => p.id === productId);
+
+      if (product) {
+        product.taxes.forEach(pTax => {
+          if (!sumTaxes[pTax.tax_id]) {
+            sumTaxes[pTax.tax_id] = 0;
+          }
+          sumTaxes[pTax.tax_id] += ((total * pTax.rate) / 100);
+        });
+      }
+    });
+
+    this.sumTaxes = sumTaxes;
   }
 
   public calculateTotal = () => {

@@ -6,6 +6,7 @@ import {IonTabs, ModalController} from '@ionic/angular';
 import {TicketModalFormComponent} from '../ticket-modal-form/ticket-modal-form.component';
 import {TicketsService} from '../services/tickets/tickets.service';
 import {LoaderService} from '../../../shared/services/loader/loader.service';
+import {TicketEventService} from '../../../helpers/ticket-event';
 
 @Component({
   selector: 'app-tickets',
@@ -25,6 +26,7 @@ export class TicketsPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private ticketsService: TicketsService,
     private loaderService: LoaderService,
+    private ticketEventService: TicketEventService,
   ) {
 
   }
@@ -54,6 +56,7 @@ export class TicketsPage implements OnInit, OnDestroy {
    * @param event
    */
   public change = (event: any) => {
+    this.ticketEventService.setCurrentTicketTab(event.tab);
     this.numberTicket = 0;
   }
 
@@ -61,25 +64,13 @@ export class TicketsPage implements OnInit, OnDestroy {
     return this.ticketsService.getTicketUsers(id, user).toPromise();
   }
 
-  public submitTicket = async (fields: any) => {
-    const company = this.storeService.getActiveCompany();
-
-    fields.ticket.company_id = company.id;
-    const response: any = await this.ticketsService.storeTicket(fields).toPromise();
-
-    if (response.data?.created_id) {
-      const tabSelected = this.ticketTabs.getSelected();
-      await this.ticketTabs.select(tabSelected);
-      await this.modalController.dismiss();
-      location.reload();
-    }
-  }
-
   public openModalForm = async () => {
     this.loaderService.startLoader('Cargando parámetros');
     const company = this.storeService.getActiveCompany();
 
     const response = await this.ticketsService.getTicketParams().toPromise();
+    this.loaderService.stopLoader();
+
     const {data: {areas, clients, origins, periodicities, priorities, states}}: any = response;
     const modal = await this.modalController.create({
       component: TicketModalFormComponent,
@@ -91,7 +82,6 @@ export class TicketsPage implements OnInit, OnDestroy {
         priorities,
         states,
         getClients: this.getClients,
-        submitTicket: this.submitTicket,
         // userCreator: {id: user.id, name: `${user.name} ${user.lastName}`},
         userCreator: company.user,
         userArea: company.area,
@@ -100,7 +90,12 @@ export class TicketsPage implements OnInit, OnDestroy {
       keyboardClose: false,
     });
 
-    this.loaderService.stopLoader();
+    modal.onDidDismiss().then((data) => {
+      if (data.data) {
+        this.ticketEventService.setTicketSaved(true);
+      }
+    });
+
     return await modal.present();
   }
 }

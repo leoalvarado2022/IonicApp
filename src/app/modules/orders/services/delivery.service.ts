@@ -35,6 +35,7 @@ export class DeliveryService {
   public orderReprocessUrl = 'reprocess';
   public saveDocumentUrl = 'save-document';
   public savePaymentUrl = 'save-payment';
+  public dailyResume = 'daily-resume';
   private service: Subscription;
   private refreshData: Subscription;
   private timeAccepted = environment.searchDeliveryListAcceptedMSec;
@@ -422,5 +423,16 @@ export class DeliveryService {
       this.backgroundMode.disable();
     });
   }
+
+  /**
+   * @description get daily resume
+   * @param data {fecha_comercial:datetime,user:bigint,company_id:bigint}
+   */
+  public getDailyResume = (data: any) => {
+    const url = this.httpService.buildUrl(this.dailyResume);
+    return this.httpClient.post(url, this.httpService.buildBody(data), {
+      headers: this.httpService.getHeaders()
+    });
+  };
 
 }

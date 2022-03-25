@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { DeliveryService } from '../services/delivery.service';
-import {StoreService} from '../../../shared/services/store/store.service';
+import { StorageSyncService } from '../../../services/storage/storage-sync/storage-sync.service';
+import { StoreService } from '../../../shared/services/store/store.service';
 import { HttpService } from '../../../shared/services/http/http.service';
+import { LoaderService } from '../../../shared/services/loader/loader.service';
+import {Prints} from '../../../helpers/prints';
 
 @Component({
   selector: 'app-cash-control',
@@ -21,7 +24,10 @@ export class CashControlPage implements OnInit {
 
   constructor(public _deliveryService: DeliveryService,
               private storeService: StoreService,
-              private httpService: HttpService) { 
+              private loaderService: LoaderService,
+              private _storageSyncService: StorageSyncService,
+              private httpService: HttpService,
+              public prints: Prints) { 
     this.currentDate = moment().format('YYYY-MM-DD');
     this.showDate = moment(this.currentDate).format(this.dateFormat);
     this.originalDate = moment().format('YYYY-MM-DD');
@@ -36,6 +42,7 @@ export class CashControlPage implements OnInit {
   }
 
   public getDailyResume = () => {
+    this.loaderService.startLoader('Obteniendo Datos...');
     const user = this.storeService.getActiveCompany();
     const data = {
       fecha_comercial: this.currentDate,
@@ -48,13 +55,20 @@ export class CashControlPage implements OnInit {
       if(dataResume && dataResume.length) {
         this.resume = [...dataResume];
       }
+      this.loaderService.stopLoader();
     }, error => {
       this.httpService.errorHandler(error);
+      this.loaderService.stopLoader();
     })
   }
 
-  public reload = (event: any): void => {
-    event.target.complete();
+  public printResume = () => {
+    this._storageSyncService.getPrintConfig().then(async data => {
+      this.loaderService.startLoader('Procesando...');
+      this.prints.printConfigActive(data, 'documento');
+      this.prints.printResume(this.resume);
+      this.loaderService.stopLoader();
+    });
   }
 
   /**

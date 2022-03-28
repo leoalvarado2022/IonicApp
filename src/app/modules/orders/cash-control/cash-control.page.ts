@@ -64,9 +64,8 @@ export class CashControlPage implements OnInit {
 
   public printResume = () => {
     this._storageSyncService.getPrintConfig().then(async data => {
-      this.loaderService.startLoader('Procesando...');
       this.prints.printConfigActive(data, 'documento');
-      this.prints.printResume(this.resume);
+      await this.prints.printResume(this.resume);
       this.loaderService.stopLoader();
     });
   }

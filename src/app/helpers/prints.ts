@@ -862,6 +862,7 @@ export class Prints {
   async printResume(data: any, ip: string = '192.168.1.50', port: string = '9100') {
     const result: any = this.ResumeFull(data, ip, port);
     await this.printOptions(result, '9100', 'Desea Imprimir el Resumen Diario');
+    this.loaderService.stopLoader();
   }
 
   /**

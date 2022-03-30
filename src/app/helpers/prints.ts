@@ -313,6 +313,38 @@ export class Prints {
   }
 
   /**
+   * @description imprimir resumen diario
+   * @param data
+   * @param ip
+   * @param port
+   */
+   ResumeFull(data: any, ip: string = '192.168.1.50', port: string = '9100') {
+    const encoder = new EscPosEncoder();
+    const result = encoder.initialize();
+
+    result
+      .align('left')
+      .newline();
+      for(let res of data) {
+        result.line(`${res.parametro} ${res.valor}`)
+        if(res.tipo_dato == 'titulo') {
+          result.line('----------------------------------------')
+        }
+      }
+      result
+      .newline()
+      .newline()
+      .newline()
+      .newline()
+      .newline();
+
+    result.cut();
+
+    return result.encode();
+  }
+
+
+  /**
    * @description imprimir comanda con pdf417
    * @param data
    * @param ip
@@ -488,13 +520,13 @@ export class Prints {
               if (this.isConnected) {
                 this.printBT(result, this.getValueBP());
               }
-              resolve();
+              resolve(true);
             }, 3000);
             setTimeout(() => {
               if (this.isConnected) {
                 this.printTicketChange(port, true);
               }
-              resolve();
+              resolve(true);
             }, 5000);
           } else if (this.getPrintIP()) {
             for (let i = 0; i < this.getCopy(); ++i) {
@@ -508,16 +540,16 @@ export class Prints {
                   this.sockets.write(result, this.getValueBP(), port);
                   if (this.getTicketChangeBP() === 'si' && ticket) {
                     this.printTicketChange(port).then(() => console.log('imprimio ticket de cambio'));
-                    resolve();
+                    resolve(true);
                   } else {
-                    resolve();
+                    resolve(true);
                   }
                 }, 2000);
               } else {
                 setTimeout(() => {
                   console.log('else print options....');
                   this.sockets.write(result, this.getValueBP(), port);
-                  resolve();
+                  resolve(true);
                 }, 4000 * i);
               }
             }
@@ -558,7 +590,7 @@ export class Prints {
           } else {
             this.printBT(result, this.getValueBP());
           }
-          resolve();
+          resolve(true);
         }, 3000);
       } else if (type === 'por producto') {
         for (const product of order.products) {
@@ -581,7 +613,7 @@ export class Prints {
             }
 
             if (count === len) {
-              resolve();
+              resolve(true);
             }
           }, count * (3000 / count));
 
@@ -825,6 +857,12 @@ export class Prints {
     const result: any = this.commandFull(dataProcess, ip, port);
     await this.printOptions(result, '9100', 'Desea Imprimir la Comanda');
     // await this.printOptions(result, '8632', 'Desea Imprimir la Comanda');
+  }
+
+  async printResume(data: any, ip: string = '192.168.1.50', port: string = '9100') {
+    const result: any = this.ResumeFull(data, ip, port);
+    await this.printOptions(result, '9100', 'Desea Imprimir el Resumen Diario');
+    this.loaderService.stopLoader();
   }
 
   /**

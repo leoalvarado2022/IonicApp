@@ -148,6 +148,10 @@ const routes: Routes = [
         path: 'gestion_nota_ventas',
         loadChildren: () => import('../modules/sales-notes/sales-notes.module').then(m => m.SalesNotesModule)
       },
+      {
+        path: 'control_caja',
+        loadChildren: () => import('../modules/orders/cash-control/cash-control.module').then(m => m.CashControlPageModule)
+      },
       {path: '**', redirectTo: ''},
     ],
   },

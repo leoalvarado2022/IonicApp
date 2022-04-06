@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {NoteItemComponent} from './note-item.component';
 
@@ -7,7 +7,7 @@ describe('NoteItemComponent', () => {
   let component: NoteItemComponent;
   let fixture: ComponentFixture<NoteItemComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NoteItemComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

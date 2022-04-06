@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import {IonicModule} from '@ionic/angular';
 
 import {TallyFormComponent} from './tally-form.component';
@@ -7,7 +7,7 @@ describe('TallyFormComponent', () => {
   let component: TallyFormComponent;
   let fixture: ComponentFixture<TallyFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TallyFormComponent ],
       imports: [IonicModule.forRoot()]

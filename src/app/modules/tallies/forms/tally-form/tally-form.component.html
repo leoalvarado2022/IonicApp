@@ -66,7 +66,7 @@
               <ion-label class="label-fx360" position="stacked">Bono</ion-label>
               <ion-item class="input-fx360-down max-h-unset">
                 <ion-select formControlName="bondValidity" placeholder="Bono" cancelText="Cancelar" [interfaceOptions]="actionHeader" interface="action-sheet">
-                  <ion-select-option value="null">Ninguno</ion-select-option>
+                  <ion-select-option value="0">Ninguno</ion-select-option>
                   <ion-select-option *ngFor="let bond of availableBonds" [value]="bond.bondValidity">{{ bond.bondName }}</ion-select-option>
                 </ion-select>
               </ion-item>

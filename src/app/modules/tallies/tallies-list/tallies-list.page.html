@@ -62,7 +62,7 @@
             <p *ngIf="tally.hoursExtra"> <strong>Horas Extra</strong>: {{ tally.hoursExtra }}</p>
             <p *ngIf="tally.performance || tally.rendimiento"> <strong>Rendimiento</strong>: {{ tally.performance || tally.rendimiento }}</p>
             <p *ngIf="tally.dealValidity || tally.id_par_tratos_vigencias"> <strong>Trato</strong>: {{ getDealName(tally.dealValidity || tally.id_par_tratos_vigencias) | titlecase }}</p>
-            <p *ngIf="tally.bondValidity || tally.id_par_bonos_vigencias"> <strong>Bono</strong>: {{ getBondName(tally.bondValidity || tally.id_par_bonos_vigencias) | titlecase }}</p>
+            <p *ngIf="tally.bondValidity != 0 || tally.id_par_bonos_vigencias"> <strong>Bono</strong>: {{ getBondName(tally.bondValidity || tally.id_par_bonos_vigencias) | titlecase }}</p>
             <p *ngIf="tally.notes || tally.notas">
               <strong>Notas</strong>:
               <span #note hidden="true">
@@ -87,10 +87,10 @@
       </ion-item>
 
       <ion-item-options side="end" *ngIf="tally.dispositivo !== 1 && tally.id > 0">
-        <ion-item-option color="warning" (click)="editTally(tally, slide)">
+        <ion-item-option color="warning" (click)="editTally(tally, slide)" [disabled]="!Permission.hasEdit()">
           <ion-icon slot="icon-only" name="pencil"></ion-icon>
         </ion-item-option>
-        <ion-item-option color="danger" (click)="deleteTally(tally, slide)">
+        <ion-item-option color="danger" (click)="deleteTally(tally, slide)" [disabled]="!Permission.hasDelete()">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-item-option>
       </ion-item-options>

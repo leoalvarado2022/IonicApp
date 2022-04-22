@@ -11,6 +11,7 @@ import { CostCenterList } from '@primetec/primetec-angular';
 import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
 import { TallyFormMultipleComponent } from '../forms/tally-form-multiple/tally-form-multiple.component';
 import { Worker } from '../../pre-contracts/worker.interface';
+import { PermissionService } from 'src/app/services/storage/permissions/permission.service';
 
 @Component({
   selector: 'app-workers-list',
@@ -20,6 +21,7 @@ import { Worker } from '../../pre-contracts/worker.interface';
 export class WorkersListPage implements OnInit, OnDestroy {
 
   public quadrille: any;
+  public Permission: any;
 
   // Worker
   private workers: Array<Worker> = [];
@@ -55,6 +57,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
   constructor(
     private stepperService: StepperService,
     private storageSyncService: StorageSyncService,
+    private permissionService: PermissionService,
     private activatedRoute: ActivatedRoute,
     private tallySyncService: TallySyncService,
     private modalController: ModalController,
@@ -63,6 +66,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
     this.currentDate = moment().format('YYYY-MM-DD');
     this.showDate = moment(this.currentDate).format(this.dateFormat);
     this.originalDate = moment().format('YYYY-MM-DD');
+    this.Permission = this.permissionService.getPermission("tarja_tarjas");
   }
 
   ngOnInit() {

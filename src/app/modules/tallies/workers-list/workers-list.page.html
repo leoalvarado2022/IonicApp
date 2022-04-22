@@ -103,13 +103,13 @@
   <!-- Several workers selected -->
   <ion-row *ngIf="selectedWorkers.length > 1">
     <ion-col size="6">
-      <ion-button class="btn-app" color="success" expand="block" (click)="createMultipleTally()">
+      <ion-button class="btn-app" color="success" expand="block" (click)="createMultipleTally()" [disabled]="!Permission.hasCreate()">
         Agregar Masivo
       </ion-button>
     </ion-col>
 
     <ion-col size="6">
-      <ion-button class="btn-app" color="primary" expand="block" (click)="editMultipleTally()" [disabled]="!canUpdateMultiple">
+      <ion-button class="btn-app" color="primary" expand="block" (click)="editMultipleTally()" [disabled]="!canUpdateMultiple || !Permission.hasSpecial()">
         Modificar Masivo
       </ion-button>
     </ion-col>

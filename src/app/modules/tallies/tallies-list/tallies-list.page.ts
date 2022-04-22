@@ -11,7 +11,7 @@ import * as moment from 'moment';
 import { ModalController, IonItemSliding } from '@ionic/angular';
 import { TallyFormComponent } from '../forms/tally-form/tally-form.component';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
-import {DealsService} from '../../tratos/services/deals/deals.service';
+import { PermissionService } from 'src/app/services/storage/permissions/permission.service';
 
 @Component({
   selector: 'app-tallies-list',
@@ -19,6 +19,8 @@ import {DealsService} from '../../tratos/services/deals/deals.service';
   styleUrls: ['./tallies-list.page.scss']
 })
 export class TalliesListPage implements OnInit, OnDestroy {
+
+  public Permission: any;
 
   // Worker
   public activeWorker: any = null;
@@ -48,12 +50,13 @@ export class TalliesListPage implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private stepperService: StepperService,
     private storageSyncService: StorageSyncService,
+    private permissionService: PermissionService,
     private tallySyncService: TallySyncService,
     private toastService: ToastService,
     private modalController: ModalController,
     private alertService: AlertService,
   ) {
-
+    this.Permission = this.permissionService.getPermission("tarja_tarjas");
   }
 
   ngOnInit() {
@@ -116,7 +119,7 @@ export class TalliesListPage implements OnInit, OnDestroy {
       // CALC TALLIES
       const a = this.getNumberOfWorkerTallies();
       this.workerTallies = [...a];
-      console.log('workerTallies ::: ', this.workerTallies);
+      // console.log('workerTallies ::: ', this.workerTallies);
       // END LOADING
       this.isLoading = false;
     });

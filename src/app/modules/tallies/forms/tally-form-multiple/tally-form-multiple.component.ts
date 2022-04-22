@@ -512,7 +512,7 @@ export class TallyFormMultipleComponent implements OnInit {
       });
 
       if (this.availableDeals.length > 0) {
-        if (this.updateTallies) {
+        if (this.updateTallies.length > 0) {
           this.tallyForm.get('dealValidity').patchValue(String(this.updateTallies[0].dealValidity) === 'null' ? String(this.updateTallies[0].dealValidity) : this.updateTallies[0].dealValidity);
         } else {
           this.tallyForm.get('dealValidity').patchValue(this.availableDeals[0].id_deal_validity);
@@ -550,19 +550,24 @@ export class TallyFormMultipleComponent implements OnInit {
     const laborId = this.tallyForm.get('laborId').value;
 
     this.availableBonds = [];
+    console.log("costCenterId::> ",costCenterId);
+    console.log("laborId::> ",laborId);
+    console.log("this.bonds::> ",this.bonds);
     if (costCenterId && laborId) {
       this.availableBonds = this.bonds.filter(item => {
         const start = moment(item.startDate).toISOString();
         const end = moment(item.endDate).toISOString();
 
-        return item.costCenterId === costCenterId && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
+        return (item.allCostCenters || item.costCenterId === costCenterId) && item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
         // return item.laborId === laborId && moment(this.dateSelected).isBetween(start, end);
       });
-
+      console.log("this.availableBonds::> ",this.availableBonds);
       if (this.availableBonds.length > 0) {
-        if (this.updateTallies) {
+        if (this.updateTallies.length > 0) {
+          console.log("this.updateTallies::> ",this.updateTallies);
           this.tallyForm.get('bondValidity').patchValue(String(this.updateTallies[0].bondValidity) === 'null' ? String(this.updateTallies[0].bondValidity) : this.updateTallies[0].bondValidity);
         } else {
+          console.log("this.availableBonds::> ",this.availableBonds);
           this.tallyForm.get('bondValidity').patchValue(this.availableBonds[0].bondValidity);
         }
       }

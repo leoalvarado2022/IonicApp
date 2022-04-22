@@ -73,7 +73,7 @@ export class TallySyncService {
         } else {
           talliesToRecord.push(tallyToEdit);
         }
-
+        console.log("talliesToRecord::> ",talliesToRecord);
         return this.storage.set(StorageKeys.TalliesToRecord, talliesToRecord);
       } else {
         return this.storage.set(StorageKeys.TalliesToRecord, [tallyToEdit]);

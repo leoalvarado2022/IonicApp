@@ -5,12 +5,12 @@ import {DatePipe} from '@angular/common';
 @Pipe({
   name: 'customDatetime'
 })
-export class CustomDatetimePipe extends DatePipe implements PipeTransform {
-
+export class CustomDatetimePipe implements PipeTransform {
+  datePipe = new DatePipe("es");
   transform(date: string) {
     if (moment(date).isValid()) {
-      const parsed = moment(this.cleanDate(date));
-      return super.transform(parsed, 'dd/MM/yyyy HH:mm:ss');
+      const parsed: Date = moment(this.cleanDate(date)).toDate();
+      return this.datePipe.transform(parsed,'dd/MM/yyyy HH:mm:ss');
     }
 
     console.log('bad time', date);
@@ -21,7 +21,7 @@ export class CustomDatetimePipe extends DatePipe implements PipeTransform {
    * cleanDate
    * @param date
    */
-  private cleanDate(date: string) {
+  private cleanDate(date: string) : moment.MomentInput {
     if (date.includes('T')) {
       return date.split('T')[0];
     }

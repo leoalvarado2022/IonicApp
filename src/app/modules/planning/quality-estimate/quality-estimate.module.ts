@@ -13,20 +13,17 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [
-    QualityEstimatePage,
-    QualityEstimateFormComponent
-  ],
-  entryComponents: [
-    QualityEstimateFormComponent
-  ],
-  providers: [
-    CaliberService
-  ]
+    imports: [
+        SharedModule,
+        RouterModule.forChild(routes)
+    ],
+    declarations: [
+        QualityEstimatePage,
+        QualityEstimateFormComponent
+    ],
+    providers: [
+        CaliberService
+    ]
 })
 export class QualityEstimatePageModule {
 

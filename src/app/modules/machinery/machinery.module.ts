@@ -12,17 +12,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    MachineryListPage,
-    MachineryFormComponent
-  ],
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
-  entryComponents: [
-    MachineryFormComponent
-  ]
+    declarations: [
+        MachineryListPage,
+        MachineryFormComponent
+    ],
+    imports: [
+        SharedModule,
+        RouterModule.forChild(routes)
+    ]
 })
 export class MachineryModule {
 

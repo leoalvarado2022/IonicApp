@@ -7,20 +7,17 @@ import { ConsumptionFormComponent } from './consumption-form/consumption-form.co
 import { ConsumptionService } from './services/consumption.service';
 
 @NgModule({
-  imports: [
-    SharedModule,
-    ConsumptionsPageRoutingModule
-  ],
-  declarations: [
-    ConsumptionsPage,
-    ConsumptionFormComponent
-  ],
-  entryComponents: [
-    ConsumptionFormComponent
-  ],
-  providers: [
-    ConsumptionService
-  ]
+    imports: [
+        SharedModule,
+        ConsumptionsPageRoutingModule
+    ],
+    declarations: [
+        ConsumptionsPage,
+        ConsumptionFormComponent
+    ],
+    providers: [
+        ConsumptionService
+    ]
 })
 export class ConsumptionsPageModule {
 

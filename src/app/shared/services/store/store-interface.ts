@@ -84,6 +84,9 @@ export interface Sync {
   typeDiscount?: Array<any>;
   currencies?: Array<any>;
   transportActions?: Array<any>;
+  configTarja?: any;
+  listMeasuring?: Array<any>;
+  measuring?: Array<any>;
 }
 
 export interface ContractInterface {

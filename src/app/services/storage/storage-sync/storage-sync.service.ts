@@ -47,7 +47,10 @@ export class StorageSyncService {
       printConfig,
       foliosConfig,
       typePayment,
-      typeDiscount
+      typeDiscount,
+      configTarja,
+      listMeasuring,
+      measuring
     } = data;
 
     return Promise.all([
@@ -77,7 +80,10 @@ export class StorageSyncService {
       this.setPrintConfig(printConfig),
       this.setFoliosConfig(foliosConfig),
       this.setTypePayment(typePayment),
-      this.setTypeDiscount(typeDiscount)
+      this.setTypeDiscount(typeDiscount),
+      this.setConfigTarja(configTarja),
+      this.setListMeasuring(listMeasuring),
+      this.setMeasuring(measuring)
     ]);
   };
 
@@ -738,6 +744,64 @@ export class StorageSyncService {
       return tallyTemp ? tallyTemp : [];
     });
   };
+
+  public setConfigTarja = (configTarja: any): Promise<any> => {
+    return this.storage.set(StorageKeys.ConfigTarjas, configTarja);
+  };
+
+  public getConfigTarja = (): Promise<any> => {
+    return this.storage.get(StorageKeys.ConfigTarjas).then((ConfigTarja: any) => {
+      return ConfigTarja ? ConfigTarja : [];
+    });
+  }
+
+  public setListMeasuring = (listMeasuring: Array<any>): Promise<any> => {
+    return this.storage.set(StorageKeys.ListMeasuring, listMeasuring);
+  };
+
+  public getListMeasuring = (): Promise<any> => {
+    return this.storage.get(StorageKeys.ListMeasuring).then((listMeasuring: Array<any>) => {
+      return listMeasuring ? listMeasuring : [];
+    });
+  }
+
+  public setMeasuring = (Measuring: Array<any>): Promise<any> => {
+    return this.storage.set(StorageKeys.Measuring, Measuring);
+  };
+
+  public getMeasuring = (): Promise<any> => {
+    return this.storage.get(StorageKeys.Measuring).then((Measuring: Array<any>) => {
+      return Measuring ? Measuring : [];
+    });
+  }
+
+
+  /**
+   * getMeasuringToRecord
+   */
+   public getMeasuringToRecord = (): Promise<Array<any>> => {
+    return this.storage.get(StorageKeys.MeasuringsToRecord).then( (MeasuringToRecord: Array<any>) => {
+      return MeasuringToRecord ?  MeasuringToRecord : [];
+    });
+  }
+
+  /**
+   * addMeasuringToRecord
+   * - Add a single measuring to the measuringToRecord Array
+   */
+   public addMeasuringToRecord = (MeasuringToRecord: any): Promise<any> => {
+    return this.storage.get(StorageKeys.MeasuringsToRecord).then((MeasuringsToRecord: Array<any>) => {
+      if (MeasuringsToRecord) {
+        MeasuringsToRecord.push(MeasuringToRecord);
+        return this.storage.set(StorageKeys.MeasuringsToRecord, MeasuringsToRecord);
+      } else {
+        return this.storage.set(StorageKeys.MeasuringsToRecord, [MeasuringToRecord]);
+      }
+    });
+  }
+
+
+
 
   /**
    * addTalliesToSyncedTallies

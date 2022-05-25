@@ -21,7 +21,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/recovery/recovery.module').then(module => module.RecoveryPageModule)
   },
   {
-    path: 'auth/pin',
+    path: 'pin',
     loadChildren: () => import('./pages/pin/pin.module').then(module => module.PinPageModule)
   },
   {

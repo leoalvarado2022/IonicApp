@@ -2,6 +2,9 @@ export enum StorageKeys {
   Quadrilles = 'quadrilles',
   Workers = 'workers',
   ConfigDelivery = 'ConfigDelivery',
+  ConfigTarjas = 'configTarja',
+  ListMeasuring = "listMeasuring",
+  Measuring = "measuring",
   IntegrationDelivery = 'IntegrationDelivery',
   IntegrationImages = 'IntegrationImages',
   PrintConfig = 'PrintConfig',
@@ -37,6 +40,9 @@ export enum StorageKeys {
   // Tallies
   TalliesToRecord = 'talliesToRecord',
   TalliesWithErrors = 'talliesWithErrors',
+
+  //Measuring
+  MeasuringsToRecord = 'measuringsToRecord',
 
   // Workers
   WorkersTransfers = 'workersTransfers',

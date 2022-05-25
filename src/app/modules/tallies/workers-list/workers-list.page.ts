@@ -20,6 +20,7 @@ import { Worker } from '../../pre-contracts/worker.interface';
 export class WorkersListPage implements OnInit, OnDestroy {
 
   public quadrille: any;
+  public configTarja: any;
 
   // Worker
   private workers: Array<Worker> = [];
@@ -106,6 +107,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.tallySyncService.getTalliesToRecord(),
       this.storageSyncService.getAllQuadrilles(),
       this.storageSyncService.getTallyTemp(),
+      this.storageSyncService.getConfigTarja()
     ]).then( data => {
       // Workers
       this.workers = [...data[0]];
@@ -125,6 +127,8 @@ export class WorkersListPage implements OnInit, OnDestroy {
       this.bonds = [...data[5]];
 
       this.quadrille = data[7].find(item => item.id === +id);
+
+      this.configTarja = data[9][0].config_tarja;
 
       // END LOADING
       this.isLoading = false;
@@ -171,7 +175,7 @@ export class WorkersListPage implements OnInit, OnDestroy {
    * subtractDayToDate
    */
   public subtractDayToDate = (): void => {
-    if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < 7) {
+    if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < this.configTarja) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').format('YYYY-MM-DD');
       this.showDate = moment(this.currentDate).format(this.dateFormat);
       this.selectedWorkers = [];

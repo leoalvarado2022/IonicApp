@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{data?.centro_costo}} | {{data?.medicion}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngFor="let detalle of data.detalle" class="card-item item-bg">
+    <ion-item lines="none" class="header-item">
+      <!-- <ion-badge slot="start" color="primary">Código</ion-badge> -->
+      <ion-label>{{detalle.cost_center_code}}</ion-label>
+    </ion-item>
+    <ion-card-content>
+      <p><strong>Fecha</strong>: {{detalle.register_date}}</p>
+      <p><strong>Medición</strong>: {{detalle.measure}}</p>
+      <p><strong>Cantidad</strong>: {{detalle.quantity}}</p>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col size="12">
+      <ion-button class="btn-app" color="primary" expand="block" (click)="openCreateModal()">
+        Agregar Medición
+      </ion-button>
+    </ion-col>
+    </ion-row>
+</ion-footer>

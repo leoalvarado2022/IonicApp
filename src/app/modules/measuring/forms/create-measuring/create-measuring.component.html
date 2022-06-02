@@ -55,6 +55,7 @@
           <ion-input type="number" formControlName="quantity" (keypress)="decimalRegex($event)"></ion-input>
         </ion-item>
         <ion-text color="danger" class="error--message" *ngIf="measureForm.dirty && measureForm.get('quantity').hasError('required')">Ingrese la cantidad. utilice punto en vez de coma.</ion-text>
+        <ion-text color="danger" class="error--message" *ngIf="measureForm.dirty && measureForm.get('quantity').hasError('min')">El valor minimo es 0.1.</ion-text>
         <ion-text color="danger" class="error--message" *ngIf="measureForm.get('quantity').errors?.quantityInvalid">Máximo {{decimals}} decimal(es)</ion-text>
       </ion-col>
       
@@ -83,7 +84,7 @@
 
     <ion-col>
       <ion-button class="btn-app" color="primary" expand="block" [disabled]="measureForm.invalid" (click)="submitForm()">
-        Guardar
+        {{ edit ? 'Modificar' : 'Guardar' }}
       </ion-button>
     </ion-col>
   </ion-row>

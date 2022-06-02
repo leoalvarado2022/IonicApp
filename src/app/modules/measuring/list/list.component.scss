@@ -33,7 +33,7 @@ ion-card{
   padding: 0;
 }
 
-.jr {
+.qty {
   background: rgba(184, 184, 184, 0.5) !important;
   color: var(--ion-color-primary) !important;
   border-radius: 12px;
@@ -48,7 +48,7 @@ ion-card{
   --background: rgba(184, 184, 184, 0.5) !important;
 }
 
-.trabajardor {
+.medicion {
   border: 1px solid var(--ion-color-primary);
   color: var(--ion-color-primary);
   border-radius: 10px;
@@ -64,13 +64,13 @@ ion-card{
   margin-top: 5%;
 }
 
-.worker-title {
+.measure-title {
   span {
     color: var(--ion-color-primary);
     font-size: 85%;
 
     &.title {
-      font-size: 0.75rem;
+      font-size: 1.25rem;
       display: block;
     }
   }

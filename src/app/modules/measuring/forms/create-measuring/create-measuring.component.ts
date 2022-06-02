@@ -5,6 +5,9 @@ import { CostCenterList } from '@primetec/primetec-angular';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { StoreService } from '../../../../shared/services/store/store.service';
 import { GeolocationService} from '../../../../shared/services/geolocation/geolocation.service';
+import { MeasuringSyncService } from '../../measuring-sync.service';
+
+
 import * as moment from 'moment';
 
 @Component({
@@ -15,6 +18,8 @@ import * as moment from 'moment';
 export class CreateMeasuringComponent implements OnInit {
 
   @Input() data: any;
+  @Input() edit: any;
+  @Input() fecha_registro: string;
 
   private costCenters: Array<CostCenterList> = [];
   private Measuring: Array<any>;
@@ -23,6 +28,7 @@ export class CreateMeasuringComponent implements OnInit {
   public filteredCostCenters: Array<any> = [];
   public filteredMeasuring: Array<any> = [];
   public costCenterName: string;
+  public costCenterCode: string;
   public measuringName: string;
   public decimals: number = 0;
   public readonlyCenter: boolean = false;
@@ -34,6 +40,7 @@ export class CreateMeasuringComponent implements OnInit {
     private modalController: ModalController,
     private formBuilder: FormBuilder,
     private storageSyncService: StorageSyncService,
+    private measuringSyncService: MeasuringSyncService,
     private storeService: StoreService,
     private geolocationService: GeolocationService
   ) { 
@@ -51,20 +58,27 @@ export class CreateMeasuringComponent implements OnInit {
     this.loadData().then(data => {
       this.costCenters = [...data[0]];
       this.Measuring = [...data[1]];
-
+      
       if(this.data) {
-        this.measureForm.get("costCenterId").patchValue(this.data.id_centro_costo);
-        this.measureForm.get("pairMeasureId").patchValue(this.data.id_par_medicion);
+
+        if(!!this.edit) {
+          this.measureForm.get("id").patchValue(this.data.id);
+          this.measureForm.get("quantity").patchValue(this.data.quantity);
+        }
+
+        this.measureForm.get("costCenterId").patchValue(this.data.cost_center_id);
+        this.measureForm.get("pairMeasureId").patchValue(this.data.pair_measure_id);
 
         const costCenter = this.costCenters.find( (item) => {
-          return (item.id === this.data.id_centro_costo)
+          return (item.id === this.data.cost_center_id)
         });
 
         const _measuring = this.Measuring.find( (item) => {
-          return (item.id === this.data.id_par_medicion)
-        } )
-
+          return (item.id === this.data.pair_measure_id)
+        })
+        
         this.costCenterName = costCenter.name;
+        this.costCenterCode = costCenter.code;
         this.measuringName = _measuring.name;
 
         this.measureForm.get("qtyDecimals").patchValue(_measuring.decimals);
@@ -78,7 +92,7 @@ export class CreateMeasuringComponent implements OnInit {
         this.addQtyValidators();
 
       } 
-    });;
+    });
 
     this.measureForm = this.formBuilder.group({
       id: [0, Validators.required],
@@ -117,29 +131,76 @@ export class CreateMeasuringComponent implements OnInit {
     this.modalController.dismiss();
   }
 
-  submitForm() {
+  async submitForm() {
 
     const company = this.storeService.getActiveCompany();
+    const temporal_id = moment().unix() + 1;
 
-    console.log("company::> ",company);
-    console.log("company.user::> ",company.user);
-
-    const dataMeasuring = {
-      id: 0,
-      id_par_medicion: this.measureForm.get('pairMeasureId').value,
-      fecha_registro: moment().format("DD-MM-YYYY hh:mm"),
-      id_par_centros_costos: this.measureForm.get('costCenterId').value,
-      cantidad: this.measureForm.get('quantity').value,
-      latitud: this.latitude,
-      longitud: this.longitude,
-      user: company.user,
-      id_temporal: 0,
-    };
-    console.log("dataMeasuring::> ",dataMeasuring);
-
-    this.storageSyncService.addMeasuringToRecord(dataMeasuring);
+    if(!!this.edit){
+      await this.editMeasuringData(this.data.id,company,temporal_id);
+    } else {
+      const data = {
+        id: 0,
+        registry_date: this.swap_date(this.fecha_registro),
+        register_date: this.fecha_registro
+      };
+      const dataMeasuring = this.prepareMeasuringData(data,company,temporal_id);
+      await this.measuringSyncService.addMeasuringToRecord(dataMeasuring);
+    }
 
     this.closeModal();
+  }
+
+  async editMeasuringData(id,company,temporal_id) {
+    let dataToedit;
+    let tmp = await this.searhInSync(temporal_id);
+    console.log("tmp::> ",tmp);
+    if(tmp.length > 0) {
+      dataToedit = tmp;
+    }else {
+      dataToedit = this.createNewMeasuring(id,company,temporal_id);
+      await this.measuringSyncService.addMeasuringToRecord(dataToedit);
+    }
+  }
+
+  async searhInSync(temporal_id) {
+    const localMeasuring = await this.measuringSyncService.getMeasuringToRecord();
+    return localMeasuring.filter( item => item.temporal_id == temporal_id);
+  }
+
+  swap_date(date) {
+    const arrDate = date.split(" ");
+    return arrDate[0].split("/").reverse().join("-")+" "+arrDate[1];
+  }
+
+  createNewMeasuring(id,company,temporal_id) {
+    const _date = this.swap_date(this.data.register_date);
+
+    const data = {
+      id: id,
+      registry_date: _date,
+      register_date: this.data.register_date
+    };
+    return this.prepareMeasuringData(data,company,temporal_id);
+  }
+
+  prepareMeasuringData(data,company: any, temporal_id) {
+    return {
+      id: data.id,
+      measurement_id: this.measureForm.get('pairMeasureId').value,
+      pair_measure_id: this.measureForm.get('pairMeasureId').value,
+      registry_date: data.registry_date, 
+      register_date: data.register_date,
+      cost_center_id: this.measureForm.get('costCenterId').value,
+      quantity: this.measureForm.get('quantity').value,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      entity_creator_id: company.user,
+      measure: this.measuringName,
+      cost_center_code: this.costCenterCode,
+      cost_center_name: this.costCenterName,
+      temporal_id: temporal_id,
+    }
   }
 
 
@@ -161,6 +222,7 @@ export class CreateMeasuringComponent implements OnInit {
   public selectCostCenter = (costCenter: any): void => {
     this.measureForm.get('costCenterId').patchValue(costCenter.id);
     this.costCenterName = costCenter.name;
+    this.costCenterCode = costCenter.code;
     this.filteredCostCenters = [];
   }
 
@@ -168,6 +230,7 @@ export class CreateMeasuringComponent implements OnInit {
     this.measureForm.get('costCenterId').patchValue('');
     this.filteredCostCenters = [];
     this.costCenterName = null;
+    this.costCenterCode = null;
   }
 
   searchMeasuring(search: string) {
@@ -194,10 +257,12 @@ export class CreateMeasuringComponent implements OnInit {
   }
 
   addQtyValidators() {
-    console.log("this.decimals::> ",this.decimals);
-    this.measureForm.get("quantity").patchValue("0.1");
+    if(!this.edit) {
+      this.measureForm.get("quantity").patchValue("0.1")
+    }
     this.measureForm.get("quantity").setValidators([
       Validators.required,
+      Validators.min(0.1),
       this.validateDecimal()
     ]);
     this.measureForm.get("quantity").updateValueAndValidity();

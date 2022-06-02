@@ -36,6 +36,7 @@ export enum StorageKeys {
   Products = 'products',
   Weather = 'weather',
   ItemImageStorage = 'itemImageStorage',
+  AgreementsSync = 'agreements',
 
   // Tallies
   TalliesToRecord = 'talliesToRecord',
@@ -43,6 +44,7 @@ export enum StorageKeys {
 
   //Measuring
   MeasuringsToRecord = 'measuringsToRecord',
+  MeasuringsWithErrors = 'measuringsWithErrors',
 
   // Workers
   WorkersTransfers = 'workersTransfers',

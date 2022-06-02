@@ -12,6 +12,8 @@ import {Consumption} from './../../../shared/services/store/store-interface';
 })
 export class StorageSyncService {
 
+  private measuringTempId = 1;
+
   constructor(private storage: Storage) {
 
   }
@@ -50,7 +52,8 @@ export class StorageSyncService {
       typeDiscount,
       configTarja,
       listMeasuring,
-      measuring
+      measuring,
+      agreements
     } = data;
 
     return Promise.all([
@@ -83,7 +86,8 @@ export class StorageSyncService {
       this.setTypeDiscount(typeDiscount),
       this.setConfigTarja(configTarja),
       this.setListMeasuring(listMeasuring),
-      this.setMeasuring(measuring)
+      this.setMeasuring(measuring),
+      this.setAgreements(agreements)
     ]);
   };
 
@@ -775,36 +779,18 @@ export class StorageSyncService {
     });
   }
 
+  public setAgreements = (Agreements: Array<any>): Promise<any> => {
+    return this.storage.set(StorageKeys.AgreementsSync, Agreements);
+  };
 
-  /**
-   * getMeasuringToRecord
-   */
-   public getMeasuringToRecord = (): Promise<Array<any>> => {
-    return this.storage.get(StorageKeys.MeasuringsToRecord).then( (MeasuringToRecord: Array<any>) => {
-      return MeasuringToRecord ?  MeasuringToRecord : [];
+  public getAgreements = (): Promise<any> => {
+    return this.storage.get(StorageKeys.AgreementsSync).then((AgreementsSync: Array<any>) => {
+      return AgreementsSync ? AgreementsSync : [];
     });
   }
 
   /**
-   * addMeasuringToRecord
-   * - Add a single measuring to the measuringToRecord Array
-   */
-   public addMeasuringToRecord = (MeasuringToRecord: any): Promise<any> => {
-    return this.storage.get(StorageKeys.MeasuringsToRecord).then((MeasuringsToRecord: Array<any>) => {
-      if (MeasuringsToRecord) {
-        MeasuringsToRecord.push(MeasuringToRecord);
-        return this.storage.set(StorageKeys.MeasuringsToRecord, MeasuringsToRecord);
-      } else {
-        return this.storage.set(StorageKeys.MeasuringsToRecord, [MeasuringToRecord]);
-      }
-    });
-  }
-
-
-
-
-  /**
-   * addTalliesToSyncedTallies
+   * addDevicesToSyncedDevices
    * @param recorded
    */
   public addDevicesToSyncedDevices = (recorded: Array<number>) => {

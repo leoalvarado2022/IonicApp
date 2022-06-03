@@ -12,6 +12,8 @@ import {Consumption} from './../../../shared/services/store/store-interface';
 })
 export class StorageSyncService {
 
+  private measuringTempId = 1;
+
   constructor(private storage: Storage) {
 
   }
@@ -47,7 +49,11 @@ export class StorageSyncService {
       printConfig,
       foliosConfig,
       typePayment,
-      typeDiscount
+      typeDiscount,
+      configTarja,
+      listMeasuring,
+      measuring,
+      agreements
     } = data;
 
     return Promise.all([
@@ -77,7 +83,11 @@ export class StorageSyncService {
       this.setPrintConfig(printConfig),
       this.setFoliosConfig(foliosConfig),
       this.setTypePayment(typePayment),
-      this.setTypeDiscount(typeDiscount)
+      this.setTypeDiscount(typeDiscount),
+      this.setConfigTarja(configTarja),
+      this.setListMeasuring(listMeasuring),
+      this.setMeasuring(measuring),
+      this.setAgreements(agreements)
     ]);
   };
 
@@ -739,8 +749,48 @@ export class StorageSyncService {
     });
   };
 
+  public setConfigTarja = (configTarja: any): Promise<any> => {
+    return this.storage.set(StorageKeys.ConfigTarjas, configTarja);
+  };
+
+  public getConfigTarja = (): Promise<any> => {
+    return this.storage.get(StorageKeys.ConfigTarjas).then((ConfigTarja: any) => {
+      return ConfigTarja ? ConfigTarja : [];
+    });
+  }
+
+  public setListMeasuring = (listMeasuring: Array<any>): Promise<any> => {
+    return this.storage.set(StorageKeys.ListMeasuring, listMeasuring);
+  };
+
+  public getListMeasuring = (): Promise<any> => {
+    return this.storage.get(StorageKeys.ListMeasuring).then((listMeasuring: Array<any>) => {
+      return listMeasuring ? listMeasuring : [];
+    });
+  }
+
+  public setMeasuring = (Measuring: Array<any>): Promise<any> => {
+    return this.storage.set(StorageKeys.Measuring, Measuring);
+  };
+
+  public getMeasuring = (): Promise<any> => {
+    return this.storage.get(StorageKeys.Measuring).then((Measuring: Array<any>) => {
+      return Measuring ? Measuring : [];
+    });
+  }
+
+  public setAgreements = (Agreements: Array<any>): Promise<any> => {
+    return this.storage.set(StorageKeys.AgreementsSync, Agreements);
+  };
+
+  public getAgreements = (): Promise<any> => {
+    return this.storage.get(StorageKeys.AgreementsSync).then((AgreementsSync: Array<any>) => {
+      return AgreementsSync ? AgreementsSync : [];
+    });
+  }
+
   /**
-   * addTalliesToSyncedTallies
+   * addDevicesToSyncedDevices
    * @param recorded
    */
   public addDevicesToSyncedDevices = (recorded: Array<number>) => {

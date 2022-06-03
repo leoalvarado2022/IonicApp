@@ -1,5 +1,5 @@
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import {QualityEstimateFormComponent} from './quality-estimate-form.component';
 
@@ -7,7 +7,7 @@ describe('QualityEstimateFormComponent', () => {
   let component: QualityEstimateFormComponent;
   let fixture: ComponentFixture<QualityEstimateFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [QualityEstimateFormComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

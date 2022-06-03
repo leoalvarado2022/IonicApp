@@ -2,6 +2,9 @@ export enum StorageKeys {
   Quadrilles = 'quadrilles',
   Workers = 'workers',
   ConfigDelivery = 'ConfigDelivery',
+  ConfigTarjas = 'configTarja',
+  ListMeasuring = "listMeasuring",
+  Measuring = "measuring",
   IntegrationDelivery = 'IntegrationDelivery',
   IntegrationImages = 'IntegrationImages',
   PrintConfig = 'PrintConfig',
@@ -33,10 +36,15 @@ export enum StorageKeys {
   Products = 'products',
   Weather = 'weather',
   ItemImageStorage = 'itemImageStorage',
+  AgreementsSync = 'agreements',
 
   // Tallies
   TalliesToRecord = 'talliesToRecord',
   TalliesWithErrors = 'talliesWithErrors',
+
+  //Measuring
+  MeasuringsToRecord = 'measuringsToRecord',
+  MeasuringsWithErrors = 'measuringsWithErrors',
 
   // Workers
   WorkersTransfers = 'workersTransfers',

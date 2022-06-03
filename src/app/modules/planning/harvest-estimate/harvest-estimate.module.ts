@@ -14,19 +14,16 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes),
-    NgxMaskModule,
-    Ionic4DatepickerModule,
-  ],
-  declarations: [
-    HarvestEstimatePage,
-    HarvestEstimateFormComponent
-  ],
-  entryComponents: [
-    HarvestEstimateFormComponent
-  ]
+    imports: [
+        SharedModule,
+        RouterModule.forChild(routes),
+        NgxMaskModule,
+        Ionic4DatepickerModule,
+    ],
+    declarations: [
+        HarvestEstimatePage,
+        HarvestEstimateFormComponent
+    ]
 })
 export class HarvestEstimatePageModule {
 

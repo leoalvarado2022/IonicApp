@@ -12,17 +12,14 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RouterModule.forChild(routes)
-  ],
-  declarations: [
-    NotesPage,
-    NotesFormComponent
-  ],
-  entryComponents: [
-    NotesFormComponent
-  ]
+    imports: [
+        SharedModule,
+        RouterModule.forChild(routes)
+    ],
+    declarations: [
+        NotesPage,
+        NotesFormComponent
+    ]
 })
 export class NotesPageModule {
 

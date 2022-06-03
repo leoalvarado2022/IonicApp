@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { TallyFormMultipleComponent } from './tally-form-multiple.component';
@@ -7,7 +7,7 @@ describe('TallyFormMultipleComponent', () => {
   let component: TallyFormMultipleComponent;
   let fixture: ComponentFixture<TallyFormMultipleComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ TallyFormMultipleComponent ],
       imports: [IonicModule.forRoot()]

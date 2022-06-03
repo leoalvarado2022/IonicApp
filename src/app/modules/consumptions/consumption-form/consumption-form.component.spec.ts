@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { ConsumptionFormComponent } from './consumption-form.component';
@@ -7,7 +7,7 @@ describe('ConsumptionFormComponent', () => {
   let component: ConsumptionFormComponent;
   let fixture: ComponentFixture<ConsumptionFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ConsumptionFormComponent ],
       imports: [IonicModule.forRoot()]

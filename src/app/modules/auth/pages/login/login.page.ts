@@ -108,7 +108,7 @@ export class LoginPage implements OnInit, OnDestroy {
     }
 
     const params = { user, login: this.getLoginParams() };
-    this.login(params).then(login => {
+    this.login(params).then(login => { 
       if (login && login.code === 1) {
         this.addPin(login);
       } else {
@@ -134,7 +134,7 @@ export class LoginPage implements OnInit, OnDestroy {
     this.toastService.warningToast(login.message);
     this.loginForm.reset();
     this.storeService.setToken(login.token);
-    this.router.navigate(['auth/pin']);
+    this.router.navigate(['/auth/pin']);
   }
 
   /**
@@ -179,13 +179,13 @@ export class LoginPage implements OnInit, OnDestroy {
 
     return new Promise((resolve) => {
       this.authService.login(data).subscribe((success: any) => {
-
+        
         this.loaderService.stopLoader();
         resolve(success);
       }, error => {
         this.loaderService.stopLoader();
         const name = error.error.name;
-
+        
         if (name === 'ConnectionsNotFound') {
           const token = error.error.data.token;
           resolve({ code: 1, token, user: data, message: error.error.message });

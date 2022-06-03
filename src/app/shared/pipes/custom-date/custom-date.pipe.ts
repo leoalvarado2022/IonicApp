@@ -5,12 +5,12 @@ import * as moment from 'moment';
 @Pipe({
   name: 'customDate'
 })
-export class CustomDatePipe extends DatePipe implements PipeTransform {
-
+export class CustomDatePipe implements PipeTransform {
+  datePipe = new DatePipe("es");
   transform(date: string) {
     if (moment(date).isValid()) {
-      const parsed = moment(this.cleanDate(date));
-      return super.transform(parsed, 'dd/MM/yyyy');
+      const parsed : Date = moment(this.cleanDate(date)).toDate();
+      return this.datePipe.transform(parsed, 'dd/MM/yyyy');
     }
 
     console.log('bad date', date);
@@ -21,7 +21,7 @@ export class CustomDatePipe extends DatePipe implements PipeTransform {
    * cleanDate
    * @param date
    */
-  private cleanDate(date: string) {
+  private cleanDate(date: string) : moment.MomentInput {
     if (date.includes('T')) {
       return date.split('T')[0];
     }

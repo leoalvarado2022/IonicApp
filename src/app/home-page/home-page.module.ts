@@ -152,6 +152,10 @@ const routes: Routes = [
         path: 'control_caja',
         loadChildren: () => import('../modules/orders/cash-control/cash-control.module').then(m => m.CashControlPageModule)
       },
+      {
+        path: 'conteos',
+        loadChildren: () => import('../modules/measuring/measuring.module').then(m => m.MeasuringModule)
+      },
       {path: '**', redirectTo: ''},
     ],
   },

@@ -3,8 +3,10 @@ import { BehaviorSubject, interval } from 'rxjs';
 import { StoreService } from 'src/app/shared/services/store/store.service';
 import { SyncService } from 'src/app/shared/services/sync/sync.service';
 import { StorageSyncService } from '../storage-sync/storage-sync.service';
+import { MeasuringSyncService } from 'src/app/modules/measuring/measuring-sync.service';
 import { TallySyncService } from '../tally-sync/tally-sync.service';
 import { TallyService } from 'src/app/modules/tallies/services/tally/tally.service';
+
 import { NfcService } from 'src/app/shared/services/nfc/nfc.service';
 import { Tally } from 'src/app/modules/tallies/tally.interface';
 import { NetworkService } from 'src/app/shared/services/network/network.service';
@@ -19,6 +21,7 @@ import { throttle } from 'rxjs/operators';
 import { OrderSyncService } from '../order-sync/order-sync.service';
 import { ApplicationRegistryService } from '../../application-registry/application-registry.service';
 import * as moment from 'moment';
+import { MeasuringService } from 'src/app/modules/measuring/measuring.service';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +49,9 @@ export class StepperService {
     private syncService: SyncService,
     private storageSyncService: StorageSyncService,
     private tallySyncService: TallySyncService,
+    private measuringSyncService: MeasuringSyncService,
     private tallyService: TallyService,
+    private measuringService: MeasuringService,
     private nfcService: NfcService,
     private dealService: DealsService,
     private networkService: NetworkService,
@@ -69,6 +74,13 @@ export class StepperService {
       let data = null;
       this.syncError = null;
       this.syncStep.next('starting');
+
+      const measuringData = await this.measuringSyncService.getMeasuringToRecord();
+      if (measuringData.length && this.syncError === null) {
+        this.stepsArray.push({ index: this.stepsArray.length, name: 'Grabar Mediciones' });
+        this.stepsArraySubject.next(this.stepsArray);
+        await this.onlySyncMeasuring(measuringData);
+      }
 
       // If tallies sync
       const talliesBuilded = await this.buildTalliesArray();
@@ -192,6 +204,17 @@ export class StepperService {
     return this.stepsArraySubject.asObservable();
   }
 
+  public onlySyncMeasuring = async (measuringData: Array<any>) => {
+    const log = await this.syncMeasuring(measuringData);
+
+    if (log instanceof HttpErrorResponse) {
+      this.httpService.errorHandler(log);
+      this.syncError = true;
+    }else {
+      this.measuringSyncService.removeMeasuringToRecord();
+    }
+  }
+
   /**
    * onlySyncTallies
    */
@@ -297,6 +320,16 @@ export class StepperService {
     //
     //   return [];
     // });
+  }
+
+  private syncMeasuring = (Measuring: Array<any>): Promise<any> => {
+    return new Promise((resolve) => {
+      this.measuringService.recordMeasuring(Measuring).subscribe((success: any) => {
+        resolve(success.log);
+      }, error => {
+        resolve(error);
+      });
+    });
   }
 
   /**

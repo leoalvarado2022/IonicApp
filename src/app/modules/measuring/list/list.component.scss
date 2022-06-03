@@ -1,0 +1,77 @@
+ion-card{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: none;
+}
+
+
+.card-item:last-child {
+  margin-bottom: 10px;
+}
+
+.workerSelected {
+  --background: var(--ion-color-light-shade);
+  //--color: white;
+}
+
+.external {
+  --background: var(--ion-color-success) !important;
+  --color: var(--ion-color-light) !important;
+}
+
+.contractor {
+  --background: var(--ion-color-secondary) !important;
+  --color: var(--ion-color-light) !important;
+}
+
+.margin-extra {
+  margin-bottom: 5px;
+}
+
+.title-card {
+  margin: 5px;
+  padding: 0;
+}
+
+.qty {
+  background: rgba(184, 184, 184, 0.5) !important;
+  color: var(--ion-color-primary) !important;
+  border-radius: 12px;
+  display: block;
+  height: unset;
+  text-align: center;
+  font-size: 90%;
+  padding: 5px;
+}
+
+.gris {
+  --background: rgba(184, 184, 184, 0.5) !important;
+}
+
+.medicion {
+  border: 1px solid var(--ion-color-primary);
+  color: var(--ion-color-primary);
+  border-radius: 10px;
+}
+
+.contratista {
+  background: var(--ion-color-primary);
+  color: #ffffff;
+  border-radius: 10px;
+}
+
+.vertical-center {
+  margin-top: 5%;
+}
+
+.measure-title {
+  span {
+    color: var(--ion-color-primary);
+    font-size: 85%;
+
+    &.title {
+      font-size: 1.25rem;
+      display: block;
+    }
+  }
+}

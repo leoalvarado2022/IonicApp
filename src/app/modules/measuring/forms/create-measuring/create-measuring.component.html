@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()" color="secondary">
+        <ion-icon name="arrow-back" slot="icon-only" style="color:white;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Crear Medición</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <form [formGroup]="measureForm">
+    <ion-row>
+      <ion-col>
+        <!-- COST CENTER -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-label class="label-fx360" position="stacked">Centro de Costo</ion-label>
+            <ion-item class="input-fx360-down max-h-unset">
+              <ion-searchbar [disabled]="readonlyCenter" [value]="costCenterName" (keyup)="searchCostCenter($event.target.value)" (ionClear)="cleanCostCenterSearch()" placeholder="Buscar"></ion-searchbar>
+            </ion-item>
+            <ion-text color="danger" class="error--message" *ngIf="measureForm.dirty && measureForm.get('costCenterId').hasError('required')">Seleccione un Centro de Costo</ion-text>
+            <ion-list class="searchbar-results-list" *ngIf="filteredCostCenters.length > 0">
+              <ion-item *ngFor="let costCenter of filteredCostCenters" (click)="selectCostCenter(costCenter)">
+                {{ costCenter.name  }}
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+
+        <!-- Medición -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-label class="label-fx360" position="stacked">Medición</ion-label>
+            <ion-item class="input-fx360-down max-h-unset">
+              <ion-searchbar [disabled]="readonlyMeasuring" [value]="measuringName" (keyup)="searchMeasuring($event.target.value)" (ionClear)="cleanMeasureSearch()" placeholder="Buscar"></ion-searchbar>
+            </ion-item>
+            <ion-text color="danger" class="error--message" *ngIf="measureForm.dirty && measureForm.get('pairMeasureId').hasError('required')">Seleccione una Medición</ion-text>
+            <ion-list class="searchbar-results-list" *ngIf="filteredMeasuring.length > 0">
+              <ion-item *ngFor="let measuring of filteredMeasuring" (click)="selectMeasuring(measuring)">
+                {{ measuring.name  }}
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="6">
+        <ion-label class="label-fx360">Cantidad</ion-label>
+        <ion-item class="input-fx360-down max-h-unset">
+          <ion-input type="number" formControlName="quantity" (keypress)="decimalRegex($event)"></ion-input>
+        </ion-item>
+        <ion-text color="danger" class="error--message" *ngIf="measureForm.dirty && measureForm.get('quantity').hasError('required')">Ingrese la cantidad. utilice punto en vez de coma.</ion-text>
+        <ion-text color="danger" class="error--message" *ngIf="measureForm.dirty && measureForm.get('quantity').hasError('min')">El valor minimo es 0.1.</ion-text>
+        <ion-text color="danger" class="error--message" *ngIf="measureForm.get('quantity').errors?.quantityInvalid">Máximo {{decimals}} decimal(es)</ion-text>
+      </ion-col>
+      
+      <ion-col size="6">
+        <ng-container>
+          <ion-label class="label-fx360">Unidad</ion-label>
+          <ion-item class="input-fx360-down max-h-unset">
+            <ion-input formControlName="unitMeasuring" readonly="true"></ion-input>
+          </ion-item>
+        </ng-container>
+      </ion-col>
+
+      
+      
+    </ion-row>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-row>
+    <ion-col>
+      <ion-button class="btn-app" color="danger" expand="block" (click)="closeModal()">
+        Cancelar
+      </ion-button>
+    </ion-col>
+
+    <ion-col>
+      <ion-button class="btn-app" color="primary" expand="block" [disabled]="measureForm.invalid" (click)="submitForm()">
+        {{ edit ? 'Modificar' : 'Guardar' }}
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-footer>

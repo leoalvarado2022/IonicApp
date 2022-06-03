@@ -7,12 +7,11 @@ import { SharedModule } from '../../../shared/shared.module';
 import { AssociateWorkPage } from './associate-work/associate-work.page';
 
 @NgModule({
-  imports: [
-    SharedModule,
-    NfcPageRoutingModule
-  ],
-  declarations: [NfcPage, AssociateWorkPage],
-  entryComponents: [AssociateWorkPage]
+    imports: [
+        SharedModule,
+        NfcPageRoutingModule
+    ],
+    declarations: [NfcPage, AssociateWorkPage]
 })
 export class NfcPageModule {
 

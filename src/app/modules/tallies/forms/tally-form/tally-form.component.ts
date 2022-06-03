@@ -260,6 +260,7 @@ export class TallyFormComponent implements OnInit {
 
     if (this.updateTaly) {
       const editTally = this.editSingleTally(this.worker, formData, this.updateTaly);
+      console.log("editTally::> ",editTally);
       this.tallySyncService.editTallyToRecord(editTally);
     } else {
       const newTally = this.newSingleTally(this.worker, formData);
@@ -451,6 +452,7 @@ export class TallyFormComponent implements OnInit {
 
       if (this.availableBonds.length > 0) {
         if (this.updateTaly) {
+          console.log("this.updateTaly.bondValidity::> ",this.updateTaly.bondValidity);
           this.tallyForm.get('bondValidity').patchValue(String(this.updateTaly?.bondValidity) === 'null' ? String(this.updateTaly?.bondValidity) : this.updateTaly.bondValidity);
         } else {
           this.tallyForm.get('bondValidity').patchValue(this.availableBonds[0].bondValidity);

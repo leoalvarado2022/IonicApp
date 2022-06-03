@@ -20,6 +20,7 @@
     "analyze": "source-map-explorer www/*",
     "release-android": "ionic cordova build android --prod --release",
     "sign-android": "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore fx-pos-key.keystore ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk fx_pos",
+    "apk-sign": "apksigner sign --ks fx-pos-key.keystore --v1-signing-enabled true --v2-signing-enabled true fx360.apk",
     "zipalign-android": "zipalign -v 4 ./platforms/android/app/build/outputs/bundle/release/app-release.aab fx360.apk"
   },
   "config": {

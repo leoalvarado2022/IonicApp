@@ -103,7 +103,7 @@
   <!-- Several workers selected -->
   <ion-row *ngIf="selectedWorkers.length > 1">
     <ion-col size="6">
-      <ion-button class="btn-app" color="success" expand="block" (click)="createMultipleTally()" [disabled]="!Permission.hasCreate()">
+      <ion-button class="btn-app" color="success" expand="block" (click)="createMultipleTally()" [disabled]="checkWorkerLimit() || !Permission.hasCreate()">
         Agregar Masivo
       </ion-button>
     </ion-col>

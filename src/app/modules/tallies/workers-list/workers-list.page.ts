@@ -456,16 +456,17 @@ export class WorkersListPage implements OnInit, OnDestroy {
   }
 
   public checkWorkerLimit = () => {
+    let ret = false;
     for (const worker of this.selectedWorkers) {
       const tallies = this.getNumberOfWorkerTallies(worker);
 
       const workTotal = tallies.reduce((total: number, tally: any) => total + (tally.workingDay || tally.jornada_trabajo), 0);
       if (workTotal === worker.dailyMax) {
-        return true;
+        ret = true;
       }
     }
 
-    return false;
+    return ret;
   }
 
 }

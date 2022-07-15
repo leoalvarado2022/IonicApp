@@ -87,6 +87,7 @@ export interface Sync {
   configTarja?: any;
   listMeasuring?: Array<any>;
   measuring?: Array<any>;
+  agreements?: Array<any>;
 }
 
 export interface ContractInterface {

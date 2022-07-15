@@ -1,11 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { Component, OnInit, Input,ViewChild } from '@angular/core';
+import { ModalController,IonInput } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert/alert.service';
 import { CreateMeasuringComponent } from '../create-measuring/create-measuring.component'
+import { StoreService } from '../../../../shared/services/store/store.service';
 import { MeasuringSyncService } from '../../measuring-sync.service';
 import { StorageSyncService } from 'src/app/services/storage/storage-sync/storage-sync.service';
 import { GeolocationService } from 'src/app/shared/services/geolocation/geolocation.service';
 import * as moment from 'moment';
+import { LoaderService } from 'src/app/shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-detail-form',
@@ -17,6 +19,7 @@ export class DetailFormComponent implements OnInit {
 
   @Input() data: any;
   @Input() fecha_registro: string;
+  @ViewChild('autofocus', { static: false }) quantity_input: IonInput;
 
   private latitude: any;
   private longitude: any;
@@ -24,41 +27,83 @@ export class DetailFormComponent implements OnInit {
   filteredData: Array<any> = [];
   searchData: Array<any> = [];
   measuringData: Array<any> = [];
+  newQty: number = 0;
   public showDate: any;
   public isLoading = false;
+
+  private Measuring: Array<any>;
+  public decimals: number = 0;
+
+  public decimalError: boolean = false;
+
   constructor(
     private modalController: ModalController,
     private alertService: AlertService,
     private measuringSyncService: MeasuringSyncService,
     private geolocationService: GeolocationService,
-    private storageSyncService: StorageSyncService
+    private storeService: StoreService,
+    private storageSyncService: StorageSyncService,
+    private loaderService: LoaderService
   ) { 
     this.geolocationService.getCurrentPosition().toPromise().then(res => {
       this.latitude = res.lat;
       this.longitude = res.lng;
     });
-    ;
+
+    this.storageSyncService.getMeasuring().then( _data => {
+      this.Measuring = _data;
+
+      const _measuring = this.Measuring.find( (item) => {
+        return (item.id === this.data.pair_measure_id)
+      });
+
+      this.decimals = Number.parseInt(_measuring.decimals);
+    })
   }
 
   ngOnInit() {
     this.showDate = this.data.register_date.split(" ")[0];
   }
 
-  loadData() {
+  validateDecimal() {
+    if(this.newQty > 0.0){
+      const _text = this.newQty.toString();
 
+      if (!!_text && !!_text.split(".")[1]) {
+        if(_text.split(".")[1].length > this.decimals) {
+          this.decimalError = true;
+          return false
+        }
+      }
+      this.decimalError = false;
+      return true;
+    }
+  }
+
+  decimalRegex(event: any) {
+    const reg = new RegExp("^\\d*(.\\d{0,"+this.decimals+"})?$");
+    let input = event.target.value + String.fromCharCode(event.charCode);
+
+    if (!reg.test(input)) {
+      event.preventDefault();
+    }
+  }
+
+  ionViewWillEnter() {
+    this.quantity_input.setFocus();
+  }
+
+  loadData() {
+    this.loaderService.startLoader();
     this.isLoading = true;
     Promise.all([
       this.storageSyncService.getListMeasuring(),
       this.measuringSyncService.getMeasuringToRecord()
-    ]).then( data => {
-
-      console.log("data[1]::> ",data[1]);
+    ]).then( data => {      
 
       const locales = data[1].filter(item => item.id == 0);
       this.listData = data[0].map(mL => ({...mL, ...data[1].find(mT => Math.abs(mL.id) === Math.abs(mT.id))}));
-      this.listData = this.listData.concat(locales);
-
-      console.log("this.listData::> ",this.listData);
+      this.listData = this.listData.concat(locales);      
 
       this.filterByDate(this.showDate);
 
@@ -68,9 +113,8 @@ export class DetailFormComponent implements OnInit {
 
       this.data = _tmpData[0];
 
-      console.log("this.data::> ",this.data);
-
       this.isLoading = false;
+      this.loaderService.stopLoader();
     });
   }
 
@@ -163,7 +207,8 @@ export class DetailFormComponent implements OnInit {
     dataToDelete[0].status = "delete";
 
     await this.measuringSyncService.addMeasuringToRecord(dataToDelete[0]);
-
+    this.newQty = 0;
+    this.quantity_input.setFocus();
     this.loadData();
   }
 
@@ -179,6 +224,61 @@ export class DetailFormComponent implements OnInit {
     return listMeasuring.filter( (item) => {
       return item.id == id
     });
+  }
+
+  async submitForm() {
+
+
+    if ( this.newQty <= 0) {
+      this.alertService.infoMessage("FX360","La cantidad debe ser mayor a 0");
+      return;
+    }
+
+    if(this.decimalError) {
+      this.alertService.infoMessage("FX360",`Error la cantidad no puede contener mas de ${this.decimals} decimal(es)`);
+      return;
+    }
+
+    const company = this.storeService.getActiveCompany();
+    const temporal_id = moment().unix() + 1;
+
+    const _date = this.fecha_registro.split(" ")[0];
+    const _hour = moment().format("hh:mm");
+    const data = {
+      id: 0,
+      registry_date: this.swap_date(_date)+" "+_hour,
+      register_date: _date+" "+_hour
+    };
+    const dataMeasuring = this.prepareMeasuringData(data,company,temporal_id);
+    await this.measuringSyncService.addMeasuringToRecord(dataMeasuring);
+
+    this.loadData();
+
+    this.newQty = 0;
+    this.quantity_input.setFocus();
+  }
+
+  swap_date(date) {
+    return date.split("/").reverse().join("-");
+  }
+
+  prepareMeasuringData(data,company: any, temporal_id) {
+    return {
+      id: data.id,
+      measurement_id: this.data.pair_measure_id,
+      pair_measure_id: this.data.pair_measure_id,
+      registry_date: data.registry_date, 
+      register_date: data.register_date,
+      cost_center_id: this.data.cost_center_id,
+      quantity: this.newQty,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      entity_creator_id: company.user,
+      measure: this.data.measure,
+      cost_center_code: this.data.cost_center_code,
+      cost_center_name: this.data.cost_center_name,
+      temporal_id: temporal_id,
+    }
   }
 
 }

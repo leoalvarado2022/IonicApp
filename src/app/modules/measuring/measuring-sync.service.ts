@@ -99,7 +99,7 @@ export class MeasuringSyncService {
           "cost_center_name":_grouped[g][_d][0]?.cost_center_name,
           "pair_measure_id":_grouped[g][_d][0]?.pair_measure_id,
           "register_date":_grouped[g][_d][0]?.register_date,
-          "detail": _grouped[g][_d].filter( item => item.id >= 0),
+          "detail": _grouped[g][_d].filter( item => (item.id == null || item.id >= 0)),
           "own_id": i
         };
         i++;

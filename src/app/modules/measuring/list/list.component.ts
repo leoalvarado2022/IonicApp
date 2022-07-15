@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Storage } from '@ionic/storage';
+import { StorageKeys } from 'src/app/services/storage/storage-keys';
 import { ModalController } from '@ionic/angular';
 import { DetailFormComponent } from '../forms/detail-form/detail-form.component'
 import { CreateMeasuringComponent } from '../forms/create-measuring/create-measuring.component'
@@ -30,11 +32,13 @@ export class ListComponent implements OnInit {
   filteredData: Array<any> = [];
   searchData: Array<any> = [];
   measuringData: Array<any> = [];
+  backModalData: any;
   constructor(
     private storageSyncService: StorageSyncService, 
     private stepperService: StepperService,
     private measuringSyncService: MeasuringSyncService,
     private modalController: ModalController,
+    private storage: Storage,
     public router: Router) 
   {
     this.currentDate = moment().format('YYYY-MM-DD');
@@ -64,6 +68,24 @@ export class ListComponent implements OnInit {
     this.searchData = searchData;
     this.measuringData = measuringData;
     this.filteredData = filteredData;
+
+    if(this.backModalData && this.backModalData.cost_center_id > 0) {  
+      const _measureData = this.measuringData.filter( item => {
+        return (item.cost_center_id == this.backModalData.cost_center_id && item.pair_measure_id == this.backModalData.pair_measure_id)
+      });
+      this.openModal(_measureData[0]);
+      this.backModalData = {};
+    }
+  }
+
+  async removeNulledData() {
+    const measuringsToRecord = await this.storage.get(StorageKeys.MeasuringsToRecord);
+      if (measuringsToRecord) {
+        const _toAdd = measuringsToRecord.filter(item => item.id != null);
+        console.log("🚀 ~ file: list.component.ts ~ line 85 ~ ListComponent ~ removeNulledData ~ _toAdd", _toAdd)
+        this.storage.remove(StorageKeys.MeasuringsToRecord);
+        this.storage.set(StorageKeys.MeasuringsToRecord,_toAdd);
+      }
   }
 
   loadData() {
@@ -75,7 +97,7 @@ export class ListComponent implements OnInit {
       this.measuringSyncService.getMeasuringToRecord()
     ]).then( data => {
 
-      const locales = data[1].filter(item => item.id == 0);
+      const locales = data[1].filter(item => item.id == 0 || item.id == null);
       this.listData = data[0].map(mL => ({...mL, ...data[1].find(mT => Math.abs(mT.id) === Math.abs(mL.id))}));
       this.listData = this.listData.concat(locales);
 
@@ -127,7 +149,9 @@ export class ListComponent implements OnInit {
       keyboardClose: false
     });
 
-    modal.onDidDismiss().then( (data) => {
+    modal.onDidDismiss().then( async () => {
+      console.log("ejecuta borrar la data nula solo cuando hace el onDidDismiss");
+      await this.removeNulledData();
       this.loadData();
     });
 
@@ -138,13 +162,15 @@ export class ListComponent implements OnInit {
     const modal = await this.modalController.create({
       component: CreateMeasuringComponent,
       componentProps: {
-        fecha_registro: this.showDate+" "+moment().format("hh:mm")
+        fecha_registro: this.showDate+" "+moment().format("hh:mm"),
+        fecha_actual: this.showDate
       },
       backdropDismiss: false,
       keyboardClose: false
     });
 
     modal.onDidDismiss().then( (data) => {
+      this.backModalData = data.data;
       this.loadData();
     });
 

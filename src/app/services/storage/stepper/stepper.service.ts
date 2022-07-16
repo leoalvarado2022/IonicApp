@@ -206,11 +206,13 @@ export class StepperService {
 
   public onlySyncMeasuring = async (measuringData: Array<any>) => {
     const log = await this.syncMeasuring(measuringData);
-
+    
     if (log instanceof HttpErrorResponse) {
+      console.log("entro por el log::> HttpErrorResponse");
       this.httpService.errorHandler(log);
       this.syncError = true;
     }else {
+      console.log("entro por aqui");
       this.measuringSyncService.removeMeasuringToRecord();
     }
   }
@@ -324,12 +326,21 @@ export class StepperService {
 
   private syncMeasuring = (Measuring: Array<any>): Promise<any> => {
     return new Promise((resolve) => {
-      this.measuringService.recordMeasuring(Measuring).subscribe((success: any) => {
-        resolve(success.log);
-      }, error => {
-        resolve(error);
-      });
+      Measuring = this.checkNullMeasuring(Measuring);
+      if(Measuring.length > 0) {
+        this.measuringService.recordMeasuring(Measuring).subscribe((success: any) => {
+          resolve(success.log);
+        }, error => {
+          resolve(error);
+        });
+      }else {
+        resolve(true);
+      }
     });
+  }
+
+  checkNullMeasuring(Measuring) {
+    return Measuring.filter(items => items.id != null);
   }
 
   /**

@@ -1,6 +1,6 @@
 {
   "name": "fx360",
-  "version": "1.1.61",
+  "version": "1.2.8",
   "author": "Primetec LTDA",
   "homepage": "http://primetec.cl/",
   "scripts": {
@@ -19,9 +19,9 @@
     "e2e": "ng e2e",
     "analyze": "source-map-explorer www/*",
     "release-android": "ionic cordova build android --prod --release",
-    "sign-android": "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore fx-pos-key.keystore ./platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk fx_pos",
-    "apk-sign": "apksigner sign --ks fx-pos-key.keystore --v1-signing-enabled true --v2-signing-enabled true fx360.apk",
-    "zipalign-android": "zipalign -v 4 ./platforms/android/app/build/outputs/bundle/release/app-release.aab fx360.apk"
+    "sign-android": "jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore fx-pos-key.keystore ./platforms/android/app/build/outputs/bundle/release/app-release.aab fx_pos",
+    "apk-sign": "apksigner sign --ks fx-pos-key.keystore --min-sdk-version 22 --v1-signing-enabled true --v2-signing-enabled true fx360.apk",
+    "zipalign-android": "zipalign -v 4 ./platforms/android/app/build/outputs/bundle/release/app-release.aab fx360.aab"
   },
   "config": {
     "ionic_generate_source_map": "true"
@@ -69,7 +69,7 @@
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-bluetooth-serial": "^0.4.7",
-    "cordova-plugin-file": "^6.0.2",
+    "cordova-plugin-file": "7.0.0",
     "cordova-plugin-file-opener2": "^2.2.1",
     "cordova-plugin-filepath": "^1.5.8",
     "cordova-plugin-geolocation": "^4.0.2",
@@ -142,7 +142,6 @@
       "cordova-plugin-geolocation": {
         "GPS_REQUIRED": "true"
       },
-      "cordova-plugin-file": {},
       "cordova-plugin-preview-any-file": {},
       "cordova-plugin-file-opener2": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
@@ -165,7 +164,10 @@
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-insomnia": {},
       "cz.blocshop.socketsforcordova": {},
-      "cordova-plugin-file-transfer": {}
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-file": {
+        "ANDROIDX_WEBKIT_VERSION": "1.4.0"
+      }
     },
     "platforms": [
       "ios",

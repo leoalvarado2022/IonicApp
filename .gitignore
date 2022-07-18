@@ -31,5 +31,6 @@ npm-debug.log*
 /plugins
 /www
 *.apk
+*.aab
 *.apk.idsig
 yarn.lock

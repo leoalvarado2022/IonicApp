@@ -170,7 +170,7 @@ Login data:
 
 Inside developer console:
 
-- Select FX360 app `(cl.primetec.fx11)` in **"See application"** option.
+- Select FX360 app `(cl.primetec.fx11)` in **"See application"** option.1
 - In **"Launch"** menu, click on **"Production"** option.
 - Click on **"Create a new version"** button.
 - Upload the `fx360.aab` generated.

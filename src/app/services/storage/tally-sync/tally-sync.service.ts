@@ -286,10 +286,9 @@ export class TallySyncService {
    */
   private validContractDate = (worker: any, currentDate: string): boolean => {
     if (currentDate) {
-      const start = moment(worker.startDate).toISOString();
-      const end = moment(worker.endDate).toISOString();
-
-      return moment(currentDate).isBetween(start, end);
+      const start = moment.utc(worker.startDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+      const end = moment.utc(worker.endDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+      return moment(currentDate).isBetween(start, end, null, '[]');
     }
 
     return false;

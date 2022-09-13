@@ -167,23 +167,33 @@ export class WorkersListPage implements OnInit, OnDestroy {
   /**
    * addDayToDate
    */
-  public addDayToDate = (): void => {
+  public addDayToDate = async (): Promise<void> => {
+    this.isLoading = true;
     if (this.currentDate && moment(this.currentDate).isBefore(this.originalDate)) {
       this.currentDate = moment(this.currentDate).add(1, 'day').format('YYYY-MM-DD');
       this.showDate = moment(this.currentDate).format(this.dateFormat);
+      const id = this.activatedRoute.snapshot.paramMap.get('id');
+      this.workers = await this.tallySyncService.getWorkersByQuadrille(+id, this.currentDate);
+      this.filteredWorkers = [...this.workers] ;
       this.selectedWorkers = [];
     }
+    this.isLoading = false;
   }
 
   /**
    * subtractDayToDate
    */
-  public subtractDayToDate = (): void => {
+  public subtractDayToDate = async (): Promise<void> => {
+    this.isLoading = true;
     if (this.currentDate && moment(this.originalDate).diff(this.currentDate, 'days') < this.configTarja) {
       this.currentDate = moment(this.currentDate).subtract(1, 'day').format('YYYY-MM-DD');
       this.showDate = moment(this.currentDate).format(this.dateFormat);
+      const id = this.activatedRoute.snapshot.paramMap.get('id');
+      this.workers = await this.tallySyncService.getWorkersByQuadrille(+id, this.currentDate);
+      this.filteredWorkers = [...this.workers] ;
       this.selectedWorkers = [];
     }
+    this.isLoading = false;
   }
 
   /**
@@ -456,16 +466,17 @@ export class WorkersListPage implements OnInit, OnDestroy {
   }
 
   public checkWorkerLimit = () => {
+    let ret = false;
     for (const worker of this.selectedWorkers) {
       const tallies = this.getNumberOfWorkerTallies(worker);
 
       const workTotal = tallies.reduce((total: number, tally: any) => total + (tally.workingDay || tally.jornada_trabajo), 0);
       if (workTotal === worker.dailyMax) {
-        return true;
+        ret = true;
       }
     }
 
-    return false;
+    return ret;
   }
 
 }
